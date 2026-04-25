@@ -1,0 +1,17 @@
+<Project>
+    <PropertyGroup>
+        <Company>Mad-World.eu</Company>
+        <Copyright>Copyright (c) Mad-World.eu 2026</Copyright>
+        <Authors>Oscar Veldman</Authors>
+        <Product>Byakko</Product>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <RootNamespace>MadWorldEU.Byakko</RootNamespace>
+        <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    </PropertyGroup>
+</Project>
