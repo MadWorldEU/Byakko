@@ -11,5 +11,17 @@
     <File Path="README.md" />
   </Folder>
   <Folder Name="/src/" />
+  <Folder Name="/src/controller/">
+    <Project Path="src\MadWorldEU.Byakko.Controller.Api\Api.csproj" />
+  </Folder>
+  <Folder Name="/src/core/">
+    <Project Path="src\MadWorldEU.Byakko.Core.Application\Application.csproj" />
+    <Project Path="src\MadWorldEU.Byakko.Core.Domain\Domain.csproj" />
+  </Folder>
+  <Folder Name="/src/infrastructure/">
+    <Project Path="src\MadWorldEU.Byakko.Infrastructure.Postgresql\Postgresql.csproj" />
+  </Folder>
   <Folder Name="/tests/" />
+  <Folder Name="/tests/controller/" />
+  <Folder Name="/tests/core/" />
 </Solution>
