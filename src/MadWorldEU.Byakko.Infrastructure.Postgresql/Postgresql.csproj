@@ -1,2 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\MadWorldEU.Byakko.Core.Domain\Domain.csproj" />
+  </ItemGroup>
 </Project>
