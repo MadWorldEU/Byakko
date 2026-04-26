@@ -2,6 +2,7 @@
   <Folder Name="/docs/">
     <File Path="docs\InstallGuide.md" />
   </Folder>
+  <Folder Name="/samples/" />
   <Folder Name="/solution/">
     <File Path=".editorconfig" />
     <File Path=".gitattributes" />
