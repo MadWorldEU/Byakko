@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/docs/">
     <File Path="docs\InstallGuide.md" />
+    <File Path="docs\RiderSettings.md" />
   </Folder>
   <Folder Name="/samples/" />
   <Folder Name="/solution/">
@@ -26,5 +27,7 @@
   </Folder>
   <Folder Name="/tests/" />
   <Folder Name="/tests/controller/" />
-  <Folder Name="/tests/core/" />
+  <Folder Name="/tests/core/">
+    <Project Path="tests\MadWorldEU.Byakko.Core.Application.Unittests\Application.Unittests.csproj" />
+  </Folder>
 </Solution>
