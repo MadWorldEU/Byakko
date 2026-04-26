@@ -1,5 +1,7 @@
 <Solution>
-  <Folder Name="/docs/" />
+  <Folder Name="/docs/">
+    <File Path="docs\InstallGuide.md" />
+  </Folder>
   <Folder Name="/solution/">
     <File Path=".editorconfig" />
     <File Path=".gitattributes" />
