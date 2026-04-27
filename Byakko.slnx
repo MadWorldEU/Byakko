@@ -3,6 +3,9 @@
     <File Path="docs\InstallGuide.md" />
     <File Path="docs\RiderSettings.md" />
   </Folder>
+  <Folder Name="/packages/">
+    <File Path="packages\README.md" />
+  </Folder>
   <Folder Name="/samples/" />
   <Folder Name="/solution/">
     <File Path=".editorconfig" />
