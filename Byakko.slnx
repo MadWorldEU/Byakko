@@ -32,6 +32,7 @@
     <File Path="LICENSE" />
     <File Path="nuget.config" />
     <File Path="README.md" />
+    <File Path="SECURITY.md" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src\MadWorldEU.Byakko.Aspire\Aspire.csproj" />
