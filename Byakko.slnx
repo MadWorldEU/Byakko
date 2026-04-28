@@ -4,7 +4,9 @@
     <File Path="docs\README.md" />
     <File Path="docs\RiderSettings.md" />
   </Folder>
-  <Folder Name="/github/" />
+  <Folder Name="/github/">
+    <File Path=".github\pull_request_template.md" />
+  </Folder>
   <Folder Name="/github/ISSUE_TEMPLATE/">
     <File Path=".github\ISSUE_TEMPLATE\bug_report.md" />
     <File Path=".github\ISSUE_TEMPLATE\feature_request.md" />
