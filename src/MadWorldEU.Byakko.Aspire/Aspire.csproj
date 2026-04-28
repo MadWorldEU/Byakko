@@ -11,4 +11,10 @@
         <PackageReference Include="Aspire.Hosting.AppHost" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\MadWorldEU.Byakko.Controller.Admin\Admin.csproj" />
+      <ProjectReference Include="..\MadWorldEU.Byakko.Controller.Api\Api.csproj" />
+      <ProjectReference Include="..\MadWorldEU.Byakko.Controller.Portal\Portal.csproj" />
+    </ItemGroup>
+
 </Project>
