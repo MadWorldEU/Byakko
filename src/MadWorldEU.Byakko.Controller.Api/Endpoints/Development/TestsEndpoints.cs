@@ -5,8 +5,9 @@ public static class TestsEndpoints
     public static void AddTestsEndpoints(this WebApplication app)
     {
         var testEndpoints = app.MapGroup("/tests")
-            .WithGroupName("Tests");
+            .WithTags("Tests");
         
-        testEndpoints.MapGet("/ping", () => "pong");
+        testEndpoints.MapGet("/ping", () => "pong")
+            .WithName("Ping");       
     }
 }
