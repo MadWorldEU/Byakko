@@ -17,3 +17,5 @@ app.UseHttpsRedirection();
 app.AddTestsEndpoints();
 
 app.Run();
+
+public partial class Program { }

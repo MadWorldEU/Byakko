@@ -433,3 +433,6 @@ FodyWeavers.xsd
 
 # MacOS
 .DS_Store
+
+# Byakko
+*.feature.cs
