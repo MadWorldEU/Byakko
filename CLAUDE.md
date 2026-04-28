@@ -15,11 +15,21 @@ OpenAPI spec is available at `/openapi/v1.json` in the Development environment.
 
 ## Testing
 
-No tests exist yet. The solution file has placeholder folders `/tests/controller/` and `/tests/core/` for future test projects.
+Three test projects exist:
+
+| Project | Framework | Purpose |
+|---|---|---|
+| `MadWorldEU.Byakko.Controller.Api.IntegrationTests` | Reqnroll + TUnit | BDD integration tests for the API |
+| `MadWorldEU.Byakko.Core.Application.Unittests` | TUnit + Shouldly | Unit tests for application logic |
+| `MadWorldEU.Byakko.Controller.Admin.IntegrationTests` | — | Placeholder |
+| `MadWorldEU.Byakko.Controller.Portal.IntegrationTests` | — | Placeholder |
 
 ```bash
-dotnet test                           # Run all tests (once added)
+dotnet test                                    # Run all tests
+dotnet test tests/MadWorldEU.Byakko.Controller.Api.IntegrationTests/ -- --coverage  # With code coverage
 ```
+
+**API integration tests** use `WebApplicationFactory<Program>` (in-process test server). The hook in `Hooks/ApiHooks.cs` spins up the factory once per test run and injects an `HttpClient` into each scenario via `ScenarioContext`. BDD scenarios live in `Features/` as `.feature` files; step definitions live in `StepDefinitions/`.
 
 ## Architecture
 
