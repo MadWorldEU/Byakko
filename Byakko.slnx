@@ -25,7 +25,9 @@
     <File Path="nuget.config" />
     <File Path="README.md" />
   </Folder>
-  <Folder Name="/src/" />
+  <Folder Name="/src/">
+    <Project Path="src\MadWorldEU.Byakko.Aspire\Aspire.csproj" />
+  </Folder>
   <Folder Name="/src/controller/">
     <Project Path="src\MadWorldEU.Byakko.Controller.Admin\Admin.csproj" />
     <Project Path="src\MadWorldEU.Byakko.Controller.Api\Api.csproj" />
