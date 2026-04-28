@@ -1,4 +1,5 @@
 [![Build and Test Dotnet](https://github.com/MadWorldEU/Byakko/actions/workflows/build-and-test.yml/badge.svg?branch=main)](https://github.com/MadWorldEU/Byakko/actions/workflows/build-and-test.yml)
+[![CodeQL Advanced](https://github.com/MadWorldEU/Byakko/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/MadWorldEU/Byakko/actions/workflows/codeql.yml)
 
 # Byakko
 
