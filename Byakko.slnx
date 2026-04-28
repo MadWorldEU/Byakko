@@ -27,10 +27,13 @@
   </Folder>
   <Folder Name="/src/" />
   <Folder Name="/src/controller/">
+    <Project Path="src\MadWorldEU.Byakko.Controller.Admin\Admin.csproj" />
     <Project Path="src\MadWorldEU.Byakko.Controller.Api\Api.csproj" />
+    <Project Path="src\MadWorldEU.Byakko.Controller.Portal\Portal.csproj" />
   </Folder>
   <Folder Name="/src/core/">
     <Project Path="src\MadWorldEU.Byakko.Core.Application\Application.csproj" />
+    <Project Path="src\MadWorldEU.Byakko.Core.Contracts\Contracts.csproj" />
     <Project Path="src\MadWorldEU.Byakko.Core.Domain\Domain.csproj" />
   </Folder>
   <Folder Name="/src/infrastructure/">

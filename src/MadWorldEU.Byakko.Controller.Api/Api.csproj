@@ -7,6 +7,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\MadWorldEU.Byakko.Core.Application\Application.csproj" />
+      <ProjectReference Include="..\MadWorldEU.Byakko.Core.Contracts\Contracts.csproj" />
       <ProjectReference Include="..\MadWorldEU.Byakko.Core.Domain\Domain.csproj" />
       <ProjectReference Include="..\MadWorldEU.Byakko.Infrastructure.Postgresql\Postgresql.csproj" />
     </ItemGroup>
