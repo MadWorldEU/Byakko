@@ -3,6 +3,7 @@
     <File Path="docs\InstallGuide.md" />
     <File Path="docs\README.md" />
     <File Path="docs\RiderSettings.md" />
+    <File Path="docs\UsefulLinks.md" />
   </Folder>
   <Folder Name="/github/">
     <File Path=".github\pull_request_template.md" />

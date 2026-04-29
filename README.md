@@ -4,6 +4,3 @@
 # Byakko
 
 Byakko (白虎) is the Japanese name for the White Tiger, one of the four mythological beasts guarding the cardinal directions in East Asian cosmology. It represents the West, the season of autumn, and the element of metal. In Japanese culture, Byakko is a symbol of power, courage, and protection.
-
-## Temp
-https://gist.github.com/davidfowl/ed7564297c61fe9ab814
