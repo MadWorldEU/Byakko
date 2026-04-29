@@ -1,5 +1,7 @@
 # Useful Links
 
+A curated list of websites and resources used in or relevant to this project.
+
 ## .NET / ASP.NET
 
 - [ASP.NET](https://dotnet.microsoft.com/en-us/apps/aspnet) — Microsoft's web framework for building modern web apps and APIs
