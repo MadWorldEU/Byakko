@@ -5,6 +5,7 @@
 - [ASP.NET](https://dotnet.microsoft.com/en-us/apps/aspnet) — Microsoft's web framework for building modern web apps and APIs
 - [Aspire](https://aspire.dev/) — .NET Aspire documentation and resources
 - [Blazor](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor) — .NET web framework for building interactive UI with C#
+- [Npgsql](https://www.npgsql.org/) — .NET data provider for PostgreSQL
 - [Reqnroll](https://reqnroll.net/) — BDD test automation framework for .NET (SpecFlow successor)
 - [Scalar](https://scalar.com/) — OpenAPI documentation and API client
 - [TUnit](https://tunit.dev/) — Modern, async-first test framework for .NET
@@ -25,4 +26,7 @@
 
 ## Tooling
 
+- [CodeQL](https://codeql.github.com/) — Semantic code analysis engine for security scanning
+- [GitHub Actions](https://github.com/features/actions) — CI/CD automation platform
 - [JetBrains Rider](https://www.jetbrains.com/rider/) — Cross-platform .NET IDE
+- [NuGet](https://www.nuget.org/) — .NET package manager
