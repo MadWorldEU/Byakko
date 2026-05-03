@@ -1,3 +1,5 @@
+using MadWorldEU.Byakko.Storages;
+
 namespace MadWorldEU.Byakko.Endpoints.Storage;
 
 public static class FilesEndpoints
@@ -7,16 +9,16 @@ public static class FilesEndpoints
         var filesEndpoints = app.MapGroup("/files")
             .WithTags("Files");
         
-        filesEndpoints.MapPost("/", () =>
+        filesEndpoints.MapPost("/", (CreateFileMetadataRequest request) =>
             {
-                return Results.Ok(Guid.NewGuid().ToString());
+                return new CreateFileMetadataResponse();
             })
             .WithName("CreateFileMetadata");
 
         filesEndpoints.MapPut("/{id}/content", async (string id, IFormFile file) =>
             {
                 await using var stream = file.OpenReadStream();
-                return Results.Ok();
+                return new UploadFileContentResponse();
             })
             .WithName("UploadFileContent")
             .DisableAntiforgery();
