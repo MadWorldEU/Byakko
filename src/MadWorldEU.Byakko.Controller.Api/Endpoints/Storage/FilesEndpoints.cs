@@ -11,7 +11,10 @@ public static class FilesEndpoints
         
         filesEndpoints.MapPost("/", (CreateFileMetadataRequest request) =>
             {
-                return new CreateFileMetadataResponse();
+                return new CreateFileMetadataResponse()
+                {
+                    Id = Guid.NewGuid()
+                };
             })
             .WithName("CreateFileMetadata");
 
