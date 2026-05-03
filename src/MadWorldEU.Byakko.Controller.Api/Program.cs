@@ -1,4 +1,5 @@
 using MadWorldEU.Byakko.Endpoints.Development;
+using MadWorldEU.Byakko.Endpoints.Storage;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,7 @@ app.MapScalarApiReference();
 
 app.UseHttpsRedirection();
 
+app.AddFilesEndpoints();
 app.AddTestsEndpoints();
 
 app.Run();
