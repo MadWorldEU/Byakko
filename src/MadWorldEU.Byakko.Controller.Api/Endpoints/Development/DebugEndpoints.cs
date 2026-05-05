@@ -1,3 +1,6 @@
+using System.Diagnostics;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using MadWorldEU.Byakko.Development;
 
 namespace MadWorldEU.Byakko.Endpoints.Development;
@@ -20,5 +23,19 @@ public static class DebugEndpoints
                 };
             })
             .WithName("GetEnvironmentVariables");
+        
+        debugEndpoints.MapGet("/info", (IHostEnvironment hostEnvironment) => new GetApplicationInfoResponse
+            {
+                ApplicationName = Assembly.GetEntryAssembly()?.GetName().Name ?? string.Empty,
+                ApplicationVersion = Assembly.GetEntryAssembly()?.GetName().Version?.ToString() ?? string.Empty,
+                ApplicationPath = Directory.GetCurrentDirectory(),
+                MachineName = Environment.MachineName,
+                OsDescription = RuntimeInformation.OSDescription,
+                RuntimeVersion = RuntimeInformation.FrameworkDescription,
+                ProcessId = Environment.ProcessId,
+                StartTime = Process.GetCurrentProcess().StartTime,
+                Environment = hostEnvironment.EnvironmentName
+            })
+            .WithName("GetApplicationInfo");
     }
 }
