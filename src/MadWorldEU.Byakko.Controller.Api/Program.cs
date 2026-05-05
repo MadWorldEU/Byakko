@@ -1,6 +1,5 @@
 using MadWorldEU.Byakko.Endpoints.Development;
 using MadWorldEU.Byakko.Endpoints.Storage;
-using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +17,12 @@ app.UseHttpsRedirection();
 app.AddFilesEndpoints();
 app.AddTestsEndpoints();
 
+if (app.Environment.IsDevelopment())
+{
+    app.AddDebugEndpoints();   
+}
+
 app.Run();
 
+[UsedImplicitly]
 public partial class Program { }

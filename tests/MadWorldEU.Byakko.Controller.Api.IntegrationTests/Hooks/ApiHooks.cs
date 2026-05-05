@@ -1,6 +1,3 @@
-using Microsoft.AspNetCore.Mvc.Testing;
-using Reqnroll;
-
 namespace MadWorldEU.Byakko.Hooks;
 
 [Binding]

@@ -38,11 +38,15 @@ Clean Architecture with four layers:
 | Layer | Project | Role |
 |---|---|---|
 | Controller | `MadWorldEU.Byakko.Controller.Api` | ASP.NET Core Minimal APIs |
+| Controller | `MadWorldEU.Byakko.Controller.Admin` | Blazor WebAssembly admin UI |
+| Controller | `MadWorldEU.Byakko.Controller.Portal` | Blazor WebAssembly portal UI |
 | Application | `MadWorldEU.Byakko.Core.Application` | Business logic / use cases |
+| Contracts | `MadWorldEU.Byakko.Core.Contracts` | Shared request/response DTOs |
 | Domain | `MadWorldEU.Byakko.Core.Domain` | Domain models / entities |
 | Infrastructure | `MadWorldEU.Byakko.Infrastructure.Postgresql` | PostgreSQL data access |
+| Host | `MadWorldEU.Byakko.Aspire` | .NET Aspire AppHost (orchestration) |
 
-Dependencies flow inward: Controller → Application → Domain ← Infrastructure.
+Dependencies flow inward: Controller → Application → Domain ← Infrastructure. Contracts are shared between Controllers and Application.
 
 ## Project Conventions
 
@@ -54,3 +58,6 @@ Dependencies flow inward: Controller → Application → Domain ← Infrastructu
 - **Solution format:** `.slnx` (new Visual Studio format)
 - **Indentation:** 4 spaces, LF line endings, UTF-8 (enforced by `.editorconfig`)
 - **`var` usage:** preferred in all contexts (enforced by `.editorconfig`)
+- **Global usings:** each project has a `GlobalUsings.cs` for shared namespace imports
+- **JetBrains annotations:** `JetBrains.Annotations` is used for IDE hints (e.g. `[UsedImplicitly]`)
+- **TUnit:** test attributes (`[Test]`, etc.) are available without explicit usings via source generator
