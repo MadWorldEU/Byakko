@@ -37,5 +37,23 @@ public static class DebugEndpoints
                 Environment = hostEnvironment.EnvironmentName
             })
             .WithName("GetApplicationInfo");
+        
+        debugEndpoints.MapGet("/memory", () => new GetMemoryInfoResponse
+            {
+                TotalMemoryBytes = GC.GetTotalMemory(forceFullCollection: false),
+                WorkingSetBytes = Environment.WorkingSet,
+                Gen0Collections = GC.CollectionCount(0),
+                Gen1Collections = GC.CollectionCount(1),
+                Gen2Collections = GC.CollectionCount(2),
+            })
+            .WithName("GetMemoryInfo");
+
+        debugEndpoints.MapPost("/memory/gc", () =>
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                return Results.Ok();
+            })
+            .WithName("TriggerGarbageCollection");
     }
 }
