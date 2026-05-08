@@ -89,7 +89,9 @@ public Result<Asset> GetById(Guid id) => asset; // implicitly Result<Asset>.Succ
 
 ## Key Infrastructure
 
-- **Database:** PostgreSQL via `ByakkoContext` (EF Core + Npgsql). Connection string key: `byakko-db`. Configured in `appsettings.json`, overridden by Aspire at runtime.
+- **Database:** PostgreSQL via `ByakkoContext` (EF Core + Npgsql). Connection string key: `byakko-db`. Configured in `appsettings.json`, overridden by Aspire at runtime. Migrations live in `Infrastructure.Postgresql/Migrations/`. See `docs/Database.md` for migration commands.
+- **Migrations:** Run manually via `dotnet ef database update` (see `docs/Database.md`). Automatic migration on startup via a dedicated migration runner project is not yet implemented — the pattern is a separate `Infrastructure.Migrations` project that runs `MigrateAsync` as a `BackgroundService`, referenced by Aspire with `WaitFor` before the API starts.
+- **Aspire orchestration:** Postgres is provisioned with a data volume and pgAdmin. The API waits for the database; Admin and Portal wait for the API. Credentials are passed as Aspire parameters (`username`, `password`).
 - **Health check:** `GET /health` on the API; `GET /health.txt` (static file) on Admin and Portal. Aspire monitors all three.
 - **Observability:** OpenTelemetry tracing, metrics, and logging exported via OTLP. Endpoint configured via `OTEL_EXPORTER_OTLP_ENDPOINT` in `appsettings.json` (default `http://localhost:4040`); Aspire overrides this automatically with the dashboard endpoint.
 - **Debug endpoints:** `GET /debug/info`, `GET /debug/environment/variables`, `GET /debug/memory`, `POST /debug/memory/gc` — only registered in the Development environment.
