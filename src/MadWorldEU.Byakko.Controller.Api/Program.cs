@@ -28,7 +28,7 @@ app.MapScalarApiReference();
 
 app.MapHealthChecks("/health");
 
-app.AddFilesEndpoints();
+app.AddAssetsEndpoints();
 app.AddTestsEndpoints();
 
 if (app.Environment.IsDevelopment())

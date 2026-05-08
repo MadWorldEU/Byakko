@@ -2,28 +2,28 @@ using MadWorldEU.Byakko.Storages;
 
 namespace MadWorldEU.Byakko.Endpoints.Storages;
 
-public static class FilesEndpoints
+public static class AssetsEndpoints
 {
-    public static void AddFilesEndpoints(this WebApplication app)
+    public static void AddAssetsEndpoints(this WebApplication app)
     {
-        var filesEndpoints = app.MapGroup("/files")
-            .WithTags("Files");
-        
-        filesEndpoints.MapPost("/", (CreateFileMetadataRequest request) =>
+        var assetsEndpoints = app.MapGroup("/assets")
+            .WithTags("Assets");
+
+        assetsEndpoints.MapPost("/", (CreateFileMetadataRequest request) =>
             {
                 return new CreateFileMetadataResponse()
                 {
                     Id = Guid.NewGuid()
                 };
             })
-            .WithName("CreateFileMetadata");
+            .WithName("CreateAssetMetadata");
 
-        filesEndpoints.MapPut("/{id}/content", async (string id, IFormFile file) =>
+        assetsEndpoints.MapPut("/{id}/content", async (string id, IFormFile file) =>
             {
                 await using var stream = file.OpenReadStream();
                 return new UploadFileContentResponse();
             })
-            .WithName("UploadFileContent")
+            .WithName("UploadAssetContent")
             .DisableAntiforgery();
     }
 }
