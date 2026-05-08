@@ -1,5 +1,7 @@
 <Solution>
-  <Folder Name="/claude/" />
+  <Folder Name="/claude/">
+    <File Path=".claude\settings.json" />
+  </Folder>
   <Folder Name="/docs/">
     <File Path="docs\InstallGuide.md" />
     <File Path="docs\README.md" />
