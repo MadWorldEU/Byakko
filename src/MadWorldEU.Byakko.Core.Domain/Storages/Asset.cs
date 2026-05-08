@@ -13,7 +13,7 @@ public sealed class Asset : Entity<Guid>
     }
 
     
-    public Asset Create(Name name)
+    public static Result<Asset> Create(Name name)
     {
         return new Asset(Guid.NewGuid(), name);
     }

@@ -62,6 +62,31 @@ Base types live in `MadWorldEU.Byakko.Core.BuildingBlocks/DomainDrivenDevelopmen
 
 Domain aggregates extend `AggregateRoot<TId>`, plain entities extend `Entity<TId>`, immutable value concepts extend `ValueObject`. EF Core entity classes live in the Infrastructure layer and are mapped to/from domain objects in repository implementations.
 
+### Functional Patterns
+
+Types live in `MadWorldEU.Byakko.Core.BuildingBlocks/Functional/`, namespace `MadWorldEU.Byakko.Functional`:
+
+| Type | Usage |
+|---|---|
+| `Error` | Named error with a `Code` and `Description`; create via `Error.Create("Domain.Reason", "...")` |
+| `Result` | Outcome of a void operation; use `Result.Success()` / `Result.Failure(error)` |
+| `Result<T>` | Outcome of an operation that returns a value; access via `.Value` on success |
+
+Both `Result` and `Result<T>` expose a `Match` method for functional-style handling:
+
+```csharp
+var response = result.Match(
+    onSuccess: asset => new AssetResponse(asset.Id),
+    onFailure: error => throw new NotFoundException(error.Description)
+);
+```
+
+Application and domain methods should return `Result` or `Result<T>` instead of throwing exceptions for expected failure cases. A value can be implicitly converted to `Result<T>` (wraps as success), so methods can return the value directly:
+
+```csharp
+public Result<Asset> GetById(Guid id) => asset; // implicitly Result<Asset>.Success(asset)
+```
+
 ## Key Infrastructure
 
 - **Database:** PostgreSQL via `ByakkoContext` (EF Core + Npgsql). Connection string key: `byakko-db`. Configured in `appsettings.json`, overridden by Aspire at runtime.

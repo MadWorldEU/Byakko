@@ -2,8 +2,9 @@ namespace MadWorldEU.Byakko.Common;
 
 public sealed class Name : ValueObject
 {
-    public string Value { get; private set; } = string.Empty;
-
+    public const int MaxLength = 256;
+    public string Value { get; private init; } = string.Empty;
+    
     private Name() { } // for EF Core   
 
     private Name(string value)
@@ -11,8 +12,10 @@ public sealed class Name : ValueObject
         Value = value;
     }
 
-    public Name Create(string name)
+    public static Result<Name> Create(string name)
     {
+        if (string.IsNullOrWhiteSpace(name)) return NameErrors.Empty;
+        if (name.Length > MaxLength) return NameErrors.TooLong;
         return new Name(name);
     }
     

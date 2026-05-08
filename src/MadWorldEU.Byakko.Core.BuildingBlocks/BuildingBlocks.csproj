@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <Folder Include="DomainDrivenDevelopment\" />
+    <Folder Include="Functional\" />
   </ItemGroup>
 </Project>
