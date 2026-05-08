@@ -5,6 +5,8 @@ var builder = WebApplication.CreateBuilder(args);
     
 builder.Services.AddOpenApi();
 builder.Services.AddHealthChecks();
+builder.Services.AddDbContext<ByakkoContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("byakko-db")));
 
 var app = builder.Build();
 
