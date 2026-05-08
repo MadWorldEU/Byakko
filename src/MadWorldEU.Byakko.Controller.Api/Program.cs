@@ -8,6 +8,19 @@ builder.Services.AddHealthChecks();
 builder.Services.AddDbContext<ByakkoContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("byakko-db")));
 
+builder.Services.AddOpenTelemetry()
+    .WithTracing(tracing => tracing
+        .AddAspNetCoreInstrumentation()
+        .AddHttpClientInstrumentation()
+        .AddOtlpExporter())
+    .WithMetrics(metrics => metrics
+        .AddAspNetCoreInstrumentation()
+        .AddHttpClientInstrumentation()
+        .AddRuntimeInstrumentation()
+        .AddOtlpExporter())
+    .WithLogging(logging => logging
+        .AddOtlpExporter());
+
 var app = builder.Build();
 
 app.MapOpenApi();
