@@ -43,10 +43,24 @@ Clean Architecture with four layers:
 | Application | `MadWorldEU.Byakko.Core.Application` | Business logic / use cases |
 | Contracts | `MadWorldEU.Byakko.Core.Contracts` | Shared request/response DTOs |
 | Domain | `MadWorldEU.Byakko.Core.Domain` | Domain models / entities |
+| BuildingBlocks | `MadWorldEU.Byakko.Core.BuildingBlocks` | DDD base types (see below) |
 | Infrastructure | `MadWorldEU.Byakko.Infrastructure.Postgresql` | PostgreSQL data access |
 | Host | `MadWorldEU.Byakko.Aspire` | .NET Aspire AppHost (orchestration) |
 
-Dependencies flow inward: Controller → Application → Domain ← Infrastructure. Contracts are shared between Controllers and Application.
+Dependencies flow inward: Controller → Application → Domain ← Infrastructure. Contracts are shared between Controllers and Application. BuildingBlocks is referenced by Domain and Infrastructure.
+
+### DDD Building Blocks
+
+Base types live in `MadWorldEU.Byakko.Core.BuildingBlocks/DomainDrivenDevelopment/`, namespace `MadWorldEU.Byakko.DomainDrivenDevelopment`:
+
+| Type | Usage |
+|---|---|
+| `AggregateRoot<TId>` | Root of an aggregate; exposes `RaiseDomainEvent` / `ClearDomainEvents` |
+| `Entity<TId>` | Any entity with an identity; equality is by `Id` |
+| `ValueObject` | Immutable concepts (e.g. `Money`, `Address`); equality is structural via `GetEqualityComponents()` |
+| `IDomainEvent` | Marker interface for domain events raised by aggregates |
+
+Domain aggregates extend `AggregateRoot<TId>`, plain entities extend `Entity<TId>`, immutable value concepts extend `ValueObject`. EF Core entity classes live in the Infrastructure layer and are mapped to/from domain objects in repository implementations.
 
 ## Key Infrastructure
 

@@ -52,6 +52,7 @@
   </Folder>
   <Folder Name="/src/core/">
     <Project Path="src\MadWorldEU.Byakko.Core.Application\Application.csproj" />
+    <Project Path="src\MadWorldEU.Byakko.Core.BuildingBlocks\BuildingBlocks.csproj" />
     <Project Path="src\MadWorldEU.Byakko.Core.Contracts\Contracts.csproj" />
     <Project Path="src\MadWorldEU.Byakko.Core.Domain\Domain.csproj" />
   </Folder>
