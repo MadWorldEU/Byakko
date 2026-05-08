@@ -1,4 +1,28 @@
 <Solution>
+  <Folder Name="/claude/" />
+  <Folder Name="/docs/">
+    <File Path="docs\InstallGuide.md" />
+    <File Path="docs\README.md" />
+    <File Path="docs\RiderSettings.md" />
+    <File Path="docs\UsefulLinks.md" />
+  </Folder>
+  <Folder Name="/github/">
+    <File Path=".github\pull_request_template.md" />
+  </Folder>
+  <Folder Name="/github/issue-templates/">
+    <File Path=".github\ISSUE_TEMPLATE\bug_report.md" />
+    <File Path=".github\ISSUE_TEMPLATE\feature_request.md" />
+  </Folder>
+  <Folder Name="/github/workflows/">
+    <File Path=".github\workflows\build-and-test.yml" />
+    <File Path=".github\workflows\codeql.yml" />
+  </Folder>
+  <Folder Name="/packages/">
+    <File Path="packages\README.md" />
+  </Folder>
+  <Folder Name="/claude/rules/">
+    <File Path=".claude\rules\code-standard.md" />
+  </Folder>
   <Folder Name="/samples/">
     <File Path="samples\README.md" />
   </Folder>
