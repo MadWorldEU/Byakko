@@ -1,6 +1,6 @@
 namespace MadWorldEU.Byakko.Example;
 
-public class AddNumberUseCase
+public sealed class AddNumberUseCase
 {
     public int Add(int a, int b)
     {

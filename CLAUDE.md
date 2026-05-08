@@ -48,6 +48,13 @@ Clean Architecture with four layers:
 
 Dependencies flow inward: Controller → Application → Domain ← Infrastructure. Contracts are shared between Controllers and Application.
 
+## Key Infrastructure
+
+- **Database:** PostgreSQL via `ByakkoContext` (EF Core + Npgsql). Connection string key: `byakko-db`. Configured in `appsettings.json`, overridden by Aspire at runtime.
+- **Health check:** `GET /health` on the API; `GET /health.txt` (static file) on Admin and Portal. Aspire monitors all three.
+- **Observability:** OpenTelemetry tracing, metrics, and logging exported via OTLP. Endpoint configured via `OTEL_EXPORTER_OTLP_ENDPOINT` in `appsettings.json` (default `http://localhost:4040`); Aspire overrides this automatically with the dashboard endpoint.
+- **Debug endpoints:** `GET /debug/info`, `GET /debug/environment/variables`, `GET /debug/memory`, `POST /debug/memory/gc` — only registered in the Development environment.
+
 ## Project Conventions
 
 - **Target framework:** .NET 10.0

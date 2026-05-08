@@ -1,7 +1,7 @@
 namespace MadWorldEU.Byakko.StepDefinitions.Development;
 
 [Binding]
-public class TestsSteps
+public sealed class TestsSteps
 {
     private readonly ScenarioContext _scenarioContext;
     private HttpResponseMessage? _response;

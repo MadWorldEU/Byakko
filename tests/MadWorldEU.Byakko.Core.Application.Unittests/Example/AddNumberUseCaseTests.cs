@@ -1,6 +1,6 @@
 namespace MadWorldEU.Byakko.Example;
 
-public class AddNumberUseCaseTests
+public sealed class AddNumberUseCaseTests
 {
     [Test]
     public void Add_TwoNumbers_ReturnSum()

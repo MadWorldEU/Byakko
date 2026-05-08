@@ -1,7 +1,7 @@
 namespace MadWorldEU.Byakko.Hooks;
 
 [Binding]
-public class ApiHooks
+public sealed class ApiHooks
 {
     private static WebApplicationFactory<Program>? _factory;
     private static HttpClient? _client;
