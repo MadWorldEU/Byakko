@@ -11,12 +11,15 @@ var byakkoDb = postgres.AddDatabase("byakko-db");
 
 var api = builder.AddProject<Api>(nameof(Api))
     .WaitFor(byakkoDb)
-    .WithReference(byakkoDb);
+    .WithReference(byakkoDb)
+    .WithHttpHealthCheck("/health");
 
 builder.AddProject<Admin>(nameof(Admin))
-    .WaitFor(api);
+    .WaitFor(api)
+    .WithHttpHealthCheck("/health.txt");
 
 builder.AddProject<Portal>(nameof(Portal))
-    .WaitFor(api);
+    .WaitFor(api)
+    .WithHttpHealthCheck("/health.txt");
 
 builder.Build().Run();
