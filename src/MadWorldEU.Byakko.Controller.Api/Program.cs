@@ -1,5 +1,5 @@
 using MadWorldEU.Byakko.Endpoints.Development;
-using MadWorldEU.Byakko.Endpoints.Storage;
+using MadWorldEU.Byakko.Endpoints.Storages;
 
 var builder = WebApplication.CreateBuilder(args);
     

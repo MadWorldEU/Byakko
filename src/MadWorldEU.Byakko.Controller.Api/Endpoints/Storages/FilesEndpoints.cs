@@ -1,6 +1,6 @@
 using MadWorldEU.Byakko.Storages;
 
-namespace MadWorldEU.Byakko.Endpoints.Storage;
+namespace MadWorldEU.Byakko.Endpoints.Storages;
 
 public static class FilesEndpoints
 {
