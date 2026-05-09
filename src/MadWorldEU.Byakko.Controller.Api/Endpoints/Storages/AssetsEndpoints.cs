@@ -1,5 +1,3 @@
-using MadWorldEU.Byakko.Storages;
-
 namespace MadWorldEU.Byakko.Endpoints.Storages;
 
 public static class AssetsEndpoints
@@ -9,19 +7,20 @@ public static class AssetsEndpoints
         var assetsEndpoints = app.MapGroup("/assets")
             .WithTags("Assets");
 
-        assetsEndpoints.MapPost("/", (CreateFileMetadataRequest request) =>
+        assetsEndpoints.MapPost("/", async (CreateAssetRequest request, CreateAssetMetadataUseCase useCase) =>
             {
-                return new CreateFileMetadataResponse()
-                {
-                    Id = Guid.NewGuid()
-                };
+                var result = await useCase.ExecuteAsync(request);
+                return result.Match(
+                    onSuccess: response => Results.Created($"/assets/{response.Id}", response),
+                    onFailure: error => Results.BadRequest(error.Description)
+                );
             })
             .WithName("CreateAssetMetadata");
 
         assetsEndpoints.MapPut("/{id}/content", async (string id, IFormFile file) =>
             {
                 await using var stream = file.OpenReadStream();
-                return new UploadFileContentResponse();
+                return new UploadAssetContentResponse();
             })
             .WithName("UploadAssetContent")
             .DisableAntiforgery();

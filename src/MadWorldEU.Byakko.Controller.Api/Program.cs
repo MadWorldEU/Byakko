@@ -1,12 +1,13 @@
 using MadWorldEU.Byakko.Endpoints.Development;
 using MadWorldEU.Byakko.Endpoints.Storages;
+using MadWorldEU.Byakko.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
     
 builder.Services.AddOpenApi();
 builder.Services.AddHealthChecks();
-builder.Services.AddDbContext<ByakkoContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("byakko-db")));
+builder.Services.AddApplication();
+builder.Services.AddPostgresqlInfrastructure(builder.Configuration);
 
 builder.Services.AddOpenTelemetry()
     .WithTracing(tracing => tracing

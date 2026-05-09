@@ -2,6 +2,12 @@
 
 These rules define the coding standards for this project. All code must follow these conventions to ensure consistency, maintainability, and clarity across the codebase.
 
+## Namespaces
+
+- The root namespace is always `MadWorldEU.Byakko`.
+- After the root, the namespace must reflect the folder structure of the file (e.g. a file in `Storages/` uses `MadWorldEU.Byakko.Storages`).
+- Never use the project name as part of the namespace — only the folder path after the project root.
+
 ## Classes
 
 - Classes must be `sealed` by default unless they are explicitly designed for inheritance.

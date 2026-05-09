@@ -1,5 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MadWorldEU.Byakko.Core.Contracts\Contracts.csproj" />
     <ProjectReference Include="..\MadWorldEU.Byakko.Core.Domain\Domain.csproj" />
   </ItemGroup>
 </Project>
