@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
     
 builder.Services.AddOpenApi();
 builder.Services.AddHealthChecks();
+builder.Services.AddBuildingBlocks();
 builder.Services.AddApplication();
 builder.Services.AddPostgresqlInfrastructure(builder.Configuration);
 

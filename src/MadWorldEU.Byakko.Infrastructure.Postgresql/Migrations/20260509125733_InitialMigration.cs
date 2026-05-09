@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using NodaTime;
 
 #nullable disable
 
@@ -16,7 +17,8 @@ namespace MadWorldEU.Byakko.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false)
+                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    CreatedAt = table.Column<Instant>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {

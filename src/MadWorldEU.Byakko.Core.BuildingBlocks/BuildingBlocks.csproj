@@ -1,5 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="NodaTime" />
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="DomainDrivenDevelopment\" />
     <Folder Include="Functional\" />
   </ItemGroup>

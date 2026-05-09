@@ -51,5 +51,7 @@ dotnet ef database update 0 --context ByakkoContext --project ../MadWorldEU.Byak
 #### Removing the Last Migration
 If you need to remove the last migration (without applying it to the database):
 ```bash
-dotnet ef migrations remove --context ByakkoContext --project ../MadWorldEU.Byakko.Infrastructure.Postgresql
+dotnet ef migrations remove --context ByakkoContext --project ../MadWorldEU.Byakko.Infrastructure.Postgresql -f
 ```
+
+The `-f` (`--force`) flag skips the check that verifies the migration has not been applied to the database. Without it, the command fails if EF cannot confirm the migration is unapplied (e.g. no active database connection). Only use `-f` when you are certain the migration has not been applied.

@@ -2,6 +2,25 @@
 
 These rules define the coding standards for this project. All code must follow these conventions to ensure consistency, maintainability, and clarity across the codebase.
 
+## Global Usings
+
+Global usings must be ordered in two groups separated by a blank line:
+
+1. Third-party namespaces (alphabetical)
+2. Project namespaces starting with `MadWorldEU.Byakko` (alphabetical)
+
+```csharp
+global using Microsoft.Extensions.DependencyInjection;
+global using NodaTime;
+
+global using MadWorldEU.Byakko.Common;
+global using MadWorldEU.Byakko.Functional;
+global using MadWorldEU.Byakko.Storages;
+```
+
+- Never mix third-party and project namespaces in the same group.
+- Standard .NET namespaces (e.g. `System.*`) do not need to be in `GlobalUsings.cs` as implicit usings cover them.
+
 ## Namespaces
 
 - The root namespace is always `MadWorldEU.Byakko`.

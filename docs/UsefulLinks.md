@@ -7,6 +7,7 @@ A curated list of websites and resources used in or relevant to this project.
 - [ASP.NET](https://dotnet.microsoft.com/en-us/apps/aspnet) — Microsoft's web framework for building modern web apps and APIs
 - [Aspire](https://aspire.dev/) — .NET Aspire documentation and resources
 - [Blazor](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor) — .NET web framework for building interactive UI with C#
+- [NodaTime](https://nodatime.org/) — Date and time library for .NET with explicit timezone handling
 - [Npgsql](https://www.npgsql.org/) — .NET data provider for PostgreSQL
 - [Reqnroll](https://reqnroll.net/) — BDD test automation framework for .NET (SpecFlow successor)
 - [Scalar](https://scalar.com/) — OpenAPI documentation and API client

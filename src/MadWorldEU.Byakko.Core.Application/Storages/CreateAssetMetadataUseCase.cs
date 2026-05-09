@@ -1,14 +1,14 @@
 namespace MadWorldEU.Byakko.Storages;
 
 /// <summary>Creates a new asset metadata record.</summary>
-public sealed class CreateAssetMetadataUseCase(IAssetRepository repository)
+public sealed class CreateAssetMetadataUseCase(IClock clock, IGuidGenerator guidGenerator, IAssetRepository repository)
 {
     public async Task<Result<CreateAssetResponse>> ExecuteAsync(CreateAssetRequest request)
     {
         var nameResult = Name.Create(request.Name);
         if (nameResult.IsFailure) return nameResult.Error;
 
-        var assetResult = Asset.Create(nameResult.Value);
+        var assetResult = Asset.Create(clock, guidGenerator, nameResult.Value);
         if (assetResult.IsFailure) return assetResult.Error;
 
         var saveResult = await repository.AddAsync(assetResult.Value);

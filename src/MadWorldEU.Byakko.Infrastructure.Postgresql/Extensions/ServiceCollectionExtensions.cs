@@ -5,8 +5,9 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddPostgresqlInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<ByakkoContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("byakko-db")));
+        services.AddDbContext<ByakkoContext>(options => 
+            options.UseNpgsql(configuration.GetConnectionString("byakko-db"), 
+                builder => builder.UseNodaTime()));
 
         services.AddScoped<IAssetRepository, AssetRepository>();
 
