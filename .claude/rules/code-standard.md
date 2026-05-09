@@ -54,6 +54,13 @@ private MyClass() {}
 - Error codes must follow the format `"Domain.Reason"` (e.g. `"Asset.NotFound"`), matching the class and field name.
 - Never use inline `Error.Create(...)` calls at the call site — always reference a named field from the errors class.
 
+## Date and Time
+
+- Always use **NodaTime** types for date and time values. Never use `DateTime`, `DateTimeOffset`, or `TimeSpan`.
+- Use `Instant` for UTC timestamps (e.g. `CreatedAt`, `UpdatedAt`).
+- Use `ZonedDateTime` only when the timezone is meaningful to the domain.
+- Inject `IClock` into use cases and services instead of calling `SystemClock.Instance` directly — this keeps time testable.
+
 ## Documentation
 
 - All public classes and methods must have a meaningful XML `<summary>` doc comment.

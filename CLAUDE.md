@@ -64,6 +64,14 @@ Base types live in `MadWorldEU.Byakko.Core.BuildingBlocks/DomainDrivenDevelopmen
 
 Domain aggregates extend `AggregateRoot<TId>`, plain entities extend `Entity<TId>`, immutable value concepts extend `ValueObject`. EF Core entity classes live in the Infrastructure layer and are mapped to/from domain objects in repository implementations.
 
+System utilities live in `MadWorldEU.Byakko.Core.BuildingBlocks/System/`, namespace `MadWorldEU.Byakko.System`:
+
+| Type | Usage |
+|---|---|
+| `IGuidGenerator` / `GuidGenerator` | Abstracts `Guid.NewGuid()` for testability; inject into use cases and pass to domain factory methods |
+
+Register via `services.AddBuildingBlocks()`. In tests, replace with a predictable implementation that returns a known `Guid`.
+
 ### Functional Patterns
 
 Types live in `MadWorldEU.Byakko.Core.BuildingBlocks/Functional/`, namespace `MadWorldEU.Byakko.Functional`:
@@ -92,7 +100,7 @@ public Result<Asset> GetById(Guid id) => asset; // implicitly Result<Asset>.Succ
 ## Key Infrastructure
 
 - **Database:** PostgreSQL via `ByakkoContext` (EF Core + Npgsql). Connection string key: `byakko-db`. Configured in `appsettings.json`, overridden by Aspire at runtime. Migrations live in `Infrastructure.Postgresql/Migrations/`. See `docs/Database.md` for migration commands.
-- **Migrations:** Run manually via `dotnet ef database update` (see `docs/Database.md`). Automatic migration on startup via a dedicated migration runner project is not yet implemented — the pattern is a separate `Infrastructure.Migrations` project that runs `MigrateAsync` as a `BackgroundService`, referenced by Aspire with `WaitFor` before the API starts.
+- **Migrations:** Automatic migration on startup is toggled via `Database:AutoMigrate` in `appsettings.json` (default `false`; `true` in `appsettings.Development.json`). When enabled, a `MigrationService` hosted service runs `MigrateAsync` before the app starts accepting requests. Manual commands are documented in `docs/Database.md`.
 - **Aspire orchestration:** Postgres is provisioned with a data volume and pgAdmin. The API waits for the database; Admin and Portal wait for the API. Credentials are passed as Aspire parameters (`username`, `password`).
 - **Health check:** `GET /health` on the API; `GET /health.txt` (static file) on Admin and Portal. Aspire monitors all three.
 - **Observability:** OpenTelemetry tracing, metrics, and logging exported via OTLP. Endpoint configured via `OTEL_EXPORTER_OTLP_ENDPOINT` in `appsettings.json` (default `http://localhost:4040`); Aspire overrides this automatically with the dashboard endpoint.
@@ -108,6 +116,7 @@ public Result<Asset> GetById(Guid id) => asset; // implicitly Result<Asset>.Succ
 - **Solution format:** `.slnx` (new Visual Studio format)
 - **Indentation:** 4 spaces, LF line endings, UTF-8 (enforced by `.editorconfig`)
 - **`var` usage:** preferred in all contexts (enforced by `.editorconfig`)
-- **Global usings:** each project has a `GlobalUsings.cs` for shared namespace imports
+- **Global usings:** each project has a `GlobalUsings.cs`; third-party namespaces come first, then a blank line, then `MadWorldEU.Byakko.*` namespaces (both groups alphabetical)
+- **NodaTime:** used for all date/time values. Use `Instant` for UTC timestamps (e.g. `CreatedAt`). Inject `IClock` into use cases instead of calling `SystemClock.Instance` directly
 - **JetBrains annotations:** `JetBrains.Annotations` is used for IDE hints (e.g. `[UsedImplicitly]`)
 - **TUnit:** test attributes (`[Test]`, etc.) are available without explicit usings via source generator
