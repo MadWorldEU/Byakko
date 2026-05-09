@@ -21,6 +21,7 @@ A curated list of websites and resources used in or relevant to this project.
 - [Helm](https://helm.sh/) — Package manager for Kubernetes
 - [OpenTelemetry](https://opentelemetry.io/) — Observability framework for traces, metrics, and logs
 - [Keycloak](https://www.keycloak.org/) — Open source identity and access management (authentication, SSO, OAuth2/OIDC)
+- [LocalStack](https://docs.localstack.cloud/) — Local emulator for AWS services (used for S3 during development)
 - [Kubernetes](https://kubernetes.io/) — Container orchestration platform
 - [PostgreSQL](https://www.postgresql.org/) — Open source relational database
 
