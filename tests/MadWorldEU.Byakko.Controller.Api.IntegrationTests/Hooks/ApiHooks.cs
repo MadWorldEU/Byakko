@@ -3,18 +3,11 @@ using Microsoft.EntityFrameworkCore;
 namespace MadWorldEU.Byakko.Hooks;
 
 [Binding]
-public sealed class ApiHooks
+public sealed class ApiHooks(ScenarioContext scenarioContext)
 {
     private static PostgreSqlContainer _postgres = null!;
     private static WebApplicationFactory<Program>? _factory;
     private static HttpClient? _client;
-
-    private readonly ScenarioContext _scenarioContext;
-
-    public ApiHooks(ScenarioContext scenarioContext)
-    {
-        _scenarioContext = scenarioContext;
-    }
 
     [BeforeTestRun]
     public static async Task BeforeTestRun()
@@ -47,13 +40,13 @@ public sealed class ApiHooks
     public static async Task AfterTestRun()
     {
         _client?.Dispose();
-        _factory?.Dispose();
+        await (_factory?.DisposeAsync() ?? ValueTask.CompletedTask);
         await _postgres.DisposeAsync();
     }
 
     [BeforeScenario]
     public void BeforeScenario()
     {
-        _scenarioContext.Set(_client!);
+        scenarioContext.Set(_client!);
     }
 }

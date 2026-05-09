@@ -31,6 +31,8 @@ dotnet test tests/MadWorldEU.Byakko.Controller.Api.IntegrationTests/ -- --covera
 
 **API integration tests** use `WebApplicationFactory<Program>` (in-process test server). The hook in `Hooks/ApiHooks.cs` spins up the factory once per test run and injects an `HttpClient` into each scenario via `ScenarioContext`. BDD scenarios live in `Features/` as `.feature` files; step definitions live in `StepDefinitions/`.
 
+A **PostgreSQL Testcontainer** (`Testcontainers.PostgreSql`) is started in `BeforeTestRun` and torn down in `AfterTestRun`. The hook replaces the real `DbContextOptions` with one pointing at the container, then runs `MigrateAsync` before any test executes. Tests always run against a real, isolated PostgreSQL instance — no mocks, no shared dev database.
+
 ## Architecture
 
 Clean Architecture with four layers:

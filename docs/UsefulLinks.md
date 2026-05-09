@@ -10,6 +10,7 @@ A curated list of websites and resources used in or relevant to this project.
 - [Npgsql](https://www.npgsql.org/) — .NET data provider for PostgreSQL
 - [Reqnroll](https://reqnroll.net/) — BDD test automation framework for .NET (SpecFlow successor)
 - [Scalar](https://scalar.com/) — OpenAPI documentation and API client
+- [Testcontainers](https://dotnet.testcontainers.org/) — Library for spinning up real Docker containers in tests (used for PostgreSQL integration tests)
 - [TUnit](https://tunit.dev/) — Modern, async-first test framework for .NET
 - [Shouldly](https://docs.shouldly.org/) — Fluent assertion library for .NET
 
