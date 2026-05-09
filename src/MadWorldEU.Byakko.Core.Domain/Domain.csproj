@@ -1,5 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <PackageReference Include="JetBrains.Annotations" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\MadWorldEU.Byakko.Core.BuildingBlocks\BuildingBlocks.csproj" />
   </ItemGroup>
 </Project>

@@ -5,7 +5,11 @@ public sealed class Name : ValueObject
     public const int MaxLength = 256;
     public string Value { get; private init; } = string.Empty;
     
-    private Name() { } // for EF Core   
+    /// <summary>
+    /// Required for EF Core
+    /// </summary>
+    [UsedImplicitly]
+    private Name() { }
 
     private Name(string value)
     {

@@ -4,7 +4,11 @@ public sealed class Asset : Entity<Guid>
 {
     public Name Name { get; private set; } = null!;
     
-    private Asset() {} // for EF Core   
+    /// <summary>
+    /// Required for EF Core
+    /// </summary>
+    [UsedImplicitly]
+    private Asset() {}
 
     private Asset(Guid id, Name name)                                                                                                                           
     {           

@@ -13,6 +13,22 @@ These rules define the coding standards for this project. All code must follow t
 - Classes must be `sealed` by default unless they are explicitly designed for inheritance.
 - Only omit `sealed` when a class is a base class intended to be extended.
 
+## EF Core Constructor
+
+Every entity and value object must have a private parameterless constructor for EF Core. It must follow this exact pattern:
+
+```csharp
+/// <summary>
+/// Required for EF Core
+/// </summary>
+[UsedImplicitly]
+private MyClass() {}
+```
+
+- The `[UsedImplicitly]` attribute suppresses IDE warnings about unused constructors.
+- The summary explains why the constructor exists.
+- Never remove or make this constructor internal/public — EF Core requires it via reflection.
+
 ## Error Definitions
 
 - All `Error` instances must be defined as `static readonly` fields on a dedicated static class named `{Domain}Errors` (e.g. `AssetErrors`).
