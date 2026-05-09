@@ -19,6 +19,7 @@ A curated list of websites and resources used in or relevant to this project.
 - [Docker](https://www.docker.com/) — Container platform for building and running applications
 - [Helm](https://helm.sh/) — Package manager for Kubernetes
 - [OpenTelemetry](https://opentelemetry.io/) — Observability framework for traces, metrics, and logs
+- [Keycloak](https://www.keycloak.org/) — Open source identity and access management (authentication, SSO, OAuth2/OIDC)
 - [Kubernetes](https://kubernetes.io/) — Container orchestration platform
 - [PostgreSQL](https://www.postgresql.org/) — Open source relational database
 
@@ -26,6 +27,10 @@ A curated list of websites and resources used in or relevant to this project.
 
 - [ASP.NET Core repo structure (davidfowl)](https://gist.github.com/davidfowl/ed7564297c61fe9ab814) — Recommended C# repository layout for ASP.NET Core projects
 - [C4 Model](https://c4model.com/) — A model for visualising software architecture
+
+## Security
+
+- [OWASP Top 10](https://owasp.org/www-project-top-ten/) — Standard reference for the most critical web application security risks
 
 ## Tooling
 
