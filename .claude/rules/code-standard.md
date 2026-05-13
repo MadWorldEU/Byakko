@@ -34,7 +34,7 @@ global using MadWorldEU.Byakko.Storages;
 
 ## EF Core Constructor
 
-Every entity and value object must have a private parameterless constructor for EF Core. It must follow this exact pattern:
+Every entity must have a private parameterless constructor for EF Core. It must follow this exact pattern:
 
 ```csharp
 /// <summary>

@@ -12,5 +12,10 @@ public class AssetEntityTypeConfiguration : IEntityTypeConfiguration<Asset>
             .IsRequired()
             .HasMaxLength(Name.MaxLength)
             .HasConversion<string>(n => n.Value, s => Name.Create(s).Value);
+
+        builder.Property(a => a.ContentType)
+            .IsRequired()
+            .HasMaxLength(ContentType.MaxLength)
+            .HasConversion<string>(ct => ct.Value, s => ContentType.Create(s).Value);
     }
 }
