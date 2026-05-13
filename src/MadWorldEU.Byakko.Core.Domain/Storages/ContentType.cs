@@ -1,3 +1,5 @@
+using System.Net.Http.Headers;
+
 namespace MadWorldEU.Byakko.Storages;
 
 public sealed class ContentType : ValueObject
@@ -14,6 +16,7 @@ public sealed class ContentType : ValueObject
     {
         if (string.IsNullOrWhiteSpace(contentType)) return ContentTypeErrors.Empty;
         if (contentType.Length > MaxLength) return ContentTypeErrors.TooLong;
+        if (!MediaTypeHeaderValue.TryParse(contentType, out _)) return ContentTypeErrors.Invalid;   
         return new ContentType(contentType);
     }
 

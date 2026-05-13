@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using Microsoft.AspNetCore.StaticFiles;
 using MadWorldEU.Byakko.Development;
 
 namespace MadWorldEU.Byakko.Endpoints.Development;
@@ -55,5 +56,15 @@ public static class DebugEndpoints
                 return Results.Ok();
             })
             .WithName("TriggerGarbageCollection");
+        
+        debugEndpoints.MapGet("/mediatypes", () =>
+            {
+                var provider = new FileExtensionContentTypeProvider();
+                return new GetMediaTypesResponse
+                {
+                    MediaTypes = provider.Mappings.Values.Distinct().Order()
+                };
+            })
+            .WithName("GetMediaTypes");
     }
 }
