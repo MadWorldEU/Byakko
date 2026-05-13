@@ -8,7 +8,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddHealthChecks();
 builder.Services.AddBuildingBlocks();
 builder.Services.AddApplication();
-builder.Services.AddObjectStorage(builder.Configuration);
+builder.Services.AddObjectStorage();
 builder.Services.AddPostgresql(builder.Configuration);
 
 builder.Services.AddOpenTelemetry()
