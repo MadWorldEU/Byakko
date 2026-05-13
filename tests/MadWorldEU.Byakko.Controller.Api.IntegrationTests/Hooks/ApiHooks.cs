@@ -1,3 +1,4 @@
+using Amazon.S3;
 using Microsoft.EntityFrameworkCore;
 
 namespace MadWorldEU.Byakko.Hooks;
@@ -17,26 +18,33 @@ public sealed class ApiHooks(ScenarioContext scenarioContext)
         await _postgres.StartAsync();
         
         _minio = new MinioBuilder("minio/minio:RELEASE.2023-01-31T02-24-19Z").Build();
-        await _minio.StartAsync();
+        await _minio.StartAsync().WaitAsync(CancellationToken.None);
         
         _factory = new WebApplicationFactory<Program>()
             .WithWebHostBuilder(host =>
             {
-                host.ConfigureAppConfiguration((_, config) =>
-                {
-                    config.AddInMemoryCollection(new Dictionary<string, string?>
-                    {
-                        ["ConnectionStrings:minio"] = _minio.GetConnectionString()
-                    });
-                });
                 host.ConfigureServices(services =>
                 {
-                    var descriptor = services.SingleOrDefault(s => s.ServiceType == typeof(DbContextOptions<ByakkoContext>));
-                    if (descriptor is not null)
-                        services.Remove(descriptor);
+                    var dbDescriptor = services.SingleOrDefault(s => s.ServiceType == typeof(DbContextOptions<ByakkoContext>));
+                    if (dbDescriptor is not null)
+                        services.Remove(dbDescriptor);
 
                     services.AddDbContext<ByakkoContext>(options =>
                         options.UseNpgsql(_postgres.GetConnectionString()));
+
+                    var s3Descriptor = services.SingleOrDefault(s => s.ServiceType == typeof(IAmazonS3));
+                    if (s3Descriptor is not null)
+                        services.Remove(s3Descriptor);
+
+                    services.AddSingleton<IAmazonS3>(_ => new AmazonS3Client(
+                        _minio.GetAccessKey(),
+                        _minio.GetSecretKey(),
+                        new AmazonS3Config
+                        {
+                            ServiceURL = _minio.GetConnectionString(),
+                            ForcePathStyle = true,
+                            AuthenticationRegion = "eu-west-1"
+                        }));
                 });
             });
 
