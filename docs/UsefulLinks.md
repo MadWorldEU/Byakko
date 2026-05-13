@@ -7,6 +7,7 @@ A curated list of websites and resources used in or relevant to this project.
 - [ASP.NET](https://dotnet.microsoft.com/en-us/apps/aspnet) — Microsoft's web framework for building modern web apps and APIs
 - [Aspire](https://aspire.dev/) — .NET Aspire documentation and resources
 - [Blazor](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor) — .NET web framework for building interactive UI with C#
+- [LibMan](https://learn.microsoft.com/en-us/aspnet/core/client-side/libman/?view=aspnetcore-10.0) — Lightweight client-side library acquisition tool for ASP.NET Core
 - [NodaTime](https://nodatime.org/) — Date and time library for .NET with explicit timezone handling
 - [Npgsql](https://www.npgsql.org/) — .NET data provider for PostgreSQL
 - [Reqnroll](https://reqnroll.net/) — BDD test automation framework for .NET (SpecFlow successor)
@@ -36,6 +37,7 @@ A curated list of websites and resources used in or relevant to this project.
 
 ## Tooling
 
+- [cdnjs](https://cdnjs.com/) — Free and open source CDN for JavaScript libraries
 - [CodeQL](https://codeql.github.com/) — Semantic code analysis engine for security scanning
 - [GitHub Actions](https://github.com/features/actions) — CI/CD automation platform
 - [JetBrains Rider](https://www.jetbrains.com/rider/) — Cross-platform .NET IDE

@@ -434,5 +434,8 @@ FodyWeavers.xsd
 # MacOS
 .DS_Store
 
-# Byakko
+# Byakko - Frontend
+**/wwwroot/lib/* 
+
+# Byakko - Testing
 *.feature.cs
