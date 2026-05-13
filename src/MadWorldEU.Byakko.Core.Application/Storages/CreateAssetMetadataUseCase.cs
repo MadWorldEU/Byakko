@@ -17,6 +17,6 @@ public sealed class CreateAssetMetadataUseCase(IClock clock, IGuidGenerator guid
         var saveResult = await repository.AddAsync(assetResult.Value);
         if (saveResult.IsFailure) return saveResult.Error;
 
-        return new CreateAssetResponse { Id = assetResult.Value.Id };
+        return new CreateAssetResponse { Id = assetResult.Value.Id.Value };
     }
 }

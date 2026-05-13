@@ -37,6 +37,7 @@ app.AddTestsEndpoints();
 if (app.Environment.IsDevelopment())
 {
     app.AddDebugEndpoints();   
+    app.UseDeveloperExceptionPage();
 }
 
 app.Run();

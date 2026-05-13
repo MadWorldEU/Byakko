@@ -8,6 +8,9 @@ internal class AssetEntityTypeConfiguration : IEntityTypeConfiguration<Asset>
     {
         builder.HasKey(a => a.Id);
 
+        builder.Property(a => a.Id)
+            .HasConversion<Guid>(id => id.Value, id => Id.Create(id).Value);
+        
         builder.Property(a => a.Name)
             .IsRequired()
             .HasMaxLength(Name.MaxLength)

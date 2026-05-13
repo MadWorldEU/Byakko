@@ -19,9 +19,11 @@ public static class AssetsEndpoints
 
         assetsEndpoints.MapPut("/{id}/content", async (string id, IFormFile file, UploadAssetContentUseCase useCase) =>
             {
-                await using var stream = file.OpenReadStream();
-                useCase.ExecuteAsync();
-                return new UploadAssetContentResponse();
+                await using var content = file.OpenReadStream();
+                var result = await useCase.ExecuteAsync(id, content);
+                return result.Match(
+                    onSuccess: Results.Ok,
+                    onFailure: error => Results.BadRequest(error.Description));
             })
             .WithName("UploadAssetContent")
             .DisableAntiforgery();

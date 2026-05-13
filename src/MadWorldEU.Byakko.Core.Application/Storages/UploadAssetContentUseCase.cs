@@ -2,11 +2,17 @@ namespace MadWorldEU.Byakko.Storages;
 
 public sealed class UploadAssetContentUseCase(IAssetRepository assetRepository, IContentStorage contentStorage)
 {
-    public IAssetRepository AssetRepository { get; } = assetRepository;
-    public IContentStorage ContentStorage { get; } = contentStorage;
-
-    public void ExecuteAsync()
+    public async Task<Result<UploadAssetContentResponse>> ExecuteAsync(string assetId, Stream content)
     {
+        var id = Id.Create(assetId);
+        if (id.IsFailure) return id.Error;
+
+        var asset = await assetRepository.FindAsync(id.Value);
+        if (asset.IsFailure) return asset.Error;
+
+        var result = await contentStorage.UploadAsync(asset.Value.GetPath(), content);
+        if (result.IsFailure) return result.Error;
         
+        return new UploadAssetContentResponse();
     }
 }

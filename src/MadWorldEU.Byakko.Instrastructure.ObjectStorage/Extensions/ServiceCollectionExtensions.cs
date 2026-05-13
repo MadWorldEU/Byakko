@@ -10,6 +10,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IAmazonS3>(AmazonS3ClientFactory.Create(configuration));
 
         services.AddScoped<IContentStorage, ContentStorage>();
+        services.AddHostedService<BucketInitializer>();
 
         return services;
     }

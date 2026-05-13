@@ -25,7 +25,10 @@ internal static class AmazonS3ClientFactory
 
     private static ObjectStorageSettings CreateMinioSettings(IConfiguration configuration)
     {
-        var parts = configuration.GetConnectionString("minio")
+        var connectionString = configuration.GetConnectionString("minio")
+            ?? throw new InvalidOperationException("ConnectionStrings:minio is not configured.");
+
+        var parts = connectionString
             .Split(';', StringSplitOptions.RemoveEmptyEntries)
             .Select(p => p.Split('=', 2))
             .ToDictionary(p => p[0], p => p[1]);
