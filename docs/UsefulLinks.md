@@ -24,6 +24,7 @@ A curated list of websites and resources used in or relevant to this project.
 - [Keycloak](https://www.keycloak.org/) — Open source identity and access management (authentication, SSO, OAuth2/OIDC)
 - [Kubernetes](https://kubernetes.io/) — Container orchestration platform
 - [MinIO](https://min.io/) — High-performance, S3-compatible object storage
+- [OVHcloud](https://www.ovhcloud.com/) — Cloud hosting provider (servers, managed Kubernetes, object storage)
 - [PostgreSQL](https://www.postgresql.org/) — Open source relational database
 
 ## Architecture
