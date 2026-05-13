@@ -3,7 +3,7 @@ namespace MadWorldEU.Byakko.Extensions;
 /// <summary>Registers PostgreSQL infrastructure services with the dependency injection container.</summary>
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddPostgresqlInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddPostgresql(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<ByakkoContext>(options => 
             options.UseNpgsql(configuration.GetConnectionString("byakko-db"), 

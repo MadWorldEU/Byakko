@@ -17,9 +17,10 @@ public static class AssetsEndpoints
             })
             .WithName("CreateAssetMetadata");
 
-        assetsEndpoints.MapPut("/{id}/content", async (string id, IFormFile file) =>
+        assetsEndpoints.MapPut("/{id}/content", async (string id, IFormFile file, UploadAssetContentUseCase useCase) =>
             {
                 await using var stream = file.OpenReadStream();
+                useCase.ExecuteAsync();
                 return new UploadAssetContentResponse();
             })
             .WithName("UploadAssetContent")

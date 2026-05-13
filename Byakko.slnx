@@ -60,6 +60,7 @@
   </Folder>
   <Folder Name="/src/infrastructure/">
     <Project Path="src\MadWorldEU.Byakko.Infrastructure.Postgresql\Postgresql.csproj" />
+    <Project Path="src\MadWorldEU.Byakko.Instrastructure.ObjectStorage\ObjectStorage.csproj" />
   </Folder>
   <Folder Name="/tests/" />
   <Folder Name="/tests/controller/">

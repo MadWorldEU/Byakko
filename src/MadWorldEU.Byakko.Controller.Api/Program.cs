@@ -8,7 +8,8 @@ builder.Services.AddOpenApi();
 builder.Services.AddHealthChecks();
 builder.Services.AddBuildingBlocks();
 builder.Services.AddApplication();
-builder.Services.AddPostgresqlInfrastructure(builder.Configuration);
+builder.Services.AddObjectStorage(builder.Configuration);
+builder.Services.AddPostgresql(builder.Configuration);
 
 builder.Services.AddOpenTelemetry()
     .WithTracing(tracing => tracing
