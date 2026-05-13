@@ -31,7 +31,7 @@ dotnet test tests/MadWorldEU.Byakko.Controller.Api.IntegrationTests/ -- --covera
 
 **API integration tests** use `WebApplicationFactory<Program>` (in-process test server). The hook in `Hooks/ApiHooks.cs` spins up the factory once per test run and injects an `HttpClient` into each scenario via `ScenarioContext`. BDD scenarios live in `Features/` as `.feature` files; step definitions live in `StepDefinitions/`.
 
-A **PostgreSQL Testcontainer** (`Testcontainers.PostgreSql`) is started in `BeforeTestRun` and torn down in `AfterTestRun`. The hook replaces the real `DbContextOptions` with one pointing at the container, then runs `MigrateAsync` before any test executes. Tests always run against a real, isolated PostgreSQL instance — no mocks, no shared dev database.
+A **PostgreSQL Testcontainer** (`Testcontainers.PostgreSql`) and a **MinIO Testcontainer** (`Testcontainers.Minio`) are started in `BeforeTestRun` and torn down in `AfterTestRun`. The hook injects both connection strings via in-memory configuration and replaces the real `IAmazonS3` registration with one pointing at the container. `MigrateAsync` runs before any test executes. Tests always run against real, isolated infrastructure — no mocks, no shared dev services.
 
 ## Architecture
 
@@ -47,6 +47,7 @@ Clean Architecture with four layers:
 | Domain | `MadWorldEU.Byakko.Core.Domain` | Domain models / entities |
 | BuildingBlocks | `MadWorldEU.Byakko.Core.BuildingBlocks` | DDD base types (see below) |
 | Infrastructure | `MadWorldEU.Byakko.Infrastructure.Postgresql` | PostgreSQL data access |
+| Infrastructure | `MadWorldEU.Byakko.Instrastructure.ObjectStorage` | S3-compatible object storage (MinIO) |
 | Host | `MadWorldEU.Byakko.Aspire` | .NET Aspire AppHost (orchestration) |
 
 Dependencies flow inward: Controller → Application → Domain ← Infrastructure. Contracts are shared between Controllers and Application. BuildingBlocks is referenced by Domain and Infrastructure.
@@ -100,6 +101,7 @@ public Result<Asset> GetById(Guid id) => asset; // implicitly Result<Asset>.Succ
 ## Key Infrastructure
 
 - **Database:** PostgreSQL via `ByakkoContext` (EF Core + Npgsql). Connection string key: `byakko-db`. Configured in `appsettings.json`, overridden by Aspire at runtime. Migrations live in `Infrastructure.Postgresql/Migrations/`. See `docs/Database.md` for migration commands.
+- **Object storage:** S3-compatible storage via `IAmazonS3` (AWSSDK). Registered by `AddObjectStorage()` in `Instrastructure.ObjectStorage`. Connection string key: `minio` (format: `Endpoint=...;AccessKey=...;SecretKey=...`). Storage mode and bucket name are configured under `Storage:Mode` and `Storage:BucketName` in `appsettings.json`. A `BucketInitializer` hosted service ensures the bucket exists on startup.
 - **Migrations:** Automatic migration on startup is toggled via `Database:AutoMigrate` in `appsettings.json` (default `false`; `true` in `appsettings.Development.json`). When enabled, a `MigrationService` hosted service runs `MigrateAsync` before the app starts accepting requests. Manual commands are documented in `docs/Database.md`.
 - **Aspire orchestration:** Postgres is provisioned with a data volume and pgAdmin. The API waits for the database; Admin and Portal wait for the API. Credentials are passed as Aspire parameters (`username`, `password`).
 - **Health check:** `GET /health` on the API; `GET /health.txt` (static file) on Admin and Portal. Aspire monitors all three.
