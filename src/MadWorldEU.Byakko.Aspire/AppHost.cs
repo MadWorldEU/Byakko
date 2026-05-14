@@ -22,7 +22,6 @@ var useDockerFile = builder.Configuration.GetValue<bool>("RunMode:UseDockerFile"
 var resourceFactory = ResourceFactoryBuilder.Create(builder, useDockerFile);
 
 var api = resourceFactory.CreateApiBuilder(byakkoDb, minio);
-
 resourceFactory.CreateAdminBuilder(api);
 resourceFactory.CreatePortalBuilder(api);
 
