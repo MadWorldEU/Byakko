@@ -1,0 +1,34 @@
+# Docker Pipeline
+
+The `Build & Push Docker Main` workflow builds and pushes images for the API, Portal, and Admin projects to the GitHub Container Registry (GHCR) on every push to `main`.
+
+## Required Repository Secrets
+
+Go to **Settings → Secrets and variables → Actions → New repository secret** and add:
+
+| Secret | Value |
+|---|---|
+| `GHCR_USERNAME` | Your GitHub username |
+| `GHCR_TOKEN` | A Personal Access Token (see below) |
+
+## Generating a GHCR_TOKEN
+
+1. Go to **GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)**
+2. Click **Generate new token (classic)**
+3. Give it a descriptive name (e.g. `Byakko GHCR Push`)
+4. Set an expiration date
+5. Select the following scope:
+   - `write:packages` — uploads packages to GitHub Package Registry (includes `read:packages`)
+6. Click **Generate token**
+7. Copy the token immediately — it won't be shown again
+8. Paste it as the value of the `GHCR_TOKEN` secret in the repository settings
+
+## Published Images
+
+After a successful run the following images are available:
+
+| Image | URL |
+|---|---|
+| API | `ghcr.io/madworldeu/byakko-api:latest` |
+| Portal | `ghcr.io/madworldeu/byakko-portal:latest` |
+| Admin | `ghcr.io/madworldeu/byakko-admin:latest` |

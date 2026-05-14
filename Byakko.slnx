@@ -4,6 +4,7 @@
   </Folder>
   <Folder Name="/docs/">
     <File Path="docs\Database.md" />
+    <File Path="docs\DockerPipeline.md" />
     <File Path="docs\InstallGuide.md" />
     <File Path="docs\README.md" />
     <File Path="docs\RiderSettings.md" />
@@ -20,6 +21,7 @@
   <Folder Name="/github/workflows/">
     <File Path=".github\workflows\build-and-test.yml" />
     <File Path=".github\workflows\codeql.yml" />
+    <File Path=".github\workflows\docker-build-push.yml" />
   </Folder>
   <Folder Name="/packages/">
     <File Path="packages\README.md" />
