@@ -3,6 +3,7 @@
     <File Path=".claude\settings.json" />
   </Folder>
   <Folder Name="/docs/">
+    <File Path="docs\AuthenticationServer.md" />
     <File Path="docs\Database.md" />
     <File Path="docs\DockerPipeline.md" />
     <File Path="docs\InstallGuide.md" />
