@@ -23,12 +23,25 @@ Go to **Settings → Secrets and variables → Actions → New repository secret
 7. Copy the token immediately — it won't be shown again
 8. Paste it as the value of the `GHCR_TOKEN` secret in the repository settings
 
+## First-time: Linking Images to the Repository
+
+After the pipeline runs for the first time, each image is created as a private package under the `MadWorldEU` organisation. Do the following once per image to connect it to this repository:
+
+1. Go to **github.com/orgs/MadWorldEU/packages** (or your profile → Packages if using a personal account)
+2. Click the package (e.g. `byakko-api`)
+3. Click **Package settings** (bottom-right)
+4. Under **Connect repository**, search for and select `MadWorldEU/Byakko`
+5. Optionally change **Package visibility** to `Public` if the image should be publicly pullable
+6. Repeat for `byakko-portal` and `byakko-admin`
+
+Once linked, the packages appear on the repository's main page under **Packages**.
+
 ## Published Images
 
 After a successful run the following images are available:
 
-| Image | URL |
-|---|---|
-| API | `ghcr.io/madworldeu/byakko-api:latest` |
-| Portal | `ghcr.io/madworldeu/byakko-portal:latest` |
-| Admin | `ghcr.io/madworldeu/byakko-admin:latest` |
+| Image  | URL                                        |
+|--------|--------------------------------------------|
+| API    | `ghcr.io/madworldeu/byakko-api:latest`     |
+| Portal | `ghcr.io/madworldeu/byakko-portal:latest`  |
+| Admin  | `ghcr.io/madworldeu/byakko-admin:latest`   |
