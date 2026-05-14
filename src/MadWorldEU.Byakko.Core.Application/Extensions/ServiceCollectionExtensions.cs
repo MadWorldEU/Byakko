@@ -7,6 +7,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<CreateAssetMetadataUseCase>();
         services.AddScoped<UploadAssetContentUseCase>();
+        services.AddScoped<DownloadAssetContentUseCase>();
 
         return services;
     }

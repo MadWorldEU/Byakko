@@ -6,9 +6,9 @@ using MadWorldEU.Byakko.Development;
 
 namespace MadWorldEU.Byakko.Endpoints.Development;
 
-public static class DebugEndpoints
+internal static class DebugEndpoints
 {
-    public static void AddDebugEndpoints(this WebApplication app)
+    internal static void AddDebugEndpoints(this WebApplication app)
     {
         var debugEndpoints = app.MapGroup("/debug")
             .WithTags("Debug");

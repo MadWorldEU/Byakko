@@ -11,8 +11,8 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IAssetRepository, AssetRepository>();
 
-        var autoMigrate = configuration.GetValue<bool>(MigrationOptions.SectionName);
-        if (autoMigrate)
+        var migrationOptions = configuration.GetValue<MigrationOptions>(MigrationOptions.SectionName)!;
+        if (migrationOptions.Enabled)
             services.AddHostedService<MigrationService>();
 
         return services;

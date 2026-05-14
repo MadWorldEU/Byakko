@@ -2,8 +2,8 @@ namespace MadWorldEU.Byakko.Connections;
 
 internal sealed class ObjectStorageSettings
 {
-    public required string Endpoint { get; init; }
-    public required string AccessKey { get; init; }
-    public required string SecretKey { get; init; }
-    public required string Region { get; init; }
+    internal required string Endpoint { get; init; }
+    internal required string AccessKey { get; init; }
+    internal required string SecretKey { get; init; }
+    internal required string Region { get; init; }
 }

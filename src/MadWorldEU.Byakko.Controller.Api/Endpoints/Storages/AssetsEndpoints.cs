@@ -1,8 +1,8 @@
 namespace MadWorldEU.Byakko.Endpoints.Storages;
 
-public static class AssetsEndpoints
+internal static class AssetsEndpoints
 {
-    public static void AddAssetsEndpoints(this WebApplication app)
+    internal static void AddAssetsEndpoints(this WebApplication app)
     {
         var assetsEndpoints = app.MapGroup("/assets")
             .WithTags("Assets");
@@ -28,10 +28,13 @@ public static class AssetsEndpoints
             .WithName("UploadAssetContent")
             .DisableAntiforgery();
         
-        assetsEndpoints.MapGet("/{id}/content", (string id) =>
+        assetsEndpoints.MapGet("/{id}/content", async (string id, DownloadAssetContentUseCase useCase) =>
             {
-                var content = "this is a test file"u8.ToArray();
-                return Results.File(content, "text/plain", $"{id}.txt");
+                var result = await useCase.ExecuteAsync(id);
+                return result.Match(
+                    onSuccess: response => Results.File(response.Content, response.ContentType, response.FileName),
+                    onFailure: error => Results.BadRequest(error.Description)
+                );
             })
             .WithName("DownloadAssetContent");
     }

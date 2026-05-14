@@ -1,8 +1,8 @@
 namespace MadWorldEU.Byakko.Endpoints.Development;
 
-public static class TestsEndpoints
+internal static class TestsEndpoints
 {
-    public static void AddTestsEndpoints(this WebApplication app)
+    internal static void AddTestsEndpoints(this WebApplication app)
     {
         var testEndpoints = app.MapGroup("/tests")
             .WithTags("Tests");
