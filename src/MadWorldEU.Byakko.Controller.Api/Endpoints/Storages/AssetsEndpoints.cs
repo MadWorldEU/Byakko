@@ -17,6 +17,16 @@ internal static class AssetsEndpoints
             })
             .WithName("CreateAssetMetadata");
 
+        assetsEndpoints.MapGet("/{id}", async (string id, GetAssetMetadataUseCase useCase) =>
+            {
+                var result = await useCase.ExecuteAsync(id);
+                return result.Match(
+                    onSuccess: Results.Ok,
+                    onFailure: error => Results.BadRequest(error.Description)
+                );
+            })
+            .WithName("GetAssetMetadata");
+
         assetsEndpoints.MapPut("/{id}/content", async (string id, IFormFile file, UploadAssetContentUseCase useCase) =>
             {
                 await using var content = file.OpenReadStream();

@@ -113,10 +113,23 @@ Application and domain methods should return `Result` or `Result<T>` instead of 
 public Result<Asset> GetById(Guid id) => asset; // implicitly Result<Asset>.Success(asset)
 ```
 
+## Assets API
+
+The Assets feature (`/assets`) is the primary domain feature. Endpoints live in `Controller.Api/Endpoints/Storages/AssetsEndpoints.cs`.
+
+| Method | Route | Use case | Description |
+|---|---|---|---|
+| `POST` | `/assets` | `CreateAssetMetadataUseCase` | Creates a new asset record (name + content type) |
+| `GET` | `/assets/{id}` | `GetAssetMetadataUseCase` | Returns asset metadata (id, name, content type, created at) |
+| `PUT` | `/assets/{id}/content` | `UploadAssetContentUseCase` | Uploads the binary content for an asset |
+| `GET` | `/assets/{id}/content` | `DownloadAssetContentUseCase` | Downloads the binary content of an asset |
+
+The upload/download use cases delegate to `IContentStorage`; the metadata use cases delegate to `IAssetRepository`.
+
 ## Key Infrastructure
 
 - **Database:** PostgreSQL via `ByakkoContext` (EF Core + Npgsql). Connection string key: `byakko-db`. Configured in `appsettings.json`, overridden by Aspire at runtime. Migrations live in `Infrastructure.Postgresql/Migrations/`. See `docs/Database.md` for migration commands.
-- **Object storage:** S3-compatible storage via `IAmazonS3` (AWSSDK). Registered by `AddObjectStorage()` in `Infrastructure.ObjectStorage`. Connection string key: `minio` (format: `Endpoint=...;AccessKey=...;SecretKey=...`). Storage mode and bucket name are configured under `Storage:Mode` and `Storage:BucketName` in `appsettings.json`. A `BucketInitializer` hosted service ensures the bucket exists on startup.
+- **Object storage:** S3-compatible storage via `IAmazonS3` (AWSSDK). Registered by `AddObjectStorage()` in `Infrastructure.ObjectStorage`. Connection string key: `minio` (format: `Endpoint=...;AccessKey=...;SecretKey=...`). Storage mode and bucket name are configured under `Storage:Mode` and `Storage:BucketName` in `appsettings.json`. A `BucketInitializer` hosted service ensures the bucket exists on startup. The domain abstraction is `IContentStorage` (in `Core.Domain`); it uses `AssetPath` (bucket + key) to address objects and exposes `UploadAsync` and `DownloadAsync`.
 - **Migrations:** Automatic migration on startup is toggled via `Database:AutoMigrate` in `appsettings.json` (default `false`; `true` in `appsettings.Development.json`). When enabled, a `MigrationService` hosted service runs `MigrateAsync` before the app starts accepting requests. Manual commands are documented in `docs/Database.md`.
 - **Aspire orchestration:** Postgres is provisioned with a data volume and pgAdmin. The API waits for the database; Admin and Portal wait for the API. Credentials are passed as Aspire parameters (`username`, `password`).
 - **Health check:** `GET /health` on the API; `GET /health.txt` (static file) on Admin and Portal. Aspire monitors all three.
