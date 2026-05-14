@@ -27,6 +27,16 @@ global using MadWorldEU.Byakko.Storages;
 - After the root, the namespace must reflect the folder structure of the file (e.g. a file in `Storages/` uses `MadWorldEU.Byakko.Storages`).
 - Never use the project name as part of the namespace — only the folder path after the project root.
 
+## Access Modifiers
+
+Use the most restrictive access modifier possible. Prefer in this order:
+
+1. `private` — default for members not used outside their type
+2. `internal` — for types and members used only within the same project
+3. `public` — only when the type or member forms part of a public API or is required by a framework
+
+Apply this to classes, methods, properties, and fields alike. Never widen access just for convenience — if something does not need to be public, it must not be.
+
 ## Classes
 
 - Classes must be `sealed` by default unless they are explicitly designed for inheritance.

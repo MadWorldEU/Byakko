@@ -28,6 +28,7 @@
   </Folder>
   <Folder Name="/claude/rules/">
     <File Path=".claude\rules\code-standard.md" />
+    <File Path=".claude\rules\testing.md" />
   </Folder>
   <Folder Name="/samples/">
     <File Path="samples\README.md" />
