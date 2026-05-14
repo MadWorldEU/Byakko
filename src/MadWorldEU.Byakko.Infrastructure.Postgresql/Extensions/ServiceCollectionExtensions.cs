@@ -11,8 +11,9 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IAssetRepository, AssetRepository>();
 
-        var migrationOptions = configuration.GetValue<MigrationOptions>(MigrationOptions.SectionName)!;
-        if (migrationOptions.Enabled)
+        var migrationOptions = configuration.GetSection(MigrationOptions.SectionName).Get<MigrationOptions>()
+            ?? throw new InvalidOperationException($"Missing configuration section '{MigrationOptions.SectionName}'.");
+        if (migrationOptions.AutoMigrate)
             services.AddHostedService<MigrationService>();
 
         return services;

@@ -12,6 +12,7 @@ dotnet watch --project src/MadWorldEU.Byakko.Controller.Api/Api.csproj
 
 The API runs on `http://localhost:5062` (HTTP) or `https://localhost:7286` (HTTPS).
 OpenAPI spec is available at `/openapi/v1.json` in the Development environment.
+Scalar API reference UI is available at `/scalar/v1` in the Development environment.
 
 ## Docker
 
@@ -121,6 +122,7 @@ public Result<Asset> GetById(Guid id) => asset; // implicitly Result<Asset>.Succ
 - **Health check:** `GET /health` on the API; `GET /health.txt` (static file) on Admin and Portal. Aspire monitors all three.
 - **Observability:** OpenTelemetry tracing, metrics, and logging exported via OTLP. Endpoint configured via `OTEL_EXPORTER_OTLP_ENDPOINT` in `appsettings.json` (default `http://localhost:4040`); Aspire overrides this automatically with the dashboard endpoint.
 - **Debug endpoints:** `GET /debug/info`, `GET /debug/environment/variables`, `GET /debug/memory`, `POST /debug/memory/gc` — only registered in the Development environment.
+- **Test endpoints:** `GET /tests/ping` — always registered; returns `"pong"`, used to verify the API is reachable.
 
 ## Project Conventions
 
@@ -136,3 +138,4 @@ public Result<Asset> GetById(Guid id) => asset; // implicitly Result<Asset>.Succ
 - **NodaTime:** used for all date/time values. Use `Instant` for UTC timestamps (e.g. `CreatedAt`). Inject `IClock` into use cases instead of calling `SystemClock.Instance` directly
 - **JetBrains annotations:** `JetBrains.Annotations` is used for IDE hints (e.g. `[UsedImplicitly]`)
 - **TUnit:** test attributes (`[Test]`, etc.) are available without explicit usings via source generator
+- **Endpoint classes:** use `internal static` with an `internal static` extension method on `WebApplication` (e.g. `AddAssetsEndpoints`). Grouped under `Endpoints/<Feature>/` within the API project.

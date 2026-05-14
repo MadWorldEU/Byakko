@@ -5,5 +5,5 @@ internal sealed class MigrationOptions
 {
     internal const string SectionName = "Database";
 
-    internal bool Enabled { get; init; }
+    internal bool AutoMigrate { get; init; }
 }
