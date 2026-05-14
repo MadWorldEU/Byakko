@@ -1,6 +1,6 @@
 namespace MadWorldEU.Byakko.Factories;
 
-public class DockerResourceFactory(IDistributedApplicationBuilder builder) : IResourceFactory
+public sealed class DockerResourceFactory(IDistributedApplicationBuilder builder) : IResourceFactory
 {
     public IResourceBuilder<IResource> CreateApiBuilder(IResourceBuilder<PostgresDatabaseResource> byakkoDb, IResourceBuilder<MinioContainerResource> minio)
     {
