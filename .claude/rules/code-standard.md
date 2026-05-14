@@ -1,4 +1,4 @@
-# Code Standard
+A# Code Standard
 
 These rules define the coding standards for this project. All code must follow these conventions to ensure consistency, maintainability, and clarity across the codebase.
 
@@ -73,5 +73,11 @@ private MyClass() {}
 
 ## Documentation
 
-- All public classes and methods must have a meaningful XML `<summary>` doc comment.
+- All `public` and `internal` classes and methods must have a meaningful XML `<summary>` doc comment.
 - Summaries must describe intent or behavior, not just restate the name.
+
+## Configuration Binding
+
+- Always use `GetSection(key).Get<T>() ?? throw new InvalidOperationException(...)` for required configuration sections. Never use `GetValue<T>` for complex objects — it only works for scalar values.
+- The property names on the options class must exactly match the keys in `appsettings.json` for binding to work.
+- Required sections that are absent should throw at startup, not silently default.
