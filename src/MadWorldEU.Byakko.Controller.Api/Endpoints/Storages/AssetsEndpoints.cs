@@ -27,5 +27,12 @@ public static class AssetsEndpoints
             })
             .WithName("UploadAssetContent")
             .DisableAntiforgery();
+        
+        assetsEndpoints.MapGet("/{id}/content", (string id) =>
+            {
+                var content = "this is a test file"u8.ToArray();
+                return Results.File(content, "text/plain", $"{id}.txt");
+            })
+            .WithName("DownloadAssetContent");
     }
 }
