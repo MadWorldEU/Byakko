@@ -41,7 +41,7 @@ jobs:
                   else
                     echo "image_tag=latest" >> $GITHUB_OUTPUT
                   fi
-                  echo "Using image tag: $image_tag"
+                  echo "Using image tag: ${{ steps.tag.outputs.image_tag }}"
 
             - name: Build & push API
               run: docker buildx build --platform linux/amd64,linux/arm64 -f src/MadWorldEU.Byakko.Controller.Api/Dockerfile --tag ghcr.io/madworldeu/byakko-api:${{ steps.tag.outputs.image_tag }} --push .
