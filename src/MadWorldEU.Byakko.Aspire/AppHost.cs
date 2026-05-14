@@ -1,3 +1,6 @@
+using MadWorldEU.Byakko.Factories;
+using Microsoft.Extensions.Configuration;
+
 var builder = DistributedApplication.CreateBuilder(args);
 
 var dbUsername = builder.AddParameter("db-username", secret: true);
@@ -15,19 +18,12 @@ var minioPassword = builder.AddParameter("minio-password", secret: true);
 var minio = builder.AddMinioContainer("minio", minioUsername, minioPassword)
     .WithDataVolume();
 
-var api = builder.AddProject<Api>(nameof(Api))
-    .WaitFor(byakkoDb)
-    .WaitFor(minio)
-    .WithReference(byakkoDb)
-    .WithReference(minio)
-    .WithHttpHealthCheck("/health");
+var useDockerFile = builder.Configuration.GetValue<bool>("RunMode:UseDockerFile");
+var resourceFactory = ResourceFactoryBuilder.Create(builder, useDockerFile);
 
-builder.AddProject<Admin>(nameof(Admin))
-    .WaitFor(api)
-    .WithHttpHealthCheck("/health.txt");
+var api = resourceFactory.CreateApiBuilder(byakkoDb, minio);
 
-builder.AddProject<Portal>(nameof(Portal))
-    .WaitFor(api)
-    .WithHttpHealthCheck("/health.txt");
+resourceFactory.CreateAdminBuilder(api);
+resourceFactory.CreatePortalBuilder(api);
 
 builder.Build().Run();
