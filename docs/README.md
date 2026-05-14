@@ -11,4 +11,4 @@ This folder contains the project documentation for Byakko, including guides, arc
 | [Install Guide](InstallGuide.md)       | How to set up and run Byakko locally for development                        |
 | [Rider Settings](RiderSettings.md)     | JetBrains Rider configuration for this project                              |
 | [Useful Links](UsefulLinks.md)         | Curated list of resources and references used in this project               |
-| [Versions](Versions.md)               | Versioning strategy using Git tags and Semantic Versioning                  |
+| [Versions](Versions.md)                | Versioning strategy using Git tags and Semantic Versioning                  |
