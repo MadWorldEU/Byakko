@@ -59,8 +59,8 @@
     <Project Path="src\MadWorldEU.Byakko.Core.Domain\Domain.csproj" />
   </Folder>
   <Folder Name="/src/infrastructure/">
+    <Project Path="src/MadWorldEU.Byakko.Infrastructure.ObjectStorage/ObjectStorage.csproj" />
     <Project Path="src\MadWorldEU.Byakko.Infrastructure.Postgresql\Postgresql.csproj" />
-    <Project Path="src\MadWorldEU.Byakko.Instrastructure.ObjectStorage\ObjectStorage.csproj" />
   </Folder>
   <Folder Name="/tests/" />
   <Folder Name="/tests/controller/">
