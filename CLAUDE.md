@@ -13,6 +13,20 @@ dotnet watch --project src/MadWorldEU.Byakko.Controller.Api/Api.csproj
 The API runs on `http://localhost:5062` (HTTP) or `https://localhost:7286` (HTTPS).
 OpenAPI spec is available at `/openapi/v1.json` in the Development environment.
 
+## Docker
+
+Each controller project has a `Dockerfile`. All three must be built from the **repository root** using `-f` to point at the correct file:
+
+```bash
+docker build -f src/MadWorldEU.Byakko.Controller.Api/Dockerfile .
+docker build -f src/MadWorldEU.Byakko.Controller.Portal/Dockerfile .
+docker build -f src/MadWorldEU.Byakko.Controller.Admin/Dockerfile .
+```
+
+The API uses the `mcr.microsoft.com/dotnet/aspnet:10.0` runtime image. Portal and Admin are Blazor WebAssembly apps served by `nginx:alpine`; their nginx config lives in `DockerConfigs/nginx.conf` inside each project folder.
+
+The CI pipeline (`.github/workflows/docker-build-push.yml`) builds and pushes multi-arch images (`linux/amd64`, `linux/arm64`) to GHCR on every push to `main`. See `docs/DockerPipeline.md` for setup instructions.
+
 ## Testing
 
 Three test projects exist:
@@ -47,7 +61,7 @@ Clean Architecture with four layers:
 | Domain | `MadWorldEU.Byakko.Core.Domain` | Domain models / entities |
 | BuildingBlocks | `MadWorldEU.Byakko.Core.BuildingBlocks` | DDD base types (see below) |
 | Infrastructure | `MadWorldEU.Byakko.Infrastructure.Postgresql` | PostgreSQL data access |
-| Infrastructure | `MadWorldEU.Byakko.Instrastructure.ObjectStorage` | S3-compatible object storage (MinIO) |
+| Infrastructure | `MadWorldEU.Byakko.Infrastructure.ObjectStorage` | S3-compatible object storage (MinIO) |
 | Host | `MadWorldEU.Byakko.Aspire` | .NET Aspire AppHost (orchestration) |
 
 Dependencies flow inward: Controller → Application → Domain ← Infrastructure. Contracts are shared between Controllers and Application. BuildingBlocks is referenced by Domain and Infrastructure.
@@ -101,7 +115,7 @@ public Result<Asset> GetById(Guid id) => asset; // implicitly Result<Asset>.Succ
 ## Key Infrastructure
 
 - **Database:** PostgreSQL via `ByakkoContext` (EF Core + Npgsql). Connection string key: `byakko-db`. Configured in `appsettings.json`, overridden by Aspire at runtime. Migrations live in `Infrastructure.Postgresql/Migrations/`. See `docs/Database.md` for migration commands.
-- **Object storage:** S3-compatible storage via `IAmazonS3` (AWSSDK). Registered by `AddObjectStorage()` in `Instrastructure.ObjectStorage`. Connection string key: `minio` (format: `Endpoint=...;AccessKey=...;SecretKey=...`). Storage mode and bucket name are configured under `Storage:Mode` and `Storage:BucketName` in `appsettings.json`. A `BucketInitializer` hosted service ensures the bucket exists on startup.
+- **Object storage:** S3-compatible storage via `IAmazonS3` (AWSSDK). Registered by `AddObjectStorage()` in `Infrastructure.ObjectStorage`. Connection string key: `minio` (format: `Endpoint=...;AccessKey=...;SecretKey=...`). Storage mode and bucket name are configured under `Storage:Mode` and `Storage:BucketName` in `appsettings.json`. A `BucketInitializer` hosted service ensures the bucket exists on startup.
 - **Migrations:** Automatic migration on startup is toggled via `Database:AutoMigrate` in `appsettings.json` (default `false`; `true` in `appsettings.Development.json`). When enabled, a `MigrationService` hosted service runs `MigrateAsync` before the app starts accepting requests. Manual commands are documented in `docs/Database.md`.
 - **Aspire orchestration:** Postgres is provisioned with a data volume and pgAdmin. The API waits for the database; Admin and Portal wait for the API. Credentials are passed as Aspire parameters (`username`, `password`).
 - **Health check:** `GET /health` on the API; `GET /health.txt` (static file) on Admin and Portal. Aspire monitors all three.

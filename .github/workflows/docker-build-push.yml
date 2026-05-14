@@ -4,6 +4,8 @@ on:
     push:
         branches:
             - main
+        tags:
+            - 'v*'
 
 permissions:
     packages: write
@@ -31,11 +33,20 @@ jobs:
                   username: ${{ secrets.GHCR_USERNAME }}
                   password: ${{ secrets.GHCR_TOKEN }}
 
+            - name: Resolve image tag
+              id: tag
+              run: |
+                  if [[ "${{ github.ref_type }}" == "tag" ]]; then
+                    echo "image_tag=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+                  else
+                    echo "image_tag=latest" >> $GITHUB_OUTPUT
+                  fi
+
             - name: Build & push API
-              run: docker buildx build --platform linux/amd64,linux/arm64 -f src/MadWorldEU.Byakko.Controller.Api/Dockerfile --tag ghcr.io/madworldeu/byakko-api:latest --push .
+              run: docker buildx build --platform linux/amd64,linux/arm64 -f src/MadWorldEU.Byakko.Controller.Api/Dockerfile --tag ghcr.io/madworldeu/byakko-api:${{ steps.tag.outputs.image_tag }} --push .
 
             - name: Build & push Portal
-              run: docker buildx build --platform linux/amd64,linux/arm64 -f src/MadWorldEU.Byakko.Controller.Portal/Dockerfile --tag ghcr.io/madworldeu/byakko-portal:latest --push .
+              run: docker buildx build --platform linux/amd64,linux/arm64 -f src/MadWorldEU.Byakko.Controller.Portal/Dockerfile --tag ghcr.io/madworldeu/byakko-portal:${{ steps.tag.outputs.image_tag }} --push .
 
             - name: Build & push Admin
-              run: docker buildx build --platform linux/amd64,linux/arm64 -f src/MadWorldEU.Byakko.Controller.Admin/Dockerfile --tag ghcr.io/madworldeu/byakko-admin:latest --push .
+              run: docker buildx build --platform linux/amd64,linux/arm64 -f src/MadWorldEU.Byakko.Controller.Admin/Dockerfile --tag ghcr.io/madworldeu/byakko-admin:${{ steps.tag.outputs.image_tag }} --push .

@@ -1,4 +1,4 @@
-# Versions
+ # Versions
 
 This document describes how versioning works in this project. Versions are managed via Git tags and follow the [Semantic Versioning](https://semver.org/) specification.
 
