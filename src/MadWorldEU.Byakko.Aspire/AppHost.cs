@@ -22,6 +22,7 @@ var keyCloakUsername = builder.AddParameter("keycloak-username", secret: true);
 var keyCloakPassword = builder.AddParameter("keycloak-password", secret: true);
 
 var keycloak = builder.AddKeycloak("keycloak", 4321, keyCloakUsername, keyCloakPassword)
+    .WithRealmImport("./Configurations/realm-export.json")
     .WithDataVolume();
 
 var useDockerFile = builder.Configuration.GetValue<bool>("RunMode:UseDockerFile");
