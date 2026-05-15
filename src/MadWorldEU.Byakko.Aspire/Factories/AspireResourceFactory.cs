@@ -29,7 +29,7 @@ internal static class AspireResourceFactory
         var keyCloakPassword = builder.AddParameter("keycloak-password", secret: true);
 
         return builder.AddKeycloak("keycloak", 4321, keyCloakUsername, keyCloakPassword)
-            .WithRealmImport("./Configurations/realm-export.json")
+            .WithRealmImport("./Configurations/keycloak-madworld-realm.json")
             .WithDataVolume();
     }
 }
