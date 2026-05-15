@@ -1,5 +1,6 @@
 namespace MadWorldEU.Byakko.Development;
 
+/// <summary>Response containing current process memory usage and garbage collection statistics.</summary>
 public sealed class GetMemoryInfoResponse
 {
     public required long TotalMemoryBytes { get; init; }

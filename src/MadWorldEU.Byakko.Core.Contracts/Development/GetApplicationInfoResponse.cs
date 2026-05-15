@@ -1,5 +1,6 @@
 namespace MadWorldEU.Byakko.Development;
 
+/// <summary>Response containing runtime and environment information about the running application.</summary>
 public sealed class GetApplicationInfoResponse
 {
     public required string ApplicationName { get; init; } = string.Empty;

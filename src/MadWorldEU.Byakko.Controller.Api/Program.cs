@@ -1,16 +1,23 @@
+using MadWorldEU.Byakko.Configurations;
 using MadWorldEU.Byakko.Endpoints.Development;
 using MadWorldEU.Byakko.Endpoints.Storages;
 using MadWorldEU.Byakko.Extensions;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
     
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
+});
+
 builder.Services.AddHealthChecks();
 builder.Services.AddBuildingBlocks();
 builder.Services.AddApplication();
 builder.Services.AddObjectStorage();
 builder.Services.AddPostgresql(builder.Configuration);
 
+builder.AddDefaultAuthentication();
 builder.Services.AddOpenTelemetry()
     .WithTracing(tracing => tracing
         .AddAspNetCoreInstrumentation()
@@ -26,18 +33,30 @@ builder.Services.AddOpenTelemetry()
 
 var app = builder.Build();
 
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+
 app.MapOpenApi();
 app.MapScalarApiReference();
 
 app.MapHealthChecks("/health");
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.AddAssetsEndpoints();
 app.AddTestsEndpoints();
 
 if (app.Environment.IsDevelopment())
 {
-    app.AddDebugEndpoints();   
-    app.UseDeveloperExceptionPage();
+    app.AddDebugEndpoints();
 }
 
 app.Run();
