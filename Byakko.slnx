@@ -12,6 +12,9 @@
     <File Path="docs\UsefulLinks.md" />
     <File Path="docs\Versions.md" />
   </Folder>
+  <Folder Name="/docs/github-pages/">
+    <File Path="docs\github-pages\index.html" />
+  </Folder>
   <Folder Name="/github/">
     <File Path=".github\pull_request_template.md" />
   </Folder>
@@ -23,6 +26,7 @@
     <File Path=".github\workflows\build-and-test.yml" />
     <File Path=".github\workflows\codeql.yml" />
     <File Path=".github\workflows\docker-build-push.yml" />
+    <File Path=".github\workflows\publish-static-site.yml" />
   </Folder>
   <Folder Name="/packages/">
     <File Path="packages\README.md" />
