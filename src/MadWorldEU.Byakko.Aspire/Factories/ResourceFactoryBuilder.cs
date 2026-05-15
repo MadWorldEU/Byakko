@@ -1,8 +1,8 @@
 namespace MadWorldEU.Byakko.Factories;
 
-public static class ResourceFactoryBuilder
+internal static class ResourceFactoryBuilder
 {
-    public static IResourceFactory Create(IDistributedApplicationBuilder builder, bool useDockerFile)
+    internal static IResourceFactory Create(IDistributedApplicationBuilder builder, bool useDockerFile)
     {
         if (useDockerFile)
         {

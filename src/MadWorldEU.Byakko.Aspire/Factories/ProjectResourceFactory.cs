@@ -1,6 +1,6 @@
 namespace MadWorldEU.Byakko.Factories;
 
-public sealed class ProjectResourceFactory(IDistributedApplicationBuilder builder) : IResourceFactory
+internal sealed class ProjectResourceFactory(IDistributedApplicationBuilder builder) : IResourceFactory
 {
     public IResourceBuilder<IResource> CreateApiBuilder(IResourceBuilder<PostgresDatabaseResource> byakkoDb, IResourceBuilder<MinioContainerResource> minio, IResourceBuilder<KeycloakResource> keycloak)
     {
