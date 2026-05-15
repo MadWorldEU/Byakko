@@ -2,11 +2,11 @@ namespace MadWorldEU.Byakko.Factories;
 
 public sealed class DockerResourceFactory(IDistributedApplicationBuilder builder) : IResourceFactory
 {
-    public IResourceBuilder<IResource> CreateApiBuilder(IResourceBuilder<PostgresDatabaseResource> byakkoDb, IResourceBuilder<MinioContainerResource> minio)
+    public IResourceBuilder<IResource> CreateApiBuilder(IResourceBuilder<PostgresDatabaseResource> byakkoDb, IResourceBuilder<MinioContainerResource> minio, IResourceBuilder<KeycloakResource> keycloak)
     {
         return builder.AddDockerfile(nameof(Api), "../../", "src/MadWorldEU.Byakko.Controller.Api/Dockerfile")
             .WithHttpEndpoint(targetPort: 8080)
-            .BuildApi(byakkoDb, minio);       
+            .BuildApi(byakkoDb, minio, keycloak);
     }
 
     public IResourceBuilder<IResource> CreateAdminBuilder(IResourceBuilder<IResource> api)

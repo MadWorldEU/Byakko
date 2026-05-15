@@ -18,10 +18,16 @@ var minioPassword = builder.AddParameter("minio-password", secret: true);
 var minio = builder.AddMinioContainer("minio", minioUsername, minioPassword)
     .WithDataVolume();
 
+var keyCloakUsername = builder.AddParameter("keycloak-username", secret: true);
+var keyCloakPassword = builder.AddParameter("keycloak-password", secret: true);
+
+var keycloak = builder.AddKeycloak("keycloak", 4321, keyCloakUsername, keyCloakPassword)
+    .WithDataVolume();
+
 var useDockerFile = builder.Configuration.GetValue<bool>("RunMode:UseDockerFile");
 var resourceFactory = ResourceFactoryBuilder.Create(builder, useDockerFile);
 
-var api = resourceFactory.CreateApiBuilder(byakkoDb, minio);
+var api = resourceFactory.CreateApiBuilder(byakkoDb, minio, keycloak);
 resourceFactory.CreateAdminBuilder(api);
 resourceFactory.CreatePortalBuilder(api);
 

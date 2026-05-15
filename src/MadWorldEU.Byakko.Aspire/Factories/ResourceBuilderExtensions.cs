@@ -2,14 +2,16 @@ namespace MadWorldEU.Byakko.Factories;
 
 public static class ResourceBuilderExtensions
 {
-    public static IResourceBuilder<TResource> BuildApi<TResource>(this IResourceBuilder<TResource> apiBuilder, IResourceBuilder<PostgresDatabaseResource> byakkoDb, IResourceBuilder<MinioContainerResource> minio) 
+    public static IResourceBuilder<TResource> BuildApi<TResource>(this IResourceBuilder<TResource> apiBuilder, IResourceBuilder<PostgresDatabaseResource> byakkoDb, IResourceBuilder<MinioContainerResource> minio, IResourceBuilder<KeycloakResource> keycloak)
         where TResource : IResource, IResourceWithWaitSupport, IResourceWithEnvironment, IResourceWithEndpoints
     {
-        return apiBuilder            
+        return apiBuilder
             .WaitFor(byakkoDb)
             .WaitFor(minio)
+            .WaitFor(keycloak)
             .WithReference(byakkoDb)
             .WithReference(minio)
+            .WithReference(keycloak)
             .WithHttpHealthCheck("/health");
     }
 
