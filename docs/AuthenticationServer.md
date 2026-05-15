@@ -22,6 +22,7 @@ To include the correct `aud` (audience) claim in your tokens:
 3. Navigate to the **Mappers** tab of the client scope.
     - Click **Create**.
     - Set **Mapper Type** to `Audience`.
+    - Set **Name** to `audience-api-mapper`.
     - Set **Included Client Audience** to your target client ID (e.g., `api-client`).
     - Enable **Add to access token** and **Add to ID token**.
     - Click **Save**.
