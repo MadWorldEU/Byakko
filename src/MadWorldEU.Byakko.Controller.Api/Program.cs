@@ -11,6 +11,14 @@ builder.Services.AddOpenApi(options =>
     options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy => policy
+        .AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader());
+});
+
 builder.Services.AddHealthChecks();
 builder.Services.AddBuildingBlocks();
 builder.Services.AddApplication();
@@ -47,6 +55,8 @@ app.MapOpenApi();
 app.MapScalarApiReference();
 
 app.MapHealthChecks("/health");
+
+app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();

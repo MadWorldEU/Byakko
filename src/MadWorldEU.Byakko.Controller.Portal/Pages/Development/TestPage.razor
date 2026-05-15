@@ -1,6 +1,37 @@
 @page "/Development/TestPage"
-<h3>TestPage</h3>
+@inject IHttpClientFactory HttpClientFactory
+
+<h1 class="mb-4">Test Page</h1>
+
+<div class="card" style="max-width: 400px;">
+    <div class="card-body">
+        <h5 class="card-title">Ping</h5>
+        <button class="btn btn-primary" @onclick="PingAsync" disabled="@_loading">
+            @if (_loading)
+            {
+                <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+            }
+            Send Ping
+        </button>
+        @if (_response is not null)
+        {
+            <div class="alert alert-success mt-3 mb-0">@_response</div>
+        }
+    </div>
+</div>
 
 @code {
-    
+    private string? _response;
+    private bool _loading;
+
+    private async Task PingAsync()
+    {
+        _loading = true;
+        _response = null;
+
+        var client = HttpClientFactory.CreateClient(HttpClients.ApiAnonymous);
+        _response = await client.GetStringAsync("/tests/ping");
+
+        _loading = false;
+    }
 }
