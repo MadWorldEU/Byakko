@@ -1,0 +1,12 @@
+- name: Documentations
+  items:
+    - href: InstallGuide.md
+    - href: AuthenticationServer.md
+    - href: Database.md
+    - href: DocFx.md
+    - href: DockerPipeline.md
+    - href: RiderSettings.md
+    - href: UsefulLinks.md
+    - href: Versions.md
+- name: Applications
+  href: applications/

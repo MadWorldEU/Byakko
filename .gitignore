@@ -434,6 +434,10 @@ FodyWeavers.xsd
 # MacOS
 .DS_Store
 
+# Docfx
+_site
+docs/applications
+
 # Byakko - Frontend
 **/wwwroot/lib/* 
 

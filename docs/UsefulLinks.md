@@ -39,6 +39,7 @@ A curated list of websites and resources used in or relevant to this project.
 ## Tooling
 
 - [cdnjs](https://cdnjs.com/) — Free and open source CDN for JavaScript libraries
+- [DocFX](https://dotnet.github.io/docfx/) — Static documentation site generator for .NET projects
 - [CodeQL](https://codeql.github.com/) — Semantic code analysis engine for security scanning
 - [GitHub Actions](https://github.com/features/actions) — CI/CD automation platform
 - [JetBrains Rider](https://www.jetbrains.com/rider/) — Cross-platform .NET IDE
