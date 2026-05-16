@@ -168,3 +168,15 @@ docfx docs/docfx.json --serve # build and serve at http://localhost:8080
 ```
 
 Article sources live in `docs/`. API reference is generated from `src/**/*.csproj`. Generated output (`docs/_site/`) is excluded from version control.
+
+## C4 Diagrams
+
+Architecture diagrams follow the [C4 model](https://c4model.com/) and are defined in `docs/diagrams/workspace.dsl` using the Structurizr DSL. Exported SVGs live in `docs/diagrams/images/`.
+
+To edit diagrams locally, run Structurizr Lite from the `docs/diagrams/` folder:
+
+```bash
+docker run -it --rm -p 8080:8080 -v ./:/usr/local/structurizr structurizr/structurizr local
+```
+
+Then open [http://localhost:8080](http://localhost:8080). You can edit the DSL directly (the browser reloads on save) or drag elements on the canvas. To export, use the export button in the top-right toolbar and save the SVG to `docs/diagrams/images/`. See `docs/Structurizr.md` for full details.

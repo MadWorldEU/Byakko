@@ -10,6 +10,10 @@ Self-hosted, privacy-friendly file sharing. Upload files and instantly share a l
 
 Byakko (白虎) is the Japanese name for the White Tiger, one of the four mythological beasts guarding the cardinal directions in East Asian cosmology. It represents the West, the season of autumn, and the element of metal. In Japanese culture, Byakko is a symbol of power, courage, and protection.
 
+## Documentation
+
+Full documentation is available at [https://madworldeu.github.io/Byakko/](https://madworldeu.github.io/Byakko/).
+
 ## Getting started
 
 See the [Install Guide](https://madworldeu.github.io/Byakko/InstallGuide) for instructions on requirements, running locally with Aspire, and running the tests.

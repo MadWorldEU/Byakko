@@ -12,12 +12,21 @@
     <File Path="docs\InstallGuide.md" />
     <File Path="docs\README.md" />
     <File Path="docs\RiderSettings.md" />
+    <File Path="docs\Structurizr.md" />
     <File Path="docs\toc.yml" />
     <File Path="docs\UsefulLinks.md" />
     <File Path="docs\Versions.md" />
   </Folder>
-  <Folder Name="/docs/github-pages/">
-    <File Path="docs\github-pages\index.html" />
+  <Folder Name="/docs/diagrams/">
+    <File Path="docs\diagrams\Containers.md" />
+    <File Path="docs\diagrams\SystemContext.md" />
+    <File Path="docs\diagrams\toc.yml" />
+    <File Path="docs\diagrams\workspace.dsl" />
+    <File Path="docs\diagrams\workspace.json" />
+  </Folder>
+  <Folder Name="/docs/diagrams/images/">
+    <File Path="docs\diagrams\images\Containers.svg" />
+    <File Path="docs\diagrams\images\SystemContext.svg" />
   </Folder>
   <Folder Name="/github/">
     <File Path=".github\pull_request_template.md" />

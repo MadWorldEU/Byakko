@@ -3,10 +3,13 @@
     - href: InstallGuide.md
     - href: AuthenticationServer.md
     - href: Database.md
-    - href: DocFx.md
+    - href: Docfx.md
     - href: DockerPipeline.md
     - href: RiderSettings.md
+    - href: Structurizr.md
     - href: UsefulLinks.md
     - href: Versions.md
+- name: Diagrams
+  href: diagrams/
 - name: Applications
   href: applications/

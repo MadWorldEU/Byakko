@@ -438,6 +438,9 @@ FodyWeavers.xsd
 _site
 docs/applications
 
+# Structurizr
+.structurizr
+
 # Byakko - Frontend
 **/wwwroot/lib/* 
 

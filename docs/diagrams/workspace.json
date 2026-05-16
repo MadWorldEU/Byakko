@@ -1,0 +1,254 @@
+{
+  "configuration" : {
+    "scope" : "SoftwareSystem"
+  },
+  "description" : "A file sharing platform for uploading, managing, and retrieving digital assets.",
+  "documentation" : { },
+  "id" : 1,
+  "lastModifiedDate" : "2026-05-16T20:31:58Z",
+  "model" : {
+    "people" : [ {
+      "id" : "1",
+      "name" : "User",
+      "properties" : {
+        "structurizr.dsl.identifier" : "user"
+      },
+      "relationships" : [ {
+        "description" : "Uses",
+        "destinationId" : "6",
+        "id" : "10",
+        "sourceId" : "1",
+        "tags" : "Relationship"
+      }, {
+        "description" : "Uses",
+        "destinationId" : "3",
+        "id" : "11",
+        "linkedRelationshipId" : "10",
+        "sourceId" : "1"
+      } ],
+      "tags" : "Element,Person"
+    }, {
+      "id" : "2",
+      "name" : "Administrator",
+      "properties" : {
+        "structurizr.dsl.identifier" : "administrator"
+      },
+      "relationships" : [ {
+        "description" : "Uses",
+        "destinationId" : "5",
+        "id" : "12",
+        "sourceId" : "2",
+        "tags" : "Relationship"
+      }, {
+        "description" : "Uses",
+        "destinationId" : "3",
+        "id" : "13",
+        "linkedRelationshipId" : "12",
+        "sourceId" : "2"
+      } ],
+      "tags" : "Element,Person"
+    } ],
+    "softwareSystems" : [ {
+      "containers" : [ {
+        "documentation" : { },
+        "id" : "4",
+        "name" : "Api",
+        "properties" : {
+          "structurizr.dsl.identifier" : "system.api"
+        },
+        "relationships" : [ {
+          "description" : "Reads from and writes to",
+          "destinationId" : "8",
+          "id" : "16",
+          "sourceId" : "4",
+          "tags" : "Relationship"
+        }, {
+          "description" : "Downloads from and uploads to",
+          "destinationId" : "9",
+          "id" : "17",
+          "sourceId" : "4",
+          "tags" : "Relationship"
+        } ],
+        "tags" : "Element,Container"
+      }, {
+        "documentation" : { },
+        "id" : "5",
+        "name" : "Admin",
+        "properties" : {
+          "structurizr.dsl.identifier" : "system.admin"
+        },
+        "relationships" : [ {
+          "description" : "Uses",
+          "destinationId" : "4",
+          "id" : "15",
+          "sourceId" : "5",
+          "tags" : "Relationship"
+        } ],
+        "tags" : "Element,Container"
+      }, {
+        "documentation" : { },
+        "id" : "6",
+        "name" : "Portal",
+        "properties" : {
+          "structurizr.dsl.identifier" : "system.portal"
+        },
+        "relationships" : [ {
+          "description" : "Uses",
+          "destinationId" : "4",
+          "id" : "14",
+          "sourceId" : "6",
+          "tags" : "Relationship"
+        } ],
+        "tags" : "Element,Container"
+      }, {
+        "documentation" : { },
+        "id" : "7",
+        "name" : "KeyCloak",
+        "properties" : {
+          "structurizr.dsl.identifier" : "system.keycloak"
+        },
+        "tags" : "Element,Container"
+      }, {
+        "documentation" : { },
+        "id" : "8",
+        "name" : "Database Schema",
+        "properties" : {
+          "structurizr.dsl.identifier" : "system.db"
+        },
+        "tags" : "Element,Container,Database"
+      }, {
+        "documentation" : { },
+        "id" : "9",
+        "name" : "Minio",
+        "properties" : {
+          "structurizr.dsl.identifier" : "system.minio"
+        },
+        "tags" : "Element,Container,Storage"
+      } ],
+      "documentation" : { },
+      "id" : "3",
+      "name" : "Byakko",
+      "properties" : {
+        "structurizr.dsl.identifier" : "system"
+      },
+      "tags" : "Element,Software System"
+    } ]
+  },
+  "name" : "Byakko",
+  "properties" : {
+    "structurizr.inspection.error" : "26",
+    "structurizr.dsl" : "d29ya3NwYWNlICJCeWFra28iICJBIGZpbGUgc2hhcmluZyBwbGF0Zm9ybSBmb3IgdXBsb2FkaW5nLCBtYW5hZ2luZywgYW5kIHJldHJpZXZpbmcgZGlnaXRhbCBhc3NldHMuIiB7CgogICAgIWlkZW50aWZpZXJzIGhpZXJhcmNoaWNhbAoKICAgIG1vZGVsIHsKICAgICAgICB1c2VyID0gcGVyc29uICJVc2VyIgogICAgICAgIGFkbWluaXN0cmF0b3IgPSBwZXJzb24gIkFkbWluaXN0cmF0b3IiCiAgICAgICAgc3lzdGVtID0gc29mdHdhcmVTeXN0ZW0gIkJ5YWtrbyIgewogICAgICAgICAgICBhcGkgPSBjb250YWluZXIgIkFwaSIKICAgICAgICAgICAgYWRtaW4gPSBjb250YWluZXIgIkFkbWluIgogICAgICAgICAgICBwb3J0YWwgPSBjb250YWluZXIgIlBvcnRhbCIKICAgICAgICAgICAga2V5Y2xvYWsgPSBjb250YWluZXIgIktleUNsb2FrIgogICAgICAgICAgICBkYiA9IGNvbnRhaW5lciAiRGF0YWJhc2UgU2NoZW1hIiB7CiAgICAgICAgICAgICAgICB0YWdzICJEYXRhYmFzZSIKICAgICAgICAgICAgfQogICAgICAgICAgICBtaW5pbyA9IGNvbnRhaW5lciAiTWluaW8iIHsKICAgICAgICAgICAgICAgIHRhZ3MgIlN0b3JhZ2UiCiAgICAgICAgICAgIH0KICAgICAgICB9CgogICAgICAgIHVzZXIgLT4gc3lzdGVtLnBvcnRhbCAiVXNlcyIKICAgICAgICBhZG1pbmlzdHJhdG9yIC0+IHN5c3RlbS5hZG1pbiAiVXNlcyIKICAgICAgICBzeXN0ZW0ucG9ydGFsIC0+IHN5c3RlbS5hcGkgIlVzZXMiCiAgICAgICAgc3lzdGVtLmFkbWluIC0+IHN5c3RlbS5hcGkgIlVzZXMiCiAgICAgICAgc3lzdGVtLmFwaSAtPiBzeXN0ZW0uZGIgIlJlYWRzIGZyb20gYW5kIHdyaXRlcyB0byIKICAgICAgICBzeXN0ZW0uYXBpIC0+IHN5c3RlbS5taW5pbyAiRG93bmxvYWRzIGZyb20gYW5kIHVwbG9hZHMgdG8iCiAgICB9CgogICAgdmlld3MgewogICAgICAgIHN5c3RlbUNvbnRleHQgc3lzdGVtICJTeXN0ZW1Db250ZXh0IiB7CiAgICAgICAgICAgIGluY2x1ZGUgKgogICAgICAgIH0KCiAgICAgICAgY29udGFpbmVyIHN5c3RlbSAiQ29udGFpbmVycyIgewogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICB9CgogICAgICAgIHN0eWxlcyB7CiAgICAgICAgICAgIGVsZW1lbnQgIkVsZW1lbnQiIHsKICAgICAgICAgICAgICAgIGNvbG9yICMwNzczYWYKICAgICAgICAgICAgICAgIHN0cm9rZSAjMDc3M2FmCiAgICAgICAgICAgICAgICBzdHJva2VXaWR0aCA3CiAgICAgICAgICAgICAgICBzaGFwZSByb3VuZGVkYm94CiAgICAgICAgICAgIH0KICAgICAgICAgICAgZWxlbWVudCAiUGVyc29uIiB7CiAgICAgICAgICAgICAgICBzaGFwZSBwZXJzb24KICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJEYXRhYmFzZSIgewogICAgICAgICAgICAgICAgc2hhcGUgY3lsaW5kZXIKICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJTdG9yYWdlIiB7CiAgICAgICAgICAgICAgICBzaGFwZSBjeWxpbmRlcgogICAgICAgICAgICB9CiAgICAgICAgICAgIGVsZW1lbnQgIkJvdW5kYXJ5IiB7CiAgICAgICAgICAgICAgICBzdHJva2VXaWR0aCA1CiAgICAgICAgICAgIH0KICAgICAgICAgICAgcmVsYXRpb25zaGlwICJSZWxhdGlvbnNoaXAiIHsKICAgICAgICAgICAgICAgIHRoaWNrbmVzcyA0CiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICB9CgogICAgY29uZmlndXJhdGlvbiB7CiAgICAgICAgc2NvcGUgc29mdHdhcmVzeXN0ZW0KICAgIH0KCn0=",
+    "structurizr.inspection.info" : "0",
+    "structurizr.inspection.ignore" : "0",
+    "structurizr.inspection.warning" : "0"
+  },
+  "views" : {
+    "configuration" : {
+      "lastSavedView" : "SystemContext",
+      "styles" : {
+        "elements" : [ {
+          "strokeWidth" : 5,
+          "tag" : "Boundary"
+        }, {
+          "shape" : "Cylinder",
+          "tag" : "Database"
+        }, {
+          "color" : "#0773af",
+          "shape" : "RoundedBox",
+          "stroke" : "#0773af",
+          "strokeWidth" : 7,
+          "tag" : "Element"
+        }, {
+          "shape" : "Person",
+          "tag" : "Person"
+        }, {
+          "shape" : "Cylinder",
+          "tag" : "Storage"
+        } ],
+        "relationships" : [ {
+          "tag" : "Relationship",
+          "thickness" : 4
+        } ]
+      },
+      "terminology" : { }
+    },
+    "containerViews" : [ {
+      "elements" : [ {
+        "id" : "1",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "2",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "4",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "5",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "6",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "7",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "8",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "9",
+        "x" : 0,
+        "y" : 0
+      } ],
+      "externalSoftwareSystemBoundariesVisible" : false,
+      "key" : "Containers",
+      "name" : "Container View: Byakko",
+      "order" : 2,
+      "relationships" : [ {
+        "id" : "10"
+      }, {
+        "id" : "12"
+      }, {
+        "id" : "14"
+      }, {
+        "id" : "15"
+      }, {
+        "id" : "16"
+      }, {
+        "id" : "17"
+      } ],
+      "softwareSystemId" : "3"
+    } ],
+    "systemContextViews" : [ {
+      "elements" : [ {
+        "id" : "1",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "2",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "3",
+        "x" : 0,
+        "y" : 0
+      } ],
+      "enterpriseBoundaryVisible" : true,
+      "key" : "SystemContext",
+      "name" : "System Context View: Byakko",
+      "order" : 1,
+      "relationships" : [ {
+        "id" : "11"
+      }, {
+        "id" : "13"
+      } ],
+      "softwareSystemId" : "3"
+    } ]
+  }
+}
