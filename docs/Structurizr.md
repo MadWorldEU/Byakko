@@ -27,3 +27,7 @@ To export a diagram as SVG or PNG:
 2. Click the export button (top-right toolbar).
 3. Choose **SVG** for a scalable vector export, or **PNG** for a raster image.
 4. Save the exported file to `docs/diagrams/images/`.
+
+## DSL examples
+
+DSL examples can be found at [https://docs.structurizr.com/dsl/example](https://docs.structurizr.com/dsl/example).
