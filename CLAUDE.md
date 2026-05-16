@@ -132,6 +132,8 @@ The upload/download use cases delegate to `IContentStorage`; the metadata use ca
 - **Object storage:** S3-compatible storage via `IAmazonS3` (AWSSDK). Registered by `AddObjectStorage()` in `Infrastructure.ObjectStorage`. Connection string key: `minio` (format: `Endpoint=...;AccessKey=...;SecretKey=...`). Storage mode and bucket name are configured under `Storage:Mode` and `Storage:BucketName` in `appsettings.json`. A `BucketInitializer` hosted service ensures the bucket exists on startup. The domain abstraction is `IContentStorage` (in `Core.Domain`); it uses `AssetPath` (bucket + key) to address objects and exposes `UploadAsync` and `DownloadAsync`.
 - **Migrations:** Automatic migration on startup is toggled via `Database:AutoMigrate` in `appsettings.json` (default `false`; `true` in `appsettings.Development.json`). When enabled, a `MigrationService` hosted service runs `MigrateAsync` before the app starts accepting requests. Manual commands are documented in `docs/Database.md`.
 - **Aspire orchestration:** Postgres (with pgAdmin), MinIO, and Keycloak are provisioned with data volumes. The API waits for all three; Admin and Portal wait for the API. Credentials are passed as Aspire parameters (`db-username`, `db-password`, `minio-username`, `minio-password`, `keycloak-username`, `keycloak-password`). Set `RunMode:UseDockerFile` in `appsettings.json` to `true` to run services from their Dockerfiles instead of project references (useful for testing the production image locally). The `Factories/` folder in the Aspire project contains `IResourceFactory`, `ProjectResourceFactory`, `DockerResourceFactory`, `ResourceFactoryBuilder`, and `ResourceBuilderExtensions` — this pattern abstracts the difference between project and Dockerfile resources so `AppHost.cs` stays clean.
+- **CORS:** The API registers a default CORS policy (`AddCors` / `UseCors`) that allows any origin, method, and header. Intended for development; should be tightened to explicit origins before production.
+- **Authentication:** JWT Bearer authentication via Keycloak. Configured in `appsettings.json` under `Authentication:Authority`. The Keycloak realm defines `admin-client`, `api-client`, and `portal-client`. See `docs/AuthenticationServer.md` for setup.
 - **Health check:** `GET /health` on the API; `GET /health.txt` (static file) on Admin and Portal. Aspire monitors all three.
 - **Observability:** OpenTelemetry tracing, metrics, and logging exported via OTLP. Endpoint configured via `OTEL_EXPORTER_OTLP_ENDPOINT` in `appsettings.json` (default `http://localhost:4040`); Aspire overrides this automatically with the dashboard endpoint.
 - **Debug endpoints:** `GET /debug/info`, `GET /debug/environment/variables`, `GET /debug/memory`, `POST /debug/memory/gc` — only registered in the Development environment.
@@ -152,3 +154,17 @@ The upload/download use cases delegate to `IContentStorage`; the metadata use ca
 - **JetBrains annotations:** `JetBrains.Annotations` is used for IDE hints (e.g. `[UsedImplicitly]`)
 - **TUnit:** test attributes (`[Test]`, etc.) are available without explicit usings via source generator
 - **Endpoint classes:** use `internal static` with an `internal static` extension method on `WebApplication` (e.g. `AddAssetsEndpoints`). Grouped under `Endpoints/<Feature>/` within the API project.
+- **HTTP clients (Admin & Portal):** Both Blazor WebAssembly projects use `IHttpClientFactory` with named clients defined in `HttpClients.cs`. `HttpClients.ApiAnonymous` is for unauthenticated requests; `HttpClients.ApiAuthorized` is for authenticated requests. The API base URL is configured via `ApiBaseUrl` in `wwwroot/appsettings.json` (default `https://localhost:7286`).
+
+## Documentation
+
+The live documentation site is published at `https://madworldeu.github.io/Byakko` via GitHub Pages. It is built with DocFX from `docs/docfx.json` and deployed automatically on every push to `main`.
+
+To build and preview locally:
+
+```bash
+dotnet tool update -g docfx   # install / update DocFX
+docfx docs/docfx.json --serve # build and serve at http://localhost:8080
+```
+
+Article sources live in `docs/`. API reference is generated from `src/**/*.csproj`. Generated output (`docs/_site/`) is excluded from version control.
