@@ -12,4 +12,4 @@ Byakko (白虎) is the Japanese name for the White Tiger, one of the four mythol
 
 ## Getting started
 
-See the [Install Guide](docs/InstallGuide.md) for instructions on requirements, running locally with Aspire, and running the tests.
+See the [Install Guide](https://madworldeu.github.io/Byakko/InstallGuide) for instructions on requirements, running locally with Aspire, and running the tests.
