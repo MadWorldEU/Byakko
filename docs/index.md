@@ -2,10 +2,37 @@
 _layout: landing
 ---
 
-# This is the **HOMEPAGE**.
+# Byakko
 
-Refer to [Markdown](http://daringfireball.net/projects/markdown/) for how to write markdown files.
+A file sharing platform for uploading, managing, and retrieving digital assets. Built with Clean Architecture on .NET 10, with Blazor WebAssembly frontends and a PostgreSQL + MinIO backend.
 
-## Quick Start Notes:
+## Getting started
 
-1. Add images to the *images* folder if the file is referencing an image.
+| Guide                                              | Description                                    |
+|----------------------------------------------------|------------------------------------------------|
+| [Install Guide](InstallGuide.md)                   | Set up and run the platform locally            |
+| [Authentication Server](AuthenticationServer.md)   | Configure Keycloak for JWT authentication      |
+| [Database](Database.md)                            | Run and manage PostgreSQL migrations           |
+
+## Infrastructure & Deployment
+
+| Guide                                  | Description                                          |
+|----------------------------------------|------------------------------------------------------|
+| [Docker Pipeline](DockerPipeline.md)   | Build and push multi-arch Docker images via CI       |
+| [DocFX](Docfx.md)                      | Build and deploy the documentation site              |
+
+## Architecture
+
+| Guide                                              | Description                                          |
+|----------------------------------------------------|------------------------------------------------------|
+| [System Context](diagrams/SystemContext.md)        | High-level view of users and the system              |
+| [Containers](diagrams/Containers.md)               | Internal containers and their interactions           |
+| [Structurizr](Structurizr.md)                      | Editing and exporting C4 diagrams locally            |
+
+## Reference
+
+| Guide                              | Description                                          |
+|------------------------------------|------------------------------------------------------|
+| [Useful Links](UsefulLinks.md)     | External links and resources                         |
+| [Versions](Versions.md)            | Changelog and version history                        |
+| [Rider Settings](RiderSettings.md) | Recommended JetBrains Rider configuration            |
