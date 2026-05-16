@@ -5,10 +5,14 @@
   <Folder Name="/docs/">
     <File Path="docs\AuthenticationServer.md" />
     <File Path="docs\Database.md" />
+    <File Path="docs\docfx.json" />
+    <File Path="docs\Docfx.md" />
     <File Path="docs\DockerPipeline.md" />
+    <File Path="docs\index.md" />
     <File Path="docs\InstallGuide.md" />
     <File Path="docs\README.md" />
     <File Path="docs\RiderSettings.md" />
+    <File Path="docs\toc.yml" />
     <File Path="docs\UsefulLinks.md" />
     <File Path="docs\Versions.md" />
   </Folder>
