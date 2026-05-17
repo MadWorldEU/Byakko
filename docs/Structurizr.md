@@ -1,6 +1,6 @@
 # Structurizr
 
-The C4 model diagrams are defined using the [Structurizr DSL](https://github.com/structurizr/dsl) and stored in `docs/diagrams/`. Structurizr Lite is used to render and edit them locally via Docker.
+The C4 model diagrams are defined using the [Structurizr DSL](https://github.com/structurizr) and stored in `docs/diagrams/`. Structurizr Lite is used to render and edit them locally via Docker.
 
 ## Running locally
 
