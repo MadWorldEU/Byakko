@@ -14,4 +14,4 @@ var api = resourceFactory.CreateApiBuilder(byakkoDb, minio, keycloak);
 resourceFactory.CreateAdminBuilder(api);
 resourceFactory.CreatePortalBuilder(api);
 
-builder.Build().Run();
+await builder.Build().RunAsync();

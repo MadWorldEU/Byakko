@@ -9,7 +9,7 @@ COPY ["src/MadWorldEU.Byakko.Core.Contracts/Contracts.csproj", "src/MadWorldEU.B
 RUN dotnet restore "src/MadWorldEU.Byakko.Controller.Admin/Admin.csproj"
 COPY . .
 WORKDIR "/src/src/MadWorldEU.Byakko.Controller.Admin"
-RUN dotnet publish "./Admin.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./Admin.csproj" -c "$BUILD_CONFIGURATION" -o /app/publish /p:UseAppHost=false
 
 FROM nginx:alpine AS final
 COPY --from=build /app/publish/wwwroot /usr/share/nginx/html
