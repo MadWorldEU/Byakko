@@ -1,3 +1,5 @@
+using MadWorldEU.Byakko.Configurations;
+
 namespace MadWorldEU.Byakko.Endpoints.Storages;
 
 internal static class AssetsEndpoints
@@ -36,8 +38,9 @@ internal static class AssetsEndpoints
                     onFailure: error => Results.BadRequest(error.Description));
             })
             .WithName("UploadAssetContent")
-            .DisableAntiforgery();
-        
+            .DisableAntiforgery()
+            .RequireRateLimiting(RateLimiterPolicies.Content);
+
         assetsEndpoints.MapGet("/{id}/content", async (string id, DownloadAssetContentUseCase useCase) =>
             {
                 var result = await useCase.ExecuteAsync(id);
@@ -46,6 +49,7 @@ internal static class AssetsEndpoints
                     onFailure: error => Results.BadRequest(error.Description)
                 );
             })
-            .WithName("DownloadAssetContent");
+            .WithName("DownloadAssetContent")
+            .RequireRateLimiting(RateLimiterPolicies.Content);
     }
 }

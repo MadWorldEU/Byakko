@@ -26,6 +26,7 @@ builder.Services.AddObjectStorage();
 builder.Services.AddPostgresql(builder.Configuration);
 
 builder.AddDefaultAuthentication();
+builder.Services.AddApiRateLimiter();
 builder.Services.AddOpenTelemetry()
     .WithTracing(tracing => tracing
         .AddAspNetCoreInstrumentation()
@@ -60,6 +61,7 @@ app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
 
 app.AddAssetsEndpoints();
 app.AddTestsEndpoints();
