@@ -1,6 +1,7 @@
 [![Build and Test Dotnet](https://github.com/MadWorldEU/Byakko/actions/workflows/build-and-test.yml/badge.svg?branch=main)](https://github.com/MadWorldEU/Byakko/actions/workflows/build-and-test.yml)
 [![CodeQL Advanced](https://github.com/MadWorldEU/Byakko/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/MadWorldEU/Byakko/actions/workflows/codeql.yml)
 [![Build & Push Docker Main](https://github.com/MadWorldEU/Byakko/actions/workflows/docker-build-push.yml/badge.svg?branch=main)](https://github.com/MadWorldEU/Byakko/actions/workflows/docker-build-push.yml)
+[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=MadWorldEU_Byakko)](https://sonarcloud.io/summary/new_code?id=MadWorldEU_Byakko)
 
 # Byakko
 
