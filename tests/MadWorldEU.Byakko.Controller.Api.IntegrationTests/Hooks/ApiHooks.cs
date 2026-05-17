@@ -27,7 +27,8 @@ public sealed class ApiHooks(ScenarioContext scenarioContext)
                     config.AddInMemoryCollection(new Dictionary<string, string?>
                     {
                         ["ConnectionStrings:byakko-db"] = _postgres.GetConnectionString(),
-                        ["ConnectionStrings:minio"] = $"Endpoint={_minio.GetConnectionString()};AccessKey={_minio.GetAccessKey()};SecretKey={_minio.GetSecretKey()}"
+                        ["ConnectionStrings:minio"] = $"Endpoint={_minio.GetConnectionString()};AccessKey={_minio.GetAccessKey()};SecretKey={_minio.GetSecretKey()}",
+                        ["RateLimiting:Enabled"] = "false"
                     });
                 });
             });

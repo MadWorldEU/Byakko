@@ -1,4 +1,4 @@
-- name: Documentations
+- name: Developer Guide
   items:
     - href: InstallGuide.md
     - href: AuthenticationServer.md
@@ -9,7 +9,9 @@
     - href: Structurizr.md
     - href: UsefulLinks.md
     - href: Versions.md
+- name: User Guide
+  href: user-guides/
 - name: Diagrams
   href: diagrams/
-- name: Applications
-  href: applications/
+- name: Reference
+  href: reference/
