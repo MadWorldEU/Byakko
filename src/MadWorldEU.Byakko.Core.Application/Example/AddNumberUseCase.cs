@@ -6,7 +6,7 @@ public sealed class AddNumberUseCase(ILogger<AddNumberUseCase> logger)
 {
     public int Add(int a, int b)
     {
-        logger.LogInformation("Adding {a} and {b}", a, b);
+        logger.LogInformation("Adding {FirstNumber} and {SecondNumber}", a, b);
         
         return a + b;
     }
