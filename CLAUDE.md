@@ -26,7 +26,7 @@ docker build -f src/MadWorldEU.Byakko.Controller.Admin/Dockerfile .
 
 The API uses the `mcr.microsoft.com/dotnet/aspnet:10.0` runtime image. Portal and Admin are Blazor WebAssembly apps served by `nginx:alpine`; their nginx config lives in `DockerConfigs/nginx.conf` inside each project folder.
 
-The CI pipeline (`.github/workflows/docker-build-push.yml`) builds and pushes multi-arch images (`linux/amd64`, `linux/arm64`) to GHCR on every push to `main`. See `docs/DockerPipeline.md` for setup instructions.
+The CI pipeline (`.github/workflows/docker-build-push.yml`) builds and pushes multi-arch images (`linux/amd64`, `linux/arm64`) to GHCR on every push to `main`. SonarCloud static analysis runs via `.github/workflows/sonarcloud.yml` on every push and pull request. See `docs/Pipelines.md` for setup instructions for all pipelines.
 
 ## Testing
 
