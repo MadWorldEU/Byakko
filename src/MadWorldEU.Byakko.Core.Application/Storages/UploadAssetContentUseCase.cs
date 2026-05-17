@@ -12,7 +12,10 @@ public sealed class UploadAssetContentUseCase(IAssetRepository assetRepository, 
 
         var result = await contentStorage.UploadAsync(asset.Value.GetPath(), content);
         if (result.IsFailure) return result.Error;
-        
-        return new UploadAssetContentResponse();
+
+        return new UploadAssetContentResponse()
+        {
+            Id = asset.Value.Id.Value
+        };
     }
 }
