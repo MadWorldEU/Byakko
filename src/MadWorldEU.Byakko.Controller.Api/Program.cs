@@ -71,5 +71,7 @@ if (app.Environment.IsDevelopment())
 
 await app.RunAsync();
 
-[UsedImplicitly]
-public sealed partial class Program { }
+public sealed partial class Program
+{
+    private Program() {}
+}

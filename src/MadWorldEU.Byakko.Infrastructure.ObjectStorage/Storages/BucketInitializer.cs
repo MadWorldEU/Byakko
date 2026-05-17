@@ -11,11 +11,11 @@ internal sealed class BucketInitializer(IAmazonS3 s3Client, ILogger<BucketInitia
     {
         foreach (var bucketName in _bucketNames)
         {
-            await CheckAndCreateBucketAsync(cancellationToken, bucketName);
+            await CheckAndCreateBucketAsync(bucketName, cancellationToken);
         }
     }
 
-    private async Task CheckAndCreateBucketAsync(CancellationToken cancellationToken, string bucketName)
+    private async Task CheckAndCreateBucketAsync(string bucketName, CancellationToken cancellationToken)
     {
         try
         {
