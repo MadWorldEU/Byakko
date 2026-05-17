@@ -53,7 +53,7 @@ jobs:
                   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
               shell: powershell
               run: |
-                  ${{ runner.temp }}\scanner\dotnet-sonarscanner begin /k:"MadWorldEU_Byakko" /o:"madworldeu" /d:sonar.token="${{ secrets.SONAR_TOKEN }} /d:sonar.coverage.exclusions=**/*"
+                  ${{ runner.temp }}\scanner\dotnet-sonarscanner begin /k:"MadWorldEU_Byakko" /o:"madworldeu" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.coverage.exclusions=**/*
                   dotnet restore Byakko.slnx -p:LibraryManagerDisabled=true
                   dotnet build Byakko.slnx --no-restore
                   ${{ runner.temp }}\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
