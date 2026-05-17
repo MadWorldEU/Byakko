@@ -436,7 +436,7 @@ FodyWeavers.xsd
 
 # Docfx
 _site
-docs/applications
+docs/reference
 
 # Structurizr
 .structurizr
