@@ -16,10 +16,10 @@ A file sharing platform for uploading, managing, and retrieving digital assets. 
 
 ## Infrastructure & Deployment
 
-| Guide                                  | Description                                          |
-|----------------------------------------|------------------------------------------------------|
-| [Docker Pipeline](DockerPipeline.md)   | Build and push multi-arch Docker images via CI       |
-| [DocFX](Docfx.md)                      | Build and deploy the documentation site              |
+| Guide                        | Description                                                   |
+|------------------------------|---------------------------------------------------------------|
+| [Pipelines](Pipelines.md)    | CI/CD pipelines for building, testing, Docker, and SonarCloud |
+| [DocFX](Docfx.md)            | Build and deploy the documentation site                       |
 
 ## Architecture
 

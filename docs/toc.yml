@@ -4,7 +4,7 @@
     - href: AuthenticationServer.md
     - href: Database.md
     - href: Docfx.md
-    - href: DockerPipeline.md
+    - href: Pipelines.md
     - href: RiderSettings.md
     - href: Structurizr.md
     - href: UsefulLinks.md

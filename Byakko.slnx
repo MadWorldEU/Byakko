@@ -10,6 +10,7 @@
     <File Path="docs\DockerPipeline.md" />
     <File Path="docs\index.md" />
     <File Path="docs\InstallGuide.md" />
+    <File Path="docs\Pipelines.md" />
     <File Path="docs\README.md" />
     <File Path="docs\RiderSettings.md" />
     <File Path="docs\Structurizr.md" />
@@ -40,6 +41,7 @@
     <File Path=".github\workflows\codeql.yml" />
     <File Path=".github\workflows\docker-build-push.yml" />
     <File Path=".github\workflows\publish-static-site.yml" />
+    <File Path=".github\workflows\sonarcloud.yml" />
   </Folder>
   <Folder Name="/packages/">
     <File Path="packages\README.md" />

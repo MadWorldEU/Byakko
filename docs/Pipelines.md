@@ -1,15 +1,20 @@
-# Docker Pipeline
+# Pipelines
 
-The `Build & Push Docker Main` workflow builds and pushes images for the API, Portal, and Admin projects to the GitHub Container Registry (GHCR) on every push to `main`.
+This repository has three CI/CD pipelines:
+
+- **Build and Test** — builds the solution and runs all tests on every push and pull request.
+- **Build & Push Docker** — builds and pushes multi-arch Docker images for the API, Portal, and Admin to the GitHub Container Registry (GHCR) on every push to `main`.
+- **SonarCloud** — runs static code analysis and reports code quality, security hotspots, and coverage to [SonarCloud](https://sonarcloud.io) on every push and pull request.
 
 ## Required Repository Secrets
 
 Go to **Settings → Secrets and variables → Actions → New repository secret** and add:
 
-| Secret | Value |
-|---|---|
-| `GHCR_USERNAME` | Your GitHub username |
-| `GHCR_TOKEN` | A Personal Access Token (see below) |
+| Secret          | Value                                                                   |
+|-----------------|-------------------------------------------------------------------------|
+| `GHCR_USERNAME` | Your GitHub username                                                    |
+| `GHCR_TOKEN`    | A Personal Access Token with `write:packages` scope (see below)         |
+| `SONAR_TOKEN`   | A SonarCloud token for the `MadWorldEU_Byakko` project (see below)      |
 
 ## Generating a GHCR_TOKEN
 
@@ -22,6 +27,15 @@ Go to **Settings → Secrets and variables → Actions → New repository secret
 6. Click **Generate token**
 7. Copy the token immediately — it won't be shown again
 8. Paste it as the value of the `GHCR_TOKEN` secret in the repository settings
+
+## Generating a SONAR_TOKEN
+
+1. Go to [sonarcloud.io](https://sonarcloud.io) and open the `MadWorldEU_Byakko` project
+2. Navigate to **Administration → Analysis Method**
+3. Turn off **Automatic Analysis** — this is required when using GitHub Actions, as both cannot run simultaneously
+4. Click **With GitHub Actions** to reveal the token
+5. Copy the token shown on that page
+6. Paste it as the value of the `SONAR_TOKEN` secret in the repository settings
 
 ## First-time: Linking Images to the Repository
 
