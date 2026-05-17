@@ -55,12 +55,16 @@ if (app.Environment.IsDevelopment())
 app.MapOpenApi();
 app.MapScalarApiReference();
 
-app.MapHealthChecks("/health");
+app.MapHealthChecks("/health")
+    .DisableRateLimiting();
 
 app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+//TODO: Enable and disable rate limiting
+//TODO: Set settings in the appsettings.json
 app.UseRateLimiter();
 
 app.AddAssetsEndpoints();
