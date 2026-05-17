@@ -69,7 +69,9 @@ if (app.Environment.IsDevelopment())
     app.AddDebugEndpoints();
 }
 
-app.Run();
+await app.RunAsync();
 
-[UsedImplicitly]
-public sealed partial class Program { }
+public sealed partial class Program
+{
+    private Program() {}
+}

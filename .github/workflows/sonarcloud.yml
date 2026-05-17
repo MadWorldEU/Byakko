@@ -39,12 +39,21 @@ jobs:
               run: |
                   New-Item -Path ${{ runner.temp }}\scanner -ItemType Directory
                   dotnet tool update dotnet-sonarscanner --tool-path ${{ runner.temp }}\scanner
+            - name: Install LibMan CLI
+              shell: powershell
+              run: dotnet tool install -g Microsoft.Web.LibraryManager.Cli
+            - name: Restore LibMan packages (Admin)
+              working-directory: src/MadWorldEU.Byakko.Controller.Admin
+              run: libman restore
+            - name: Restore LibMan packages (Portal)
+              working-directory: src/MadWorldEU.Byakko.Controller.Portal
+              run: libman restore
             - name: Build and analyze
               env:
                   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
               shell: powershell
               run: |
-                  ${{ runner.temp }}\scanner\dotnet-sonarscanner begin /k:"MadWorldEU_Byakko" /o:"madworldeu" /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
-                  dotnet restore Byakko.slnx
+                  ${{ runner.temp }}\scanner\dotnet-sonarscanner begin /k:"MadWorldEU_Byakko" /o:"madworldeu" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.coverage.exclusions=**/*
+                  dotnet restore Byakko.slnx -p:LibraryManagerDisabled=true
                   dotnet build Byakko.slnx --no-restore
                   ${{ runner.temp }}\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
