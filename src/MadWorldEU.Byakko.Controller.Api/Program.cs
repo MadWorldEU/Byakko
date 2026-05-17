@@ -26,7 +26,7 @@ builder.Services.AddObjectStorage();
 builder.Services.AddPostgresql(builder.Configuration);
 
 builder.AddDefaultAuthentication();
-builder.Services.AddApiRateLimiter();
+builder.Services.AddApiRateLimiter(builder.Configuration);
 builder.Services.AddOpenTelemetry()
     .WithTracing(tracing => tracing
         .AddAspNetCoreInstrumentation()

@@ -6,9 +6,12 @@ namespace MadWorldEU.Byakko.Configurations;
 /// <summary>Registers rate limiting policies for the API.</summary>
 internal static class RateLimiterExtensions
 {
-    /// <summary>Adds a global fixed-window limiter (100 req/min) applied to all endpoints, plus a stricter content policy (20 req/min) for upload and download.</summary>
-    internal static IServiceCollection AddApiRateLimiter(this IServiceCollection services)
+    /// <summary>Adds a global fixed-window limiter applied to all endpoints, plus a stricter content policy for upload and download. Limits are read from <c>RateLimiting</c> in appsettings.</summary>
+    internal static IServiceCollection AddApiRateLimiter(this IServiceCollection services, IConfiguration configuration)
     {
+        var settings = configuration.GetSection(RateLimiterSettings.Key).Get<RateLimiterSettings>()
+            ?? throw new InvalidOperationException($"Missing configuration section '{RateLimiterSettings.Key}'.");
+
         services.AddRateLimiter(options =>
         {
             options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
@@ -18,8 +21,8 @@ internal static class RateLimiterExtensions
                     partitionKey: GetPartitionKey(context),
                     factory: _ => new FixedWindowRateLimiterOptions
                     {
-                        PermitLimit = 100,
-                        Window = TimeSpan.FromMinutes(1),
+                        PermitLimit = settings.General.PermitLimit,
+                        Window = TimeSpan.FromSeconds((double)settings.General.WindowInSeconds),
                         QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
                         QueueLimit = 0
                     }));
@@ -29,8 +32,8 @@ internal static class RateLimiterExtensions
                     partitionKey: GetPartitionKey(context),
                     factory: _ => new FixedWindowRateLimiterOptions
                     {
-                        PermitLimit = 20,
-                        Window = TimeSpan.FromMinutes(1),
+                        PermitLimit = settings.Content.PermitLimit,
+                        Window = TimeSpan.FromSeconds((double)settings.Content.WindowInSeconds),
                         QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
                         QueueLimit = 0
                     }));
