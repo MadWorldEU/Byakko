@@ -63,9 +63,10 @@ app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
-//TODO: Enable and disable rate limiting
-//TODO: Set settings in the appsettings.json
-app.UseRateLimiter();
+if (app.Configuration.GetValue("RateLimiting:Enabled", true))
+{
+    app.UseRateLimiter();   
+}
 
 app.AddAssetsEndpoints();
 app.AddTestsEndpoints();
