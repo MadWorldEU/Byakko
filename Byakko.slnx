@@ -29,6 +29,10 @@
     <File Path="docs\diagrams\images\Containers.svg" />
     <File Path="docs\diagrams\images\SystemContext.svg" />
   </Folder>
+  <Folder Name="/docs/user-guides/">
+    <File Path="docs\user-guides\FileUpload.md" />
+    <File Path="docs\user-guides\toc.yml" />
+  </Folder>
   <Folder Name="/github/">
     <File Path=".github\pull_request_template.md" />
   </Folder>
