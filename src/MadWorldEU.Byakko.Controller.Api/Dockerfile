@@ -18,7 +18,7 @@ COPY ["src/MadWorldEU.Byakko.Core.Contracts/Contracts.csproj", "src/MadWorldEU.B
 COPY ["src/MadWorldEU.Byakko.Infrastructure.Postgresql/Postgresql.csproj", "src/MadWorldEU.Byakko.Infrastructure.Postgresql/"]
 COPY ["src/MadWorldEU.Byakko.Infrastructure.ObjectStorage/ObjectStorage.csproj", "src/MadWorldEU.Byakko.Infrastructure.ObjectStorage/"]
 RUN dotnet restore "src/MadWorldEU.Byakko.Controller.Api/Api.csproj"
-COPY . .
+COPY src/ src/
 WORKDIR "/src/src/MadWorldEU.Byakko.Controller.Api"
 RUN dotnet build "./Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 

@@ -7,7 +7,7 @@ COPY ["nuget.config", "."]
 COPY ["src/MadWorldEU.Byakko.Controller.Portal/Portal.csproj", "src/MadWorldEU.Byakko.Controller.Portal/"]
 COPY ["src/MadWorldEU.Byakko.Core.Contracts/Contracts.csproj", "src/MadWorldEU.Byakko.Core.Contracts/"]
 RUN dotnet restore "src/MadWorldEU.Byakko.Controller.Portal/Portal.csproj"
-COPY . .
+COPY src/ src/
 WORKDIR "/src/src/MadWorldEU.Byakko.Controller.Portal"
 RUN dotnet publish "./Portal.csproj" -c "$BUILD_CONFIGURATION" -o /app/publish /p:UseAppHost=false
 
