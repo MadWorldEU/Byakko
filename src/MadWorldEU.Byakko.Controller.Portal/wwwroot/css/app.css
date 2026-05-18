@@ -59,7 +59,7 @@
     }
 
         .loading-progress circle:last-child {
-            stroke: #1b6ec2;
+            stroke: #0d6efd;
             stroke-dasharray: calc(3.141 * var(--blazor-load-percentage, 0%) * 0.8), 500%;
             transition: stroke-dasharray 0.05s ease-in-out;
         }
@@ -77,6 +77,75 @@
 
 code {
     color: #c02d76;
+}
+
+/* ── Hero section ── */
+.hero-section {
+    background: radial-gradient(ellipse at 60% 0%, rgba(13, 110, 253, 0.12) 0%, transparent 60%);
+}
+
+.hero-gradient-text {
+    background: linear-gradient(135deg, #0d6efd 0%, #6f42c1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-illustration {
+    width: 280px;
+    height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-blob {
+    position: absolute;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(13, 110, 253, 0.15) 0%, rgba(111, 66, 193, 0.08) 60%, transparent 100%);
+    filter: blur(20px);
+}
+
+.hero-cloud-icon {
+    position: relative;
+    opacity: 0.9;
+    filter: drop-shadow(0 0 40px rgba(13, 110, 253, 0.35));
+}
+
+/* ── Feature cards ── */
+.feature-card {
+    border-radius: 1rem !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3) !important;
+}
+
+.feature-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+}
+
+/* ── How it works steps ── */
+.step-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(13, 110, 253, 0.15);
+    color: #0d6efd;
+    font-weight: 700;
+    font-size: 1rem;
+    border: 1px solid rgba(13, 110, 253, 0.3);
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
