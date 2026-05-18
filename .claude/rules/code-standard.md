@@ -1,4 +1,4 @@
-A# Code Standard
+# Code Standard
 
 These rules define the coding standards for this project. All code must follow these conventions to ensure consistency, maintainability, and clarity across the codebase.
 
@@ -70,6 +70,22 @@ private MyClass() {}
 - Use `Instant` for UTC timestamps (e.g. `CreatedAt`, `UpdatedAt`).
 - Use `ZonedDateTime` only when the timezone is meaningful to the domain.
 - Inject `IClock` into use cases and services instead of calling `SystemClock.Instance` directly — this keeps time testable.
+
+## Control Flow
+
+- `if`, `else`, `for`, `foreach`, `while`, and `do` statements must always use curly braces, even for single-line bodies.
+
+```csharp
+// correct
+if (condition)
+{
+    DoSomething();
+}
+
+// wrong
+if (condition)
+    DoSomething();
+```
 
 ## Documentation
 
