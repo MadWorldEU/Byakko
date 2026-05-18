@@ -11,13 +11,7 @@ builder.Services.AddOpenApi(options =>
     options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
 });
 
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(policy => policy
-        .AllowAnyOrigin()
-        .AllowAnyMethod()
-        .AllowAnyHeader());
-});
+builder.Services.AddDefaultCors(builder.Configuration);
 
 builder.Services.AddHealthChecks();
 builder.Services.AddBuildingBlocks();
