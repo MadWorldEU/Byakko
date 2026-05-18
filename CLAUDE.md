@@ -140,6 +140,16 @@ The upload/download use cases delegate to `IContentStorage`; the metadata use ca
 - **Debug endpoints:** `GET /debug/info`, `GET /debug/environment/variables`, `GET /debug/memory`, `POST /debug/memory/gc` — only registered in the Development environment.
 - **Test endpoints:** `GET /tests/ping` — always registered; returns `"pong"`, used to verify the API is reachable.
 
+## Admin UI
+
+The Admin (`MadWorldEU.Byakko.Controller.Admin`) is a Blazor WebAssembly app styled with Bootstrap 5, aimed at administrators managing files, customers, and support tickets.
+
+- **Dark theme:** `data-bs-theme="dark"` is set on the `<html>` element in `wwwroot/index.html`, same mechanism as the Portal.
+- **Bootstrap JS:** `lib/bootstrap/js/bootstrap.bundle.min.js` is loaded in `index.html` (before the Blazor script). The `libman.json` includes `js/**/*.*` to pull it in alongside the CSS.
+- **Sidebar layout:** `Layout/MainLayout.razor` uses a persistent 240 px left sidebar on `md+` breakpoint (hidden on smaller screens — the admin is a desktop-first tool). The sidebar is `position: sticky; height: 100vh` so it stays visible while the main content scrolls. Nav links use Blazor's `<NavLink>` component for automatic `active` class highlighting. Nav items are grouped into three labelled sections: Overview, Management, and Support.
+- **Dashboard:** `Pages/Home.razor` is the admin landing page. It contains four stat cards (Total Files, Active Customers, Storage Used, Support Tickets) with coloured left-border accents, a Quick Actions column, a Recent Customers table, and a Support Tickets table — all showing empty states until real data is wired up.
+- **Custom CSS:** `wwwroot/css/app.css` holds all admin-specific styles at the bottom of the file: sidebar layout, `.admin-nav-link` active/hover states, `.stat-card` hover lift and per-colour border variants (`stat-card-primary/success/info/warning`), `.stat-icon` sizing, and `.quick-action-btn` slide effect.
+
 ## Portal UI
 
 The Portal (`MadWorldEU.Byakko.Controller.Portal`) is a Blazor WebAssembly app styled with Bootstrap 5.

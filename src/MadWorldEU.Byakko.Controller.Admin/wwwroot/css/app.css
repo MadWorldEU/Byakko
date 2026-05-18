@@ -59,7 +59,7 @@
     }
 
         .loading-progress circle:last-child {
-            stroke: #1b6ec2;
+            stroke: #0d6efd;
             stroke-dasharray: calc(3.141 * var(--blazor-load-percentage, 0%) * 0.8), 500%;
             transition: stroke-dasharray 0.05s ease-in-out;
         }
@@ -77,6 +77,74 @@
 
 code {
     color: #c02d76;
+}
+
+/* ── Admin sidebar layout ── */
+.admin-sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.admin-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.55rem 0.85rem;
+    border-radius: 0.5rem;
+    color: var(--bs-secondary-color);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.admin-nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+    color: var(--bs-body-color);
+}
+
+.admin-nav-link.active {
+    background-color: rgba(13, 110, 253, 0.12);
+    color: #0d6efd;
+    font-weight: 600;
+}
+
+/* ── Stat cards ── */
+.stat-card {
+    border-radius: 0.75rem !important;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
+}
+
+.stat-card-primary { border-left: 3px solid var(--bs-primary) !important; }
+.stat-card-success { border-left: 3px solid var(--bs-success) !important; }
+.stat-card-info    { border-left: 3px solid var(--bs-info) !important; }
+.stat-card-warning { border-left: 3px solid var(--bs-warning) !important; }
+
+.stat-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+}
+
+/* ── Quick action buttons ── */
+.quick-action-btn {
+    border-radius: 0.6rem !important;
+    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.quick-action-btn:hover {
+    transform: translateX(2px);
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
