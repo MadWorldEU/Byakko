@@ -140,6 +140,16 @@ The upload/download use cases delegate to `IContentStorage`; the metadata use ca
 - **Debug endpoints:** `GET /debug/info`, `GET /debug/environment/variables`, `GET /debug/memory`, `POST /debug/memory/gc` — only registered in the Development environment.
 - **Test endpoints:** `GET /tests/ping` — always registered; returns `"pong"`, used to verify the API is reachable.
 
+## Portal UI
+
+The Portal (`MadWorldEU.Byakko.Controller.Portal`) is a Blazor WebAssembly app styled with Bootstrap 5.
+
+- **Dark theme:** `data-bs-theme="dark"` is set on the `<html>` element in `wwwroot/index.html`. This activates Bootstrap 5.3's built-in dark colour scheme globally — no custom CSS variables needed for standard components.
+- **Bootstrap JS:** `lib/bootstrap/js/bootstrap.bundle.min.js` is loaded in `index.html` (before the Blazor script) to enable interactive Bootstrap components such as the mobile navbar toggler.
+- **Layout:** `Layout/MainLayout.razor` wraps every page with a sticky top navbar (brand + collapsible nav) and a footer. Add new nav links there.
+- **Home page:** `Pages/Home.razor` is the public-facing landing page. It contains a hero section, feature cards, a "how it works" step list, and a CTA band — all using Bootstrap utility classes plus custom styles in `wwwroot/css/app.css`.
+- **Custom CSS:** `wwwroot/css/app.css` holds global styles. Portal-specific additions (hero gradient, feature card hover, step number circles) live at the bottom of that file under clearly labelled comment blocks.
+
 ## Project Conventions
 
 - **Target framework:** .NET 10.0
