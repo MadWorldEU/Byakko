@@ -20,6 +20,17 @@ dotnet run --project src/MadWorldEU.Byakko.Aspire/Aspire.csproj
 
 This starts the Aspire dashboard (typically at `http://localhost:15254`) where you can monitor all services, view logs, and inspect traces. The API, Admin, and Portal URLs are listed on the dashboard.
 
+## Configuring Aspire parameters
+
+The first time Aspire starts, the dashboard will prompt you to enter the following parameters:
+
+| Parameter | Used by |
+|---|---|
+| `db-username` | PostgreSQL database |
+| `db-password` | PostgreSQL database |
+| `keycloak-username` | Keycloak admin account |
+| `keycloak-password` | Keycloak admin account |
+
 ## Running tests locally
 
 ```bash

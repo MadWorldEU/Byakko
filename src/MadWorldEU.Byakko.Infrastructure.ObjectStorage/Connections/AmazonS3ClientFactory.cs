@@ -8,7 +8,7 @@ internal static class AmazonS3ClientFactory
 
         var settings = mode switch
         {
-            "Minio" => CreateMinioSettings(configuration),
+            "LocalStack" => CreateLocalStackSettings(configuration),
             "OvhCloud" => CreateOvhCloudSettings(configuration),
             _ => throw new InvalidOperationException($"Unknown storage mode: {mode}")
         };
@@ -16,30 +16,25 @@ internal static class AmazonS3ClientFactory
         var config = new AmazonS3Config
         {
             ServiceURL = settings.Endpoint,
-            ForcePathStyle = true, // important for MinIO
+            ForcePathStyle = true,
             AuthenticationRegion = settings.Region
         };
 
         return new AmazonS3Client(settings.AccessKey, settings.SecretKey, config);
     }
 
-    private static ObjectStorageSettings CreateMinioSettings(IConfiguration configuration)
+    private static ObjectStorageSettings CreateLocalStackSettings(IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("minio")
-            ?? throw new InvalidOperationException("ConnectionStrings:minio is not configured.");
+        var endpoint = configuration.GetConnectionString("localstack")
+            ?? throw new InvalidOperationException("ConnectionStrings:localstack is not configured.");
 
-        var parts = connectionString
-            .Split(';', StringSplitOptions.RemoveEmptyEntries)
-            .Select(p => p.Split('=', 2))
-            .ToDictionary(p => p[0], p => p[1]);
-        
         return new ObjectStorageSettings
         {
-            Endpoint = parts["Endpoint"],
-            AccessKey = parts["AccessKey"],
-            SecretKey = parts["SecretKey"],
-            Region = "eu-west-1"
-        };       
+            Endpoint = endpoint,
+            AccessKey = "test",
+            SecretKey = "test",
+            Region = "us-east-1"
+        };
     }
     
     private static ObjectStorageSettings CreateOvhCloudSettings(IConfiguration configuration)

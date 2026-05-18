@@ -12,7 +12,7 @@
         <PackageReference Include="Aspire.Hosting.Keycloak" />
         <PackageReference Include="Aspire.Hosting.PostgreSQL" />
         <PackageReference Include="AWSSDK.S3" />
-        <PackageReference Include="CommunityToolkit.Aspire.Hosting.Minio" />
+        <PackageReference Include="LocalStack.Aspire.Hosting" />
     </ItemGroup>
 
     <ItemGroup>
