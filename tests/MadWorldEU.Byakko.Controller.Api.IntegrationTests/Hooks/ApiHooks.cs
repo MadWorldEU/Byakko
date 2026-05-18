@@ -6,18 +6,20 @@ namespace MadWorldEU.Byakko.Hooks;
 public sealed class ApiHooks(ScenarioContext scenarioContext)
 {
     private static PostgreSqlContainer _postgres = null!;
-    private static MinioContainer _minio = null!;
+    private static LocalStackContainer _localstack = null!;
     private static WebApplicationFactory<Program>? _factory;
     private static HttpClient? _client;
 
     [BeforeTestRun]
     public static async Task BeforeTestRun()
     {
-        _postgres = new PostgreSqlBuilder("postgres:15.1").Build();
+        _postgres = new PostgreSqlBuilder(DockerImages.Postgres).Build();
         await _postgres.StartAsync();
 
-        _minio = new MinioBuilder("minio/minio:RELEASE.2023-01-31T02-24-19Z").Build();
-        await _minio.StartAsync().WaitAsync(CancellationToken.None);
+        _localstack = new LocalStackBuilder(DockerImages.LocalStack)
+            .WithEnvironment("SERVICES", "s3")
+            .Build();
+        await _localstack.StartAsync();
 
         _factory = new WebApplicationFactory<Program>()
             .WithWebHostBuilder(host =>
@@ -27,7 +29,7 @@ public sealed class ApiHooks(ScenarioContext scenarioContext)
                     config.AddInMemoryCollection(new Dictionary<string, string?>
                     {
                         ["ConnectionStrings:byakko-db"] = _postgres.GetConnectionString(),
-                        ["ConnectionStrings:minio"] = $"Endpoint={_minio.GetConnectionString()};AccessKey={_minio.GetAccessKey()};SecretKey={_minio.GetSecretKey()}",
+                        ["ConnectionStrings:localstack"] = _localstack.GetConnectionString(),
                         ["RateLimiting:Enabled"] = "false"
                     });
                 });
@@ -46,7 +48,7 @@ public sealed class ApiHooks(ScenarioContext scenarioContext)
         _client?.Dispose();
         await (_factory?.DisposeAsync() ?? ValueTask.CompletedTask);
         await _postgres.DisposeAsync();
-        await _minio.DisposeAsync();
+        await _localstack.DisposeAsync();
     }
 
     [BeforeScenario]
