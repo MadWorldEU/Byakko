@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MadWorldEU.Byakko;
 
@@ -17,6 +18,16 @@ builder.Services.AddHttpClient(HttpClients.ApiAnonymous, client =>
 builder.Services.AddHttpClient(HttpClients.ApiAuthorized, client =>
 {
     client.BaseAddress = new Uri(apiBaseUrl);
+}).AddHttpMessageHandler(sp =>
+{
+    var handler = sp.GetRequiredService<AuthorizationMessageHandler>()
+        .ConfigureHandler(authorizedUrls: [apiBaseUrl]);
+    return handler;
+});
+
+builder.Services.AddOidcAuthentication(options =>
+{
+    builder.Configuration.Bind("Oidc", options.ProviderOptions);
 });
 
 await builder.Build().RunAsync();
