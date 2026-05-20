@@ -1,4 +1,4 @@
 apiVersion: "v2"
 name: Byakko
 version: "1.0.0"
-description: ""
+description: "Helm chart for deploying the Byakko application, including the API, Admin, and Portal services."
