@@ -2,13 +2,14 @@ namespace MadWorldEU.Byakko.Factories;
 
 internal static class ResourceFactoryBuilder
 {
-    internal static IResourceFactory Create(IDistributedApplicationBuilder builder, bool useDockerFile)
+    internal static IResourceFactory Create(IDistributedApplicationBuilder builder, RunMode mode)
     {
-        if (useDockerFile)
+        return mode switch
         {
-            return new DockerResourceFactory(builder);
-        }
-        
-        return new ProjectResourceFactory(builder);
+            RunMode.DockerFile => new DockerFileResourceFactory(builder),
+            RunMode.ContainerImage => new DockerContainerResourceFactory(builder),
+            RunMode.Project => new ProjectResourceFactory(builder),
+            _ => throw new InvalidOperationException($"Unknown RunMode: {mode}")
+        };
     }
 }
