@@ -10,4 +10,8 @@
         <ProjectReference Include="..\MadWorldEU.Byakko.Core.Contracts\Contracts.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <AdditionalFiles Include="Pages\Development\TestPage.razor" />
+    </ItemGroup>
+
 </Project>

@@ -18,7 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <AdditionalFiles Include="Pages\Development\TestPage.razor" />
+      <_ContentIncludedByDefault Remove="Pages\Development\TestPage.razor" />
     </ItemGroup>
 
 </Project>

@@ -1,7 +1,7 @@
-@inject NavigationManager Navigation
+﻿@inject NavigationManager Navigation
 
 <CascadingAuthenticationState>
-    <Router AppAssembly="@typeof(App).Assembly" NotFoundPage="typeof(Pages.NotFound)">
+    <Router AppAssembly="@typeof(IAdminMarker).Assembly" AdditionalAssemblies="[typeof(IBlazorSharedMarker).Assembly]" NotFoundPage="typeof(Pages.NotFound)">
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
                 <NotAuthorized>
