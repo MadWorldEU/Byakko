@@ -1,24 +1,24 @@
 namespace MadWorldEU.Byakko.Factories;
 
-internal sealed class DockerResourceFactory(IDistributedApplicationBuilder builder) : IResourceFactory
+internal sealed class DockerContainerResourceFactory(IDistributedApplicationBuilder builder) : IResourceFactory
 {
     public IResourceBuilder<IResource> CreateApiBuilder(IResourceBuilder<PostgresDatabaseResource> byakkoDb, IResourceBuilder<ILocalStackResource> localstack, IResourceBuilder<KeycloakResource> keycloak)
     {
-        return builder.AddDockerfile(nameof(Api), "../../", "src/MadWorldEU.Byakko.Controller.Api/Dockerfile")
+        return builder.AddContainer(nameof(Api), DockerImages.ByakkoApiImage)
             .WithHttpEndpoint(targetPort: 8080)
             .BuildApi(byakkoDb, localstack, keycloak);
     }
 
     public IResourceBuilder<IResource> CreateAdminBuilder(IResourceBuilder<IResource> api)
     {
-        return builder.AddDockerfile(nameof(Admin), "../../", "src/MadWorldEU.Byakko.Controller.Admin/Dockerfile")
+        return builder.AddContainer(nameof(Admin), DockerImages.ByakkoAdminImage)
             .WithHttpEndpoint(targetPort: 8080)
             .BuildAdmin(api);
     }
 
     public IResourceBuilder<IResource> CreatePortalBuilder(IResourceBuilder<IResource> api)
     {
-        return builder.AddDockerfile(nameof(Portal), "../../", "src/MadWorldEU.Byakko.Controller.Portal/Dockerfile")
+        return builder.AddContainer(nameof(Portal), DockerImages.ByakkoPortalImage)
             .WithHttpEndpoint(targetPort: 8080)
             .BuildPortal(api);
     }
