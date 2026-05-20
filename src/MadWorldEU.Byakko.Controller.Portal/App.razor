@@ -1,5 +1,5 @@
 <CascadingAuthenticationState>
-    <Router AppAssembly="@typeof(App).Assembly" NotFoundPage="typeof(Pages.NotFound)">
+    <Router AppAssembly="@typeof(IPortalMarker).Assembly" AdditionalAssemblies="[typeof(IBlazorSharedMarker).Assembly]" NotFoundPage="typeof(Pages.NotFound)">
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
             <FocusOnNavigate RouteData="@routeData" Selector="h1"/>

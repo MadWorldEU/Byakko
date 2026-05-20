@@ -13,6 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\MadWorldEU.Byakko.Controller.Blazor.Shared\Blazor.Shared.csproj" />
       <ProjectReference Include="..\MadWorldEU.Byakko.Core.Contracts\Contracts.csproj" />
     </ItemGroup>
 

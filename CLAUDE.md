@@ -57,6 +57,7 @@ Clean Architecture with four layers:
 | Controller | `MadWorldEU.Byakko.Controller.Api` | ASP.NET Core Minimal APIs |
 | Controller | `MadWorldEU.Byakko.Controller.Admin` | Blazor WebAssembly admin UI |
 | Controller | `MadWorldEU.Byakko.Controller.Portal` | Blazor WebAssembly portal UI |
+| Controller | `MadWorldEU.Byakko.Controller.Blazor.Shared` | Razor Class Library shared by Admin and Portal |
 | Application | `MadWorldEU.Byakko.Core.Application` | Business logic / use cases |
 | Contracts | `MadWorldEU.Byakko.Core.Contracts` | Shared request/response DTOs |
 | Domain | `MadWorldEU.Byakko.Core.Domain` | Domain models / entities |
@@ -179,7 +180,8 @@ The Portal (`MadWorldEU.Byakko.Controller.Portal`) is a Blazor WebAssembly app s
 - **TUnit:** test attributes (`[Test]`, etc.) are available without explicit usings via source generator
 - **Curly braces:** `if`, `else`, `for`, `foreach`, `while`, and `do` statements must always use curly braces, even for single-line bodies.
 - **Endpoint classes:** use `internal static` with an `internal static` extension method on `WebApplication` (e.g. `AddAssetsEndpoints`). Grouped under `Endpoints/<Feature>/` within the API project.
-- **HTTP clients (Admin & Portal):** Both Blazor WebAssembly projects use `IHttpClientFactory` with named clients defined in `HttpClients.cs`. `HttpClients.ApiAnonymous` is for unauthenticated requests; `HttpClients.ApiAuthorized` is for authenticated requests — it has `AuthorizationMessageHandler` registered so the bearer token is attached automatically to every call. The API base URL is configured via `ApiBaseUrl` in `wwwroot/appsettings.json` (default `https://localhost:7286`).
+- **HTTP clients (Admin & Portal):** Both Blazor WebAssembly projects use `IHttpClientFactory` with named clients defined in `HttpClients.cs` (in `Controller.Blazor.Shared`). `HttpClients.ApiAnonymous` is for unauthenticated requests; `HttpClients.ApiAuthorized` is for authenticated requests — it has `AuthorizationMessageHandler` registered so the bearer token is attached automatically to every call. The API base URL is configured via `ApiBaseUrl` in `wwwroot/appsettings.json` (default `https://localhost:7286`).
+- **Blazor shared project:** `Controller.Blazor.Shared` is a Razor Class Library referenced by both Admin and Portal. It holds shared components and infrastructure (e.g. `HttpClients.cs`, `Pages/Authentication.razor`). Add code there when it is needed by both apps; keep app-specific layout, pages, and styles in each app's own project.
 - **appsettings JSON schemas:** Each project that has an `appsettings.json` has a companion `appsettings-schema.json` in the same folder. The schema is referenced via `"$schema": "./appsettings-schema.json"` and provides IDE validation and tooltips for all configuration keys (including enums such as `RunMode` and `Storage:Mode`). When adding a new configuration key, update the schema to match.
 
 ## Documentation
@@ -193,7 +195,7 @@ dotnet tool update -g docfx   # install / update DocFX
 docfx docs/docfx.json --serve # build and serve at http://localhost:8080
 ```
 
-Article sources live in `docs/`. API reference is generated from `src/**/*.csproj`. Generated output (`docs/_site/`) is excluded from version control.
+Article sources live in `docs/`. Developer guide articles live in `docs/developer-guides/`. API reference is generated from `src/**/*.csproj`. Generated output (`docs/_site/`) is excluded from version control.
 
 ## C4 Diagrams
 
@@ -205,4 +207,4 @@ To edit diagrams locally, run Structurizr Lite from the `docs/diagrams/` folder:
 docker run -it --rm -p 8080:8080 -v ./:/usr/local/structurizr structurizr/structurizr local
 ```
 
-Then open [http://localhost:8080](http://localhost:8080). You can edit the DSL directly (the browser reloads on save) or drag elements on the canvas. To export, use the export button in the top-right toolbar and save the SVG to `docs/diagrams/images/`. See `docs/Structurizr.md` for full details.
+Then open [http://localhost:8080](http://localhost:8080). You can edit the DSL directly (the browser reloads on save) or drag elements on the canvas. To export, use the export button in the top-right toolbar and save the SVG to `docs/diagrams/images/`. See `docs/developer-guides/Structurizr.md` for full details.

@@ -8,7 +8,6 @@
     <File Path="docs\Database.md" />
     <File Path="docs\docfx.json" />
     <File Path="docs\Docfx.md" />
-    <File Path="docs\DockerPipeline.md" />
     <File Path="docs\index.md" />
     <File Path="docs\InstallGuide.md" />
     <File Path="docs\Pipelines.md" />
@@ -18,6 +17,19 @@
     <File Path="docs\toc.yml" />
     <File Path="docs\UsefulLinks.md" />
     <File Path="docs\Versions.md" />
+  </Folder>
+  <Folder Name="/docs/developer-guides/">
+    <File Path="docs\developer-guides\Aspire.md" />
+    <File Path="docs\developer-guides\AuthenticationServer.md" />
+    <File Path="docs\developer-guides\Database.md" />
+    <File Path="docs\developer-guides\Docfx.md" />
+    <File Path="docs\developer-guides\InstallGuide.md" />
+    <File Path="docs\developer-guides\Pipelines.md" />
+    <File Path="docs\developer-guides\RiderSettings.md" />
+    <File Path="docs\developer-guides\Structurizr.md" />
+    <File Path="docs\developer-guides\toc.yml" />
+    <File Path="docs\developer-guides\UsefulLinks.md" />
+    <File Path="docs\developer-guides\Versions.md" />
   </Folder>
   <Folder Name="/docs/diagrams/">
     <File Path="docs\diagrams\Containers.md" />
@@ -80,6 +92,7 @@
   <Folder Name="/src/controller/">
     <Project Path="src\MadWorldEU.Byakko.Controller.Admin\Admin.csproj" />
     <Project Path="src\MadWorldEU.Byakko.Controller.Api\Api.csproj" />
+    <Project Path="src\MadWorldEU.Byakko.Controller.Blazor.Shared\Blazor.Shared.csproj" />
     <Project Path="src\MadWorldEU.Byakko.Controller.Portal\Portal.csproj" />
   </Folder>
   <Folder Name="/src/core/">
