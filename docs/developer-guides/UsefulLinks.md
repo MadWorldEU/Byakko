@@ -19,14 +19,17 @@ A curated list of websites and resources used in or relevant to this project.
 ## Infrastructure
 
 - [Docker](https://www.docker.com/) — Container platform for building and running applications
+- [Headlamp](https://headlamp.dev/) — Extensible Kubernetes web UI for browsing and managing cluster resources
 - [Helm](https://helm.sh/) — Package manager for Kubernetes
 - [OpenTelemetry](https://opentelemetry.io/) — Observability framework for traces, metrics, and logs
 - [Keycloak](https://www.keycloak.org/) — Open source identity and access management (authentication, SSO, OAuth2/OIDC)
+- [k3s](https://k3s.io/) — Lightweight Kubernetes distribution designed for production on resource-constrained nodes
 - [Kubernetes](https://kubernetes.io/) — Container orchestration platform
 - [LocalStack](https://localstack.cloud/) — Local AWS cloud service emulator (S3, SQS, and more)
 - [LocalStack Explorer](https://github.com/fgiova/localstack-explorer) — Web UI for browsing LocalStack resources
 - [OVHcloud](https://www.ovhcloud.com/) — Cloud hosting provider (servers, managed Kubernetes, object storage)
 - [PostgreSQL](https://www.postgresql.org/) — Open source relational database
+- [Traefik](https://traefik.io/) — Cloud-native reverse proxy and ingress controller for Kubernetes
 
 ## Architecture
 
@@ -40,11 +43,14 @@ A curated list of websites and resources used in or relevant to this project.
 
 ## Tooling
 
+- [Homebrew](https://brew.sh/) — Package manager for macOS and Linux
 - [cdnjs](https://cdnjs.com/) — Free and open source CDN for JavaScript libraries
 - [CodeQL](https://codeql.github.com/) — Semantic code analysis engine for security scanning
 - [DocFX](https://dotnet.github.io/docfx/) — Static documentation site generator for .NET projects
 - [GitHub Actions](https://github.com/features/actions) — CI/CD automation platform
+- [Helm Deploy](https://github.com/marketplace/actions/helm-deploy) — GitHub Action for deploying Helm charts to a Kubernetes cluster
 - [JetBrains Rider](https://www.jetbrains.com/rider/) — Cross-platform .NET IDE
+- [mkcert](https://github.com/FiloSottile/mkcert) — Tool for creating locally-trusted TLS certificates for development
 - [NuGet](https://www.nuget.org/) — .NET package manager
 - [SonarCloud](https://sonarcloud.io/) — Cloud-based static code analysis for code quality and security (free for public repositories)
 - [SonarQube](https://www.sonarsource.com/products/sonarqube/) — Self-hosted version of Sonar's static code analysis platform
