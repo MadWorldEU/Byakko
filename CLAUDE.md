@@ -195,7 +195,7 @@ dotnet tool update -g docfx   # install / update DocFX
 docfx docs/docfx.json --serve # build and serve at http://localhost:8080
 ```
 
-Article sources live in `docs/`. API reference is generated from `src/**/*.csproj`. Generated output (`docs/_site/`) is excluded from version control.
+Article sources live in `docs/`. Developer guide articles live in `docs/developer-guides/`. API reference is generated from `src/**/*.csproj`. Generated output (`docs/_site/`) is excluded from version control.
 
 ## C4 Diagrams
 
@@ -207,4 +207,4 @@ To edit diagrams locally, run Structurizr Lite from the `docs/diagrams/` folder:
 docker run -it --rm -p 8080:8080 -v ./:/usr/local/structurizr structurizr/structurizr local
 ```
 
-Then open [http://localhost:8080](http://localhost:8080). You can edit the DSL directly (the browser reloads on save) or drag elements on the canvas. To export, use the export button in the top-right toolbar and save the SVG to `docs/diagrams/images/`. See `docs/Structurizr.md` for full details.
+Then open [http://localhost:8080](http://localhost:8080). You can edit the DSL directly (the browser reloads on save) or drag elements on the canvas. To export, use the export button in the top-right toolbar and save the SVG to `docs/diagrams/images/`. See `docs/developer-guides/Structurizr.md` for full details.
