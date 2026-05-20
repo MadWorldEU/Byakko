@@ -17,8 +17,4 @@
       <ProjectReference Include="..\MadWorldEU.Byakko.Core.Contracts\Contracts.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <_ContentIncludedByDefault Remove="Pages\Development\TestPage.razor" />
-    </ItemGroup>
-
 </Project>

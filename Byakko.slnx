@@ -18,6 +18,19 @@
     <File Path="docs\UsefulLinks.md" />
     <File Path="docs\Versions.md" />
   </Folder>
+  <Folder Name="/docs/developer-guides/">
+    <File Path="docs\developer-guides\Aspire.md" />
+    <File Path="docs\developer-guides\AuthenticationServer.md" />
+    <File Path="docs\developer-guides\Database.md" />
+    <File Path="docs\developer-guides\Docfx.md" />
+    <File Path="docs\developer-guides\InstallGuide.md" />
+    <File Path="docs\developer-guides\Pipelines.md" />
+    <File Path="docs\developer-guides\RiderSettings.md" />
+    <File Path="docs\developer-guides\Structurizr.md" />
+    <File Path="docs\developer-guides\toc.yml" />
+    <File Path="docs\developer-guides\UsefulLinks.md" />
+    <File Path="docs\developer-guides\Versions.md" />
+  </Folder>
   <Folder Name="/docs/diagrams/">
     <File Path="docs\diagrams\Containers.md" />
     <File Path="docs\diagrams\SystemContext.md" />

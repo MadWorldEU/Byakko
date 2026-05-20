@@ -1,15 +1,5 @@
 - name: Developer Guide
-  items:
-    - href: InstallGuide.md
-    - href: Aspire.md
-    - href: AuthenticationServer.md
-    - href: Database.md
-    - href: Docfx.md
-    - href: Pipelines.md
-    - href: RiderSettings.md
-    - href: Structurizr.md
-    - href: UsefulLinks.md
-    - href: Versions.md
+  href: developer-guides/
 - name: User Guide
   href: user-guides/
 - name: Diagrams

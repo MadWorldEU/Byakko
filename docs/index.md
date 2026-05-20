@@ -16,13 +16,13 @@ A file sharing platform for uploading, managing, and retrieving digital assets. 
 
 | Guide                                              | Description                                                   |
 |----------------------------------------------------|---------------------------------------------------------------|
-| [Install Guide](InstallGuide.md)                   | Set up and run the platform locally                           |
-| [Aspire](Aspire.md)                                | Aspire orchestration and run modes (Project, DockerFile, ContainerImage) |
-| [Authentication Server](AuthenticationServer.md)   | Configure Keycloak for JWT authentication                     |
-| [Database](Database.md)                            | Run and manage PostgreSQL migrations                          |
-| [Pipelines](Pipelines.md)                          | CI/CD pipelines for building, testing, Docker, and SonarCloud |
-| [DocFX](Docfx.md)                                  | Build and deploy the documentation site                       |
-| [Rider Settings](RiderSettings.md)                 | Recommended JetBrains Rider configuration                     |
+| [Install Guide](developer-guides/InstallGuide.md)                   | Set up and run the platform locally                           |
+| [Aspire](developer-guides/Aspire.md)                                | Aspire orchestration and run modes (Project, DockerFile, ContainerImage) |
+| [Authentication Server](developer-guides/AuthenticationServer.md)   | Configure Keycloak for JWT authentication                     |
+| [Database](developer-guides/Database.md)                            | Run and manage PostgreSQL migrations                          |
+| [Pipelines](developer-guides/Pipelines.md)                          | CI/CD pipelines for building, testing, Docker, and SonarCloud |
+| [DocFX](developer-guides/Docfx.md)                                  | Build and deploy the documentation site                       |
+| [Rider Settings](developer-guides/RiderSettings.md)                 | Recommended JetBrains Rider configuration                     |
 
 ## Architecture
 
@@ -30,11 +30,11 @@ A file sharing platform for uploading, managing, and retrieving digital assets. 
 |----------------------------------------------------|---------------------------------------------------|
 | [System Context](diagrams/SystemContext.md)        | High-level view of users and the system           |
 | [Containers](diagrams/Containers.md)               | Internal containers and their interactions        |
-| [Structurizr](Structurizr.md)                      | Editing and exporting C4 diagrams locally         |
+| [Structurizr](developer-guides/Structurizr.md)                      | Editing and exporting C4 diagrams locally         |
 
 ## Reference
 
 | Guide                              | Description                          |
 |------------------------------------|--------------------------------------|
-| [Useful Links](UsefulLinks.md)     | External links and resources         |
-| [Versions](Versions.md)            | Changelog and version history        |
+| [Useful Links](developer-guides/UsefulLinks.md)     | External links and resources         |
+| [Versions](developer-guides/Versions.md)            | Changelog and version history        |
