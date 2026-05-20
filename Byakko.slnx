@@ -2,6 +2,9 @@
   <Folder Name="/claude/">
     <File Path=".claude\settings.json" />
   </Folder>
+  <Folder Name="/deployments/">
+    <Project Path="deployments\Deployments.csproj" />
+  </Folder>
   <Folder Name="/docs/">
     <File Path="docs\docfx.json" />
     <File Path="docs\index.md" />
