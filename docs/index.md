@@ -17,6 +17,7 @@ A file sharing platform for uploading, managing, and retrieving digital assets. 
 | Guide                                              | Description                                                   |
 |----------------------------------------------------|---------------------------------------------------------------|
 | [Install Guide](InstallGuide.md)                   | Set up and run the platform locally                           |
+| [Aspire](Aspire.md)                                | Aspire orchestration and run modes (Project, DockerFile, ContainerImage) |
 | [Authentication Server](AuthenticationServer.md)   | Configure Keycloak for JWT authentication                     |
 | [Database](Database.md)                            | Run and manage PostgreSQL migrations                          |
 | [Pipelines](Pipelines.md)                          | CI/CD pipelines for building, testing, Docker, and SonarCloud |

@@ -13,6 +13,7 @@ This folder contains the project documentation for Byakko, including user guides
 | Document                                         | Description                                                                 |
 |--------------------------------------------------|-----------------------------------------------------------------------------|
 | [Install Guide](InstallGuide.md)                 | How to set up and run Byakko locally for development                        |
+| [Aspire](Aspire.md)                              | Aspire orchestration and run modes (Project, DockerFile, ContainerImage)    |
 | [Authentication Server](AuthenticationServer.md) | Keycloak setup for local development and testing                            |
 | [Database](Database.md)                          | EF Core / PostgreSQL setup, migrations, and connection string configuration |
 | [Pipelines](Pipelines.md)                        | CI/CD pipelines for building, testing, Docker, and SonarCloud               |
