@@ -8,7 +8,6 @@
     <File Path="docs\Database.md" />
     <File Path="docs\docfx.json" />
     <File Path="docs\Docfx.md" />
-    <File Path="docs\DockerPipeline.md" />
     <File Path="docs\index.md" />
     <File Path="docs\InstallGuide.md" />
     <File Path="docs\Pipelines.md" />
