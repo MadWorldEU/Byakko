@@ -1,3 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: {{ .Values.admin.name }}-config
+    namespace: {{ .Values.namespace }}
+    labels:
+        app: {{ .Values.admin.name }}
+data:
+    appsettings.json: |
+        {
+          "ApiBaseUrl": "https://api.{{ .Values.ingress.domain }}",
+          "Oidc": {
+            "Authority": "https://authentication.{{ .Values.ingress.domain }}/realms/{{ .Values.keycloak.realm }}",
+            "ClientId": "{{ .Values.admin.oidc.clientId }}",
+            "ResponseType": "code",
+            "DefaultScopes": [
+              "openid",
+              "profile",
+              "email"
+            ]
+          }
+        }
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -30,6 +53,11 @@ spec:
                           cpu: {{ .Values.admin.resources.limits.cpu }}
                           memory: {{ .Values.admin.resources.limits.memory }}
                           ephemeral-storage: {{ index .Values.admin.resources.limits "ephemeral-storage" }}
+                  volumeMounts:
+                      - name: appsettings
+                        mountPath: /usr/share/nginx/html/appsettings.json
+                        subPath: appsettings.json
+                        readOnly: true
                   livenessProbe:
                       httpGet:
                           path: /health.txt
@@ -42,6 +70,10 @@ spec:
                           port: {{ .Values.admin.port }}
                       initialDelaySeconds: 5
                       periodSeconds: 10
+            volumes:
+                - name: appsettings
+                  configMap:
+                      name: {{ .Values.admin.name }}-config
 ---
 apiVersion: v1
 kind: Service

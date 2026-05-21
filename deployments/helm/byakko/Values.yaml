@@ -134,6 +134,8 @@ admin:
     name: "admin"
     replicas: 1
     port: 8080
+    oidc:
+        clientId: "admin-client"
     image:
         repository: "ghcr.io/madworldeu/byakko-admin"
         tag: "latest"
@@ -151,6 +153,8 @@ portal:
     name: "portal"
     replicas: 1
     port: 8080
+    oidc:
+        clientId: "portal-client"
     image:
         repository: "ghcr.io/madworldeu/byakko-portal"
         tag: "latest"
