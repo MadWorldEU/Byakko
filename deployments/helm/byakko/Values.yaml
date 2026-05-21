@@ -10,6 +10,23 @@ clusterIssuer:
     name: "letsencrypt-byakko"
     email: "info@byakko.dev"
 
+localstack:
+    enabled: false
+    name: "localstack"
+    image: "localstack/localstack"
+    tag: "4.12.0"
+    containerPort: 4566
+    servicePort: 4566
+    resources:
+        requests:
+            cpu: 100m
+            memory: 128Mi
+            ephemeral-storage: 512Mi
+        limits:
+            cpu: 250m
+            memory: 256Mi
+            ephemeral-storage: 512Mi
+
 postgres:
     name: "byakko-postgres"
     image: "postgres"
@@ -81,12 +98,12 @@ pgadmin:
     password: "changeme"
     resources:
         requests:
-            cpu: 100m
-            memory: 128Mi
-            ephemeral-storage: 512Mi
-        limits:
             cpu: 250m
             memory: 256Mi
+            ephemeral-storage: 512Mi
+        limits:
+            cpu: 500m
+            memory: 512Mi
             ephemeral-storage: 512Mi
 
 api:
