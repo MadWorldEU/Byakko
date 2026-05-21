@@ -51,6 +51,8 @@ spec:
                         value: {{ .Values.api.storage.mode | quote }}
                       - name: Storage__BucketName
                         value: {{ .Values.api.storage.bucketName | quote }}
+                      - name: OpenApi__ServerUrl
+                        value: "https://api.{{ .Values.ingress.domain }}"
                       - name: Cors__AllowedOrigins__0
                         value: "https://api.{{ .Values.ingress.domain }}"
                       - name: Cors__AllowedOrigins__1
