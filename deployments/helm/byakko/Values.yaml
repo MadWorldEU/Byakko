@@ -31,6 +31,8 @@ postgres:
             ephemeral-storage: 1Gi
 
 keycloak:
+    realm: "MadWorld"
+    audience: "api-client"
     name: "keycloak"
     image: "quay.io/keycloak/keycloak"
     tag: "26.2"
@@ -93,6 +95,14 @@ api:
     tag: "latest"
     containerPort: 8080
     servicePort: 80
+    database:
+        autoMigrate: false
+    storage:
+        mode: "OvhCloud"
+        bucketName: "byakko"
+        endpoint: "http://changeme"
+    observability:
+        otlpEndpoint: "http://localhost:4040"
     resources:
         requests:
             cpu: 100m
