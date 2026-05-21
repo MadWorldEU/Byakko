@@ -14,7 +14,7 @@ RUN dotnet publish "./Admin.csproj" -c "$BUILD_CONFIGURATION" -o /app/publish /p
 FROM nginx:alpine AS final
 COPY --from=build /app/publish/wwwroot /usr/share/nginx/html
 COPY src/MadWorldEU.Byakko.Controller.Admin/DockerConfigs/nginx.conf /etc/nginx/conf.d/default.conf
-RUN rm /usr/share/nginx/html/appsetings.json.br /usr/share/nginx/html/appsetings.json.gz
+RUN rm /usr/share/nginx/html/appsettings.json.br /usr/share/nginx/html/appsettings.json.gz
 RUN chown -R nginx:nginx /var/cache/nginx /var/log/nginx /etc/nginx/conf.d /usr/share/nginx/html \
     && touch /var/run/nginx.pid \
     && chown nginx:nginx /var/run/nginx.pid
