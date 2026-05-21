@@ -17,6 +17,7 @@ internal static class AssetsEndpoints
                     onFailure: error => Results.BadRequest(error.Description)
                 );
             })
+            .RequireAuthorization()
             .WithName("CreateAssetMetadata");
 
         assetsEndpoints.MapGet("/{id}", async (string id, GetAssetMetadataUseCase useCase) =>
@@ -39,6 +40,7 @@ internal static class AssetsEndpoints
             })
             .WithName("UploadAssetContent")
             .DisableAntiforgery()
+            .RequireAuthorization()
             .RequireRateLimiting(RateLimiterPolicies.Content);
 
         assetsEndpoints.MapGet("/{id}/content", async (string id, DownloadAssetContentUseCase useCase) =>
