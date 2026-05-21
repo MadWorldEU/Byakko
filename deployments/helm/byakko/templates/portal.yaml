@@ -54,6 +54,6 @@ spec:
     selector:
         app: {{ .Values.portal.name }}
     ports:
-        - port: 80
+        - port: {{ .Values.admin.port }}
           targetPort: {{ .Values.portal.port }}
           protocol: TCP

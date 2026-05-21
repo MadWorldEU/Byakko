@@ -81,8 +81,8 @@ Add the following entries to your hosts file so the local domains resolve to you
 127.0.0.1       www.byakko.dev
 127.0.0.1       admin.byakko.dev
 127.0.0.1       api.byakko.dev
-127.0.0.1       database.umiko.dev
-127.0.0.1       authentication.umiko.dev
+127.0.0.1       database.byakko.dev
+127.0.0.1       authentication.byakko.dev
 ```
 
 ### Deploy to Development
