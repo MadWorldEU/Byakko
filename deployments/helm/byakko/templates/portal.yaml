@@ -42,6 +42,7 @@ spec:
             containers:
                 - name: {{ .Values.portal.name }}
                   image: "{{ .Values.portal.image.repository }}:{{ .Values.portal.image.tag }}"
+                  imagePullPolicy: {{ .Values.imagePullPolicy }}
                   ports:
                       - containerPort: {{ .Values.portal.port }}
                   resources:

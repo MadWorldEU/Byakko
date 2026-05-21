@@ -42,6 +42,7 @@ spec:
             containers:
                 - name: {{ .Values.admin.name }}
                   image: "{{ .Values.admin.image.repository }}:{{ .Values.admin.image.tag }}"
+                  imagePullPolicy: {{ .Values.imagePullPolicy }}
                   ports:
                       - containerPort: {{ .Values.admin.port }}
                   resources:

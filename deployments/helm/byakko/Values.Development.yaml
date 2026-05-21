@@ -1,4 +1,5 @@
 namespace: "byakko-development"
+imagePullPolicy: "Always"
 
 localstack:
     enabled: true
