@@ -1,0 +1,82 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+    name: byakko-ingress
+    namespace: {{ .Values.namespace }}
+    annotations:
+        kubernetes.io/ingress.class: "traefik"
+        {{- if .Values.clusterIssuer.enabled }}
+        cert-manager.io/cluster-issuer: {{ .Values.clusterIssuer.name | quote }}
+        {{- end }}
+spec:
+    ingressClassName: {{ .Values.ingress.className }}
+    tls:
+        - secretName: {{ .Values.ingress.tlsSecret }}
+          hosts:
+              - {{ .Values.ingress.domain }}
+              - www.{{ .Values.ingress.domain }}
+              - api.{{ .Values.ingress.domain }}
+              - admin.{{ .Values.ingress.domain }}
+              - database.{{ .Values.ingress.domain }}
+              - authentication.{{ .Values.ingress.domain }}
+    rules:
+        - host: api.{{ .Values.ingress.domain }}
+          http:
+              paths:
+                  - path: /
+                    pathType: Prefix
+                    backend:
+                        service:
+                            name: {{ .Values.api.name }}
+                            port:
+                                number: {{ .Values.api.servicePort }}
+        - host: admin.{{ .Values.ingress.domain }}
+          http:
+              paths:
+                  - path: /
+                    pathType: Prefix
+                    backend:
+                        service:
+                            name: {{ .Values.admin.name }}
+                            port:
+                                number: {{ .Values.admin.port }}
+        - host: database.{{ .Values.ingress.domain }}
+          http:
+              paths:
+                  - path: /
+                    pathType: Prefix
+                    backend:
+                        service:
+                            name: {{ .Values.pgadmin.name }}
+                            port:
+                                number: {{ .Values.pgadmin.servicePort }}
+        - host: authentication.{{ .Values.ingress.domain }}
+          http:
+              paths:
+                  - path: /
+                    pathType: Prefix
+                    backend:
+                        service:
+                            name: {{ .Values.keycloak.name }}
+                            port:
+                                number: {{ .Values.keycloak.servicePort }}
+        - host: www.{{ .Values.ingress.domain }}
+          http:
+              paths:
+                  - path: /
+                    pathType: Prefix
+                    backend:
+                        service:
+                            name: {{ .Values.portal.name }}
+                            port:
+                                number: {{ .Values.portal.port }}
+        - host: {{ .Values.ingress.domain }}
+          http:
+              paths:
+                  - path: /
+                    pathType: Prefix
+                    backend:
+                        service:
+                            name: {{ .Values.portal.name }}
+                            port:
+                                number: {{ .Values.portal.port }}

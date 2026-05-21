@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi(options =>
 {
     options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
+    options.AddDocumentTransformer<ServerUrlDocumentTransformer>();
 });
 
 builder.Services.AddDefaultCors(builder.Configuration);
@@ -46,13 +47,13 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 
-app.MapOpenApi();
-app.MapScalarApiReference();
-
 app.MapHealthChecks("/health")
     .DisableRateLimiting();
 
 app.UseCors();
+
+app.MapOpenApi();
+app.MapScalarApiReference();
 
 app.UseAuthentication();
 app.UseAuthorization();

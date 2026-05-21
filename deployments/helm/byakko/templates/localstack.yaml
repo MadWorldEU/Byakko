@@ -1,0 +1,68 @@
+{{- if .Values.localstack.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: {{ .Values.localstack.name }}
+    namespace: {{ .Values.namespace }}
+    labels:
+        app: {{ .Values.localstack.name }}
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: {{ .Values.localstack.name }}
+    template:
+        metadata:
+            labels:
+                app: {{ .Values.localstack.name }}
+        spec:
+            automountServiceAccountToken: false
+            containers:
+                - name: {{ .Values.localstack.name }}
+                  image: "{{ .Values.localstack.image }}:{{ .Values.localstack.tag }}"
+                  ports:
+                      - containerPort: {{ .Values.localstack.containerPort }}
+                  env:
+                      - name: ACTIVATE_PRO
+                        value: "false"
+                      - name: SERVICES
+                        value: "s3"
+                      - name: DEFAULT_REGION
+                        value: "us-east-1"
+                  resources:
+                      requests:
+                          cpu: {{ .Values.localstack.resources.requests.cpu }}
+                          memory: {{ .Values.localstack.resources.requests.memory }}
+                          ephemeral-storage: {{ index .Values.localstack.resources.requests "ephemeral-storage" }}
+                      limits:
+                          cpu: {{ .Values.localstack.resources.limits.cpu }}
+                          memory: {{ .Values.localstack.resources.limits.memory }}
+                          ephemeral-storage: {{ index .Values.localstack.resources.limits "ephemeral-storage" }}
+                  livenessProbe:
+                      httpGet:
+                          path: /_localstack/health
+                          port: {{ .Values.localstack.containerPort }}
+                      initialDelaySeconds: 10
+                      periodSeconds: 10
+                  readinessProbe:
+                      httpGet:
+                          path: /_localstack/health
+                          port: {{ .Values.localstack.containerPort }}
+                      initialDelaySeconds: 5
+                      periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: {{ .Values.localstack.name }}
+    namespace: {{ .Values.namespace }}
+    labels:
+        app: {{ .Values.localstack.name }}
+spec:
+    selector:
+        app: {{ .Values.localstack.name }}
+    ports:
+        - port: {{ .Values.localstack.servicePort }}
+          targetPort: {{ .Values.localstack.containerPort }}
+          protocol: TCP
+{{- end }}

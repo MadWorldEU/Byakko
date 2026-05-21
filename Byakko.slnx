@@ -2,21 +2,14 @@
   <Folder Name="/claude/">
     <File Path=".claude\settings.json" />
   </Folder>
+  <Folder Name="/deployments/">
+    <Project Path="deployments\Deployments.csproj" />
+  </Folder>
   <Folder Name="/docs/">
-    <File Path="docs\Aspire.md" />
-    <File Path="docs\AuthenticationServer.md" />
-    <File Path="docs\Database.md" />
     <File Path="docs\docfx.json" />
-    <File Path="docs\Docfx.md" />
     <File Path="docs\index.md" />
-    <File Path="docs\InstallGuide.md" />
-    <File Path="docs\Pipelines.md" />
     <File Path="docs\README.md" />
-    <File Path="docs\RiderSettings.md" />
-    <File Path="docs\Structurizr.md" />
     <File Path="docs\toc.yml" />
-    <File Path="docs\UsefulLinks.md" />
-    <File Path="docs\Versions.md" />
   </Folder>
   <Folder Name="/docs/developer-guides/">
     <File Path="docs\developer-guides\Aspire.md" />
@@ -24,6 +17,7 @@
     <File Path="docs\developer-guides\Database.md" />
     <File Path="docs\developer-guides\Docfx.md" />
     <File Path="docs\developer-guides\InstallGuide.md" />
+    <File Path="docs\developer-guides\Kubernetes.md" />
     <File Path="docs\developer-guides\Pipelines.md" />
     <File Path="docs\developer-guides\RiderSettings.md" />
     <File Path="docs\developer-guides\Structurizr.md" />

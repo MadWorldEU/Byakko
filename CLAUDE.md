@@ -11,8 +11,8 @@ dotnet watch --project src/MadWorldEU.Byakko.Controller.Api/Api.csproj
 ```
 
 The API runs on `http://localhost:5062` (HTTP) or `https://localhost:7286` (HTTPS).
-OpenAPI spec is available at `/openapi/v1.json` in the Development environment.
-Scalar API reference UI is available at `/scalar/v1` in the Development environment.
+OpenAPI spec is available at `/openapi/v1.json` in all environments.
+Scalar API reference UI is available at `/scalar/v1` in all environments.
 
 ## Docker
 
@@ -133,7 +133,8 @@ The upload/download use cases delegate to `IContentStorage`; the metadata use ca
 - **Object storage:** S3-compatible storage via `IAmazonS3` (AWSSDK). Registered by `AddObjectStorage()` in `Infrastructure.ObjectStorage`. Connection string key: `localstack` (format: plain endpoint URL, e.g. `http://localhost:4566`). Storage mode and bucket name are configured under `Storage:Mode` and `Storage:BucketName` in `appsettings.json`. A `BucketInitializer` hosted service ensures the bucket exists on startup. The domain abstraction is `IContentStorage` (in `Core.Domain`); it uses `AssetPath` (bucket + key) to address objects and exposes `UploadAsync` and `DownloadAsync`. Supported modes: `LocalStack` (static `test`/`test` credentials, `us-east-1`) and `OvhCloud`.
 - **Migrations:** Automatic migration on startup is toggled via `Database:AutoMigrate` in `appsettings.json` (default `false`; `true` in `appsettings.Development.json`). When enabled, a `MigrationService` hosted service runs `MigrateAsync` before the app starts accepting requests. Manual commands are documented in `docs/Database.md`.
 - **Aspire orchestration:** Postgres (with pgAdmin), LocalStack (S3, persistent), and Keycloak are provisioned. The API waits for all three; Admin and Portal wait for the API. Credentials are passed as Aspire parameters (`db-username`, `db-password`, `keycloak-username`, `keycloak-password`). A companion `localstack-explorer` container provides a web UI for browsing LocalStack resources. The `Factories/` folder contains `IResourceFactory`, `ProjectResourceFactory`, `DockerFileResourceFactory`, `DockerContainerResourceFactory`, `ResourceFactoryBuilder`, and `ResourceBuilderExtensions` — this pattern abstracts how each service is run so `AppHost.cs` stays clean. Control which mode is used via `RunMode` in `appsettings.json`: `Project` (default, run from source), `DockerFile` (build from local Dockerfiles), or `ContainerImage` (pull pre-built images from GHCR). See `docs/Aspire.md` for details.
-- **CORS:** Configured via `Cors:AllowedOrigins` in `appsettings.json`. When the array is non-empty, only those origins are allowed; an empty array falls back to allowing any origin. Registered by `AddDefaultCors()` in `Configurations/CorsExtensions.cs`.
+- **CORS:** Configured via `Cors:AllowedOrigins` in `appsettings.json`. When the array is non-empty, only those origins are allowed; an empty array falls back to allowing any origin. Registered by `AddDefaultCors()` in `Configurations/CorsExtensions.cs`. `UseCors()` is placed before `MapOpenApi()` and `MapScalarApiReference()` in `Program.cs` so CORS headers are present on OpenAPI and Scalar responses.
+- **OpenAPI server URL:** The OpenAPI document's `servers` list is overridden by `ServerUrlDocumentTransformer` when `OpenApi:ServerUrl` is set in configuration. This ensures Scalar's "Try It Out" sends requests to the correct public host rather than the auto-detected localhost URL. Set to `https://localhost:7286` in `appsettings.json` for local development; the Helm chart sets it to `https://api.<domain>` via the `OpenApi__ServerUrl` environment variable.
 - **Rate limiting:** Fixed-window rate limiting registered by `AddApiRateLimiter()` in `Configurations/RateLimiterExtensions.cs`. A global limiter (default 100 req/min) applies to all endpoints; upload and download additionally apply a stricter named `content` policy (default 20 req/min), both partitioned per authenticated user (Keycloak `sub` claim) with IP fallback. Toggle via `RateLimiting:Enabled` and tune limits via `RateLimiting:General` / `RateLimiting:Content` in `appsettings.json`. Disabled by default in `appsettings.Development.json` and in the API integration tests.
 - **Authentication:** JWT Bearer authentication via Keycloak. Configured in `appsettings.json` under `Authentication:Authority`. The Keycloak realm defines `admin-client`, `api-client`, and `portal-client`. See `docs/AuthenticationServer.md` for setup.
 - **OIDC (Blazor):** Both Admin and Portal use `Microsoft.AspNetCore.Components.WebAssembly.Authentication` for OIDC. Each app's `wwwroot/appsettings.json` contains an `Oidc` section (`Authority`, `ClientId`, `ResponseType`, `DefaultScopes`); `Program.cs` binds it via `AddOidcAuthentication`. Admin uses `admin-client`; Portal uses `portal-client`. `App.razor` wraps the router with `CascadingAuthenticationState` and uses `AuthorizeRouteView`. The OIDC redirect/callback is handled by `Pages/Authentication.razor` (`/authentication/{action}`). `AuthorizationMessageHandler` is registered on the `ApiAuthorized` named HTTP client so bearer tokens are attached automatically. Pages that must remain accessible without login need `@attribute [AllowAnonymous]`.
@@ -183,6 +184,63 @@ The Portal (`MadWorldEU.Byakko.Controller.Portal`) is a Blazor WebAssembly app s
 - **HTTP clients (Admin & Portal):** Both Blazor WebAssembly projects use `IHttpClientFactory` with named clients defined in `HttpClients.cs` (in `Controller.Blazor.Shared`). `HttpClients.ApiAnonymous` is for unauthenticated requests; `HttpClients.ApiAuthorized` is for authenticated requests — it has `AuthorizationMessageHandler` registered so the bearer token is attached automatically to every call. The API base URL is configured via `ApiBaseUrl` in `wwwroot/appsettings.json` (default `https://localhost:7286`).
 - **Blazor shared project:** `Controller.Blazor.Shared` is a Razor Class Library referenced by both Admin and Portal. It holds shared components and infrastructure (e.g. `HttpClients.cs`, `Pages/Authentication.razor`). Add code there when it is needed by both apps; keep app-specific layout, pages, and styles in each app's own project.
 - **appsettings JSON schemas:** Each project that has an `appsettings.json` has a companion `appsettings-schema.json` in the same folder. The schema is referenced via `"$schema": "./appsettings-schema.json"` and provides IDE validation and tooltips for all configuration keys (including enums such as `RunMode` and `Storage:Mode`). When adding a new configuration key, update the schema to match.
+
+## Helm / Kubernetes Deployment
+
+The Helm chart lives in `deployments/helm/byakko/`. It deploys all services into a single Kubernetes namespace and is designed to work with k3s + Traefik.
+
+### Chart structure
+
+| Template | Kind(s) | Description |
+|---|---|---|
+| `namespace.yml` | Namespace | Creates the target namespace |
+| `api.yaml` | Deployment, Service | ASP.NET Core API |
+| `admin.yaml` | Deployment, Service | Blazor WebAssembly admin UI (nginx) |
+| `portal.yaml` | Deployment, Service | Blazor WebAssembly portal UI (nginx) |
+| `database.yaml` | Secret, StatefulSet, Service | PostgreSQL for the application |
+| `keycloak.yaml` | Secret, StatefulSet (×2 Services) | Keycloak identity server |
+| `keycloak-database.yaml` | Secret, StatefulSet, Service | Dedicated PostgreSQL for Keycloak |
+| `pgadmin.yaml` | Secret, ConfigMap, Deployment, Service | pgAdmin 4 with both databases pre-registered |
+| `localstack.yaml` | Deployment, Service | MinIO S3-compatible storage (development only, guarded by `localstack.enabled`) |
+| `ingress.yaml` | Ingress | Traefik ingress with TLS for all subdomains |
+| `NOTES.txt` | — | Printed by Helm after install/upgrade |
+
+### Values
+
+`values.yaml` contains shared defaults. Override per environment in `values.production.yaml` or `values.development.yaml`. Key top-level sections:
+
+| Key | Purpose |
+|---|---|
+| `namespace` | Kubernetes namespace for all resources |
+| `ingress.domain` | Base domain (e.g. `byakko.dev`); subdomains are derived automatically |
+| `ingress.tlsSecret` | Name of the TLS secret; created manually (mkcert) or by cert-manager |
+| `clusterIssuer.enabled` | Set to `true` to use cert-manager for automatic TLS |
+| `localstack.enabled` | Set to `true` in development to deploy MinIO in-cluster |
+| `api.database.autoMigrate` | Set to `true` to run EF Core migrations on API startup |
+| `api.storage.mode` | `LocalStack` (in-cluster MinIO) or `OvhCloud` |
+| `keycloak.realm` | Keycloak realm name used to build the `Authentication:Authority` URL |
+| `keycloak.audience` | Keycloak client ID used as the API audience |
+
+### Subdomains exposed via ingress
+
+| Subdomain | Service |
+|---|---|
+| `byakko.dev` / `www.` | Portal |
+| `api.` | API |
+| `admin.` | Admin |
+| `database.` | pgAdmin |
+| `authentication.` | Keycloak |
+
+### Local development TLS (mkcert)
+
+```bash
+mkcert -install
+mkcert byakko.dev "*.byakko.dev"
+kubectl create secret tls byakko-tls \
+  --cert=byakko.dev+1.pem \
+  --key=byakko.dev+1-key.pem \
+  -n byakko
+```
 
 ## Documentation
 

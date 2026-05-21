@@ -1,0 +1,165 @@
+namespace: "byakko"
+
+ingress:
+    className: "traefik"
+    domain: "byakko.dev"
+    tlsSecret: "byakko-tls"
+
+clusterIssuer:
+    enabled: false
+    name: "letsencrypt-byakko"
+    email: "info@byakko.dev"
+
+localstack:
+    enabled: false
+    name: "localstack"
+    image: "localstack/localstack"
+    tag: "4.12.0"
+    containerPort: 4566
+    servicePort: 4566
+    resources:
+        requests:
+            cpu: 100m
+            memory: 128Mi
+            ephemeral-storage: 512Mi
+        limits:
+            cpu: 250m
+            memory: 256Mi
+            ephemeral-storage: 512Mi
+
+postgres:
+    name: "byakko-postgres"
+    image: "postgres"
+    tag: "17"
+    containerPort: 5432
+    servicePort: 5432
+    storageSize: "5Gi"
+    username: "byakko"
+    password: "changeme"
+    database: "byakko"
+    resources:
+        requests:
+            cpu: 250m
+            memory: 256Mi
+            ephemeral-storage: 1Gi
+        limits:
+            cpu: "1"
+            memory: 512Mi
+            ephemeral-storage: 1Gi
+
+keycloak:
+    realm: "MadWorld"
+    audience: "api-client"
+    name: "keycloak"
+    image: "quay.io/keycloak/keycloak"
+    tag: "26.2"
+    servicePort: 80
+    adminUsername: "admin"
+    adminPassword: "changeme"
+    ports:
+        http: 8080
+        health: 9000
+    postgres:
+        name: "keycloak-postgres"
+        image: "postgres"
+        tag: "17"
+        containerPort: 5432
+        servicePort: 5432
+        storageSize: "2Gi"
+        database: "keycloak"
+        username: "keycloak"
+        password: "changeme"
+        resources:
+            requests:
+                cpu: 250m
+                memory: 256Mi
+                ephemeral-storage: 1Gi
+            limits:
+                cpu: "1"
+                memory: 512Mi
+                ephemeral-storage: 1Gi
+    resources:
+        requests:
+            cpu: 500m
+            memory: 1700Mi
+            ephemeral-storage: 1Gi
+        limits:
+            cpu: 2000m
+            memory: 2000Mi
+            ephemeral-storage: 1Gi
+
+pgadmin:
+    name: "pgadmin"
+    image: "dpage/pgadmin4"
+    tag: "latest"
+    containerPort: 80
+    servicePort: 80
+    email: "admin@example.com"
+    password: "changeme"
+    resources:
+        requests:
+            cpu: 250m
+            memory: 256Mi
+            ephemeral-storage: 512Mi
+        limits:
+            cpu: 500m
+            memory: 512Mi
+            ephemeral-storage: 512Mi
+
+api:
+    name: "api"
+    image: "ghcr.io/madworldeu/byakko-api"
+    tag: "latest"
+    containerPort: 8080
+    servicePort: 80
+    database:
+        autoMigrate: false
+    storage:
+        mode: "OvhCloud"
+        bucketName: "byakko"
+        endpoint: "http://changeme"
+    observability:
+        otlpEndpoint: "http://localhost:4040"
+    resources:
+        requests:
+            cpu: 100m
+            memory: 128Mi
+            ephemeral-storage: 1Gi
+        limits:
+            cpu: 500m
+            memory: 256Mi
+            ephemeral-storage: 1Gi
+
+admin:
+    name: "admin"
+    replicas: 1
+    port: 8080
+    image:
+        repository: "ghcr.io/madworldeu/byakko-admin"
+        tag: "latest"
+    resources:
+        requests:
+            cpu: 50m
+            memory: 64Mi
+            ephemeral-storage: 512Mi
+        limits:
+            cpu: 200m
+            memory: 128Mi
+            ephemeral-storage: 512Mi
+
+portal:
+    name: "portal"
+    replicas: 1
+    port: 8080
+    image:
+        repository: "ghcr.io/madworldeu/byakko-portal"
+        tag: "latest"
+    resources:
+        requests:
+            cpu: 50m
+            memory: 64Mi
+            ephemeral-storage: 512Mi
+        limits:
+            cpu: 200m
+            memory: 128Mi
+            ephemeral-storage: 512Mi

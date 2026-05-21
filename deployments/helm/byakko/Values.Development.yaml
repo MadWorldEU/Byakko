@@ -1,0 +1,8 @@
+namespace: "byakko-development"
+
+localstack:
+    enabled: true
+    
+api:
+    storage:
+        mode: "LocalStack"
