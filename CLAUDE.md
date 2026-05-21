@@ -24,7 +24,7 @@ docker build -f src/MadWorldEU.Byakko.Controller.Portal/Dockerfile .
 docker build -f src/MadWorldEU.Byakko.Controller.Admin/Dockerfile .
 ```
 
-The API uses the `mcr.microsoft.com/dotnet/aspnet:10.0` runtime image and runs as the non-root `app` user. Portal and Admin are Blazor WebAssembly apps served by `nginx:alpine` on port 8080, running as the non-root `nginx` user; their nginx config lives in `DockerConfigs/nginx.conf` inside each project folder.
+The API uses the `mcr.microsoft.com/dotnet/aspnet:10.0` runtime image and runs as the non-root `app` user. Portal and Admin are Blazor WebAssembly apps served by `nginx:alpine` on port 8080, running as the non-root `nginx` user; their nginx config lives in `DockerConfigs/nginx.conf` inside each project folder. Both Dockerfiles delete the pre-compressed `appsettings.json.br` and `appsettings.json.gz` variants so that a Kubernetes `ConfigMap` volume mount can override `appsettings.json` at runtime without nginx serving a stale compressed copy.
 
 The CI pipeline (`.github/workflows/docker-build-push.yml`) builds and pushes multi-arch images (`linux/amd64`, `linux/arm64`) to GHCR on every push to `main`. SonarCloud static analysis runs via `.github/workflows/sonarcloud.yml` on every push and pull request. See `docs/Pipelines.md` for setup instructions for all pipelines.
 
@@ -195,8 +195,8 @@ The Helm chart lives in `deployments/helm/byakko/`. It deploys all services into
 |---|---|---|
 | `namespace.yml` | Namespace | Creates the target namespace |
 | `api.yaml` | Deployment, Service | ASP.NET Core API |
-| `admin.yaml` | Deployment, Service | Blazor WebAssembly admin UI (nginx) |
-| `portal.yaml` | Deployment, Service | Blazor WebAssembly portal UI (nginx) |
+| `admin.yaml` | ConfigMap, Deployment, Service | Blazor WebAssembly admin UI (nginx); ConfigMap mounts `appsettings.json` with environment-specific `ApiBaseUrl` and OIDC settings |
+| `portal.yaml` | ConfigMap, Deployment, Service | Blazor WebAssembly portal UI (nginx); same ConfigMap pattern as admin |
 | `database.yaml` | Secret, StatefulSet, Service | PostgreSQL for the application |
 | `keycloak.yaml` | Secret, StatefulSet (×2 Services) | Keycloak identity server |
 | `keycloak-database.yaml` | Secret, StatefulSet, Service | Dedicated PostgreSQL for Keycloak |
@@ -220,6 +220,8 @@ The Helm chart lives in `deployments/helm/byakko/`. It deploys all services into
 | `api.storage.mode` | `LocalStack` (in-cluster MinIO) or `OvhCloud` |
 | `keycloak.realm` | Keycloak realm name used to build the `Authentication:Authority` URL |
 | `keycloak.audience` | Keycloak client ID used as the API audience |
+| `admin.oidc.clientId` | Keycloak client ID injected into the Admin `appsettings.json` ConfigMap |
+| `portal.oidc.clientId` | Keycloak client ID injected into the Portal `appsettings.json` ConfigMap |
 
 ### Subdomains exposed via ingress
 
