@@ -1,3 +1,4 @@
+using MadWorldEU.Byakko.Services;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -24,6 +25,13 @@ public static class WebAssemblyHostBuilderExtensions
                 .ConfigureHandler(authorizedUrls: [apiBaseUrl]);
             return handler;
         });
+
+        return builder;
+    }
+
+    public static WebAssemblyHostBuilder AddByakkoServices(this WebAssemblyHostBuilder builder)
+    {
+        builder.Services.AddScoped<IAssetService, AssetService>();
 
         return builder;
     }

@@ -1,0 +1,89 @@
+@page "/storage/download/{Id}"
+@inject IAssetService AssetService
+
+<PageTitle>Byakko – Download</PageTitle>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+
+            @if (_isLoading)
+            {
+                <div class="d-flex justify-content-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading…</span>
+                    </div>
+                </div>
+            }
+            else if (_errorMessage is not null)
+            {
+                <div class="alert alert-danger" role="alert">@_errorMessage</div>
+            }
+            else if (_metadata is not null)
+            {
+                <div class="card border-0 bg-body-tertiary">
+                    <div class="card-body p-4 d-flex flex-column gap-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="feature-icon bg-primary bg-opacity-10 text-primary rounded-3 flex-shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M4 0h5.293A1 1 0 0 1 10 .293L13.707 4a1 1 0 0 1 .293.707V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2m5.5 1.5v2a1 1 0 0 0 1 1h2z"/>
+                                </svg>
+                            </div>
+                            <div class="overflow-hidden">
+                                <div class="fw-semibold text-truncate">@_metadata.Name</div>
+                                <div class="text-secondary small">@_metadata.ContentType</div>
+                            </div>
+                        </div>
+                        <a class="btn btn-primary fw-semibold"
+                           href="@AssetService.GetContentUrl(Guid.Parse(Id))"
+                           download="@_metadata.Name">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-2 mb-1" viewBox="0 0 16 16">
+                                <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                                <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 1-.708.708z"/>
+                            </svg>
+                            Download
+                        </a>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Id { get; set; } = string.Empty;
+
+    private GetAssetMetadataResponse? _metadata;
+    private bool _isLoading = true;
+    private string? _errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!Guid.TryParse(Id, out var guid))
+        {
+            _errorMessage = "Invalid asset ID.";
+            _isLoading = false;
+            return;
+        }
+
+        try
+        {
+            _metadata = await AssetService.GetAssetMetadataAsync(guid);
+
+            if (_metadata is null)
+            {
+                _errorMessage = "File not found.";
+            }
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Could not load file: {ex.Message}";
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+}

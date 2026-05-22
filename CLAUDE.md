@@ -30,23 +30,27 @@ The CI pipeline (`.github/workflows/docker-build-push.yml`) builds and pushes mu
 
 ## Testing
 
-Three test projects exist:
+Five test projects exist:
 
 | Project | Framework | Purpose |
 |---|---|---|
 | `MadWorldEU.Byakko.Controller.Api.IntegrationTests` | Reqnroll + TUnit | BDD integration tests for the API |
-| `MadWorldEU.Byakko.Core.Application.Unittests` | TUnit + Shouldly | Unit tests for application logic |
-| `MadWorldEU.Byakko.Controller.Admin.IntegrationTests` | — | Placeholder |
-| `MadWorldEU.Byakko.Controller.Portal.IntegrationTests` | — | Placeholder |
+| `MadWorldEU.Byakko.Core.Application.Unittests` | TUnit + NSubstitute + Shouldly | Unit tests for application use cases (error paths) |
+| `MadWorldEU.Byakko.Controller.Portal.Componenttests` | bUnit + WireMock.Net + TUnit | Component tests for the Portal Blazor UI |
+| `MadWorldEU.Byakko.Controller.Admin.Componenttests` | bUnit + WireMock.Net + TUnit | Component tests for the Admin Blazor UI |
 
 ```bash
 dotnet test                                    # Run all tests
 dotnet test tests/MadWorldEU.Byakko.Controller.Api.IntegrationTests/ -- --coverage  # With code coverage
 ```
 
-**API integration tests** use `WebApplicationFactory<Program>` (in-process test server). The hook in `Hooks/ApiHooks.cs` spins up the factory once per test run and injects an `HttpClient` into each scenario via `ScenarioContext`. BDD scenarios live in `Features/` as `.feature` files; step definitions live in `StepDefinitions/`.
+**API integration tests** use `WebApplicationFactory<Program>` (in-process test server). The hook in `Hooks/ApiHooks.cs` spins up the factory once per test run and injects an `HttpClient` into each scenario via `ScenarioContext`. BDD scenarios live in `Features/` as `.feature` files; step definitions live in `StepDefinitions/`. `Authentication:ValidateUser = false` disables JWT signature validation so tests can use self-signed tokens from `Common/TestJwtToken.cs`.
 
 A **PostgreSQL Testcontainer** (`Testcontainers.PostgreSql`) and a **LocalStack Testcontainer** (`Testcontainers.LocalStack`) are started in `BeforeTestRun` and torn down in `AfterTestRun`. The hook injects both connection strings via in-memory configuration and replaces the real `IAmazonS3` registration with one pointing at the container. `MigrateAsync` runs before any test executes. Tests always run against real, isolated infrastructure — no mocks, no shared dev services.
+
+**Component tests** render Blazor components in-process using `BunitContext` (`using var ctx = new BunitContext()`). HTTP calls are intercepted by a `WireMockServer`. Use `ctx.Render<T>()` (not the obsolete `RenderComponent`), `cut.WaitForState(predicate, timeout)` for async init, and CSS selectors (`cut.Find`, `cut.FindAll`) for assertions.
+
+**Unit tests** cover error paths in application use cases only — happy paths are covered by integration tests. Mocks are created with NSubstitute (`Substitute.For<T>()`). Async repository/storage methods return `Task.FromResult(...)`. Use `Result.Failure<T>(error)` (not `Result<T>.Failure(error)`) to produce a typed failure result.
 
 ## Architecture
 

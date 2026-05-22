@@ -22,6 +22,23 @@ public sealed class AssetRepository(ByakkoContext context, ILogger<AssetReposito
         }
     }
 
+    public async Task<Result> UpdateAsync(Asset asset)
+    {
+        try
+        {
+            context.Assets.Update(asset);
+            await context.SaveChangesAsync();
+
+            logger.LogInformation("Asset '{AssetId}' updated successfully.", asset.Id.Value);
+            return Result.Success();
+        }
+        catch (DbUpdateException exception)
+        {
+            logger.LogError(exception, "Failed to update asset '{AssetId}'.", asset.Id.Value);
+            return Result.Failure(AssetErrors.UpdateFailed);
+        }
+    }
+
     public async Task<Result<Asset>> FindAsync(Id id)
     {
         Asset? asset;

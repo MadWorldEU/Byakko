@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <!-- WireMock.Net pulls in System.Linq.Dynamic.Core which has a known vulnerability (NU1903).
+             This is a test-only project and the package is used internally by WireMock.Net. -->
+        <NoWarn>$(NoWarn);NU1903</NoWarn>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="bunit" />
+        <PackageReference Include="Shouldly" />
+        <PackageReference Include="TUnit" />
+        <PackageReference Include="WireMock.Net" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\MadWorldEU.Byakko.Controller.Portal\Portal.csproj" />
+    </ItemGroup>
+
+</Project>

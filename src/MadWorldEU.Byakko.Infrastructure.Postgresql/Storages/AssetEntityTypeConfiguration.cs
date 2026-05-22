@@ -20,5 +20,17 @@ internal class AssetEntityTypeConfiguration : IEntityTypeConfiguration<Asset>
             .IsRequired()
             .HasMaxLength(ContentType.MaxLength)
             .HasConversion<string>(ct => ct.Value, s => ContentType.Create(s).Value);
+
+        builder.Property(a => a.CreatedBy)
+            .IsRequired()
+            .HasConversion<Guid>(u => u.Value, g => UserId.Create(g).Value);
+
+        builder.Property(a => a.Size)
+            .HasConversion(
+                s => s.Value,
+                v => Size.Create(v).Value);
+
+        builder.Property(a => a.CreatedAt).IsRequired();
+        builder.Property(a => a.UpdatedAt).IsRequired();
     }
 }

@@ -11,5 +11,6 @@ builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.H
 
 builder.AddByakkoApiHttpClients();
 builder.AddByakkoAuthentication();
+builder.AddByakkoServices();
 
 await builder.Build().RunAsync();
