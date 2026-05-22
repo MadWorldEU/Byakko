@@ -17,8 +17,26 @@ All test projects must be placed in the `tests/` folder at the repository root. 
 | Testcontainers.PostgreSql | `Api.IntegrationTests` | Real PostgreSQL instance spun up per test run |
 | Testcontainers.Minio | `Api.IntegrationTests` | Real MinIO (S3-compatible) instance spun up per test run |
 | Microsoft.Testing.Extensions.CodeCoverage | `Api.IntegrationTests` | Code coverage collection |
+| bunit | `Portal.Componenttests`, `Admin.Componenttests` | Blazor component rendering in-process |
+| WireMock.Net | `Portal.Componenttests`, `Admin.Componenttests` | HTTP server mock for faking API responses |
 
 TUnit test attributes (`[Test]`, `[Before]`, `[After]`, etc.) are available without explicit usings via source generator — no `using TUnit;` needed.
+
+## Component Tests
+
+Component tests live in `Portal.Componenttests` and `Admin.Componenttests`. They render Blazor components in-process using bUnit's `TestContext` and mock HTTP calls with a `WireMockServer`.
+
+**Naming:** `[MethodUnderTest]_When[Condition]_Should[ExpectedResult]` — for example `OnInitializedAsync_WhenAssetExists_ShouldShowFileMetadataAndDownloadLink`.
+
+**Structure per test:**
+1. Start a `WireMockServer` and register the expected HTTP stubs.
+2. Create a `TestContext`, register named `HttpClient`s pointing at the WireMock URL, and register any required services.
+3. Render the component under test via `ctx.RenderComponent<T>`.
+4. Call `cut.WaitForState(predicate, timeout)` to block until async initialisation completes.
+5. Assert on the rendered markup using CSS selectors (`cut.Find`, `cut.FindAll`).
+6. Dispose both `WireMockServer` and `TestContext` via `using` — they must not outlive the test method.
+
+Use `using TestContext = Bunit.TestContext;` at the top of each file to resolve the ambiguity with TUnit's own `TestContext`.
 
 ## Test Isolation
 
