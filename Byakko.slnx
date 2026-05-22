@@ -101,9 +101,9 @@
   </Folder>
   <Folder Name="/tests/" />
   <Folder Name="/tests/controller/">
-    <Project Path="tests\MadWorldEU.Byakko.Controller.Admin.IntegrationTests\Admin.IntegrationTests.csproj" />
+    <Project Path="tests\MadWorldEU.Byakko.Controller.Admin.Componenttests\Admin.Componenttests.csproj" />
     <Project Path="tests\MadWorldEU.Byakko.Controller.Api.IntegrationTests\Api.IntegrationTests.csproj" />
-    <Project Path="tests\MadWorldEU.Byakko.Controller.Portal.IntegrationTests\Portal.IntegrationTests.csproj" />
+    <Project Path="tests\MadWorldEU.Byakko.Controller.Portal.Componenttests\Portal.Componenttests.csproj" />
   </Folder>
   <Folder Name="/tests/core/">
     <Project Path="tests\MadWorldEU.Byakko.Core.Application.Unittests\Application.Unittests.csproj" />
