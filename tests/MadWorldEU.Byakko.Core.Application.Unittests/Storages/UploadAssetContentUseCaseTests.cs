@@ -10,7 +10,7 @@ public sealed class UploadAssetContentUseCaseTests
     private readonly IAssetRepository _assetRepository = Substitute.For<IAssetRepository>();
     private readonly IContentStorage _contentStorage = Substitute.For<IContentStorage>();
 
-    private Asset BuildAsset(string name = "test.txt", string contentType = "text/plain")
+    private static Asset BuildAsset(string name = "test.txt", string contentType = "text/plain")
     {
         var clock = Substitute.For<IClock>();
         clock.GetCurrentInstant().Returns(Instant.FromUnixTimeSeconds(0));
