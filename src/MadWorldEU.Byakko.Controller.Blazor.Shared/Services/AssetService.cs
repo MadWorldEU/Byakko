@@ -44,17 +44,9 @@ public sealed class AssetService : IAssetService
     }
 
     /// <inheritdoc />
-    public async Task<(byte[] Content, string ContentType, string FileName)?> DownloadAssetContentAsync(Guid id)
+    public string GetContentUrl(Guid id)
     {
-        var response = await _httpClientAnonymous.GetAsync($"/assets/{id}/content");
-        response.EnsureSuccessStatusCode();
-
-        var fileContent = await response.Content.ReadAsByteArrayAsync();
-        var contentType = response.Content.Headers.ContentType?.MediaType ?? "application/octet-stream";
-        var fileName = response.Content.Headers.ContentDisposition?.FileNameStar
-            ?? response.Content.Headers.ContentDisposition?.FileName
-            ?? "download";
-
-        return (fileContent, contentType, fileName);
+        var baseAddress = _httpClientAnonymous.BaseAddress?.ToString().TrimEnd('/') ?? string.Empty;
+        return $"{baseAddress}/assets/{id}/content";
     }
 }

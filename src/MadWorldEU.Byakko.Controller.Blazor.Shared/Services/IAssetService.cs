@@ -14,6 +14,6 @@ public interface IAssetService
     /// <summary>Uploads binary content for an existing asset.</summary>
     Task<UploadAssetContentResponse?> UploadAssetContentAsync(Guid id, Stream content, string fileName, string contentType);
 
-    /// <summary>Downloads the binary content of an asset and returns it as a byte array together with its content type and file name.</summary>
-    Task<(byte[] Content, string ContentType, string FileName)?> DownloadAssetContentAsync(Guid id);
+    /// <summary>Returns the direct URL to download the binary content of an asset. The browser streams it natively — no in-memory buffering.</summary>
+    string GetContentUrl(Guid id);
 }
