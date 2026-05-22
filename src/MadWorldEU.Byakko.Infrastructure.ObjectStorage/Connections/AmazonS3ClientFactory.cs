@@ -17,7 +17,8 @@ internal static class AmazonS3ClientFactory
         {
             ServiceURL = settings.Endpoint,
             ForcePathStyle = true,
-            AuthenticationRegion = settings.Region
+            AuthenticationRegion = settings.Region,
+            RequestChecksumCalculation = RequestChecksumCalculation.WHEN_REQUIRED
         };
 
         return new AmazonS3Client(settings.AccessKey, settings.SecretKey, config);

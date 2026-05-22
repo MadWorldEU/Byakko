@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using Microsoft.EntityFrameworkCore;
 
 namespace MadWorldEU.Byakko.Hooks;
@@ -9,6 +10,7 @@ public sealed class ApiHooks(ScenarioContext scenarioContext)
     private static LocalStackContainer _localstack = null!;
     private static WebApplicationFactory<Program>? _factory;
     private static HttpClient? _client;
+    private static HttpClient? _authenticatedClient;
 
     [BeforeTestRun]
     public static async Task BeforeTestRun()
@@ -30,7 +32,8 @@ public sealed class ApiHooks(ScenarioContext scenarioContext)
                     {
                         ["ConnectionStrings:byakko-db"] = _postgres.GetConnectionString(),
                         ["ConnectionStrings:localstack"] = _localstack.GetConnectionString(),
-                        ["RateLimiting:Enabled"] = "false"
+                        ["RateLimiting:Enabled"] = "false",
+                        ["Authentication:ValidateUser"] = "false"
                     });
                 });
             });
@@ -40,12 +43,17 @@ public sealed class ApiHooks(ScenarioContext scenarioContext)
         await context.Database.MigrateAsync();
 
         _client = _factory.CreateClient();
+
+        _authenticatedClient = _factory.CreateClient();
+        _authenticatedClient.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", TestJwtToken.Create("b7c12261-3707-43f6-9403-045a41422f25"));
     }
 
     [AfterTestRun]
     public static async Task AfterTestRun()
     {
         _client?.Dispose();
+        _authenticatedClient?.Dispose();
         await (_factory?.DisposeAsync() ?? ValueTask.CompletedTask);
         await _postgres.DisposeAsync();
         await _localstack.DisposeAsync();
@@ -55,5 +63,6 @@ public sealed class ApiHooks(ScenarioContext scenarioContext)
     public void BeforeScenario()
     {
         scenarioContext.Set(_client!);
+        scenarioContext.Set(_authenticatedClient!, ScenarioContextKeys.AuthenticatedClient);
     }
 }

@@ -1,3 +1,5 @@
+global using System.Security.Claims;
+
 global using JetBrains.Annotations;
 global using OpenTelemetry.Logs;
 global using OpenTelemetry.Metrics;

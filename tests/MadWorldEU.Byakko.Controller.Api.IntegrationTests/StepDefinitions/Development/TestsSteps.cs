@@ -1,33 +1,28 @@
 namespace MadWorldEU.Byakko.StepDefinitions.Development;
 
 [Binding]
-public sealed class TestsSteps
+public sealed class TestsSteps(ScenarioContext scenarioContext)
 {
-    private readonly ScenarioContext _scenarioContext;
-    private HttpResponseMessage? _response;
-
-    public TestsSteps(ScenarioContext scenarioContext)
-    {
-        _scenarioContext = scenarioContext;
-    }
-
     [When("I send a GET request to {string}")]
     public async Task WhenISendAGetRequestTo(string endpoint)
     {
-        var client = _scenarioContext.Get<HttpClient>();
-        _response = await client.GetAsync(endpoint);
+        var client = scenarioContext.Get<HttpClient>();
+        var response = await client.GetAsync(endpoint);
+        scenarioContext.Set(response, ScenarioContextKeys.LastResponse);
     }
 
     [Then("the response status code should be {int}")]
     public void ThenTheResponseStatusCodeShouldBe(int statusCode)
     {
-        _response!.StatusCode.ShouldBe((HttpStatusCode)statusCode);
+        var response = scenarioContext.Get<HttpResponseMessage>(ScenarioContextKeys.LastResponse);
+        response.StatusCode.ShouldBe((HttpStatusCode)statusCode);
     }
 
     [Then("the response body should be {string}")]
     public async Task ThenTheResponseBodyShouldBe(string expectedBody)
     {
-        var body = await _response!.Content.ReadAsStringAsync();
+        var response = scenarioContext.Get<HttpResponseMessage>(ScenarioContextKeys.LastResponse);
+        var body = await response.Content.ReadAsStringAsync();
         body.ShouldBe(expectedBody);
     }
 }
