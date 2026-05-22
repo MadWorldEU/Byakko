@@ -30,13 +30,13 @@ Component tests live in `Portal.Componenttests` and `Admin.Componenttests`. They
 
 **Structure per test:**
 1. Start a `WireMockServer` and register the expected HTTP stubs.
-2. Create a `TestContext`, register named `HttpClient`s pointing at the WireMock URL, and register any required services.
-3. Render the component under test via `ctx.RenderComponent<T>`.
+2. Create a `BunitContext`, register named `HttpClient`s pointing at the WireMock URL, and register any required services.
+3. Render the component under test via `ctx.Render<T>`.
 4. Call `cut.WaitForState(predicate, timeout)` to block until async initialisation completes.
 5. Assert on the rendered markup using CSS selectors (`cut.Find`, `cut.FindAll`).
 6. Dispose both `WireMockServer` and `TestContext` via `using` — they must not outlive the test method.
 
-Use `using TestContext = Bunit.TestContext;` at the top of each file to resolve the ambiguity with TUnit's own `TestContext`.
+Use `BunitContext` (not the obsolete `TestContext`) and `Render<T>` (not the obsolete `RenderComponent<T>`).
 
 ## Test Isolation
 

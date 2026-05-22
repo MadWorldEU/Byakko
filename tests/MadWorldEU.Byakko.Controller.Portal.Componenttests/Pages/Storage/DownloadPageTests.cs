@@ -1,5 +1,3 @@
-using TestContext = Bunit.TestContext;
-
 namespace MadWorldEU.Byakko.Pages.Storage;
 
 /// <summary>Component tests for the Download page.</summary>
@@ -23,14 +21,14 @@ public sealed class DownloadPageTests
                     CreatedAt = "2026-05-22T12:00:00Z"
                 }));
 
-        using var ctx = new TestContext();
+        using var ctx = new BunitContext();
         ctx.Services.AddHttpClient(HttpClients.ApiAnonymous, client =>
             client.BaseAddress = new Uri(server.Url!));
         ctx.Services.AddHttpClient(HttpClients.ApiAuthorized, client =>
             client.BaseAddress = new Uri(server.Url!));
         ctx.Services.AddScoped<IAssetService, AssetService>();
 
-        var cut = ctx.RenderComponent<Download>(p =>
+        var cut = ctx.Render<Download>(p =>
             p.Add(c => c.Id, assetId.ToString()));
         cut.WaitForState(
             () => !cut.FindAll(".spinner-border").Any(),
