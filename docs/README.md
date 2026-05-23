@@ -19,6 +19,7 @@ This folder contains the project documentation for Byakko, including user guides
 | [DNS](developer-guides/dns.md)                                    | DNS records required for production deployment                              |
 | [Pipelines](developer-guides/Pipelines.md)                        | CI/CD pipelines for building, testing, Docker, and SonarCloud               |
 | [DocFX](developer-guides/Docfx.md)                                | Building and serving the documentation site locally with DocFX              |
+| [Setup Server](developer-guides/SetupServer.md)                   | Prepare an Ubuntu 25.04 server for production deployment                    |
 | [Rider Settings](developer-guides/RiderSettings.md)               | JetBrains Rider configuration for this project                              |
 
 ## Architecture

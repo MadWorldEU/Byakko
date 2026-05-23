@@ -21,6 +21,7 @@
     <File Path="docs\developer-guides\Kubernetes.md" />
     <File Path="docs\developer-guides\Pipelines.md" />
     <File Path="docs\developer-guides\RiderSettings.md" />
+    <File Path="docs\developer-guides\SetupServer.md" />
     <File Path="docs\developer-guides\Structurizr.md" />
     <File Path="docs\developer-guides\toc.yml" />
     <File Path="docs\developer-guides\UsefulLinks.md" />
