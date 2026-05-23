@@ -40,6 +40,15 @@ internal static class AmazonS3ClientFactory
     
     private static ObjectStorageSettings CreateOvhCloudSettings(IConfiguration configuration)
     {
-        throw new NotImplementedException();
+        var ovhCloud = configuration.GetSection($"{StorageOptions.SectionName}:OvhCloud").Get<OvhCloudOptions>()
+            ?? throw new InvalidOperationException("Storage:OvhCloud section is not configured.");
+
+        return new ObjectStorageSettings
+        {
+            Endpoint = ovhCloud.Endpoint ?? throw new InvalidOperationException("Storage:OvhCloud:Endpoint is not configured."),
+            AccessKey = ovhCloud.AccessKey ?? throw new InvalidOperationException("Storage:OvhCloud:AccessKey is not configured."),
+            SecretKey = ovhCloud.SecretKey ?? throw new InvalidOperationException("Storage:OvhCloud:SecretKey is not configured."),
+            Region = ovhCloud.Region ?? throw new InvalidOperationException("Storage:OvhCloud:Region is not configured.")
+        };
     }
 }
