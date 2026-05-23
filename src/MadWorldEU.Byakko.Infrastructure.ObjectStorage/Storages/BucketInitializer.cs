@@ -3,16 +3,16 @@ using Microsoft.Extensions.Logging;
 namespace MadWorldEU.Byakko.Storages;
 
 /// <summary>Ensures the configured S3 bucket exists before the application starts accepting requests.</summary>
-internal sealed class BucketInitializer(IAmazonS3 s3Client, ILogger<BucketInitializer> logger) : IHostedService
+internal sealed class BucketInitializer(IAmazonS3 s3Client, IOptions<StorageOptions> options, ILogger<BucketInitializer> logger) : IHostedService
 {
-    private readonly string[] _bucketNames = [ Asset.DefaultPath ];
-
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        foreach (var bucketName in _bucketNames)
+        if (!options.Value.AutoCreateBucket)
         {
-            await CheckAndCreateBucketAsync(bucketName, cancellationToken);
+            return;
         }
+
+        await CheckAndCreateBucketAsync(options.Value.BucketName, cancellationToken);
     }
 
     private async Task CheckAndCreateBucketAsync(string bucketName, CancellationToken cancellationToken)

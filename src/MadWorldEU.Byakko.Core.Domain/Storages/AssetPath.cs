@@ -6,6 +6,7 @@ public sealed class AssetPath : ValueObject
 
     public string Path { get; }
     public string Key { get; }
+    public string FullPath => Path + "/" + Key;
 
     private AssetPath(string path, string key)
     {
