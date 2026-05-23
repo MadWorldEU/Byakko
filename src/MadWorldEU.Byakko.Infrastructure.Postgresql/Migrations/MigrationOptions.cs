@@ -1,9 +1,9 @@
 namespace MadWorldEU.Byakko.Migrations;
 
 /// <summary>Configuration options for automatic database migration on startup.</summary>
-internal sealed class MigrationOptions
+public sealed class MigrationOptions
 {
-    internal const string SectionName = "Database";
+    public const string SectionName = "Database";
 
-    internal bool AutoMigrate { get; init; }
+    public bool AutoMigrate { get; init; }
 }
