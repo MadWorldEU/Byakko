@@ -1,0 +1,9 @@
+namespace: "byakko-production"
+imagePullPolicy: "IfNotPresent"
+
+localstack:
+    enabled: false
+
+api:
+    storage:
+        mode: "OvhCloud"
