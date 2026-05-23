@@ -1,4 +1,4 @@
-# Useful Links
+    # Useful Links
 
 A curated list of websites and resources used in or relevant to this project.
 
@@ -10,10 +10,12 @@ A curated list of websites and resources used in or relevant to this project.
 - [LibMan](https://learn.microsoft.com/en-us/aspnet/core/client-side/libman/?view=aspnetcore-10.0) — Lightweight client-side library acquisition tool for ASP.NET Core
 - [NodaTime](https://nodatime.org/) — Date and time library for .NET with explicit timezone handling
 - [Npgsql](https://www.npgsql.org/) — .NET data provider for PostgreSQL
+- [bUnit](https://bunit.dev/) — Testing library for Blazor components
 - [Reqnroll](https://reqnroll.net/) — BDD test automation framework for .NET (SpecFlow successor)
 - [Scalar](https://scalar.com/) — OpenAPI documentation and API client
 - [Testcontainers](https://dotnet.testcontainers.org/) — Library for spinning up real Docker containers in tests (used for PostgreSQL integration tests)
 - [TUnit](https://tunit.dev/) — Modern, async-first test framework for .NET
+- [WireMock.Net](https://github.com/WireMock-Net/WireMock.Net) — HTTP server mock for stubbing and verifying API calls in tests
 - [Shouldly](https://docs.shouldly.org/) — Fluent assertion library for .NET
 
 ## Infrastructure
@@ -23,6 +25,7 @@ A curated list of websites and resources used in or relevant to this project.
 - [Helm](https://helm.sh/) — Package manager for Kubernetes
 - [OpenTelemetry](https://opentelemetry.io/) — Observability framework for traces, metrics, and logs
 - [Keycloak](https://www.keycloak.org/) — Open source identity and access management (authentication, SSO, OAuth2/OIDC)
+- [Let's Encrypt](https://letsencrypt.org/) — Free, automated TLS certificate authority used for HTTPS in production
 - [k3s](https://k3s.io/) — Lightweight Kubernetes distribution designed for production on resource-constrained nodes
 - [Kubernetes](https://kubernetes.io/) — Container orchestration platform
 - [LocalStack](https://localstack.cloud/) — Local AWS cloud service emulator (S3, SQS, and more)

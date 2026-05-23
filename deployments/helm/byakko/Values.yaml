@@ -110,7 +110,7 @@ pgadmin:
 api:
     name: "api"
     image: "ghcr.io/madworldeu/byakko-api"
-    tag: "latest"
+    tag: "v0.4.0"
     containerPort: 8080
     servicePort: 80
     database:
@@ -118,7 +118,11 @@ api:
     storage:
         mode: "OvhCloud"
         bucketName: "byakko"
-        endpoint: "http://changeme"
+        ovhCloud:
+            endpoint: "http://changeme"
+            accessKey: "changeme"
+            secretKey: "changeme"
+            region: "changeme"
     observability:
         otlpEndpoint: "http://localhost:4040"
     resources:
@@ -139,7 +143,7 @@ admin:
         clientId: "admin-client"
     image:
         repository: "ghcr.io/madworldeu/byakko-admin"
-        tag: "latest"
+        tag: "v0.4.0"
     resources:
         requests:
             cpu: 50m
@@ -158,7 +162,7 @@ portal:
         clientId: "portal-client"
     image:
         repository: "ghcr.io/madworldeu/byakko-portal"
-        tag: "latest"
+        tag: "v0.4.0"
     resources:
         requests:
             cpu: 50m

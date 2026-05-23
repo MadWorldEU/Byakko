@@ -15,6 +15,7 @@ spec:
           hosts:
               - {{ .Values.ingress.domain }}
               - www.{{ .Values.ingress.domain }}
+              - fileshare.{{ .Values.ingress.domain }}
               - api.{{ .Values.ingress.domain }}
               - admin.{{ .Values.ingress.domain }}
               - database.{{ .Values.ingress.domain }}
@@ -60,6 +61,16 @@ spec:
                             name: {{ .Values.keycloak.name }}
                             port:
                                 number: {{ .Values.keycloak.servicePort }}
+        - host: fileshare.{{ .Values.ingress.domain }}
+          http:
+              paths:
+                  - path: /
+                    pathType: Prefix
+                    backend:
+                        service:
+                            name: {{ .Values.portal.name }}
+                            port:
+                                number: {{ .Values.portal.port }}
         - host: www.{{ .Values.ingress.domain }}
           http:
               paths:

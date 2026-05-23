@@ -15,13 +15,16 @@
     <File Path="docs\developer-guides\Aspire.md" />
     <File Path="docs\developer-guides\AuthenticationServer.md" />
     <File Path="docs\developer-guides\Database.md" />
+    <File Path="docs\developer-guides\DNS.md" />
     <File Path="docs\developer-guides\Docfx.md" />
     <File Path="docs\developer-guides\InstallGuide.md" />
     <File Path="docs\developer-guides\Kubernetes.md" />
     <File Path="docs\developer-guides\Pipelines.md" />
     <File Path="docs\developer-guides\RiderSettings.md" />
+    <File Path="docs\developer-guides\SetupServer.md" />
     <File Path="docs\developer-guides\Structurizr.md" />
     <File Path="docs\developer-guides\toc.yml" />
+    <File Path="docs\developer-guides\UbuntuDevEnvironment.md" />
     <File Path="docs\developer-guides\UsefulLinks.md" />
     <File Path="docs\developer-guides\Versions.md" />
   </Folder>

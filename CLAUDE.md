@@ -134,10 +134,10 @@ The upload/download use cases delegate to `IContentStorage`; the metadata use ca
 ## Key Infrastructure
 
 - **Database:** PostgreSQL via `ByakkoContext` (EF Core + Npgsql). Connection string key: `byakko-db`. Configured in `appsettings.json`, overridden by Aspire at runtime. Migrations live in `Infrastructure.Postgresql/Migrations/`. See `docs/Database.md` for migration commands.
-- **Object storage:** S3-compatible storage via `IAmazonS3` (AWSSDK). Registered by `AddObjectStorage()` in `Infrastructure.ObjectStorage`. Connection string key: `localstack` (format: plain endpoint URL, e.g. `http://localhost:4566`). Storage mode and bucket name are configured under `Storage:Mode` and `Storage:BucketName` in `appsettings.json`. A `BucketInitializer` hosted service ensures the bucket exists on startup. The domain abstraction is `IContentStorage` (in `Core.Domain`); it uses `AssetPath` (bucket + key) to address objects and exposes `UploadAsync` and `DownloadAsync`. Supported modes: `LocalStack` (static `test`/`test` credentials, `us-east-1`) and `OvhCloud`.
+- **Object storage:** S3-compatible storage via `IAmazonS3` (AWSSDK). Registered by `AddObjectStorage(IConfiguration)` in `Infrastructure.ObjectStorage`. Connection string key: `localstack` (format: plain endpoint URL, e.g. `http://localhost:4566`). Storage settings are bound via `IOptions<StorageOptions>` from the `Storage` section in `appsettings.json`: `Mode` (`LocalStack` or `OvhCloud`), `BucketName`, `AutoCreateBucket` (default `false`; `true` in `appsettings.Development.json`), and a nested `OvhCloud` section (`Endpoint`, `AccessKey`, `SecretKey`, `Region`). `BucketInitializer` creates the bucket on startup only when `AutoCreateBucket` is `true`. The domain abstraction is `IContentStorage` (in `Core.Domain`); it uses `AssetPath` (bucket + key) to address objects and exposes `UploadAsync` and `DownloadAsync`. `LocalStack` mode uses static `test`/`test` credentials and region `us-east-1`; `OvhCloud` mode reads all four credentials from `Storage:OvhCloud:*` and throws `InvalidOperationException` at startup if any value is missing.
 - **Migrations:** Automatic migration on startup is toggled via `Database:AutoMigrate` in `appsettings.json` (default `false`; `true` in `appsettings.Development.json`). When enabled, a `MigrationService` hosted service runs `MigrateAsync` before the app starts accepting requests. Manual commands are documented in `docs/Database.md`.
 - **Aspire orchestration:** Postgres (with pgAdmin), LocalStack (S3, persistent), and Keycloak are provisioned. The API waits for all three; Admin and Portal wait for the API. Credentials are passed as Aspire parameters (`db-username`, `db-password`, `keycloak-username`, `keycloak-password`). A companion `localstack-explorer` container provides a web UI for browsing LocalStack resources. The `Factories/` folder contains `IResourceFactory`, `ProjectResourceFactory`, `DockerFileResourceFactory`, `DockerContainerResourceFactory`, `ResourceFactoryBuilder`, and `ResourceBuilderExtensions` — this pattern abstracts how each service is run so `AppHost.cs` stays clean. Control which mode is used via `RunMode` in `appsettings.json`: `Project` (default, run from source), `DockerFile` (build from local Dockerfiles), or `ContainerImage` (pull pre-built images from GHCR). See `docs/Aspire.md` for details.
-- **CORS:** Configured via `Cors:AllowedOrigins` in `appsettings.json`. When the array is non-empty, only those origins are allowed; an empty array falls back to allowing any origin. Registered by `AddDefaultCors()` in `Configurations/CorsExtensions.cs`. `UseCors()` is placed before `MapOpenApi()` and `MapScalarApiReference()` in `Program.cs` so CORS headers are present on OpenAPI and Scalar responses.
+- **CORS:** Configured via `Cors:AllowedOrigins` in `appsettings.json`. When the array is non-empty, only those origins are allowed; an empty array falls back to allowing any origin. Registered by `AddDefaultCors()` in `Configurations/CorsExtensions.cs`. `UseCors()` is placed before `MapOpenApi()` and `MapScalarApiReference()` in `Program.cs` so CORS headers are present on OpenAPI and Scalar responses. The Helm chart sets five allowed origins: `api.`, root domain, `www.`, `fileshare.`, and `admin.`.
 - **OpenAPI server URL:** The OpenAPI document's `servers` list is overridden by `ServerUrlDocumentTransformer` when `OpenApi:ServerUrl` is set in configuration. This ensures Scalar's "Try It Out" sends requests to the correct public host rather than the auto-detected localhost URL. Set to `https://localhost:7286` in `appsettings.json` for local development; the Helm chart sets it to `https://api.<domain>` via the `OpenApi__ServerUrl` environment variable.
 - **Rate limiting:** Fixed-window rate limiting registered by `AddApiRateLimiter()` in `Configurations/RateLimiterExtensions.cs`. A global limiter (default 100 req/min) applies to all endpoints; upload and download additionally apply a stricter named `content` policy (default 20 req/min), both partitioned per authenticated user (Keycloak `sub` claim) with IP fallback. Toggle via `RateLimiting:Enabled` and tune limits via `RateLimiting:General` / `RateLimiting:Content` in `appsettings.json`. Disabled by default in `appsettings.Development.json` and in the API integration tests.
 - **Authentication:** JWT Bearer authentication via Keycloak. Configured in `appsettings.json` under `Authentication:Authority`. The Keycloak realm defines `admin-client`, `api-client`, and `portal-client`. See `docs/AuthenticationServer.md` for setup.
@@ -191,7 +191,7 @@ The Portal (`MadWorldEU.Byakko.Controller.Portal`) is a Blazor WebAssembly app s
 
 ## Helm / Kubernetes Deployment
 
-The Helm chart lives in `deployments/helm/byakko/`. It deploys all services into a single Kubernetes namespace and is designed to work with k3s + Traefik.
+The Helm chart lives in `deployments/helm/byakko/`. It deploys all services into a single Kubernetes namespace and is designed to work with MicroK8s + Traefik in production and Docker Desktop Kubernetes locally. See `docs/developer-guides/Kubernetes.md` for full setup instructions including MicroK8s installation, Traefik ingress, Headlamp dashboard, and DNS configuration.
 
 ### Chart structure
 
@@ -222,6 +222,11 @@ The Helm chart lives in `deployments/helm/byakko/`. It deploys all services into
 | `localstack.enabled` | Set to `true` in development to deploy MinIO in-cluster |
 | `api.database.autoMigrate` | Set to `true` to run EF Core migrations on API startup |
 | `api.storage.mode` | `LocalStack` (in-cluster MinIO) or `OvhCloud` |
+| `api.storage.bucketName` | S3 bucket name; injected as `Storage__BucketName` env var |
+| `api.storage.ovhCloud.endpoint` | OVHCloud S3 endpoint URL; injected as `Storage__OvhCloud__Endpoint` env var |
+| `api.storage.ovhCloud.accessKey` | OVHCloud S3 access key; set in `Values.Production.yaml` |
+| `api.storage.ovhCloud.secretKey` | OVHCloud S3 secret key; set in `Values.Production.yaml` |
+| `api.storage.ovhCloud.region` | OVHCloud region (e.g. `de`); must match the subdomain in the endpoint URL |
 | `keycloak.realm` | Keycloak realm name used to build the `Authentication:Authority` URL |
 | `keycloak.audience` | Keycloak client ID used as the API audience |
 | `admin.oidc.clientId` | Keycloak client ID injected into the Admin `appsettings.json` ConfigMap |
@@ -231,13 +236,15 @@ The Helm chart lives in `deployments/helm/byakko/`. It deploys all services into
 
 | Subdomain | Service |
 |---|---|
-| `byakko.dev` / `www.` | Portal |
+| `byakko.dev` / `www.` / `fileshare.` | Portal |
 | `api.` | API |
 | `admin.` | Admin |
 | `database.` | pgAdmin |
 | `authentication.` | Keycloak |
 
-### Local development TLS (mkcert)
+### TLS
+
+**Local development (mkcert):** create a locally-trusted certificate and store it as a Kubernetes secret:
 
 ```bash
 mkcert -install
@@ -247,6 +254,8 @@ kubectl create secret tls byakko-tls \
   --key=byakko.dev+1-key.pem \
   -n byakko
 ```
+
+**Production (Let's Encrypt):** set `clusterIssuer.enabled = true` and `clusterIssuer.email` in `Values.Production.yaml`. cert-manager handles certificate issuance and renewal automatically via HTTP-01 challenge over port 80. DNS A records must be propagated and port 80 must be publicly reachable before the challenge can succeed. Remove any AAAA (IPv6) DNS records if the cluster does not have IPv6 configured, as Let's Encrypt will prefer IPv6 and fail with `Connection refused` if it is not bound.
 
 ## Documentation
 

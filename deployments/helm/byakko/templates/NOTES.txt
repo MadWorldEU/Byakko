@@ -3,8 +3,11 @@ Byakko has been deployed to namespace: {{ .Values.namespace }}
 === Application URLs ===
 
   User Portal:      https://{{ .Values.ingress.domain }}
+  User Portal (www): https://www.{{ .Values.ingress.domain }}
+  File Share:       https://fileshare.{{ .Values.ingress.domain }}
   Admin Portal:     https://admin.{{ .Values.ingress.domain }}
   API:              https://api.{{ .Values.ingress.domain }}
+  API Reference:    https://api.{{ .Values.ingress.domain }}/scalar/v1
   Database:         https://database.{{ .Values.ingress.domain }}
   Keycloak:         https://authentication.{{ .Values.ingress.domain }}
 
@@ -18,6 +21,10 @@ Byakko has been deployed to namespace: {{ .Values.namespace }}
 
   PostgreSQL:     {{ .Values.postgres.name }}.{{ .Values.namespace }}:{{ .Values.postgres.servicePort }}
   Auth DB:        {{ .Values.keycloak.postgres.name }}.{{ .Values.namespace }}:{{ .Values.keycloak.postgres.servicePort }}
+  Keycloak:       {{ .Values.keycloak.name }}.{{ .Values.namespace }}:{{ .Values.keycloak.servicePort }}
+{{- if .Values.localstack.enabled }}
+  LocalStack:     {{ .Values.localstack.name }}.{{ .Values.namespace }}:{{ .Values.localstack.servicePort }}
+{{- end }}
 
 === TLS ===
 {{- if .Values.clusterIssuer.enabled }}

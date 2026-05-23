@@ -14,15 +14,18 @@ A file sharing platform for uploading, managing, and retrieving digital assets. 
 
 ## Developer Guide
 
-| Guide                                              | Description                                                   |
-|----------------------------------------------------|---------------------------------------------------------------|
-| [Install Guide](developer-guides/InstallGuide.md)                   | Set up and run the platform locally                           |
-| [Aspire](developer-guides/Aspire.md)                                | Aspire orchestration and run modes (Project, DockerFile, ContainerImage) |
-| [Authentication Server](developer-guides/AuthenticationServer.md)   | Configure Keycloak for JWT authentication                     |
-| [Database](developer-guides/Database.md)                            | Run and manage PostgreSQL migrations                          |
-| [Pipelines](developer-guides/Pipelines.md)                          | CI/CD pipelines for building, testing, Docker, and SonarCloud |
-| [DocFX](developer-guides/Docfx.md)                                  | Build and deploy the documentation site                       |
-| [Rider Settings](developer-guides/RiderSettings.md)                 | Recommended JetBrains Rider configuration                     |
+| Guide                                                             | Description                                                   |
+|-------------------------------------------------------------------|---------------------------------------------------------------|
+| [Install Guide](developer-guides/InstallGuide.md)                 | Set up and run the platform locally                           |
+| [Aspire](developer-guides/Aspire.md)                              | Aspire orchestration and run modes (Project, DockerFile, ContainerImage) |
+| [Authentication Server](developer-guides/AuthenticationServer.md) | Configure Keycloak for JWT authentication                     |
+| [Database](developer-guides/Database.md)                          | Run and manage PostgreSQL migrations                          |
+| [DNS](developer-guides/DNS.md)                                    | Configure DNS records for production deployment               |
+| [Pipelines](developer-guides/Pipelines.md)                        | CI/CD pipelines for building, testing, Docker, and SonarCloud |
+| [DocFX](developer-guides/Docfx.md)                                | Build and deploy the documentation site                       |
+| [Setup Server](developer-guides/SetupServer.md)                   | Prepare an Ubuntu 25.04 server for production deployment      |
+| [Ubuntu Dev Environment](developer-guides/UbuntuDevEnvironment.md) | Set up HTTPS certificates and Docker on Ubuntu 25.04         |
+| [Rider Settings](developer-guides/RiderSettings.md)               | Recommended JetBrains Rider configuration                     |
 
 ## Architecture
 
