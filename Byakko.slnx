@@ -15,6 +15,7 @@
     <File Path="docs\developer-guides\Aspire.md" />
     <File Path="docs\developer-guides\AuthenticationServer.md" />
     <File Path="docs\developer-guides\Database.md" />
+    <File Path="docs\developer-guides\DNS.md" />
     <File Path="docs\developer-guides\Docfx.md" />
     <File Path="docs\developer-guides\InstallGuide.md" />
     <File Path="docs\developer-guides\Kubernetes.md" />
