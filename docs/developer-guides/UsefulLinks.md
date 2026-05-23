@@ -25,6 +25,7 @@ A curated list of websites and resources used in or relevant to this project.
 - [Helm](https://helm.sh/) — Package manager for Kubernetes
 - [OpenTelemetry](https://opentelemetry.io/) — Observability framework for traces, metrics, and logs
 - [Keycloak](https://www.keycloak.org/) — Open source identity and access management (authentication, SSO, OAuth2/OIDC)
+- [Let's Encrypt](https://letsencrypt.org/) — Free, automated TLS certificate authority used for HTTPS in production
 - [k3s](https://k3s.io/) — Lightweight Kubernetes distribution designed for production on resource-constrained nodes
 - [Kubernetes](https://kubernetes.io/) — Container orchestration platform
 - [LocalStack](https://localstack.cloud/) — Local AWS cloud service emulator (S3, SQS, and more)

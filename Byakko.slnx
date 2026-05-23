@@ -24,6 +24,7 @@
     <File Path="docs\developer-guides\SetupServer.md" />
     <File Path="docs\developer-guides\Structurizr.md" />
     <File Path="docs\developer-guides\toc.yml" />
+    <File Path="docs\developer-guides\UbuntuDevEnvironment.md" />
     <File Path="docs\developer-guides\UsefulLinks.md" />
     <File Path="docs\developer-guides\Versions.md" />
   </Folder>

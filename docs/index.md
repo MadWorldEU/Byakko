@@ -24,6 +24,7 @@ A file sharing platform for uploading, managing, and retrieving digital assets. 
 | [Pipelines](developer-guides/Pipelines.md)                        | CI/CD pipelines for building, testing, Docker, and SonarCloud |
 | [DocFX](developer-guides/Docfx.md)                                | Build and deploy the documentation site                       |
 | [Setup Server](developer-guides/SetupServer.md)                   | Prepare an Ubuntu 25.04 server for production deployment      |
+| [Ubuntu Dev Environment](developer-guides/UbuntuDevEnvironment.md) | Set up HTTPS certificates and Docker on Ubuntu 25.04         |
 | [Rider Settings](developer-guides/RiderSettings.md)               | Recommended JetBrains Rider configuration                     |
 
 ## Architecture

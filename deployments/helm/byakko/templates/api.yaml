@@ -68,6 +68,8 @@ spec:
                       - name: Cors__AllowedOrigins__2
                         value: "https://www.{{ .Values.ingress.domain }}"
                       - name: Cors__AllowedOrigins__3
+                        value: "https://fileshare.{{ .Values.ingress.domain }}"
+                      - name: Cors__AllowedOrigins__4
                         value: "https://admin.{{ .Values.ingress.domain }}"
                   livenessProbe:
                       httpGet:

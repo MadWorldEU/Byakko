@@ -222,6 +222,10 @@ The Helm chart lives in `deployments/helm/byakko/`. It deploys all services into
 | `localstack.enabled` | Set to `true` in development to deploy MinIO in-cluster |
 | `api.database.autoMigrate` | Set to `true` to run EF Core migrations on API startup |
 | `api.storage.mode` | `LocalStack` (in-cluster MinIO) or `OvhCloud` |
+| `api.storage.ovhCloud.endpoint` | OVHCloud S3 endpoint URL; injected as `Storage__OvhCloud__Endpoint` env var |
+| `api.storage.ovhCloud.accessKey` | OVHCloud S3 access key; set in `Values.Production.yaml` |
+| `api.storage.ovhCloud.secretKey` | OVHCloud S3 secret key; set in `Values.Production.yaml` |
+| `api.storage.ovhCloud.region` | OVHCloud region (e.g. `de`); must match the subdomain in the endpoint URL |
 | `keycloak.realm` | Keycloak realm name used to build the `Authentication:Authority` URL |
 | `keycloak.audience` | Keycloak client ID used as the API audience |
 | `admin.oidc.clientId` | Keycloak client ID injected into the Admin `appsettings.json` ConfigMap |
@@ -231,13 +235,15 @@ The Helm chart lives in `deployments/helm/byakko/`. It deploys all services into
 
 | Subdomain | Service |
 |---|---|
-| `byakko.dev` / `www.` | Portal |
+| `byakko.dev` / `www.` / `fileshare.` | Portal |
 | `api.` | API |
 | `admin.` | Admin |
 | `database.` | pgAdmin |
 | `authentication.` | Keycloak |
 
-### Local development TLS (mkcert)
+### TLS
+
+**Local development (mkcert):** create a locally-trusted certificate and store it as a Kubernetes secret:
 
 ```bash
 mkcert -install
@@ -247,6 +253,8 @@ kubectl create secret tls byakko-tls \
   --key=byakko.dev+1-key.pem \
   -n byakko
 ```
+
+**Production (Let's Encrypt):** set `clusterIssuer.enabled = true` and `clusterIssuer.email` in `Values.Production.yaml`. cert-manager handles certificate issuance and renewal automatically via HTTP-01 challenge over port 80. DNS A records must be propagated and port 80 must be publicly reachable before the challenge can succeed. Remove any AAAA (IPv6) DNS records if the cluster does not have IPv6 configured, as Let's Encrypt will prefer IPv6 and fail with `Connection refused` if it is not bound.
 
 ## Documentation
 
