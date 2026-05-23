@@ -6,6 +6,7 @@ ingress:
     
 clusterIssuer:
     enabled: true
+    email: "changeme"
 
 localstack:
     enabled: false
