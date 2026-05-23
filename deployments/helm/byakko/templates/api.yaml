@@ -34,10 +34,9 @@ spec:
                   env:
                       - name: ConnectionStrings__byakko-db
                         value: "Host={{ .Values.postgres.name }};Port={{ .Values.postgres.containerPort }};Username={{ .Values.postgres.username }};Password={{ .Values.postgres.password }};Database={{ .Values.postgres.database }}"
-                        {{ if .Values.localstack.enabled }}
+                        
                       - name: ConnectionStrings__localstack
                         value: "http://{{ .Values.localstack.name }}.{{ .Values.namespace }}:{{ .Values.localstack.servicePort }}"
-                        {{ end }}
                       - name: OTEL_EXPORTER_OTLP_ENDPOINT
                         value: {{ .Values.api.observability.otlpEndpoint | quote }}
                       - name: Authentication__Authority
@@ -52,6 +51,14 @@ spec:
                         value: {{ .Values.api.storage.mode | quote }}
                       - name: Storage__BucketName
                         value: {{ .Values.api.storage.bucketName | quote }}
+                      - name: Storage__OvhCloud__Endpoint
+                        value: {{ .Values.api.storage.ovhCloud.endpoint | quote }}
+                      - name: Storage__OvhCloud__AccessKey
+                        value: {{ .Values.api.storage.ovhCloud.accessKey | quote }}
+                      - name: Storage__OvhCloud__SecretKey
+                        value: {{ .Values.api.storage.ovhCloud.secretKey | quote }}
+                      - name: Storage__OvhCloud__Region
+                        value: {{ .Values.api.storage.ovhCloud.region | quote }}
                       - name: OpenApi__ServerUrl
                         value: "https://api.{{ .Values.ingress.domain }}"
                       - name: Cors__AllowedOrigins__0

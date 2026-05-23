@@ -118,7 +118,11 @@ api:
     storage:
         mode: "OvhCloud"
         bucketName: "byakko"
-        endpoint: "http://changeme"
+        ovhCloud:
+            endpoint: "http://changeme"
+            accessKey: "changeme"
+            secretKey: "changeme"
+            region: "changeme"
     observability:
         otlpEndpoint: "http://localhost:4040"
     resources:

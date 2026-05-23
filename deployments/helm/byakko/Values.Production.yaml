@@ -1,9 +1,31 @@
 namespace: "byakko-production"
 imagePullPolicy: "IfNotPresent"
+    
+ingress:
+    domain: "mad-world.eu"
+    
+clusterIssuer:
+    enabled: true
 
 localstack:
     enabled: false
 
+postgres:
+    password: "changeme"
+
+keycloak:
+    adminPassword: "changeme"
+    postgres:
+        password: "changeme"
+
+pgadmin:
+    password: "changeme"
+
 api:
     storage:
         mode: "OvhCloud"
+        ovhCloud:
+            endpoint: "changeme"
+            accessKey: "changeme"
+            secretKey: "changeme"
+            region: "changeme"
