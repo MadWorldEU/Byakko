@@ -42,9 +42,11 @@ A curated list of websites and resources used in or relevant to this project.
 
 ## Security
 
+- [Hardenize](https://www.hardenize.com/) — Comprehensive web security assessment covering TLS, headers, DNS, and email security
 - [HTTP Security Headers](https://httpsecurityheaders.com/) — Scan and grade HTTP response security headers for a given URL
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/) — Standard reference for the most critical web application security risks
 - [SSL Labs](https://www.ssllabs.com/ssltest/) — Deep analysis and grading of a server's SSL/TLS configuration
+- [ZAP](https://www.zaproxy.org/) — Open source web application security scanner for finding vulnerabilities
 
 ## Tooling
 
