@@ -42,8 +42,6 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
 });
 
-app.UseMiddleware<SecurityHeadersMiddleware>();
-
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
