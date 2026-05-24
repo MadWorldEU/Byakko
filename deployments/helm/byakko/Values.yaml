@@ -114,7 +114,7 @@ api:
     containerPort: 8080
     servicePort: 80
     database:
-        autoMigrate: false
+        autoMigrate: true
     storage:
         mode: "OvhCloud"
         bucketName: "byakko"
