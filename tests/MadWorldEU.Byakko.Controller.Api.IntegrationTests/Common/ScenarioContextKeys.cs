@@ -5,4 +5,5 @@ internal static class ScenarioContextKeys
 {
     internal const string AuthenticatedClient = "AuthenticatedClient";
     internal const string LastResponse = "LastResponse";
+    internal const string ServiceProvider = "ServiceProvider";
 }

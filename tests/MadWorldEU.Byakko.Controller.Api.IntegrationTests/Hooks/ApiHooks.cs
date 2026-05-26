@@ -64,5 +64,6 @@ public sealed class ApiHooks(ScenarioContext scenarioContext)
     {
         scenarioContext.Set(_client!);
         scenarioContext.Set(_authenticatedClient!, ScenarioContextKeys.AuthenticatedClient);
+        scenarioContext.Set(_factory!.Services, ScenarioContextKeys.ServiceProvider);
     }
 }
