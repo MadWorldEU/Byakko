@@ -22,7 +22,8 @@ builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddObjectStorage(builder.Configuration);
 builder.Services.AddPostgresql(builder.Configuration);
 
-builder.Services.Configure<CleanupSettings>(builder.Configuration.GetSection(CleanupSettings.Key));
+builder.Services.Configure<CleanupSettings>(options => 
+    builder.Configuration.GetSection(CleanupSettings.Key).Bind(options));
 builder.Services.AddHostedService<DeleteExpiredAssetsService>();
 builder.Services.AddHostedService<DeleteExpiredAssetMetaDataService>();
 

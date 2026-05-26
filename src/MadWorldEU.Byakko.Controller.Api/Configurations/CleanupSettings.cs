@@ -8,9 +8,9 @@ internal sealed class CleanupSettings
     internal const string Key = "Cleanup";
 
     /// <summary>UTC hour (0–23) at which the expired asset cleanup runs each day.</summary>
-    public int TriggerHourUtc { get; init; } = 2;
+    internal int TriggerHourUtc { get; init; }
     
-    internal TimeSpan CalculateDelayUntilNextTrigger(IClock clock)
+    public TimeSpan CalculateDelayUntilNextTrigger(IClock clock)
     {
         var now = clock.GetCurrentInstant();
         var nextTrigger = now.Plus(Duration.FromHours(TriggerHourUtc));
