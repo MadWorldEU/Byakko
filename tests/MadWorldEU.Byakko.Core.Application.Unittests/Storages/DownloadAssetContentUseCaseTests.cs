@@ -18,7 +18,8 @@ public sealed class DownloadAssetContentUseCaseTests
             guidGenerator,
             Name.Create("test.txt").Value,
             ContentType.Create("text/plain").Value,
-            UserId.Create(Guid.NewGuid().ToString()).Value
+            UserId.Create(Guid.NewGuid().ToString()).Value,
+            ValidityPeriod.Create(30).Value
         ).Value;
     }
 

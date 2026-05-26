@@ -1,3 +1,4 @@
+global using Microsoft.Extensions.Options;
 global using NodaTime;
 global using NSubstitute;
 global using Shouldly;

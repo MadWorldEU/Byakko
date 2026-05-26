@@ -22,7 +22,8 @@ public sealed class UploadAssetContentUseCaseTests
             guidGenerator,
             Name.Create(name).Value,
             ContentType.Create(contentType).Value,
-            UserId.Create(OwnerId.ToString()).Value
+            UserId.Create(OwnerId.ToString()).Value,
+            ValidityPeriod.Create(30).Value
         ).Value;
     }
 

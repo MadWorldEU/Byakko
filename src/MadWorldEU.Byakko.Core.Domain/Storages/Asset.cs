@@ -10,6 +10,9 @@ public sealed class Asset : Entity<Id>
     public Size Size { get; private set; } = null!;
     public Instant CreatedAt { get; private init; }
     public Instant UpdatedAt { get; private set; }
+    public Instant ExpiresAt { get; private init; }
+    public Instant? DeletedAt { get; private set; }
+    public bool IsDeleted => DeletedAt.HasValue;
     
     /// <summary>
     /// Required for EF Core
@@ -17,7 +20,7 @@ public sealed class Asset : Entity<Id>
     [UsedImplicitly]
     private Asset() {}
 
-    private Asset(Id id, Name name, ContentType contentType, UserId createdBy, Instant createdAt)
+    private Asset(Id id, Name name, ContentType contentType, UserId createdBy, ValidityPeriod validityPeriod, Instant createdAt)
     {
         Id = id;
         Name = name;
@@ -26,19 +29,37 @@ public sealed class Asset : Entity<Id>
         Size = Size.Create(0).Value;
         CreatedAt = createdAt;
         UpdatedAt = createdAt;
+        ExpiresAt = createdAt + Duration.FromDays(validityPeriod.Days);
+        DeletedAt = null;
     }
 
-    public static Result<Asset> Create(IClock clock, IGuidGenerator guidGenerator, Name name, ContentType contentType, UserId createdBy)
+    public static Result<Asset> Create(
+        IClock clock,
+        IGuidGenerator guidGenerator,
+        Name name,
+        ContentType contentType,
+        UserId createdBy,
+        ValidityPeriod validityPeriod)
     {
         var now = clock.GetCurrentInstant();
         var id = Id.Create(guidGenerator.New()).Value;
-        return new Asset(id, name, contentType, createdBy, now);
+        return new Asset(id, name, contentType, createdBy, validityPeriod, now);
     }
 
-    public void UpdateSize(Size size, Instant updatedAt)
+    public void Delete(IClock clock)
     {
+        var now = clock.GetCurrentInstant();
+
+        DeletedAt = now;
+        UpdatedAt = now;
+    }
+
+    public void UpdateSize(IClock clock, Size size)
+    {
+        var now = clock.GetCurrentInstant();
+        
         Size = size;
-        UpdatedAt = updatedAt;
+        UpdatedAt = now;
     }
 
     public AssetPath GetPath() => AssetPath.Create(DefaultPath, Id.Value.ToString()).Value;

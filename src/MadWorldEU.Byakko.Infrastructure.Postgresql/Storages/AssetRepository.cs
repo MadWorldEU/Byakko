@@ -1,9 +1,10 @@
 using MadWorldEU.Byakko.Functional;
 using Microsoft.Extensions.Logging;
+using NodaTime;
 
 namespace MadWorldEU.Byakko.Storages;
 
-public sealed class AssetRepository(ByakkoContext context, ILogger<AssetRepository> logger) : IAssetRepository
+public sealed class AssetRepository(ByakkoContext context, IClock clock, ILogger<AssetRepository> logger) : IAssetRepository
 {
     public async Task<Result> AddAsync(Asset asset)
     {
@@ -60,5 +61,24 @@ public sealed class AssetRepository(ByakkoContext context, ILogger<AssetReposito
         }
 
         return asset;
+    }
+
+    public async Task<Result<List<Asset>>> GetExpiredAsync()
+    {
+        var now = clock.GetCurrentInstant();
+
+        try
+        {
+            var expiredAssets = await context.Assets
+                .Where(a => a.DeletedAt == null && a.ExpiresAt < now)
+                .ToListAsync();
+
+            return Result.Success(expiredAssets);
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Failed to query expired assets.");
+            return AssetErrors.QueryFailed;
+        }
     }
 }
