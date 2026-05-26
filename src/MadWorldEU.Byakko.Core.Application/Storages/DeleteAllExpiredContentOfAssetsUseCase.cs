@@ -4,7 +4,7 @@ public sealed class DeleteAllExpiredContentOfAssetsUseCase(IClock clock, IAssetR
 {
     public async Task<Result> ExecuteAsync()
     {
-        var expiredAssetsResult = await repository.GetExpiredAsync();
+        var expiredAssetsResult = await repository.GetExpiredContentAsync();
 
         if (expiredAssetsResult.IsFailure)
         {

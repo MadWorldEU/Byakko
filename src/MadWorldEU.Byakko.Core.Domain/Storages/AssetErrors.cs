@@ -10,4 +10,5 @@ public static class AssetErrors
     public static readonly Error Forbidden = Error.Create("Asset.Forbidden", "You are not allowed to modify this asset.");
     public static readonly Error FileNameMismatch = Error.Create("Asset.FileNameMismatch", "File name does not match the asset metadata.");
     public static readonly Error ContentTypeMismatch = Error.Create("Asset.ContentTypeMismatch", "Content type does not match the asset metadata.");
+    public static readonly Error DeleteFailed = Error.Create("Asset.DeleteFailed", "Failed to delete asset.");
 }

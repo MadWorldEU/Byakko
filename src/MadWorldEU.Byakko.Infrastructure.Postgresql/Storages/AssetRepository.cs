@@ -63,7 +63,7 @@ public sealed class AssetRepository(ByakkoContext context, IClock clock, ILogger
         return asset;
     }
 
-    public async Task<Result<List<Asset>>> GetExpiredAsync()
+    public async Task<Result<List<Asset>>> GetExpiredContentAsync()
     {
         var now = clock.GetCurrentInstant();
 
@@ -79,6 +79,27 @@ public sealed class AssetRepository(ByakkoContext context, IClock clock, ILogger
         {
             logger.LogError(exception, "Failed to query expired assets.");
             return AssetErrors.QueryFailed;
+        }
+    }
+    
+    public async Task<Result> DeleteExpiredAssets()
+    {
+        var lastYear = clock.GetCurrentInstant()
+            .Minus(Duration.FromDays(365));
+
+        try
+        {
+            var assetsDeleted = await context.Assets
+                .Where(a => a.DeletedAt > lastYear)
+                .ExecuteDeleteAsync();
+
+            logger.LogInformation("Deleted {Count} expired asset(s) older than one year.", assetsDeleted);
+            return Result.Success();
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Failed to delete expired assets.");
+            return Result.Failure(AssetErrors.DeleteFailed);
         }
     }
 }

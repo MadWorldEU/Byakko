@@ -2,6 +2,7 @@ using MadWorldEU.Byakko.Configurations;
 using MadWorldEU.Byakko.Endpoints.Development;
 using MadWorldEU.Byakko.Endpoints.Storages;
 using MadWorldEU.Byakko.Extensions;
+using MadWorldEU.Byakko.HostedServices;
 using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,8 +21,13 @@ builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddObjectStorage(builder.Configuration);
 builder.Services.AddPostgresql(builder.Configuration);
 
+builder.Services.Configure<CleanupSettings>(builder.Configuration.GetSection(CleanupSettings.Key));
+builder.Services.AddHostedService<DeleteExpiredAssetsService>();
+builder.Services.AddHostedService<DeleteExpiredAssetMetaDataService>();
+
 builder.AddDefaultAuthentication();
 builder.Services.AddApiRateLimiter(builder.Configuration);
+
 builder.Services.AddOpenTelemetry()
     .WithTracing(tracing => tracing
         .AddAspNetCoreInstrumentation()
