@@ -29,7 +29,9 @@ internal static class AssetsEndpoints
                 var result = await useCase.ExecuteAsync(id);
                 return result.Match(
                     onSuccess: Results.Ok,
-                    onFailure: error => Results.BadRequest(error.Description)
+                    onFailure: error => error.Code == AssetErrors.NotFound.Code
+                        ? Results.NotFound()
+                        : Results.BadRequest(error.Description)
                 );
             })
             .WithName("GetAssetMetadata");
