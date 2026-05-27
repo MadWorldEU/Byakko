@@ -58,6 +58,8 @@ internal static class AssetsEndpoints
         assetsEndpoints.MapGet("/{id}/content", async (string id, DownloadAssetContentUseCase useCase) =>
             {
                 var result = await useCase.ExecuteAsync(id);
+                
+                // TODO: Return not found
                 return result.Match(
                     onSuccess: response => Results.File(response.Content, response.ContentType, response.FileName),
                     onFailure: error => Results.BadRequest(error.Description)

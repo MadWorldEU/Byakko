@@ -44,7 +44,7 @@ dotnet test                                    # Run all tests
 dotnet test tests/MadWorldEU.Byakko.Controller.Api.IntegrationTests/ -- --coverage  # With code coverage
 ```
 
-**API integration tests** use `WebApplicationFactory<Program>` (in-process test server). The hook in `Hooks/ApiHooks.cs` spins up the factory once per test run and injects an `HttpClient` into each scenario via `ScenarioContext`. BDD scenarios live in `Features/` as `.feature` files; step definitions live in `StepDefinitions/`. `Authentication:ValidateUser = false` disables JWT signature validation so tests can use self-signed tokens from `Common/TestJwtToken.cs`.
+**API integration tests** use `WebApplicationFactory<Program>` (in-process test server). The hook in `Hooks/ApiHooks.cs` spins up the factory once per test run and injects an `HttpClient` and `IServiceProvider` into each scenario via `ScenarioContext`. BDD scenarios live in `Features/` as `.feature` files; step definitions live in `StepDefinitions/`. `Authentication:ValidateUser = false` disables JWT signature validation so tests can use self-signed tokens from `Common/TestJwtToken.cs`. Steps that need direct database access retrieve `IServiceProvider` from `ScenarioContext` via `ScenarioContextKeys.ServiceProvider` and create a scope to resolve `ByakkoContext`.
 
 A **PostgreSQL Testcontainer** (`Testcontainers.PostgreSql`) and a **LocalStack Testcontainer** (`Testcontainers.LocalStack`) are started in `BeforeTestRun` and torn down in `AfterTestRun`. The hook injects both connection strings via in-memory configuration and replaces the real `IAmazonS3` registration with one pointing at the container. `MigrateAsync` runs before any test executes. Tests always run against real, isolated infrastructure — no mocks, no shared dev services.
 
@@ -124,17 +124,35 @@ The Assets feature (`/assets`) is the primary domain feature. Endpoints live in 
 
 | Method | Route | Use case | Description |
 |---|---|---|---|
-| `POST` | `/assets` | `CreateAssetMetadataUseCase` | Creates a new asset record (name + content type) |
-| `GET` | `/assets/{id}` | `GetAssetMetadataUseCase` | Returns asset metadata (id, name, content type, created at) |
+| `POST` | `/assets` | `CreateAssetMetadataUseCase` | Creates a new asset record (name + content type); validity period is read from `Assets:ValidityPeriodInDays` in appsettings |
+| `GET` | `/assets/{id}` | `GetAssetMetadataUseCase` | Returns asset metadata; `404` when not found |
 | `PUT` | `/assets/{id}/content` | `UploadAssetContentUseCase` | Uploads the binary content for an asset |
 | `GET` | `/assets/{id}/content` | `DownloadAssetContentUseCase` | Downloads the binary content of an asset |
 
 The upload/download use cases delegate to `IContentStorage`; the metadata use cases delegate to `IAssetRepository`.
 
+### Asset lifecycle
+
+`Asset` has two lifecycle timestamps beyond `CreatedAt` and `UpdatedAt`:
+
+- `ExpiresAt` — computed at creation as `CreatedAt + ValidityPeriodInDays` days. When an asset's `ExpiresAt` is in the past and `DeletedAt` is null, the scheduled content cleanup considers it expired.
+- `DeletedAt` — set by `asset.Delete(clock)` when the content cleanup use case soft-deletes the asset after removing its S3 content. Null means the asset is active.
+
+`ValidityPeriod` is a value object in `Core.Domain/Storages/ValidityPeriodErrors.cs` that enforces `Days > 0`.
+
+### Cleanup endpoints (manual triggers)
+
+Two manual-trigger endpoints live in `Controller.Api/Endpoints/HostServices/ManualTriggersEndpoints.cs`. They require authorization and call the same use cases as the scheduled services.
+
+| Method | Route | Use case |
+|---|---|---|
+| `POST` | `/host-services/manual-triggers/clean-up/assets-content` | `DeleteAllExpiredContentOfAssetsUseCase` |
+| `POST` | `/host-services/manual-triggers/clean-up/assets-metadata` | `DeleteAllExpiredMetaDataAssetsUseCase` |
+
 ## Key Infrastructure
 
 - **Database:** PostgreSQL via `ByakkoContext` (EF Core + Npgsql). Connection string key: `byakko-db`. Configured in `appsettings.json`, overridden by Aspire at runtime. Migrations live in `Infrastructure.Postgresql/Migrations/`. See `docs/Database.md` for migration commands.
-- **Object storage:** S3-compatible storage via `IAmazonS3` (AWSSDK). Registered by `AddObjectStorage(IConfiguration)` in `Infrastructure.ObjectStorage`. Connection string key: `localstack` (format: plain endpoint URL, e.g. `http://localhost:4566`). Storage settings are bound via `IOptions<StorageOptions>` from the `Storage` section in `appsettings.json`: `Mode` (`LocalStack` or `OvhCloud`), `BucketName`, `AutoCreateBucket` (default `false`; `true` in `appsettings.Development.json`), and a nested `OvhCloud` section (`Endpoint`, `AccessKey`, `SecretKey`, `Region`). `BucketInitializer` creates the bucket on startup only when `AutoCreateBucket` is `true`. The domain abstraction is `IContentStorage` (in `Core.Domain`); it uses `AssetPath` (bucket + key) to address objects and exposes `UploadAsync` and `DownloadAsync`. `LocalStack` mode uses static `test`/`test` credentials and region `us-east-1`; `OvhCloud` mode reads all four credentials from `Storage:OvhCloud:*` and throws `InvalidOperationException` at startup if any value is missing.
+- **Object storage:** S3-compatible storage via `IAmazonS3` (AWSSDK). Registered by `AddObjectStorage(IConfiguration)` in `Infrastructure.ObjectStorage`. Connection string key: `localstack` (format: plain endpoint URL, e.g. `http://localhost:4566`). Storage settings are bound via `IOptions<StorageOptions>` from the `Storage` section in `appsettings.json`: `Mode` (`LocalStack` or `OvhCloud`), `BucketName`, `AutoCreateBucket` (default `false`; `true` in `appsettings.Development.json`), and a nested `OvhCloud` section (`Endpoint`, `AccessKey`, `SecretKey`, `Region`). `BucketInitializer` creates the bucket on startup only when `AutoCreateBucket` is `true`. The domain abstraction is `IContentStorage` (in `Core.Domain`); it uses `AssetPath` (bucket + key) to address objects and exposes `UploadAsync`, `DownloadAsync`, and `DeleteAsync`. `LocalStack` mode uses static `test`/`test` credentials and region `us-east-1`; `OvhCloud` mode reads all four credentials from `Storage:OvhCloud:*` and throws `InvalidOperationException` at startup if any value is missing.
 - **Migrations:** Automatic migration on startup is toggled via `Database:AutoMigrate` in `appsettings.json` (default `false`; `true` in `appsettings.Development.json`). When enabled, a `MigrationService` hosted service runs `MigrateAsync` before the app starts accepting requests. Manual commands are documented in `docs/Database.md`.
 - **Aspire orchestration:** Postgres (with pgAdmin), LocalStack (S3, persistent), and Keycloak are provisioned. The API waits for all three; Admin and Portal wait for the API. Credentials are passed as Aspire parameters (`db-username`, `db-password`, `keycloak-username`, `keycloak-password`). A companion `localstack-explorer` container provides a web UI for browsing LocalStack resources. The `Factories/` folder contains `IResourceFactory`, `ProjectResourceFactory`, `DockerFileResourceFactory`, `DockerContainerResourceFactory`, `ResourceFactoryBuilder`, and `ResourceBuilderExtensions` — this pattern abstracts how each service is run so `AppHost.cs` stays clean. Control which mode is used via `RunMode` in `appsettings.json`: `Project` (default, run from source), `DockerFile` (build from local Dockerfiles), or `ContainerImage` (pull pre-built images from GHCR). See `docs/Aspire.md` for details.
 - **CORS:** Configured via `Cors:AllowedOrigins` in `appsettings.json`. When the array is non-empty, only those origins are allowed; an empty array falls back to allowing any origin. Registered by `AddDefaultCors()` in `Configurations/CorsExtensions.cs`. `UseCors()` is placed before `MapOpenApi()` and `MapScalarApiReference()` in `Program.cs` so CORS headers are present on OpenAPI and Scalar responses. The Helm chart sets five allowed origins: `api.`, root domain, `www.`, `fileshare.`, and `admin.`.
@@ -147,6 +165,8 @@ The upload/download use cases delegate to `IContentStorage`; the metadata use ca
 - **OIDC (Blazor):** Both Admin and Portal use `Microsoft.AspNetCore.Components.WebAssembly.Authentication` for OIDC. Each app's `wwwroot/appsettings.json` contains an `Oidc` section (`Authority`, `ClientId`, `ResponseType`, `DefaultScopes`); `Program.cs` binds it via `AddOidcAuthentication`. Admin uses `admin-client`; Portal uses `portal-client`. `App.razor` wraps the router with `CascadingAuthenticationState` and uses `AuthorizeRouteView`. The OIDC redirect/callback is handled by `Pages/Authentication.razor` (`/authentication/{action}`). `AuthorizationMessageHandler` is registered on the `ApiAuthorized` named HTTP client so bearer tokens are attached automatically. Pages that must remain accessible without login need `@attribute [AllowAnonymous]`.
 - **Health check:** `GET /health` on the API; `GET /health.txt` (static file) on Admin and Portal. Aspire monitors all three.
 - **Observability:** OpenTelemetry tracing, metrics, and logging exported via OTLP. Endpoint configured via `OTEL_EXPORTER_OTLP_ENDPOINT` in `appsettings.json` (default `http://localhost:4040`); Aspire overrides this automatically with the dashboard endpoint.
+- **Asset validity period:** Configured via `Assets:ValidityPeriodInDays` in `appsettings.json` (default `30`). Bound to `AssetSettings` in `Core.Application/Storages/AssetSettings.cs` and injected via `IOptions<AssetSettings>` into `CreateAssetMetadataUseCase`. The value is validated as a `ValidityPeriod` value object (must be > 0) at request time.
+- **Scheduled cleanup:** Two `BackgroundService` implementations in `Controller.Api/HostedServices/` run once per day at the UTC hour configured via `Cleanup:TriggerHourUtc` in `appsettings.json` (default `2`). `DeleteExpiredAssetsService` calls `DeleteAllExpiredContentOfAssetsUseCase` (removes S3 content and soft-deletes the asset record). `DeleteExpiredAssetMetaDataService` calls `DeleteAllExpiredMetaDataAssetsUseCase` (hard-deletes asset records that have been soft-deleted). Both services use `IServiceScopeFactory` to resolve scoped use cases. The trigger time is calculated by `CleanupSettings.CalculateDelayUntilNextTrigger(IClock)`.
 - **Debug endpoints:** `GET /debug/info`, `GET /debug/environment/variables`, `GET /debug/memory`, `POST /debug/memory/gc` — only registered in the Development environment.
 - **Test endpoints:** `GET /tests/ping` — always registered; returns `"pong"`, used to verify the API is reachable.
 

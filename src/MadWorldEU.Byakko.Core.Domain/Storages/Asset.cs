@@ -48,6 +48,8 @@ public sealed class Asset : Entity<Id>
 
     public void Delete(IClock clock)
     {
+        //TODO: Validation
+        
         var now = clock.GetCurrentInstant();
 
         DeletedAt = now;
@@ -56,6 +58,8 @@ public sealed class Asset : Entity<Id>
 
     public void UpdateSize(IClock clock, Size size)
     {
+        //TODO: Validation
+        
         var now = clock.GetCurrentInstant();
         
         Size = size;
