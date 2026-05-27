@@ -59,11 +59,11 @@ public sealed class ManualTriggersSteps(ScenarioContext scenarioContext)
         var services = scenarioContext.Get<IServiceProvider>(ScenarioContextKeys.ServiceProvider);
         using var scope = services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<ByakkoContext>();
-        var yesterday = Instant.FromDateTimeUtc(DateTime.UtcNow.AddDays(-1));
+        var overAYearAgo = Instant.FromUtc(2020, 1, 1, 0, 0);
         var idValueObject = Id.Create(assetId).Value;
         await context.Assets
             .Where(a => a.Id == idValueObject)
-            .ExecuteUpdateAsync(s => s.SetProperty(a => a.DeletedAt, yesterday));
+            .ExecuteUpdateAsync(s => s.SetProperty(a => a.DeletedAt, overAYearAgo));
     }
 
     [When("I trigger the expired asset content cleanup")]
