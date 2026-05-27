@@ -130,7 +130,7 @@ The Assets feature (`/assets`) is the primary domain feature. Endpoints live in 
 | `POST` | `/assets` | `CreateAssetMetadataUseCase` | Creates a new asset record (name + content type); validity period is read from `Assets:ValidityPeriodInDays` in appsettings |
 | `GET` | `/assets/{id}` | `GetAssetMetadataUseCase` | Returns asset metadata; `404` when not found |
 | `PUT` | `/assets/{id}/content` | `UploadAssetContentUseCase` | Uploads the binary content for an asset |
-| `GET` | `/assets/{id}/content` | `DownloadAssetContentUseCase` | Downloads the binary content of an asset |
+| `GET` | `/assets/{id}/content` | `DownloadAssetContentUseCase` | Downloads the binary content of an asset; returns `AssetErrors.Expired` if `ExpiresAt` is in the past |
 
 The upload/download use cases delegate to `IContentStorage`; the metadata use cases delegate to `IAssetRepository`.
 
@@ -147,6 +147,7 @@ The upload/download use cases delegate to `IContentStorage`; the metadata use ca
 |---|---|
 | `Delete(clock)` | Returns `AssetErrors.AlreadyDeleted` if `IsDeleted` is already true |
 | `UpdateSize(clock, size)` | Returns `AssetErrors.SizeAlreadySet` if `Size.Value > 0` (size may only be set once, on upload) |
+| `IsExpired(clock)` | Returns `true` when `clock.GetCurrentInstant() > ExpiresAt`; used by `DownloadAssetContentUseCase` to gate downloads |
 
 `ValidityPeriod` is a value object in `Core.Domain/Storages/` that enforces `Days > 0`.
 
@@ -200,6 +201,7 @@ The Portal (`MadWorldEU.Byakko.Controller.Portal`) is a Blazor WebAssembly app s
 - **Layout:** `Layout/MainLayout.razor` wraps every page with a sticky top navbar (brand + collapsible nav) and a footer. Add new nav links there.
 - **Auth in navbar:** The navbar uses `AuthorizeView`. When authenticated it shows a user-icon dropdown with the account name and a Logout item (calls `Navigation.NavigateToLogout` to avoid the "not initiated from within the page" error). When not authenticated it shows a Login button.
 - **Home page:** `Pages/Home.razor` is the public-facing landing page. It contains a hero section, feature cards, a "how it works" step list, and a CTA band — all using Bootstrap utility classes plus custom styles in `wwwroot/css/app.css`.
+- **Download page:** `Pages/Storage/Download.razor` shows file metadata (name, content type, expiry date) and a download link. When `ExpiresAt` is in the past, the page displays a warning alert and renders a disabled button instead of the download link. The expiry check uses `DateTimeOffset.UtcNow` on the client side as a UI hint; the authoritative check is enforced server-side by `DownloadAssetContentUseCase`.
 - **Custom CSS:** `wwwroot/css/app.css` holds global styles. Portal-specific additions (hero gradient, feature card hover, step number circles) live at the bottom of that file under clearly labelled comment blocks.
 
 ## Project Conventions
