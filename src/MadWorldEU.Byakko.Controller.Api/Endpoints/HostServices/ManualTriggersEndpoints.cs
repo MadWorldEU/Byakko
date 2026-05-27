@@ -1,3 +1,5 @@
+using MadWorldEU.Byakko.Configurations;
+
 namespace MadWorldEU.Byakko.Endpoints.HostServices;
 
 internal static class ManualTriggersEndpoints
@@ -6,7 +8,7 @@ internal static class ManualTriggersEndpoints
     {
         var manualTriggersEndpoint = app.MapGroup("/host-services/manual-triggers")
             .WithTags("Assets")
-            .RequireAuthorization();
+            .RequireAuthorization(AuthorizationPolicies.Administrator);
 
         manualTriggersEndpoint.MapPost("/clean-up/assets-content", async (DeleteAllExpiredContentOfAssetsUseCase useCase) =>
         {
