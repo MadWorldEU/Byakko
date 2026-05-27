@@ -34,7 +34,8 @@ public sealed class UploadAssetContentUseCase(IClock clock, IAssetRepository ass
         var uploadResult = await contentStorage.UploadAsync(asset.Value.GetPath(), content);
         if (uploadResult.IsFailure) return uploadResult.Error;
 
-        asset.Value.UpdateSize(sizeResult.Value, clock.GetCurrentInstant());
+        var updateSizeResult = asset.Value.UpdateSize(clock, sizeResult.Value);
+        if (updateSizeResult.IsFailure) return updateSizeResult.Error;
 
         var updateResult = await assetRepository.UpdateAsync(asset.Value);
         if (updateResult.IsFailure) return updateResult.Error;

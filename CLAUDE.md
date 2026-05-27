@@ -30,12 +30,13 @@ The CI pipeline (`.github/workflows/docker-build-push.yml`) builds and pushes mu
 
 ## Testing
 
-Five test projects exist:
+Six test projects exist:
 
 | Project | Framework | Purpose |
 |---|---|---|
 | `MadWorldEU.Byakko.Controller.Api.IntegrationTests` | Reqnroll + TUnit | BDD integration tests for the API |
 | `MadWorldEU.Byakko.Core.Application.Unittests` | TUnit + NSubstitute + Shouldly | Unit tests for application use cases (error paths) |
+| `MadWorldEU.Byakko.Core.Domain.Unittests` | TUnit + NSubstitute + Shouldly | Unit tests for domain entity error paths |
 | `MadWorldEU.Byakko.Controller.Portal.Componenttests` | bUnit + WireMock.Net + TUnit | Component tests for the Portal Blazor UI |
 | `MadWorldEU.Byakko.Controller.Admin.Componenttests` | bUnit + WireMock.Net + TUnit | Component tests for the Admin Blazor UI |
 
@@ -44,13 +45,15 @@ dotnet test                                    # Run all tests
 dotnet test tests/MadWorldEU.Byakko.Controller.Api.IntegrationTests/ -- --coverage  # With code coverage
 ```
 
-**API integration tests** use `WebApplicationFactory<Program>` (in-process test server). The hook in `Hooks/ApiHooks.cs` spins up the factory once per test run and injects an `HttpClient` into each scenario via `ScenarioContext`. BDD scenarios live in `Features/` as `.feature` files; step definitions live in `StepDefinitions/`. `Authentication:ValidateUser = false` disables JWT signature validation so tests can use self-signed tokens from `Common/TestJwtToken.cs`.
+**API integration tests** use `WebApplicationFactory<Program>` (in-process test server). The hook in `Hooks/ApiHooks.cs` spins up the factory once per test run and injects an `HttpClient` and `IServiceProvider` into each scenario via `ScenarioContext`. BDD scenarios live in `Features/` as `.feature` files; step definitions live in `StepDefinitions/`. `Authentication:ValidateUser = false` disables JWT signature validation so tests can use self-signed tokens from `Common/TestJwtToken.cs`. Steps that need direct database access retrieve `IServiceProvider` from `ScenarioContext` via `ScenarioContextKeys.ServiceProvider` and create a scope to resolve `ByakkoContext`.
 
 A **PostgreSQL Testcontainer** (`Testcontainers.PostgreSql`) and a **LocalStack Testcontainer** (`Testcontainers.LocalStack`) are started in `BeforeTestRun` and torn down in `AfterTestRun`. The hook injects both connection strings via in-memory configuration and replaces the real `IAmazonS3` registration with one pointing at the container. `MigrateAsync` runs before any test executes. Tests always run against real, isolated infrastructure — no mocks, no shared dev services.
 
 **Component tests** render Blazor components in-process using `BunitContext` (`using var ctx = new BunitContext()`). HTTP calls are intercepted by a `WireMockServer`. Use `ctx.Render<T>()` (not the obsolete `RenderComponent`), `cut.WaitForState(predicate, timeout)` for async init, and CSS selectors (`cut.Find`, `cut.FindAll`) for assertions.
 
-**Unit tests** cover error paths in application use cases only — happy paths are covered by integration tests. Mocks are created with NSubstitute (`Substitute.For<T>()`). Async repository/storage methods return `Task.FromResult(...)`. Use `Result.Failure<T>(error)` (not `Result<T>.Failure(error)`) to produce a typed failure result.
+**Application unit tests** cover error paths in use cases only — happy paths are covered by integration tests. Mocks are created with NSubstitute (`Substitute.For<T>()`). Async repository/storage methods return `Task.FromResult(...)`. Use `Result.Failure<T>(error)` (not `Result<T>.Failure(error)`) to produce a typed failure result.
+
+**Domain unit tests** cover error paths on domain entities directly (no use cases, no mocks needed beyond `IClock` and `IGuidGenerator`). Use a `BuildAsset()` helper to construct a valid `Asset` via `Asset.Create(...)`, then exercise the method under test.
 
 ## Architecture
 
@@ -124,17 +127,45 @@ The Assets feature (`/assets`) is the primary domain feature. Endpoints live in 
 
 | Method | Route | Use case | Description |
 |---|---|---|---|
-| `POST` | `/assets` | `CreateAssetMetadataUseCase` | Creates a new asset record (name + content type) |
-| `GET` | `/assets/{id}` | `GetAssetMetadataUseCase` | Returns asset metadata (id, name, content type, created at) |
-| `PUT` | `/assets/{id}/content` | `UploadAssetContentUseCase` | Uploads the binary content for an asset |
-| `GET` | `/assets/{id}/content` | `DownloadAssetContentUseCase` | Downloads the binary content of an asset |
+| `POST` | `/assets` | `CreateAssetMetadataUseCase` | Creates a new asset record (name + content type); validity period is read from `Assets:ValidityPeriodInDays` in appsettings |
+| `GET` | `/assets/{id}` | `GetAssetMetadataUseCase` | Returns asset metadata; `404` when not found |
+| `PUT` | `/assets/{id}/content` | `UploadAssetContentUseCase` | Uploads the binary content for an asset; `404` when not found, `403` when caller is not the owner |
+| `GET` | `/assets/{id}/content` | `DownloadAssetContentUseCase` | Downloads the binary content of an asset; `404` when not found, `400` when expired (`AssetErrors.Expired`) |
 
 The upload/download use cases delegate to `IContentStorage`; the metadata use cases delegate to `IAssetRepository`.
+
+Endpoint error mapping follows a consistent pattern: check `error.Code` against known `AssetErrors` codes and return the appropriate HTTP status; unrecognised errors fall back to `400 Bad Request` with the error description.
+
+### Asset lifecycle
+
+`Asset` has two lifecycle timestamps beyond `CreatedAt` and `UpdatedAt`:
+
+- `ExpiresAt` — computed at creation as `CreatedAt + ValidityPeriodInDays` days. When an asset's `ExpiresAt` is in the past and `DeletedAt` is null, the scheduled content cleanup considers it expired.
+- `DeletedAt` — set by `asset.Delete(clock)` when the content cleanup use case soft-deletes the asset after removing its S3 content. Null means the asset is active. `IsDeleted` is a computed property (`DeletedAt.HasValue`).
+
+`Asset` domain methods return `Result` and enforce invariants:
+
+| Method | Validation |
+|---|---|
+| `Delete(clock)` | Returns `AssetErrors.AlreadyDeleted` if `IsDeleted` is already true |
+| `UpdateSize(clock, size)` | Returns `AssetErrors.SizeAlreadySet` if `Size.Value > 0` (size may only be set once, on upload) |
+| `IsExpired(clock)` | Returns `true` when `clock.GetCurrentInstant() > ExpiresAt`; used by `DownloadAssetContentUseCase` to gate downloads |
+
+`ValidityPeriod` is a value object in `Core.Domain/Storages/` that enforces `Days > 0`.
+
+### Cleanup endpoints (manual triggers)
+
+Two manual-trigger endpoints live in `Controller.Api/Endpoints/HostServices/ManualTriggersEndpoints.cs`. They require authorization and call the same use cases as the scheduled services.
+
+| Method | Route | Use case |
+|---|---|---|
+| `POST` | `/host-services/manual-triggers/clean-up/assets-content` | `DeleteAllExpiredContentOfAssetsUseCase` |
+| `POST` | `/host-services/manual-triggers/clean-up/assets-metadata` | `DeleteAllExpiredMetaDataAssetsUseCase` |
 
 ## Key Infrastructure
 
 - **Database:** PostgreSQL via `ByakkoContext` (EF Core + Npgsql). Connection string key: `byakko-db`. Configured in `appsettings.json`, overridden by Aspire at runtime. Migrations live in `Infrastructure.Postgresql/Migrations/`. See `docs/Database.md` for migration commands.
-- **Object storage:** S3-compatible storage via `IAmazonS3` (AWSSDK). Registered by `AddObjectStorage(IConfiguration)` in `Infrastructure.ObjectStorage`. Connection string key: `localstack` (format: plain endpoint URL, e.g. `http://localhost:4566`). Storage settings are bound via `IOptions<StorageOptions>` from the `Storage` section in `appsettings.json`: `Mode` (`LocalStack` or `OvhCloud`), `BucketName`, `AutoCreateBucket` (default `false`; `true` in `appsettings.Development.json`), and a nested `OvhCloud` section (`Endpoint`, `AccessKey`, `SecretKey`, `Region`). `BucketInitializer` creates the bucket on startup only when `AutoCreateBucket` is `true`. The domain abstraction is `IContentStorage` (in `Core.Domain`); it uses `AssetPath` (bucket + key) to address objects and exposes `UploadAsync` and `DownloadAsync`. `LocalStack` mode uses static `test`/`test` credentials and region `us-east-1`; `OvhCloud` mode reads all four credentials from `Storage:OvhCloud:*` and throws `InvalidOperationException` at startup if any value is missing.
+- **Object storage:** S3-compatible storage via `IAmazonS3` (AWSSDK). Registered by `AddObjectStorage(IConfiguration)` in `Infrastructure.ObjectStorage`. Connection string key: `localstack` (format: plain endpoint URL, e.g. `http://localhost:4566`). Storage settings are bound via `IOptions<StorageOptions>` from the `Storage` section in `appsettings.json`: `Mode` (`LocalStack` or `OvhCloud`), `BucketName`, `AutoCreateBucket` (default `false`; `true` in `appsettings.Development.json`), and a nested `OvhCloud` section (`Endpoint`, `AccessKey`, `SecretKey`, `Region`). `BucketInitializer` creates the bucket on startup only when `AutoCreateBucket` is `true`. The domain abstraction is `IContentStorage` (in `Core.Domain`); it uses `AssetPath` (bucket + key) to address objects and exposes `UploadAsync`, `DownloadAsync`, and `DeleteAsync`. `LocalStack` mode uses static `test`/`test` credentials and region `us-east-1`; `OvhCloud` mode reads all four credentials from `Storage:OvhCloud:*` and throws `InvalidOperationException` at startup if any value is missing.
 - **Migrations:** Automatic migration on startup is toggled via `Database:AutoMigrate` in `appsettings.json` (default `false`; `true` in `appsettings.Development.json`). When enabled, a `MigrationService` hosted service runs `MigrateAsync` before the app starts accepting requests. Manual commands are documented in `docs/Database.md`.
 - **Aspire orchestration:** Postgres (with pgAdmin), LocalStack (S3, persistent), and Keycloak are provisioned. The API waits for all three; Admin and Portal wait for the API. Credentials are passed as Aspire parameters (`db-username`, `db-password`, `keycloak-username`, `keycloak-password`). A companion `localstack-explorer` container provides a web UI for browsing LocalStack resources. The `Factories/` folder contains `IResourceFactory`, `ProjectResourceFactory`, `DockerFileResourceFactory`, `DockerContainerResourceFactory`, `ResourceFactoryBuilder`, and `ResourceBuilderExtensions` — this pattern abstracts how each service is run so `AppHost.cs` stays clean. Control which mode is used via `RunMode` in `appsettings.json`: `Project` (default, run from source), `DockerFile` (build from local Dockerfiles), or `ContainerImage` (pull pre-built images from GHCR). See `docs/Aspire.md` for details.
 - **CORS:** Configured via `Cors:AllowedOrigins` in `appsettings.json`. When the array is non-empty, only those origins are allowed; an empty array falls back to allowing any origin. Registered by `AddDefaultCors()` in `Configurations/CorsExtensions.cs`. `UseCors()` is placed before `MapOpenApi()` and `MapScalarApiReference()` in `Program.cs` so CORS headers are present on OpenAPI and Scalar responses. The Helm chart sets five allowed origins: `api.`, root domain, `www.`, `fileshare.`, and `admin.`.
@@ -147,6 +178,8 @@ The upload/download use cases delegate to `IContentStorage`; the metadata use ca
 - **OIDC (Blazor):** Both Admin and Portal use `Microsoft.AspNetCore.Components.WebAssembly.Authentication` for OIDC. Each app's `wwwroot/appsettings.json` contains an `Oidc` section (`Authority`, `ClientId`, `ResponseType`, `DefaultScopes`); `Program.cs` binds it via `AddOidcAuthentication`. Admin uses `admin-client`; Portal uses `portal-client`. `App.razor` wraps the router with `CascadingAuthenticationState` and uses `AuthorizeRouteView`. The OIDC redirect/callback is handled by `Pages/Authentication.razor` (`/authentication/{action}`). `AuthorizationMessageHandler` is registered on the `ApiAuthorized` named HTTP client so bearer tokens are attached automatically. Pages that must remain accessible without login need `@attribute [AllowAnonymous]`.
 - **Health check:** `GET /health` on the API; `GET /health.txt` (static file) on Admin and Portal. Aspire monitors all three.
 - **Observability:** OpenTelemetry tracing, metrics, and logging exported via OTLP. Endpoint configured via `OTEL_EXPORTER_OTLP_ENDPOINT` in `appsettings.json` (default `http://localhost:4040`); Aspire overrides this automatically with the dashboard endpoint.
+- **Asset validity period:** Configured via `Assets:ValidityPeriodInDays` in `appsettings.json` (default `30`). Bound to `AssetSettings` in `Core.Application/Storages/AssetSettings.cs` and injected via `IOptions<AssetSettings>` into `CreateAssetMetadataUseCase`. The value is validated as a `ValidityPeriod` value object (must be > 0) at request time.
+- **Scheduled cleanup:** Two `BackgroundService` implementations in `Controller.Api/HostedServices/` run once per day at the UTC hour configured via `Cleanup:TriggerHourUtc` in `appsettings.json` (default `2`). `DeleteExpiredAssetsService` calls `DeleteAllExpiredContentOfAssetsUseCase` (removes S3 content and soft-deletes the asset record). `DeleteExpiredAssetMetaDataService` calls `DeleteAllExpiredMetaDataAssetsUseCase` (hard-deletes asset records where `DeletedAt` is not null **and** more than 365 days in the past — records soft-deleted within the last year are retained). Both services use `IServiceScopeFactory` to resolve scoped use cases. The trigger time is calculated by `CleanupSettings.CalculateDelayUntilNextTrigger(IClock)`.
 - **Debug endpoints:** `GET /debug/info`, `GET /debug/environment/variables`, `GET /debug/memory`, `POST /debug/memory/gc` — only registered in the Development environment.
 - **Test endpoints:** `GET /tests/ping` — always registered; returns `"pong"`, used to verify the API is reachable.
 
@@ -156,9 +189,10 @@ The Admin (`MadWorldEU.Byakko.Controller.Admin`) is a Blazor WebAssembly app sty
 
 - **Dark theme:** `data-bs-theme="dark"` is set on the `<html>` element in `wwwroot/index.html`, same mechanism as the Portal.
 - **Bootstrap JS:** `lib/bootstrap/js/bootstrap.bundle.min.js` is loaded in `index.html` (before the Blazor script). The `libman.json` includes `js/**/*.*` to pull it in alongside the CSS.
-- **Sidebar layout:** `Layout/MainLayout.razor` uses a persistent 240 px left sidebar on `md+` breakpoint (hidden on smaller screens — the admin is a desktop-first tool). The sidebar is `position: sticky; height: 100vh` so it stays visible while the main content scrolls. Nav links use Blazor's `<NavLink>` component for automatic `active` class highlighting. Nav items are grouped into three labelled sections: Overview, Management, and Support.
+- **Sidebar layout:** `Layout/MainLayout.razor` uses a persistent 240 px left sidebar on `md+` breakpoint (hidden on smaller screens — the admin is a desktop-first tool). The sidebar is `position: sticky; height: 100vh` so it stays visible while the main content scrolls. Nav links use Blazor's `<NavLink>` component for automatic `active` class highlighting. Nav items are grouped into four labelled sections: Overview, Management, Support, and System.
 - **Auth in sidebar:** The sidebar footer uses `AuthorizeView`. When authenticated it shows the account name with an icon-only logout button (calls `Navigation.NavigateToLogout` to avoid the "not initiated from within the page" error). When not authenticated it shows a Login nav link styled to match the sidebar.
 - **Dashboard:** `Pages/Home.razor` is the admin landing page. It contains four stat cards (Total Files, Active Customers, Storage Used, Support Tickets) with coloured left-border accents, a Quick Actions column, a Recent Customers table, and a Support Tickets table — all showing empty states until real data is wired up.
+- **Manual Triggers:** `Pages/HostServices/ManualTriggers.razor` (`/host-services/manual-triggers`, requires `[Authorize]`) shows two cards — one per cleanup job. Each card has a trigger button that disables and shows a spinner during the request, then displays a success or error alert. Uses `HttpClients.ApiAuthorized` so the bearer token is attached automatically.
 - **Custom CSS:** `wwwroot/css/app.css` holds all admin-specific styles at the bottom of the file: sidebar layout, `.admin-nav-link` active/hover states, `.stat-card` hover lift and per-colour border variants (`stat-card-primary/success/info/warning`), `.stat-icon` sizing, and `.quick-action-btn` slide effect.
 
 ## Portal UI
@@ -170,6 +204,7 @@ The Portal (`MadWorldEU.Byakko.Controller.Portal`) is a Blazor WebAssembly app s
 - **Layout:** `Layout/MainLayout.razor` wraps every page with a sticky top navbar (brand + collapsible nav) and a footer. Add new nav links there.
 - **Auth in navbar:** The navbar uses `AuthorizeView`. When authenticated it shows a user-icon dropdown with the account name and a Logout item (calls `Navigation.NavigateToLogout` to avoid the "not initiated from within the page" error). When not authenticated it shows a Login button.
 - **Home page:** `Pages/Home.razor` is the public-facing landing page. It contains a hero section, feature cards, a "how it works" step list, and a CTA band — all using Bootstrap utility classes plus custom styles in `wwwroot/css/app.css`.
+- **Download page:** `Pages/Storage/Download.razor` shows file metadata (name, content type, expiry date) and a download link. When `ExpiresAt` is in the past, the page displays a warning alert and renders a disabled button instead of the download link. The expiry check uses `DateTimeOffset.UtcNow` on the client side as a UI hint; the authoritative check is enforced server-side by `DownloadAssetContentUseCase`.
 - **Custom CSS:** `wwwroot/css/app.css` holds global styles. Portal-specific additions (hero gradient, feature card hover, step number circles) live at the bottom of that file under clearly labelled comment blocks.
 
 ## Project Conventions

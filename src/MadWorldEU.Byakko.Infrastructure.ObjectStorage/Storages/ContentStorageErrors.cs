@@ -5,4 +5,5 @@ internal static class ContentStorageErrors
 {
     public static readonly Error UploadFailed = Error.Create("ContentStorage.UploadFailed", "Failed to upload content to storage.");
     public static readonly Error DownloadFailed = Error.Create("ContentStorage.DownloadFailed", "Failed to download content from storage.");
+    public static readonly Error DeleteFailed = Error.Create("ContentStorage.DeleteFailed", "Failed to delete content from storage.");
 }

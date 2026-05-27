@@ -1,0 +1,121 @@
+@page "/host-services/manual-triggers"
+@attribute [Authorize]
+@inject IHttpClientFactory HttpClientFactory
+
+<PageTitle>Manual Triggers – Byakko Admin</PageTitle>
+
+<div class="d-flex align-items-start justify-content-between flex-wrap gap-2 mb-4">
+    <div>
+        <h1 class="h3 fw-bold mb-1">Manual Triggers</h1>
+        <p class="text-secondary mb-0 small">Manually trigger scheduled host services outside their configured run time.</p>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="card border-0 bg-body-tertiary h-100">
+            <div class="card-body p-4 d-flex flex-column gap-3">
+                <div>
+                    <h5 class="fw-semibold mb-1">Clean Up Expired Asset Content</h5>
+                    <p class="text-secondary small mb-0">Removes S3 content for all assets whose expiry date has passed and marks them as deleted.</p>
+                </div>
+                @if (_contentResult is not null)
+                {
+                    <div class="alert @(_contentSuccess ? "alert-success" : "alert-danger") mb-0 py-2 small" role="alert">
+                        @_contentResult
+                    </div>
+                }
+                <button class="btn btn-warning fw-semibold mt-auto" @onclick="TriggerContentCleanupAsync" disabled="@_contentRunning">
+                    @if (_contentRunning)
+                    {
+                        <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                    }
+                    Run Content Cleanup
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card border-0 bg-body-tertiary h-100">
+            <div class="card-body p-4 d-flex flex-column gap-3">
+                <div>
+                    <h5 class="fw-semibold mb-1">Clean Up Expired Asset Metadata</h5>
+                    <p class="text-secondary small mb-0">Permanently removes database records for assets that have already been soft-deleted.</p>
+                </div>
+                @if (_metadataResult is not null)
+                {
+                    <div class="alert @(_metadataSuccess ? "alert-success" : "alert-danger") mb-0 py-2 small" role="alert">
+                        @_metadataResult
+                    </div>
+                }
+                <button class="btn btn-warning fw-semibold mt-auto" @onclick="TriggerMetadataCleanupAsync" disabled="@_metadataRunning">
+                    @if (_metadataRunning)
+                    {
+                        <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                    }
+                    Run Metadata Cleanup
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private bool _contentRunning;
+    private string? _contentResult;
+    private bool _contentSuccess;
+
+    private bool _metadataRunning;
+    private string? _metadataResult;
+    private bool _metadataSuccess;
+
+    private async Task TriggerContentCleanupAsync()
+    {
+        _contentRunning = true;
+        _contentResult = null;
+
+        try
+        {
+            var client = HttpClientFactory.CreateClient(HttpClients.ApiAuthorized);
+            var response = await client.PostAsync("/host-services/manual-triggers/clean-up/assets-content", null);
+            _contentSuccess = response.IsSuccessStatusCode;
+            _contentResult = _contentSuccess
+                ? "Content cleanup completed successfully."
+                : $"Cleanup failed ({(int)response.StatusCode}).";
+        }
+        catch (Exception ex)
+        {
+            _contentSuccess = false;
+            _contentResult = $"Request failed: {ex.Message}";
+        }
+        finally
+        {
+            _contentRunning = false;
+        }
+    }
+
+    private async Task TriggerMetadataCleanupAsync()
+    {
+        _metadataRunning = true;
+        _metadataResult = null;
+
+        try
+        {
+            var client = HttpClientFactory.CreateClient(HttpClients.ApiAuthorized);
+            var response = await client.PostAsync("/host-services/manual-triggers/clean-up/assets-metadata", null);
+            _metadataSuccess = response.IsSuccessStatusCode;
+            _metadataResult = _metadataSuccess
+                ? "Metadata cleanup completed successfully."
+                : $"Cleanup failed ({(int)response.StatusCode}).";
+        }
+        catch (Exception ex)
+        {
+            _metadataSuccess = false;
+            _metadataResult = $"Request failed: {ex.Message}";
+        }
+        finally
+        {
+            _metadataRunning = false;
+        }
+    }
+}

@@ -1,7 +1,9 @@
+using Microsoft.Extensions.Options;
+
 namespace MadWorldEU.Byakko.Storages;
 
 /// <summary>Creates a new asset metadata record.</summary>
-public sealed class CreateAssetMetadataUseCase(IClock clock, IGuidGenerator guidGenerator, IAssetRepository repository)
+public sealed class CreateAssetMetadataUseCase(IClock clock, IGuidGenerator guidGenerator, IAssetRepository repository, IOptions<AssetSettings> settings)
 {
     public async Task<Result<CreateAssetResponse>> ExecuteAsync(CreateAssetRequest request, string userId)
     {
@@ -14,7 +16,10 @@ public sealed class CreateAssetMetadataUseCase(IClock clock, IGuidGenerator guid
         var userIdResult = UserId.Create(userId);
         if (userIdResult.IsFailure) return userIdResult.Error;
 
-        var assetResult = Asset.Create(clock, guidGenerator, nameResult.Value, contentTypeResult.Value, userIdResult.Value);
+        var validityPeriodResult = ValidityPeriod.Create(settings.Value.ValidityPeriodInDays);
+        if (validityPeriodResult.IsFailure) return validityPeriodResult.Error;
+
+        var assetResult = Asset.Create(clock, guidGenerator, nameResult.Value, contentTypeResult.Value, userIdResult.Value, validityPeriodResult.Value);
         if (assetResult.IsFailure) return assetResult.Error;
 
         var saveResult = await repository.AddAsync(assetResult.Value);

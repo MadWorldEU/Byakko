@@ -1,7 +1,7 @@
 namespace MadWorldEU.Byakko.Storages;
 
 /// <summary>Downloads the binary content of an asset from object storage.</summary>
-public sealed class DownloadAssetContentUseCase(IAssetRepository assetRepository, IContentStorage contentStorage)
+public sealed class DownloadAssetContentUseCase(IClock clock, IAssetRepository assetRepository, IContentStorage contentStorage)
 {
     public async Task<Result<DownloadAssetContentResponse>> ExecuteAsync(string assetId)
     {
@@ -10,6 +10,11 @@ public sealed class DownloadAssetContentUseCase(IAssetRepository assetRepository
 
         var asset = await assetRepository.FindAsync(id.Value);
         if (asset.IsFailure) return asset.Error;
+
+        if (asset.Value.IsExpired(clock))
+        {
+            return AssetErrors.Expired;
+        }
 
         var content = await contentStorage.DownloadAsync(asset.Value.GetPath());
         if (content.IsFailure) return content.Error;

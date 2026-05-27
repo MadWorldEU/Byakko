@@ -10,4 +10,8 @@ public static class AssetErrors
     public static readonly Error Forbidden = Error.Create("Asset.Forbidden", "You are not allowed to modify this asset.");
     public static readonly Error FileNameMismatch = Error.Create("Asset.FileNameMismatch", "File name does not match the asset metadata.");
     public static readonly Error ContentTypeMismatch = Error.Create("Asset.ContentTypeMismatch", "Content type does not match the asset metadata.");
+    public static readonly Error DeleteFailed = Error.Create("Asset.DeleteFailed", "Failed to delete asset.");
+    public static readonly Error AlreadyDeleted = Error.Create("Asset.AlreadyDeleted", "Asset has already been deleted.");
+    public static readonly Error SizeAlreadySet = Error.Create("Asset.SizeAlreadySet", "Asset size has already been set.");
+    public static readonly Error Expired = Error.Create("Asset.Expired", "Asset has expired and is no longer available for download.");
 }

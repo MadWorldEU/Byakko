@@ -54,4 +54,27 @@ internal sealed class ContentStorage(IAmazonS3 s3Client, IOptions<StorageOptions
             return ContentStorageErrors.DownloadFailed;
         }
     }
+
+    /// <summary>Deletes the object at the given path from storage.</summary>
+    public async Task<Result> DeleteAsync(AssetPath filePath)
+    {
+        try
+        {
+            var request = new DeleteObjectRequest
+            {
+                BucketName = _bucketName,
+                Key = filePath.FullPath
+            };
+
+            await s3Client.DeleteObjectAsync(request);
+
+            logger.LogInformation("Object deleted from bucket '{BucketName}' with key '{Key}'.", _bucketName, filePath.Key);
+            return Result.Success();
+        }
+        catch (AmazonS3Exception exception)
+        {
+            logger.LogError(exception, "Failed to delete object from bucket '{BucketName}' with key '{Key}'.", _bucketName, filePath.Key);
+            return Result.Failure(ContentStorageErrors.DeleteFailed);
+        }
+    }
 }

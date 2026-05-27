@@ -110,5 +110,6 @@
   </Folder>
   <Folder Name="/tests/core/">
     <Project Path="tests\MadWorldEU.Byakko.Core.Application.Unittests\Application.Unittests.csproj" />
+    <Project Path="tests\MadWorldEU.Byakko.Core.Domain.Unittests\Domain.Unittests.csproj" />
   </Folder>
 </Solution>

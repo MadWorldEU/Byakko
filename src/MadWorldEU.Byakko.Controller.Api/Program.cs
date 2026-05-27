@@ -1,7 +1,9 @@
 using MadWorldEU.Byakko.Configurations;
 using MadWorldEU.Byakko.Endpoints.Development;
+using MadWorldEU.Byakko.Endpoints.HostServices;
 using MadWorldEU.Byakko.Endpoints.Storages;
 using MadWorldEU.Byakko.Extensions;
+using MadWorldEU.Byakko.HostedServices;
 using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,12 +18,18 @@ builder.Services.AddDefaultCors(builder.Configuration);
 
 builder.Services.AddHealthChecks();
 builder.Services.AddBuildingBlocks();
-builder.Services.AddApplication();
+builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddObjectStorage(builder.Configuration);
 builder.Services.AddPostgresql(builder.Configuration);
 
+builder.Services.Configure<CleanupSettings>(options => 
+    builder.Configuration.GetSection(CleanupSettings.Key).Bind(options));
+builder.Services.AddHostedService<DeleteExpiredAssetsService>();
+builder.Services.AddHostedService<DeleteExpiredAssetMetaDataService>();
+
 builder.AddDefaultAuthentication();
 builder.Services.AddApiRateLimiter(builder.Configuration);
+
 builder.Services.AddOpenTelemetry()
     .WithTracing(tracing => tracing
         .AddAspNetCoreInstrumentation()
@@ -64,6 +72,7 @@ if (app.Configuration.GetValue("RateLimiting:Enabled", true))
 }
 
 app.AddAssetsEndpoints();
+app.AddManualTriggersEndpoints();
 app.AddTestsEndpoints();
 
 if (app.Environment.IsDevelopment())
