@@ -129,10 +129,12 @@ The Assets feature (`/assets`) is the primary domain feature. Endpoints live in 
 |---|---|---|---|
 | `POST` | `/assets` | `CreateAssetMetadataUseCase` | Creates a new asset record (name + content type); validity period is read from `Assets:ValidityPeriodInDays` in appsettings |
 | `GET` | `/assets/{id}` | `GetAssetMetadataUseCase` | Returns asset metadata; `404` when not found |
-| `PUT` | `/assets/{id}/content` | `UploadAssetContentUseCase` | Uploads the binary content for an asset |
-| `GET` | `/assets/{id}/content` | `DownloadAssetContentUseCase` | Downloads the binary content of an asset; returns `AssetErrors.Expired` if `ExpiresAt` is in the past |
+| `PUT` | `/assets/{id}/content` | `UploadAssetContentUseCase` | Uploads the binary content for an asset; `404` when not found, `403` when caller is not the owner |
+| `GET` | `/assets/{id}/content` | `DownloadAssetContentUseCase` | Downloads the binary content of an asset; `404` when not found, `400` when expired (`AssetErrors.Expired`) |
 
 The upload/download use cases delegate to `IContentStorage`; the metadata use cases delegate to `IAssetRepository`.
+
+Endpoint error mapping follows a consistent pattern: check `error.Code` against known `AssetErrors` codes and return the appropriate HTTP status; unrecognised errors fall back to `400 Bad Request` with the error description.
 
 ### Asset lifecycle
 
