@@ -71,6 +71,8 @@ public sealed class Asset : Entity<Id>
         UpdatedAt = now;
         return Result.Success();
     }
+    
+    public bool IsExpired(IClock clock) => clock.GetCurrentInstant() > ExpiresAt;
 
     public AssetPath GetPath() => AssetPath.Create(DefaultPath, Id.Value.ToString()).Value;
 }

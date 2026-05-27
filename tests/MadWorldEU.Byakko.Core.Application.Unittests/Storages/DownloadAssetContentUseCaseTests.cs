@@ -3,6 +3,7 @@ namespace MadWorldEU.Byakko.Storages;
 /// <summary>Unit tests for <see cref="DownloadAssetContentUseCase"/> error paths.</summary>
 public sealed class DownloadAssetContentUseCaseTests
 {
+    private readonly IClock _clock = Substitute.For<IClock>();
     private readonly IAssetRepository _assetRepository = Substitute.For<IAssetRepository>();
     private readonly IContentStorage _contentStorage = Substitute.For<IContentStorage>();
 
@@ -28,12 +29,27 @@ public sealed class DownloadAssetContentUseCaseTests
     {
         _assetRepository.FindAsync(Arg.Any<Id>()).Returns(Task.FromResult(Result.Failure<Asset>(AssetErrors.NotFound)));
 
-        var useCase = new DownloadAssetContentUseCase(_assetRepository, _contentStorage);
+        var useCase = new DownloadAssetContentUseCase(_clock, _assetRepository, _contentStorage);
 
         var result = await useCase.ExecuteAsync(Guid.NewGuid().ToString());
 
         result.IsFailure.ShouldBeTrue();
         result.Error.ShouldBe(AssetErrors.NotFound);
+    }
+
+    [Test]
+    public async Task ExecuteAsync_WhenAssetIsExpired_ShouldReturnExpiredError()
+    {
+        var asset = BuildAsset();
+        _clock.GetCurrentInstant().Returns(Instant.FromUnixTimeSeconds(0) + Duration.FromDays(31));
+        _assetRepository.FindAsync(Arg.Any<Id>()).Returns(Task.FromResult(Result.Success(asset)));
+
+        var useCase = new DownloadAssetContentUseCase(_clock, _assetRepository, _contentStorage);
+
+        var result = await useCase.ExecuteAsync(asset.Id.Value.ToString());
+
+        result.IsFailure.ShouldBeTrue();
+        result.Error.ShouldBe(AssetErrors.Expired);
     }
 
     [Test]
@@ -45,7 +61,7 @@ public sealed class DownloadAssetContentUseCaseTests
         _contentStorage.DownloadAsync(Arg.Any<AssetPath>())
             .Returns(Task.FromResult(Result.Failure<Stream>(storageError)));
 
-        var useCase = new DownloadAssetContentUseCase(_assetRepository, _contentStorage);
+        var useCase = new DownloadAssetContentUseCase(_clock, _assetRepository, _contentStorage);
 
         var result = await useCase.ExecuteAsync(asset.Id.Value.ToString());
 
