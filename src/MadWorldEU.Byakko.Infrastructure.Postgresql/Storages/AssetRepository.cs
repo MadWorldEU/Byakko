@@ -90,7 +90,7 @@ public sealed class AssetRepository(ByakkoContext context, IClock clock, ILogger
         try
         {
             var assetsDeleted = await context.Assets
-                .Where(a => a.DeletedAt > lastYear)
+                .Where(a => a.DeletedAt != null && a.DeletedAt < lastYear)
                 .ExecuteDeleteAsync();
 
             logger.LogInformation("Deleted {Count} expired asset(s) older than one year.", assetsDeleted);
