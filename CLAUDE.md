@@ -30,12 +30,13 @@ The CI pipeline (`.github/workflows/docker-build-push.yml`) builds and pushes mu
 
 ## Testing
 
-Five test projects exist:
+Six test projects exist:
 
 | Project | Framework | Purpose |
 |---|---|---|
 | `MadWorldEU.Byakko.Controller.Api.IntegrationTests` | Reqnroll + TUnit | BDD integration tests for the API |
 | `MadWorldEU.Byakko.Core.Application.Unittests` | TUnit + NSubstitute + Shouldly | Unit tests for application use cases (error paths) |
+| `MadWorldEU.Byakko.Core.Domain.Unittests` | TUnit + NSubstitute + Shouldly | Unit tests for domain entity error paths |
 | `MadWorldEU.Byakko.Controller.Portal.Componenttests` | bUnit + WireMock.Net + TUnit | Component tests for the Portal Blazor UI |
 | `MadWorldEU.Byakko.Controller.Admin.Componenttests` | bUnit + WireMock.Net + TUnit | Component tests for the Admin Blazor UI |
 
@@ -50,7 +51,9 @@ A **PostgreSQL Testcontainer** (`Testcontainers.PostgreSql`) and a **LocalStack 
 
 **Component tests** render Blazor components in-process using `BunitContext` (`using var ctx = new BunitContext()`). HTTP calls are intercepted by a `WireMockServer`. Use `ctx.Render<T>()` (not the obsolete `RenderComponent`), `cut.WaitForState(predicate, timeout)` for async init, and CSS selectors (`cut.Find`, `cut.FindAll`) for assertions.
 
-**Unit tests** cover error paths in application use cases only — happy paths are covered by integration tests. Mocks are created with NSubstitute (`Substitute.For<T>()`). Async repository/storage methods return `Task.FromResult(...)`. Use `Result.Failure<T>(error)` (not `Result<T>.Failure(error)`) to produce a typed failure result.
+**Application unit tests** cover error paths in use cases only — happy paths are covered by integration tests. Mocks are created with NSubstitute (`Substitute.For<T>()`). Async repository/storage methods return `Task.FromResult(...)`. Use `Result.Failure<T>(error)` (not `Result<T>.Failure(error)`) to produce a typed failure result.
+
+**Domain unit tests** cover error paths on domain entities directly (no use cases, no mocks needed beyond `IClock` and `IGuidGenerator`). Use a `BuildAsset()` helper to construct a valid `Asset` via `Asset.Create(...)`, then exercise the method under test.
 
 ## Architecture
 
@@ -136,9 +139,16 @@ The upload/download use cases delegate to `IContentStorage`; the metadata use ca
 `Asset` has two lifecycle timestamps beyond `CreatedAt` and `UpdatedAt`:
 
 - `ExpiresAt` — computed at creation as `CreatedAt + ValidityPeriodInDays` days. When an asset's `ExpiresAt` is in the past and `DeletedAt` is null, the scheduled content cleanup considers it expired.
-- `DeletedAt` — set by `asset.Delete(clock)` when the content cleanup use case soft-deletes the asset after removing its S3 content. Null means the asset is active.
+- `DeletedAt` — set by `asset.Delete(clock)` when the content cleanup use case soft-deletes the asset after removing its S3 content. Null means the asset is active. `IsDeleted` is a computed property (`DeletedAt.HasValue`).
 
-`ValidityPeriod` is a value object in `Core.Domain/Storages/ValidityPeriodErrors.cs` that enforces `Days > 0`.
+`Asset` domain methods return `Result` and enforce invariants:
+
+| Method | Validation |
+|---|---|
+| `Delete(clock)` | Returns `AssetErrors.AlreadyDeleted` if `IsDeleted` is already true |
+| `UpdateSize(clock, size)` | Returns `AssetErrors.SizeAlreadySet` if `Size.Value > 0` (size may only be set once, on upload) |
+
+`ValidityPeriod` is a value object in `Core.Domain/Storages/` that enforces `Days > 0`.
 
 ### Cleanup endpoints (manual triggers)
 
