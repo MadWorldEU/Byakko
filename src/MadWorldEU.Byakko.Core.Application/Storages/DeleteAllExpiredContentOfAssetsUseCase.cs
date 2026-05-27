@@ -24,7 +24,12 @@ public sealed class DeleteAllExpiredContentOfAssetsUseCase(IClock clock, IAssetR
                 continue;
             }
 
-            asset.Delete(clock);
+            var softDeleteResult = asset.Delete(clock);
+            if (softDeleteResult.IsFailure)
+            {
+                logger.LogError("Failed to soft-delete asset '{AssetId}': {Error}", asset.Id.Value, softDeleteResult.Error.Description);
+                continue;
+            }
 
             var updateResult = await repository.UpdateAsync(asset);
             if (updateResult.IsFailure)

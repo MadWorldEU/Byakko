@@ -46,24 +46,30 @@ public sealed class Asset : Entity<Id>
         return new Asset(id, name, contentType, createdBy, validityPeriod, now);
     }
 
-    public void Delete(IClock clock)
+    public Result Delete(IClock clock)
     {
-        //TODO: Validation
-        
-        var now = clock.GetCurrentInstant();
+        if (IsDeleted)
+        {
+            return Result.Failure(AssetErrors.AlreadyDeleted);
+        }
 
+        var now = clock.GetCurrentInstant();
         DeletedAt = now;
         UpdatedAt = now;
+        return Result.Success();
     }
 
-    public void UpdateSize(IClock clock, Size size)
+    public Result UpdateSize(IClock clock, Size size)
     {
-        //TODO: Validation
-        
+        if (Size.Value > 0)
+        {
+            return Result.Failure(AssetErrors.SizeAlreadySet);
+        }
+
         var now = clock.GetCurrentInstant();
-        
         Size = size;
         UpdatedAt = now;
+        return Result.Success();
     }
 
     public AssetPath GetPath() => AssetPath.Create(DefaultPath, Id.Value.ToString()).Value;

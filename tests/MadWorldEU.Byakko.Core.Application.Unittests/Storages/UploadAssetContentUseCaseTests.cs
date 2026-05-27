@@ -91,6 +91,26 @@ public sealed class UploadAssetContentUseCaseTests
     }
 
     [Test]
+    public async Task ExecuteAsync_WhenSizeAlreadySet_ShouldReturnSizeAlreadySetError()
+    {
+        var asset = BuildAsset();
+        _clock.GetCurrentInstant().Returns(Instant.FromUnixTimeSeconds(0));
+        asset.UpdateSize(_clock, Size.Create(100).Value);
+        _assetRepository.FindAsync(Arg.Any<Id>()).Returns(Task.FromResult(Result.Success(asset)));
+        _contentStorage.UploadAsync(Arg.Any<AssetPath>(), Arg.Any<Stream>())
+            .Returns(Task.FromResult(Result.Success()));
+
+        var useCase = new UploadAssetContentUseCase(_clock, _assetRepository, _contentStorage);
+
+        var result = await useCase.ExecuteAsync(
+            asset.Id.Value.ToString(), Stream.Null, 100,
+            OwnerId.ToString(), "test.txt", "text/plain");
+
+        result.IsFailure.ShouldBeTrue();
+        result.Error.ShouldBe(AssetErrors.SizeAlreadySet);
+    }
+
+    [Test]
     public async Task ExecuteAsync_WhenStorageUploadFails_ShouldReturnStorageError()
     {
         var asset = BuildAsset();
