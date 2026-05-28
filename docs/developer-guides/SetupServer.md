@@ -36,6 +36,7 @@ sudo ufw allow 22/tcp      # SSH
 sudo ufw allow 80/tcp      # HTTP
 sudo ufw allow 443/tcp     # HTTPS
 sudo ufw allow 1194/udp    # OpenVPN
+sudo ufw allow 16443/tcp   # Kubernetes Deployment
 
 # Restrict Kubernetes Dashboard to VPN subnet only
 sudo ufw allow from 10.8.0.0/24 to any port 10443
