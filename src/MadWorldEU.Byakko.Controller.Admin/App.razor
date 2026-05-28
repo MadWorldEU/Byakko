@@ -5,13 +5,13 @@
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
                 <NotAuthorized>
-                    @if (context.User.Identity?.IsAuthenticated == true)                                                            
+                    @if (context.User.Identity?.IsAuthenticated == true)
                     {
-                        <p>You do not have the required role to view this page: @string.Join(", ", context.User.Claims.Select(c => c.Type + ": " + c.Value))</p>
+                        Navigation.NavigateTo("/access-denied"); 
                     }
                     else
                     {
-                        Navigation.NavigateTo("/");
+                        Navigation.NavigateTo("/authentication/login");
                     }
                 </NotAuthorized>
             </AuthorizeRouteView>
