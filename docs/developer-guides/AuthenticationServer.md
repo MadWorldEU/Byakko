@@ -32,6 +32,33 @@ To include the correct `aud` (audience) claim in your tokens:
 
 > 💡 This ensures the `aud` field in the JWT token includes the specified client audience (e.g., `api-client`), which is commonly required for API-side JWT validation.
 
+### Add Roles
+
+Byakko requires two realm roles: `Administrator` and `User`. The token claim name must be `roles` so the API and Blazor apps can read them.
+
+#### Create the roles
+
+1. Go to **Realm roles** in the Keycloak Admin UI.
+2. Click **Create role**.
+3. Set **Role name** to `Administrator` and click **Save**.
+4. Repeat to create the `User` role.
+
+#### Set the Token Claim Name to `roles`
+
+By default Keycloak maps realm roles under `realm_access.roles`. Change it to a flat `roles` claim:
+
+1. Go to **Client Scopes** and open **roles**.
+2. Open the **Mappers** tab and click **realm roles**.
+3. Set **Token Claim Name** to `roles`.
+4. Enable **Add to access token**, **Add to ID token**, and **Add to userinfo**.
+5. Click **Save**.
+
+#### Assign a role to an account (optional)
+
+1. Go to **Users** and open the account.
+2. Open the **Role mapping** tab.
+3. Click **Assign role**, select `Administrator` or `User`, and confirm.
+
 ### Test Login with Keycloak Using the Official Test App
 You can verify that your Keycloak server is correctly issuing tokens (including the `aud` claim) by using Keycloak's official test app:
 
