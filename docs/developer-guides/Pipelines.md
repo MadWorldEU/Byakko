@@ -37,6 +37,33 @@ Go to **Settings → Secrets and variables → Actions → New repository secret
 5. Copy the token shown on that page
 6. Paste it as the value of the `SONAR_TOKEN` secret in the repository settings
 
+## GitHub Environment: vps-production
+
+The deployment pipeline uses a GitHub environment named `vps-production` to gate production deployments and store environment-specific secrets.
+
+### Create the environment
+
+1. Go to **Settings → Environments → New environment**
+2. Set the name to `vps-production`
+3. Optionally configure **Protection rules** (e.g. require a manual approval before deployment)
+
+### Add the KUBECONFIG secret
+
+The `KUBECONFIG` secret holds the kubeconfig file used by `kubectl` and `helm` to authenticate against the production Kubernetes cluster.
+
+1. Open the `vps-production` environment
+2. Under **Environment secrets**, click **Add secret**
+3. Set the name to `KUBECONFIG`
+4. Paste the contents of your kubeconfig file as the value
+
+To get the kubeconfig from a MicroK8s cluster, run the following on the server and copy the output:
+
+```bash
+microk8s config
+```
+
+> 💡 The kubeconfig should use the cluster's public IP or hostname as the server URL, not `127.0.0.1`, so that GitHub Actions can reach it from outside the cluster.
+
 ## First-time: Linking Images to the Repository
 
 After the pipeline runs for the first time, each image is created as a private package under the `MadWorldEU` organisation. Do the following once per image to connect it to this repository:
