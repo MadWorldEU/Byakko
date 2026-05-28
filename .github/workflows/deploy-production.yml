@@ -1,0 +1,29 @@
+name: Deploy production
+on:
+    push:
+        tags:
+            - 'v*'
+
+jobs:
+    deployment:
+        runs-on: 'ubuntu-latest'
+        environment: vps-production
+        steps:
+            - uses: actions/checkout@v1
+
+            - name: 'Deploy'
+              uses: 'deliverybot/helm@v1'
+              with:
+                  release: 'byakko'
+                  namespace: 'byakko-production'
+                  chart: 'deployments/helm/byakko'
+                  token: '${{ github.token }}'
+                  values: |
+                      name: foobar
+                  value-files: >-
+                    [
+                        "values.yaml",
+                        "values.production.yaml"
+                    ]
+              env:
+                  KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
