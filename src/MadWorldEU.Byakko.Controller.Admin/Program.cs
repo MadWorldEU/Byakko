@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MadWorldEU.Byakko;
+using MadWorldEU.Byakko.Configurations;
 using MadWorldEU.Byakko.Startups;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);

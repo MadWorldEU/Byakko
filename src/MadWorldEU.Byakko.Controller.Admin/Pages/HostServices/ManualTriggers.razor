@@ -1,5 +1,5 @@
 @page "/host-services/manual-triggers"
-@attribute [Authorize]
+@attribute [Authorize(Policy = AuthorizationPolicies.Administrator)]
 @inject IHttpClientFactory HttpClientFactory
 
 <PageTitle>Manual Triggers – Byakko Admin</PageTitle>

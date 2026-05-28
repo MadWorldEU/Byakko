@@ -32,7 +32,7 @@ internal static class AuthenticationExtensions
                     ValidateLifetime = authenticationSettings.ValidateUser,
                     ValidateIssuerSigningKey = authenticationSettings.ValidateUser,
                     NameClaimType = "preferred_username",
-                    RoleClaimType = "roles"
+                    RoleClaimType = ClaimTypes.Role
                 };
 
                 if (!authenticationSettings.ValidateUser)
@@ -67,6 +67,13 @@ internal static class AuthenticationExtensions
                 };
             });
 
-        builder.Services.AddAuthorization();
+        builder.Services.AddAuthorization(options =>
+        {
+            options.AddPolicy(AuthorizationPolicies.Administrator, 
+                policy => policy.RequireRole(AuthorizationRoles.Administrator));
+            
+            options.AddPolicy(AuthorizationPolicies.User, 
+                policy => policy.RequireRole(AuthorizationRoles.User));
+        });
     }
 }

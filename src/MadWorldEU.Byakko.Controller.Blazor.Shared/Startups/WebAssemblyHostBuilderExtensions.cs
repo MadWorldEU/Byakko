@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using MadWorldEU.Byakko.Configurations;
 using MadWorldEU.Byakko.Services;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -41,6 +43,16 @@ public static class WebAssemblyHostBuilderExtensions
         builder.Services.AddOidcAuthentication(options =>
         {
             builder.Configuration.Bind("Oidc", options.ProviderOptions);
+            options.UserOptions.RoleClaim = ClaimTypes.Role;
+        }).AddAccountClaimsPrincipalFactory<KeyCloakClaimsPrincipalFactory>();
+        
+        builder.Services.AddAuthorizationCore(options =>
+        {
+            options.AddPolicy(AuthorizationPolicies.Administrator, policy =>
+                policy.RequireRole(AuthorizationRoles.Administrator));
+    
+            options.AddPolicy(AuthorizationPolicies.User, policy =>
+                policy.RequireRole(AuthorizationRoles.User));
         });
 
         return builder;
