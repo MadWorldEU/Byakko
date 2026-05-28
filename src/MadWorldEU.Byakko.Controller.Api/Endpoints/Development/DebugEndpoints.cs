@@ -66,5 +66,14 @@ internal static class DebugEndpoints
                 };
             })
             .WithName("GetMediaTypes");
+
+        debugEndpoints.MapGet("account", (ClaimsPrincipal user) =>
+            {
+                return new GetAccountResponse
+                {
+                    Claims = user.Claims.Select(c => new ClaimDto(c.Type, c.Value)).ToList()
+                };
+            })
+            .RequireAuthorization();
     }
 }

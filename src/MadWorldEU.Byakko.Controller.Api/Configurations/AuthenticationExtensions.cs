@@ -32,7 +32,7 @@ internal static class AuthenticationExtensions
                     ValidateLifetime = authenticationSettings.ValidateUser,
                     ValidateIssuerSigningKey = authenticationSettings.ValidateUser,
                     NameClaimType = "preferred_username",
-                    RoleClaimType = "roles"
+                    RoleClaimType = ClaimTypes.Role
                 };
 
                 if (!authenticationSettings.ValidateUser)
