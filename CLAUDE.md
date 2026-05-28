@@ -177,7 +177,7 @@ Two manual-trigger endpoints live in `Controller.Api/Endpoints/HostServices/Manu
 - **Authentication:** JWT Bearer authentication via Keycloak. Configured in `appsettings.json` under `Authentication:Authority`. The Keycloak realm defines `admin-client`, `api-client`, and `portal-client`. See `docs/AuthenticationServer.md` for setup.
 - **OIDC (Blazor):** Both Admin and Portal use `Microsoft.AspNetCore.Components.WebAssembly.Authentication` for OIDC. Each app's `wwwroot/appsettings.json` contains an `Oidc` section (`Authority`, `ClientId`, `ResponseType`, `DefaultScopes`); `Program.cs` binds it via `AddOidcAuthentication`. Admin uses `admin-client`; Portal uses `portal-client`. `App.razor` wraps the router with `CascadingAuthenticationState` and uses `AuthorizeRouteView`. The `NotAuthorized` template in `AuthorizeRouteView` redirects authenticated users without the required role to `/access-denied` and unauthenticated users to `/authentication/login`. The OIDC redirect/callback is handled by `Pages/Authentication.razor` (`/authentication/{action}`). `AuthorizationMessageHandler` is registered on the `ApiAuthorized` named HTTP client so bearer tokens are attached automatically. Pages that must remain accessible without login need `@attribute [AllowAnonymous]`. Authorization policies (`Administrator`, `User`) and role constants are defined in `Controller.Blazor.Shared/Configurations/AuthorizationPolicies.cs` and `AuthorizationRoles.cs`; both apps register them via `AddByakkoAuthentication` in `WebAssemblyHostBuilderExtensions.cs`.
 - **Health check:** `GET /health` on the API; `GET /health.txt` (static file) on Admin and Portal. Aspire monitors all three.
-- **Observability:** OpenTelemetry tracing, metrics, and logging exported via OTLP. Endpoint configured via `OTEL_EXPORTER_OTLP_ENDPOINT` in `appsettings.json` (default `http://localhost:4040`); Aspire overrides this automatically with the dashboard endpoint.
+- **Observability:** OpenTelemetry tracing, metrics, and logging exported via OTLP. Endpoint configured via `OTEL_EXPORTER_OTLP_ENDPOINT` in `appsettings.json` (default `http://localhost:4040`); Aspire overrides this automatically with the dashboard endpoint. In Kubernetes, when `observability.enabled` is `true` the API automatically points to the in-cluster OTel Collector (port 4317 gRPC); the collector fans out traces to Tempo, metrics to Prometheus, and logs to Loki, all visualised in Grafana at `grafana.<domain>`.
 - **Asset validity period:** Configured via `Assets:ValidityPeriodInDays` in `appsettings.json` (default `30`). Bound to `AssetSettings` in `Core.Application/Storages/AssetSettings.cs` and injected via `IOptions<AssetSettings>` into `CreateAssetMetadataUseCase`. The value is validated as a `ValidityPeriod` value object (must be > 0) at request time.
 - **Scheduled cleanup:** Two `BackgroundService` implementations in `Controller.Api/HostedServices/` run once per day at the UTC hour configured via `Cleanup:TriggerHourUtc` in `appsettings.json` (default `2`). `DeleteExpiredAssetsService` calls `DeleteAllExpiredContentOfAssetsUseCase` (removes S3 content and soft-deletes the asset record). `DeleteExpiredAssetMetaDataService` calls `DeleteAllExpiredMetaDataAssetsUseCase` (hard-deletes asset records where `DeletedAt` is not null **and** more than 365 days in the past — records soft-deleted within the last year are retained). Both services use `IServiceScopeFactory` to resolve scoped use cases. The trigger time is calculated by `CleanupSettings.CalculateDelayUntilNextTrigger(IClock)`.
 - **Debug endpoints:** `GET /debug/info`, `GET /debug/environment/variables`, `GET /debug/memory`, `POST /debug/memory/gc` — only registered in the Development environment.
@@ -244,7 +244,12 @@ The Helm chart lives in `deployments/helm/byakko/`. It deploys all services into
 | `keycloak-database.yaml` | Secret, StatefulSet, Service | Dedicated PostgreSQL for Keycloak |
 | `pgadmin.yaml` | Secret, ConfigMap, Deployment, Service | pgAdmin 4 with both databases pre-registered |
 | `localstack.yaml` | Deployment, Service | MinIO S3-compatible storage (development only, guarded by `localstack.enabled`) |
-| `ingress.yaml` | Ingress | Traefik ingress with TLS for all subdomains; references the `security-headers` middleware |
+| `otel-collector.yaml` | ServiceAccount, ClusterRole, ClusterRoleBinding, ConfigMap (×2), Deployment, DaemonSet, Service | OpenTelemetry collector stack (guarded by `observability.enabled`); main Deployment receives OTLP and exports to Tempo/Loki/Prometheus; log DaemonSet tails pod logs on every node |
+| `prometheus.yaml` | ConfigMap, StatefulSet, Service | Prometheus metrics store with remote-write receiver; guarded by `observability.enabled` |
+| `tempo.yaml` | ConfigMap, StatefulSet, Service | Grafana Tempo trace store (OTLP HTTP on 4318, query API on 3200); guarded by `observability.enabled` |
+| `loki.yaml` | ConfigMap, StatefulSet, Service | Grafana Loki log store with OTLP ingest; guarded by `observability.enabled` |
+| `grafana.yaml` | Secret, ConfigMap (×3), Deployment, Service | Grafana pre-wired to Prometheus, Tempo, and Loki; guarded by `observability.enabled` |
+| `ingress.yaml` | Ingress | Traefik ingress with TLS for all subdomains; adds `grafana.` when `observability.enabled`; references the `security-headers` middleware |
 | `middlewares.yaml` | Middleware | Traefik `security-headers` middleware applied to all routes: HSTS, CSP, CORP, COEP, COOP, Permissions-Policy, X-Content-Type-Options, Referrer-Policy |
 | `NOTES.txt` | — | Printed by Helm after install/upgrade |
 
@@ -270,6 +275,9 @@ The Helm chart lives in `deployments/helm/byakko/`. It deploys all services into
 | `keycloak.audience` | Keycloak client ID used as the API audience |
 | `admin.oidc.clientId` | Keycloak client ID injected into the Admin `appsettings.json` ConfigMap |
 | `portal.oidc.clientId` | Keycloak client ID injected into the Portal `appsettings.json` ConfigMap |
+| `observability.enabled` | Set to `true` to deploy the full observability stack (OTel Collector, Prometheus, Tempo, Loki, Grafana) |
+| `observability.grafana.adminUser` | Grafana admin username |
+| `observability.grafana.adminPassword` | Grafana admin password |
 
 ### Subdomains exposed via ingress
 
@@ -280,6 +288,7 @@ The Helm chart lives in `deployments/helm/byakko/`. It deploys all services into
 | `admin.` | Admin |
 | `database.` | pgAdmin |
 | `authentication.` | Keycloak |
+| `grafana.` | Grafana (only when `observability.enabled`) |
 
 ### TLS
 
