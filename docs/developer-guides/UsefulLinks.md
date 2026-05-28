@@ -56,7 +56,6 @@ A curated list of websites and resources used in or relevant to this project.
 - [CodeQL](https://codeql.github.com/) — Semantic code analysis engine for security scanning
 - [DocFX](https://dotnet.github.io/docfx/) — Static documentation site generator for .NET projects
 - [GitHub Actions](https://github.com/features/actions) — CI/CD automation platform
-- [Helm Deploy](https://github.com/marketplace/actions/helm-deploy) — GitHub Action for deploying Helm charts to a Kubernetes cluster
 - [JetBrains Rider](https://www.jetbrains.com/rider/) — Cross-platform .NET IDE
 - [mkcert](https://github.com/FiloSottile/mkcert) — Tool for creating locally-trusted TLS certificates for development
 - [NuGet](https://www.nuget.org/) — .NET package manager

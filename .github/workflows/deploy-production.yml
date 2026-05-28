@@ -4,26 +4,43 @@ on:
         tags:
             - 'v*'
 
+permissions:
+    contents: read
+
 jobs:
     deployment:
-        runs-on: 'ubuntu-latest'
+        runs-on: ubuntu-latest
         environment: vps-production
         steps:
-            - uses: actions/checkout@v1
+            - name: Checkout
+              uses: actions/checkout@v4
 
-            - name: 'Deploy'
-              uses: 'deliverybot/helm@v1'
-              with:
-                  release: 'byakko'
-                  namespace: 'byakko-production'
-                  chart: 'deployments/helm/byakko'
-                  token: '${{ github.token }}'
-                  values: |
-                      name: foobar
-                  value-files: >-
-                    [
-                        "values.yaml",
-                        "values.production.yaml"
-                    ]
-              env:
-                  KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
+            - name: Set up Helm
+              uses: azure/setup-helm@v4
+
+            - name: Write kubeconfig
+              run: |
+                  mkdir -p ~/.kube
+                  echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
+                  chmod 600 ~/.kube/config
+
+            - name: Deploy
+              run: |
+                  helm upgrade --install byakko deployments/helm/byakko \
+                    --values deployments/helm/byakko/Values.yaml \
+                    --values deployments/helm/byakko/Values.Production.yaml \
+                    --set api.tag="${{ github.ref_name }}" \
+                    --set admin.image.tag="${{ github.ref_name }}" \
+                    --set portal.image.tag="${{ github.ref_name }}" \
+                    --set clusterIssuer.email="${{ secrets.CLUSTER_ISSUER_EMAIL }}" \
+                    --set postgres.password="${{ secrets.POSTGRES_PASSWORD }}" \
+                    --set keycloak.adminPassword="${{ secrets.KEYCLOAK_ADMIN_PASSWORD }}" \
+                    --set keycloak.postgres.password="${{ secrets.KEYCLOAK_POSTGRES_PASSWORD }}" \
+                    --set pgadmin.password="${{ secrets.PGADMIN_PASSWORD }}" \
+                    --set observability.grafana.adminPassword="${{ secrets.GRAFANA_ADMIN_PASSWORD }}" \
+                    --set api.storage.ovhCloud.endpoint="${{ secrets.OVHCLOUD_ENDPOINT }}" \
+                    --set api.storage.ovhCloud.accessKey="${{ secrets.OVHCLOUD_ACCESS_KEY }}" \
+                    --set api.storage.ovhCloud.secretKey="${{ secrets.OVHCLOUD_SECRET_KEY }}" \
+                    --set api.storage.ovhCloud.region="${{ secrets.OVHCLOUD_REGION }}" \
+                    --wait \
+                    --timeout 5m

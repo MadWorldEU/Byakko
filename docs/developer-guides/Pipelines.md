@@ -47,16 +47,27 @@ The deployment pipeline uses a GitHub environment named `vps-production` to gate
 2. Set the name to `vps-production`
 3. Optionally configure **Protection rules** (e.g. require a manual approval before deployment)
 
-### Add the KUBECONFIG secret
+### Add the environment secrets
 
-The `KUBECONFIG` secret holds the kubeconfig file used by `kubectl` and `helm` to authenticate against the production Kubernetes cluster.
+Go to **Settings → Environments → vps-production → Add secret** and add the following secrets:
 
-1. Open the `vps-production` environment
-2. Under **Environment secrets**, click **Add secret**
-3. Set the name to `KUBECONFIG`
-4. Paste the contents of your kubeconfig file as the value
+| Secret                        | Purpose                                      |
+|-------------------------------|----------------------------------------------|
+| `KUBECONFIG`                  | kubeconfig file for the production cluster   |
+| `CLUSTER_ISSUER_EMAIL`        | Email address for Let's Encrypt certificates |
+| `POSTGRES_PASSWORD`           | Application PostgreSQL password              |
+| `KEYCLOAK_ADMIN_PASSWORD`     | Keycloak admin password                      |
+| `KEYCLOAK_POSTGRES_PASSWORD`  | Keycloak dedicated PostgreSQL password       |
+| `PGADMIN_PASSWORD`            | pgAdmin password                             |
+| `GRAFANA_ADMIN_PASSWORD`      | Grafana admin password                       |
+| `OVHCLOUD_ENDPOINT`           | OVHCloud S3 endpoint URL                     |
+| `OVHCLOUD_ACCESS_KEY`         | OVHCloud S3 access key                       |
+| `OVHCLOUD_SECRET_KEY`         | OVHCloud S3 secret key                       |
+| `OVHCLOUD_REGION`             | OVHCloud region (e.g. `de`)                  |
 
-To get the kubeconfig from a MicroK8s cluster, run the following on the server and copy the output:
+#### KUBECONFIG
+
+The `KUBECONFIG` secret holds the kubeconfig file used by `kubectl` and `helm` to authenticate against the production Kubernetes cluster. To get it from a MicroK8s cluster, run the following on the server and paste the output as the secret value:
 
 ```bash
 microk8s config
