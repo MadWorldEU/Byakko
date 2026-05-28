@@ -67,13 +67,10 @@ internal static class AuthenticationExtensions
                 };
             });
 
-        builder.Services.AddAuthorization(options =>
-        {
-            options.AddPolicy(AuthorizationPolicies.Administrator, 
-                policy => policy.RequireRole(AuthorizationRoles.Administrator));
-            
-            options.AddPolicy(AuthorizationPolicies.User, 
-                policy => policy.RequireRole(AuthorizationRoles.User));
-        });
+        builder.Services.AddAuthorizationBuilder()
+            .AddPolicy(AuthorizationPolicies.Administrator,
+                policyBuilder => policyBuilder.RequireRole(AuthorizationRoles.Administrator))
+            .AddPolicy(AuthorizationPolicies.User,
+                policyBuilder => policyBuilder.RequireRole(AuthorizationRoles.User));
     }
 }

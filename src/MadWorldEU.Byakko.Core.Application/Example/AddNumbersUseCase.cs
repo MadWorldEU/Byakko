@@ -2,7 +2,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MadWorldEU.Byakko.Example;
 
-public sealed class AddNumberUseCase(ILogger<AddNumberUseCase> logger)
+public sealed class AddNumbersUseCase(ILogger<AddNumbersUseCase> logger)
 {
     public int Add(int a, int b)
     {

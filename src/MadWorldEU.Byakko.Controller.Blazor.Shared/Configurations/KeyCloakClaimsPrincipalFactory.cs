@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using System.Text.Json;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
@@ -15,27 +16,43 @@ public class KeyCloakClaimsPrincipalFactory : AccountClaimsPrincipalFactory<Remo
     {
         var user = await base.CreateUserAsync(account, options);
 
-        if (!user.Identity?.IsAuthenticated ?? true)
+        if (!IsAuthenticated(user, out var identity))
         {
             return user;
         }
-
-        if (user.Identity is ClaimsIdentity identity)
+        
+        var userRoles = GetUserRoles(account);
+        foreach (var role in userRoles)
         {
-            if (account.AdditionalProperties.TryGetValue("roles", out var rolesObj))
-            {
-                if (rolesObj is JsonElement rolesElement &&
-                    rolesElement.ValueKind == JsonValueKind.Array)
-                {
-                    foreach (var role in rolesElement.EnumerateArray())
-                    {
-                        identity.AddClaim(
-                            new Claim(ClaimTypes.Role, role.GetString()!));
-                    }
-                }
-            }
+            identity.AddClaim(
+                new Claim(ClaimTypes.Role, role));
+        }
+
+        return user;
+    }
+
+    private static bool IsAuthenticated(ClaimsPrincipal user, [NotNullWhen(true)]out ClaimsIdentity? identity)
+    {
+        identity = null;
+        
+        if (!(user.Identity?.IsAuthenticated ?? true) || user.Identity is not ClaimsIdentity claimsIdentity)
+        {
+            return false;
         }
         
-        return user;
+        identity = claimsIdentity;
+        return true;
+
+    }
+
+    private static IReadOnlyList<string> GetUserRoles(RemoteUserAccount account)
+    {
+        if (account.AdditionalProperties.TryGetValue("roles", out var rolesObj) && 
+            rolesObj is JsonElement { ValueKind: JsonValueKind.Array } rolesElement)
+        {
+            return rolesElement.EnumerateArray().Select(e => e.ToString()).ToList();
+        }
+
+        return [];
     }
 }
