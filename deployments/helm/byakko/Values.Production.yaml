@@ -22,6 +22,17 @@ keycloak:
 pgadmin:
     password: "changeme"
 
+observability:
+    enabled: true
+    prometheus:
+        storageSize: 50Gi
+    tempo:
+        storageSize: 20Gi
+    loki:
+        storageSize: 20Gi
+    grafana:
+        adminPassword: "changeme"
+
 api:
     storage:
         mode: "OvhCloud"

@@ -10,6 +10,9 @@ Byakko has been deployed to namespace: {{ .Values.namespace }}
   API Reference:    https://api.{{ .Values.ingress.domain }}/scalar/v1
   Database:         https://database.{{ .Values.ingress.domain }}
   Keycloak:         https://authentication.{{ .Values.ingress.domain }}
+{{- if .Values.observability.enabled }}
+  Grafana:          https://grafana.{{ .Values.ingress.domain }}
+{{- end }}
 
 === Health Checks ===
 
@@ -24,6 +27,13 @@ Byakko has been deployed to namespace: {{ .Values.namespace }}
   Keycloak:       {{ .Values.keycloak.name }}.{{ .Values.namespace }}:{{ .Values.keycloak.servicePort }}
 {{- if .Values.localstack.enabled }}
   LocalStack:     {{ .Values.localstack.name }}.{{ .Values.namespace }}:{{ .Values.localstack.servicePort }}
+{{- end }}
+{{- if .Values.observability.enabled }}
+  Prometheus:     {{ .Values.observability.prometheus.name }}.{{ .Values.namespace }}:{{ .Values.observability.prometheus.containerPort }}
+  Tempo:          {{ .Values.observability.tempo.name }}.{{ .Values.namespace }}:{{ .Values.observability.tempo.containerPort }}
+  Loki:           {{ .Values.observability.loki.name }}.{{ .Values.namespace }}:{{ .Values.observability.loki.containerPort }}
+  Grafana:        {{ .Values.observability.grafana.name }}.{{ .Values.namespace }}:{{ .Values.observability.grafana.servicePort }}
+  OTel Collector: {{ .Values.observability.otelCollector.name }}.{{ .Values.namespace }}:4317 (gRPC) / 4318 (HTTP)
 {{- end }}
 
 === TLS ===
