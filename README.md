@@ -11,6 +11,16 @@ Self-hosted, privacy-friendly file sharing. Upload files and instantly share a l
 
 Byakko (白虎) is the Japanese name for the White Tiger, one of the four mythological beasts guarding the cardinal directions in East Asian cosmology. It represents the West, the season of autumn, and the element of metal. In Japanese culture, Byakko is a symbol of power, courage, and protection.
 
+## Live
+
+The production environment is hosted at [mad-world.eu](https://mad-world.eu). The following services are publicly accessible:
+
+| Service               | URL                                                          |
+|-----------------------|--------------------------------------------------------------|
+| File sharing (Portal) | [fileshare.mad-world.eu](https://fileshare.mad-world.eu)     |
+| Admin                 | [admin.mad-world.eu](https://admin.mad-world.eu)             |
+| API reference         | [api.mad-world.eu/scalar](https://api.mad-world.eu/scalar)   |
+
 ## Documentation
 
 Full documentation is available at [https://madworldeu.github.io/Byakko/](https://madworldeu.github.io/Byakko/).

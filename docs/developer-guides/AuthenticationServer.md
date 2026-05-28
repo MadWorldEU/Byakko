@@ -1,8 +1,8 @@
 # Authentication Server
 This folder sets up a local authentication server using **Keycloak** for development and testing purposes.
 
-## Keycloak (Dev Environment)
-### Getting Started
+## Keycloak
+### Getting Started at developer environment
 Start the development environment using the Aspire Dashboard:
 
 Once running, access Keycloak Admin UI using the dashboard.
@@ -12,6 +12,17 @@ Login with:
 
 To configure a web client and an API client, follow the official guide:
 [Keycloak - Getting Started with Docker](https://www.keycloak.org/getting-started/getting-started-docker)
+
+### Getting Started at production environment
+
+In production, Keycloak is deployed as a Kubernetes `StatefulSet` via the Helm chart. It is exposed at `authentication.<domain>` through the Traefik ingress with TLS.
+
+1. Set the admin credentials in `values.production.yaml` under `keycloak.username` and `keycloak.password`.
+2. Deploy the chart — Keycloak will start and create a fresh realm on first boot.
+3. Access the Admin UI at `https://authentication.<domain>` and log in with the credentials above.
+4. Follow the same configuration steps as the developer environment: create the clients, add the audience scope, configure the roles claim, and create the `Administrator` and `User` roles.
+
+> 💡 The realm name and client IDs are controlled by `keycloak.realm`, `admin.oidc.clientId`, and `portal.oidc.clientId` in `values.yaml`. Make sure the values in Keycloak match these exactly.
 
 ### Add Audience Attribute (for JWT validation)
 
@@ -63,6 +74,3 @@ By default Keycloak maps realm roles under `realm_access.roles`. Change it to a 
 You can verify that your Keycloak server is correctly issuing tokens (including the `aud` claim) by using Keycloak's official test app:
 
 https://www.keycloak.org/app/
-
-## Keycloak (Production Environment)
-*TODO*
