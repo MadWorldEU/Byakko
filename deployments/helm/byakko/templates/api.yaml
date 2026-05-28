@@ -38,7 +38,11 @@ spec:
                       - name: ConnectionStrings__localstack
                         value: "http://{{ .Values.localstack.name }}.{{ .Values.namespace }}:{{ .Values.localstack.servicePort }}"
                       - name: OTEL_EXPORTER_OTLP_ENDPOINT
+                        {{- if .Values.observability.enabled }}
+                        value: "http://{{ .Values.observability.otelCollector.name }}:4317"
+                        {{- else }}
                         value: {{ .Values.api.observability.otlpEndpoint | quote }}
+                        {{- end }}
                       - name: Authentication__Authority
                         value: "https://authentication.{{ .Values.ingress.domain }}/realms/{{ .Values.keycloak.realm }}"
                       - name: Authentication__Audience

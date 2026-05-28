@@ -10,11 +10,11 @@ The AppHost supports three run modes, controlled by the `RunMode` key in `appset
 "RunMode": "Project"
 ```
 
-| Mode | Value | Description |
-|---|---|---|
-| Project reference | `Project` | Runs services directly from source via project references. The default for local development. |
-| Local Dockerfile | `DockerFile` | Builds and runs container images from the local Dockerfiles. Useful for testing containerisation before pushing. |
-| Published image | `ContainerImage` | Pulls and runs the pre-built images from GHCR. Use this to test the exact images that CI has published. |
+| Mode              | Value            | Description                                                                                                      |
+|-------------------|------------------|------------------------------------------------------------------------------------------------------------------|
+| Project reference | `Project`        | Runs services directly from source via project references. The default for local development.                    |
+| Local Dockerfile  | `DockerFile`     | Builds and runs container images from the local Dockerfiles. Useful for testing containerisation before pushing. |
+| Published image   | `ContainerImage` | Pulls and runs the pre-built images from GHCR. Use this to test the exact images that CI has published.          |
 
 ### Project (default)
 

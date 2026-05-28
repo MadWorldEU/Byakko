@@ -82,6 +82,7 @@ Add the following entries to your hosts file so the local domains resolve to you
 127.0.0.1       api.byakko.dev
 127.0.0.1       database.byakko.dev
 127.0.0.1       authentication.byakko.dev
+127.0.0.1       grafana.byakko.dev
 ```
 
 ### Deploy to Development

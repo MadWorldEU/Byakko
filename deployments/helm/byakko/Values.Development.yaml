@@ -4,6 +4,9 @@ imagePullPolicy: "Always"
 localstack:
     enabled: true
     
+observability:
+    enabled: true
+    
 api:
     storage:
         mode: "LocalStack"

@@ -8,14 +8,16 @@ This guide covers the DNS records required to deploy Byakko to a production envi
 
 Configure the following A records, replacing `<cluster-ip>` with the public IP of your Kubernetes node:
 
-| Subdomain                   | Purpose |
-|-----------------------------| --- |   
-| `example.com`               | Portal (public-facing UI) |
-| `www.example.com`            | Portal WWW alias |
-| `api.example.com`            | REST API |
-| `admin.example.com`          | Admin UI |
-| `database.example.com`       | pgAdmin (database management) |
-| `authentication.example.com` | Keycloak (identity server) |
+| Subdomain                    | Purpose                              |
+|------------------------------|--------------------------------------|
+| `example.com`                | Portal (public-facing UI)            |
+| `www.example.com`            | Portal WWW alias                     |
+| `fileshare.example.com`      | Portal file sharing alias            |
+| `api.example.com`            | REST API                             |
+| `admin.example.com`          | Admin UI                             |
+| `database.example.com`       | pgAdmin (database management)        |
+| `authentication.example.com` | Keycloak (identity server)           |
+| `grafana.example.com`        | Grafana (observability dashboards)   |
 
 ## Simplified Configuration Using Wildcard Records
 
