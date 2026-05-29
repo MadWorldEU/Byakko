@@ -23,8 +23,7 @@ jobs:
 
             - name: Dry run
               run: |
-                  helm upgrade --install byakko deployments/helm/byakko \
-                    --dry-run=client \
+                  helm template byakko deployments/helm/byakko \
                     --values deployments/helm/byakko/Values.yaml \
                     --values deployments/helm/byakko/Values.Production.yaml \
                     --set api.tag="dry-run" \
@@ -39,7 +38,7 @@ jobs:
                     --set api.storage.ovhCloud.endpoint="https://dry-run.example.com" \
                     --set api.storage.ovhCloud.accessKey="dry-run" \
                     --set api.storage.ovhCloud.secretKey="dry-run" \
-                    --set api.storage.ovhCloud.region="dry-run"
+                    --set api.storage.ovhCloud.region="dry-run" > /dev/null
 
     deployment:
         if: github.event_name == 'push'
