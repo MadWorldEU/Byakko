@@ -60,13 +60,14 @@ internal sealed class ContentStorage(IAmazonS3 s3Client, IOptions<StorageOptions
     {
         try
         {
-            var request = new DeleteObjectRequest
+            var metadata = await s3Client.GetObjectMetadataAsync(_bucketName, filePath.FullPath);
+
+            await s3Client.DeleteObjectAsync(new DeleteObjectRequest
             {
                 BucketName = _bucketName,
-                Key = filePath.FullPath
-            };
-
-            await s3Client.DeleteObjectAsync(request);
+                Key = filePath.FullPath,
+                VersionId = metadata.VersionId
+            });
 
             logger.LogInformation("Object deleted from bucket '{BucketName}' with key '{Key}'.", _bucketName, filePath.Key);
             return Result.Success();
