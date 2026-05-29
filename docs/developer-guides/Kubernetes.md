@@ -211,6 +211,65 @@ export CONTAINER_PORT=$(sudo microk8s kubectl get pod --namespace kube-system $P
 sudo microk8s kubectl --namespace kube-system port-forward --address 0.0.0.0 $POD_NAME 10443:$CONTAINER_PORT
 ```
 
+### Before a server shutdown
+
+Gracefully drain the cluster before shutting down to avoid data corruption and incomplete requests.
+
+#### Step 1 — Drain all workloads
+
+```shell
+sudo microk8s kubectl drain <node-name> --ignore-daemonsets --delete-emptydir-data
+```
+
+Replace `<node-name>` with the output of:
+
+```shell
+sudo microk8s kubectl get nodes
+```
+
+#### Step 2 — Stop MicroK8s
+
+```shell
+sudo microk8s stop
+```
+
+#### Step 3 — Shut down the server
+
+```shell
+sudo shutdown -h now
+```
+
+### After a server reboot
+
+MicroK8s and all cluster workloads start automatically after a reboot, but a few things require manual intervention before the cluster is fully operational.
+
+#### Step 1 — Wait for MicroK8s to be ready
+
+```shell
+sudo microk8s status --wait-ready
+```
+
+#### Step 2 — Uncordon the node
+
+If the node was drained before shutdown, mark it schedulable again:
+
+```shell
+sudo microk8s kubectl uncordon <node-name>
+```
+
+#### Step 3 — Verify all pods are running
+
+```shell
+sudo microk8s kubectl get pods -A
+```
+
+All pods should reach `Running` or `Completed` status within a few minutes. If any pod is stuck in `Pending` or `CrashLoopBackOff`, inspect it with:
+
+```shell
+sudo microk8s kubectl describe pod <pod-name> -n <namespace>
+sudo microk8s kubectl logs <pod-name> -n <namespace>
+```
+
 ### Reference
 
 - [MicroK8s install guide](https://microk8s.io/)
