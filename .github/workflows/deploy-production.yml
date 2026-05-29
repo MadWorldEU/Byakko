@@ -41,7 +41,7 @@ jobs:
                     --set api.storage.ovhCloud.region="dry-run" > /dev/null
 
     deployment:
-        if: github.event_name == 'push'
+        if: github.event_name == 'pull_request'
         runs-on: ubuntu-latest
         environment: vps-production
         steps:
@@ -56,12 +56,12 @@ jobs:
                   KUBECONFIG_CONTENT: ${{ secrets.KUBECONFIG }}
               run: |
                   mkdir -p ~/.kube
-                  echo "$KUBECONFIG_CONTENT" > ~/.kube/config
+                  echo "$KUBECONFIG_CONTENT" | base64 -d  > ~/.kube/config
                   chmod 600 ~/.kube/config
 
             - name: Deploy
               env:
-                  IMAGE_TAG: ${{ github.ref_name }}
+                  IMAGE_TAG: "v0.6.0"
                   CLUSTER_ISSUER_EMAIL: ${{ secrets.CLUSTER_ISSUER_EMAIL }}
                   POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
                   KEYCLOAK_ADMIN_PASSWORD: ${{ secrets.KEYCLOAK_ADMIN_PASSWORD }}
