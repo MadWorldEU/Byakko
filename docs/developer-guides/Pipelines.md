@@ -37,6 +37,44 @@ Go to **Settings → Secrets and variables → Actions → New repository secret
 5. Copy the token shown on that page
 6. Paste it as the value of the `SONAR_TOKEN` secret in the repository settings
 
+## GitHub Environment: vps-production
+
+The deployment pipeline uses a GitHub environment named `vps-production` to gate production deployments and store environment-specific secrets.
+
+### Create the environment
+
+1. Go to **Settings → Environments → New environment**
+2. Set the name to `vps-production`
+3. Optionally configure **Protection rules** (e.g. require a manual approval before deployment)
+
+### Add the environment secrets
+
+Go to **Settings → Environments → vps-production → Add secret** and add the following secrets:
+
+| Secret                        | Purpose                                      |
+|-------------------------------|----------------------------------------------|
+| `KUBECONFIG`                  | kubeconfig file for the production cluster   |
+| `CLUSTER_ISSUER_EMAIL`        | Email address for Let's Encrypt certificates |
+| `POSTGRES_PASSWORD`           | Application PostgreSQL password              |
+| `KEYCLOAK_ADMIN_PASSWORD`     | Keycloak admin password                      |
+| `KEYCLOAK_POSTGRES_PASSWORD`  | Keycloak dedicated PostgreSQL password       |
+| `PGADMIN_PASSWORD`            | pgAdmin password                             |
+| `GRAFANA_ADMIN_PASSWORD`      | Grafana admin password                       |
+| `OVHCLOUD_ENDPOINT`           | OVHCloud S3 endpoint URL                     |
+| `OVHCLOUD_ACCESS_KEY`         | OVHCloud S3 access key                       |
+| `OVHCLOUD_SECRET_KEY`         | OVHCloud S3 secret key                       |
+| `OVHCLOUD_REGION`             | OVHCloud region (e.g. `de`)                  |
+
+#### KUBECONFIG
+
+The `KUBECONFIG` secret holds the kubeconfig file used by `kubectl` and `helm` to authenticate against the production Kubernetes cluster. To get it from a MicroK8s cluster, run the following on the server and paste the output as the secret value:
+
+```bash
+microk8s config
+```
+
+> 💡 The kubeconfig should use the cluster's public IP or hostname as the server URL, not `127.0.0.1`, so that GitHub Actions can reach it from outside the cluster.
+
 ## First-time: Linking Images to the Repository
 
 After the pipeline runs for the first time, each image is created as a private package under the `MadWorldEU` organisation. Do the following once per image to connect it to this repository:

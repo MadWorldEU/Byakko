@@ -1,0 +1,93 @@
+name: Deploy production
+on:
+    push:
+        tags:
+            - 'v*'
+    pull_request:
+        branches:
+            - main
+
+permissions:
+    contents: read
+
+jobs:
+    dry-run:
+        if: github.event_name == 'pull_request'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Set up Helm
+              uses: azure/setup-helm@dda3372f752e03dde6b3237bc9431cdc2f7a02a2 #v5
+
+            - name: Dry run
+              run: |
+                  helm template byakko deployments/helm/byakko \
+                    --values deployments/helm/byakko/Values.yaml \
+                    --values deployments/helm/byakko/Values.Production.yaml \
+                    --set api.tag="dry-run" \
+                    --set admin.image.tag="dry-run" \
+                    --set portal.image.tag="dry-run" \
+                    --set clusterIssuer.email="dry-run@example.com" \
+                    --set postgres.password="dry-run" \
+                    --set keycloak.adminPassword="dry-run" \
+                    --set keycloak.postgres.password="dry-run" \
+                    --set pgadmin.password="dry-run" \
+                    --set observability.grafana.adminPassword="dry-run" \
+                    --set api.storage.ovhCloud.endpoint="https://dry-run.example.com" \
+                    --set api.storage.ovhCloud.accessKey="dry-run" \
+                    --set api.storage.ovhCloud.secretKey="dry-run" \
+                    --set api.storage.ovhCloud.region="dry-run" > /dev/null
+
+    deployment:
+        if: github.event_name == 'push'
+        runs-on: ubuntu-latest
+        environment: vps-production
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Set up Helm
+              uses: azure/setup-helm@dda3372f752e03dde6b3237bc9431cdc2f7a02a2 #v5
+
+            - name: Write kubeconfig
+              env:
+                  KUBECONFIG_CONTENT: ${{ secrets.KUBECONFIG }}
+              run: |
+                  mkdir -p ~/.kube
+                  echo "$KUBECONFIG_CONTENT" > ~/.kube/config
+                  chmod 600 ~/.kube/config
+
+            - name: Deploy
+              env:
+                  IMAGE_TAG: ${{ github.ref_name }}
+                  CLUSTER_ISSUER_EMAIL: ${{ secrets.CLUSTER_ISSUER_EMAIL }}
+                  POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+                  KEYCLOAK_ADMIN_PASSWORD: ${{ secrets.KEYCLOAK_ADMIN_PASSWORD }}
+                  KEYCLOAK_POSTGRES_PASSWORD: ${{ secrets.KEYCLOAK_POSTGRES_PASSWORD }}
+                  PGADMIN_PASSWORD: ${{ secrets.PGADMIN_PASSWORD }}
+                  GRAFANA_ADMIN_PASSWORD: ${{ secrets.GRAFANA_ADMIN_PASSWORD }}
+                  OVHCLOUD_ENDPOINT: ${{ secrets.OVHCLOUD_ENDPOINT }}
+                  OVHCLOUD_ACCESS_KEY: ${{ secrets.OVHCLOUD_ACCESS_KEY }}
+                  OVHCLOUD_SECRET_KEY: ${{ secrets.OVHCLOUD_SECRET_KEY }}
+                  OVHCLOUD_REGION: ${{ secrets.OVHCLOUD_REGION }}
+              run: |
+                  helm upgrade --install byakko deployments/helm/byakko \
+                    --values deployments/helm/byakko/Values.yaml \
+                    --values deployments/helm/byakko/Values.Production.yaml \
+                    --set api.tag="$IMAGE_TAG" \
+                    --set admin.image.tag="$IMAGE_TAG" \
+                    --set portal.image.tag="$IMAGE_TAG" \
+                    --set clusterIssuer.email="$CLUSTER_ISSUER_EMAIL" \
+                    --set postgres.password="$POSTGRES_PASSWORD" \
+                    --set keycloak.adminPassword="$KEYCLOAK_ADMIN_PASSWORD" \
+                    --set keycloak.postgres.password="$KEYCLOAK_POSTGRES_PASSWORD" \
+                    --set pgadmin.password="$PGADMIN_PASSWORD" \
+                    --set observability.grafana.adminPassword="$GRAFANA_ADMIN_PASSWORD" \
+                    --set api.storage.ovhCloud.endpoint="$OVHCLOUD_ENDPOINT" \
+                    --set api.storage.ovhCloud.accessKey="$OVHCLOUD_ACCESS_KEY" \
+                    --set api.storage.ovhCloud.secretKey="$OVHCLOUD_SECRET_KEY" \
+                    --set api.storage.ovhCloud.region="$OVHCLOUD_REGION" \
+                    --wait \
+                    --timeout 5m
