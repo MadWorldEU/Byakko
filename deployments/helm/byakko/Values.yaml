@@ -201,7 +201,7 @@ observability:
 api:
     name: "api"
     image: "ghcr.io/madworldeu/byakko-api"
-    tag: "v0.5.0"
+    tag: "v0.6.1"
     containerPort: 8080
     servicePort: 80
     database:
@@ -234,7 +234,7 @@ admin:
         clientId: "admin-client"
     image:
         repository: "ghcr.io/madworldeu/byakko-admin"
-        tag: "v0.5.0"
+        tag: "v0.6.1"
     resources:
         requests:
             cpu: 50m
@@ -253,7 +253,7 @@ portal:
         clientId: "portal-client"
     image:
         repository: "ghcr.io/madworldeu/byakko-portal"
-        tag: "v0.5.0"
+        tag: "v0.6.1"
     resources:
         requests:
             cpu: 50m
