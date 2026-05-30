@@ -43,6 +43,7 @@ A curated list of websites and resources used in or relevant to this project.
 ## Security
 
 - [Hardenize](https://www.hardenize.com/) — Comprehensive web security assessment covering TLS, headers, DNS, and email security
+- [Open Graph Preview](https://www.opengraph.xyz/) — Preview how Open Graph meta tags render on social media platforms
 - [HTTP Security Headers](https://httpsecurityheaders.com/) — Scan and grade HTTP response security headers for a given URL
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/) — Standard reference for the most critical web application security risks
 - [Permissions Policy](https://www.permissionspolicy.com/) — Reference and generator for the Permissions-Policy HTTP header

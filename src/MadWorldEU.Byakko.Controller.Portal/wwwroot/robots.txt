@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /authentication/
+Disallow: /Development/
+Disallow: /storage/
