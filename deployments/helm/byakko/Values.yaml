@@ -214,6 +214,8 @@ api:
             accessKey: "changeme"
             secretKey: "changeme"
             region: "changeme"
+    encryption:
+        key: "changeme"
     observability:
         otlpEndpoint: "http://localhost:4040"
     resources:
