@@ -1,3 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: {{ .Values.api.name }}-security-config
+    namespace: {{ .Values.namespace }}
+    labels:
+        app: {{ .Values.api.name }}
+data:
+    security.txt: |
+        Contact: {{ .Values.securityTxt.contact }}
+        Expires: {{ .Values.securityTxt.expires }}
+        Preferred-Languages: {{ .Values.securityTxt.preferredLanguages }}
+        Canonical: https://api.{{ .Values.ingress.domain }}/.well-known/security.txt
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -77,6 +91,11 @@ spec:
                         value: "https://fileshare.{{ .Values.ingress.domain }}"
                       - name: Cors__AllowedOrigins__4
                         value: "https://admin.{{ .Values.ingress.domain }}"
+                  volumeMounts:
+                      - name: security-txt
+                        mountPath: /app/wwwroot/.well-known/security.txt
+                        subPath: security.txt
+                        readOnly: true
                   livenessProbe:
                       httpGet:
                           path: /health
@@ -89,6 +108,10 @@ spec:
                           port: {{ .Values.api.containerPort }}
                       initialDelaySeconds: 5
                       periodSeconds: 10
+            volumes:
+                - name: security-txt
+                  configMap:
+                      name: {{ .Values.api.name }}-security-config
 ---
 apiVersion: v1
 kind: Service
