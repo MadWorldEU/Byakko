@@ -1,7 +1,9 @@
+using MadWorldEU.Byakko.Encryptions;
+
 namespace MadWorldEU.Byakko.Storages;
 
 /// <summary>Downloads the binary content of an asset from object storage.</summary>
-public sealed class DownloadAssetContentUseCase(IClock clock, IAssetRepository assetRepository, IContentStorage contentStorage)
+public sealed class DownloadAssetContentUseCase(IClock clock, IEncryptionService encryptionService, IAssetRepository assetRepository, IContentStorage contentStorage)
 {
     public async Task<Result<DownloadAssetContentResponse>> ExecuteAsync(string assetId)
     {
@@ -16,12 +18,14 @@ public sealed class DownloadAssetContentUseCase(IClock clock, IAssetRepository a
             return AssetErrors.Expired;
         }
 
-        var content = await contentStorage.DownloadAsync(asset.Value.GetPath());
-        if (content.IsFailure) return content.Error;
+        var encryptedContent = await contentStorage.DownloadAsync(asset.Value.GetPath());
+        if (encryptedContent.IsFailure) return encryptedContent.Error;
 
+        var content = encryptionService.Decrypt(encryptedContent.Value);
+        
         return new DownloadAssetContentResponse
         {
-            Content = content.Value,
+            Content = content,
             ContentType = asset.Value.ContentType.Value,
             FileName = asset.Value.Name.Value
         };

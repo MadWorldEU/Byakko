@@ -5,7 +5,7 @@
   "description" : "A file sharing platform for uploading, managing, and retrieving digital assets.",
   "documentation" : { },
   "id" : 1,
-  "lastModifiedDate" : "2026-05-16T20:31:58Z",
+  "lastModifiedDate" : "2026-05-30T09:52:21Z",
   "model" : {
     "people" : [ {
       "id" : "1",
@@ -57,19 +57,27 @@
           "structurizr.dsl.identifier" : "system.api"
         },
         "relationships" : [ {
+          "description" : "Authorize",
+          "destinationId" : "7",
+          "id" : "16",
+          "sourceId" : "4",
+          "tags" : "Relationship"
+        }, {
           "description" : "Reads from and writes to",
           "destinationId" : "8",
-          "id" : "16",
+          "id" : "17",
           "sourceId" : "4",
           "tags" : "Relationship"
         }, {
           "description" : "Downloads from and uploads to",
           "destinationId" : "9",
-          "id" : "17",
+          "id" : "18",
           "sourceId" : "4",
           "tags" : "Relationship"
         } ],
-        "tags" : "Element,Container"
+        "tags" : "Element,Container",
+        "technology" : "Asp.Net Core",
+        "url" : "https://api.mad-world.eu"
       }, {
         "documentation" : { },
         "id" : "5",
@@ -84,7 +92,9 @@
           "sourceId" : "5",
           "tags" : "Relationship"
         } ],
-        "tags" : "Element,Container"
+        "tags" : "Element,Container",
+        "technology" : "Blazor WASM",
+        "url" : "https://admin.mad-world.eu"
       }, {
         "documentation" : { },
         "id" : "6",
@@ -99,7 +109,9 @@
           "sourceId" : "6",
           "tags" : "Relationship"
         } ],
-        "tags" : "Element,Container"
+        "tags" : "Element,Container",
+        "technology" : "Blazor WASM",
+        "url" : "https://fileshare.mad-world.eu"
       }, {
         "documentation" : { },
         "id" : "7",
@@ -107,7 +119,9 @@
         "properties" : {
           "structurizr.dsl.identifier" : "system.keycloak"
         },
-        "tags" : "Element,Container"
+        "tags" : "Element,Container",
+        "technology" : "Java",
+        "url" : "https://authentication.mad-world.eu"
       }, {
         "documentation" : { },
         "id" : "8",
@@ -115,29 +129,40 @@
         "properties" : {
           "structurizr.dsl.identifier" : "system.db"
         },
-        "tags" : "Element,Container,Database"
-      }, {
-        "documentation" : { },
-        "id" : "9",
-        "name" : "Minio",
-        "properties" : {
-          "structurizr.dsl.identifier" : "system.minio"
-        },
-        "tags" : "Element,Container,Storage"
+        "tags" : "Element,Container,Database",
+        "technology" : "Postgresql",
+        "url" : "https://database.mad-world.eu"
       } ],
+      "description" : "VPS",
       "documentation" : { },
       "id" : "3",
       "name" : "Byakko",
       "properties" : {
         "structurizr.dsl.identifier" : "system"
       },
+      "relationships" : [ {
+        "description" : "Downloads from and uploads to",
+        "destinationId" : "9",
+        "id" : "19",
+        "linkedRelationshipId" : "18",
+        "sourceId" : "3"
+      } ],
+      "tags" : "Element,Software System"
+    }, {
+      "description" : "Cloud Service",
+      "documentation" : { },
+      "id" : "9",
+      "name" : "OvhCloud",
+      "properties" : {
+        "structurizr.dsl.identifier" : "ovhcloud"
+      },
       "tags" : "Element,Software System"
     } ]
   },
   "name" : "Byakko",
   "properties" : {
-    "structurizr.inspection.error" : "26",
-    "structurizr.dsl" : "d29ya3NwYWNlICJCeWFra28iICJBIGZpbGUgc2hhcmluZyBwbGF0Zm9ybSBmb3IgdXBsb2FkaW5nLCBtYW5hZ2luZywgYW5kIHJldHJpZXZpbmcgZGlnaXRhbCBhc3NldHMuIiB7CgogICAgIWlkZW50aWZpZXJzIGhpZXJhcmNoaWNhbAoKICAgIG1vZGVsIHsKICAgICAgICB1c2VyID0gcGVyc29uICJVc2VyIgogICAgICAgIGFkbWluaXN0cmF0b3IgPSBwZXJzb24gIkFkbWluaXN0cmF0b3IiCiAgICAgICAgc3lzdGVtID0gc29mdHdhcmVTeXN0ZW0gIkJ5YWtrbyIgewogICAgICAgICAgICBhcGkgPSBjb250YWluZXIgIkFwaSIKICAgICAgICAgICAgYWRtaW4gPSBjb250YWluZXIgIkFkbWluIgogICAgICAgICAgICBwb3J0YWwgPSBjb250YWluZXIgIlBvcnRhbCIKICAgICAgICAgICAga2V5Y2xvYWsgPSBjb250YWluZXIgIktleUNsb2FrIgogICAgICAgICAgICBkYiA9IGNvbnRhaW5lciAiRGF0YWJhc2UgU2NoZW1hIiB7CiAgICAgICAgICAgICAgICB0YWdzICJEYXRhYmFzZSIKICAgICAgICAgICAgfQogICAgICAgICAgICBtaW5pbyA9IGNvbnRhaW5lciAiTWluaW8iIHsKICAgICAgICAgICAgICAgIHRhZ3MgIlN0b3JhZ2UiCiAgICAgICAgICAgIH0KICAgICAgICB9CgogICAgICAgIHVzZXIgLT4gc3lzdGVtLnBvcnRhbCAiVXNlcyIKICAgICAgICBhZG1pbmlzdHJhdG9yIC0+IHN5c3RlbS5hZG1pbiAiVXNlcyIKICAgICAgICBzeXN0ZW0ucG9ydGFsIC0+IHN5c3RlbS5hcGkgIlVzZXMiCiAgICAgICAgc3lzdGVtLmFkbWluIC0+IHN5c3RlbS5hcGkgIlVzZXMiCiAgICAgICAgc3lzdGVtLmFwaSAtPiBzeXN0ZW0uZGIgIlJlYWRzIGZyb20gYW5kIHdyaXRlcyB0byIKICAgICAgICBzeXN0ZW0uYXBpIC0+IHN5c3RlbS5taW5pbyAiRG93bmxvYWRzIGZyb20gYW5kIHVwbG9hZHMgdG8iCiAgICB9CgogICAgdmlld3MgewogICAgICAgIHN5c3RlbUNvbnRleHQgc3lzdGVtICJTeXN0ZW1Db250ZXh0IiB7CiAgICAgICAgICAgIGluY2x1ZGUgKgogICAgICAgIH0KCiAgICAgICAgY29udGFpbmVyIHN5c3RlbSAiQ29udGFpbmVycyIgewogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICB9CgogICAgICAgIHN0eWxlcyB7CiAgICAgICAgICAgIGVsZW1lbnQgIkVsZW1lbnQiIHsKICAgICAgICAgICAgICAgIGNvbG9yICMwNzczYWYKICAgICAgICAgICAgICAgIHN0cm9rZSAjMDc3M2FmCiAgICAgICAgICAgICAgICBzdHJva2VXaWR0aCA3CiAgICAgICAgICAgICAgICBzaGFwZSByb3VuZGVkYm94CiAgICAgICAgICAgIH0KICAgICAgICAgICAgZWxlbWVudCAiUGVyc29uIiB7CiAgICAgICAgICAgICAgICBzaGFwZSBwZXJzb24KICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJEYXRhYmFzZSIgewogICAgICAgICAgICAgICAgc2hhcGUgY3lsaW5kZXIKICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJTdG9yYWdlIiB7CiAgICAgICAgICAgICAgICBzaGFwZSBjeWxpbmRlcgogICAgICAgICAgICB9CiAgICAgICAgICAgIGVsZW1lbnQgIkJvdW5kYXJ5IiB7CiAgICAgICAgICAgICAgICBzdHJva2VXaWR0aCA1CiAgICAgICAgICAgIH0KICAgICAgICAgICAgcmVsYXRpb25zaGlwICJSZWxhdGlvbnNoaXAiIHsKICAgICAgICAgICAgICAgIHRoaWNrbmVzcyA0CiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICB9CgogICAgY29uZmlndXJhdGlvbiB7CiAgICAgICAgc2NvcGUgc29mdHdhcmVzeXN0ZW0KICAgIH0KCn0=",
+    "structurizr.inspection.error" : "19",
+    "structurizr.dsl" : "d29ya3NwYWNlICJCeWFra28iICJBIGZpbGUgc2hhcmluZyBwbGF0Zm9ybSBmb3IgdXBsb2FkaW5nLCBtYW5hZ2luZywgYW5kIHJldHJpZXZpbmcgZGlnaXRhbCBhc3NldHMuIiB7CgogICAgIWlkZW50aWZpZXJzIGhpZXJhcmNoaWNhbAoKICAgIG1vZGVsIHsKICAgICAgICB1c2VyID0gcGVyc29uICJVc2VyIgogICAgICAgIGFkbWluaXN0cmF0b3IgPSBwZXJzb24gIkFkbWluaXN0cmF0b3IiCiAgICAgICAgc3lzdGVtID0gc29mdHdhcmVTeXN0ZW0gIkJ5YWtrbyIgewogICAgICAgICAgICBkZXNjcmlwdGlvbiAiVlBTIgogICAgICAgICAgICBhcGkgPSBjb250YWluZXIgIkFwaSIgewogICAgICAgICAgICAgICAgdGVjaG5vbG9neSAiQXNwLk5ldCBDb3JlIgogICAgICAgICAgICAgICAgdXJsICJodHRwczovL2FwaS5tYWQtd29ybGQuZXUiCiAgICAgICAgICAgIH0KICAgICAgICAgICAgYWRtaW4gPSBjb250YWluZXIgIkFkbWluIiB7CiAgICAgICAgICAgICAgICB0ZWNobm9sb2d5ICJCbGF6b3IgV0FTTSIKICAgICAgICAgICAgICAgIHVybCAiaHR0cHM6Ly9hZG1pbi5tYWQtd29ybGQuZXUiCiAgICAgICAgICAgIH0KICAgICAgICAgICAgcG9ydGFsID0gY29udGFpbmVyICJQb3J0YWwiIHsKICAgICAgICAgICAgICAgIHRlY2hub2xvZ3kgIkJsYXpvciBXQVNNIgogICAgICAgICAgICAgICAgdXJsICJodHRwczovL2ZpbGVzaGFyZS5tYWQtd29ybGQuZXUiCiAgICAgICAgICAgIH0KICAgICAgICAgICAga2V5Y2xvYWsgPSBjb250YWluZXIgIktleUNsb2FrIiB7CiAgICAgICAgICAgICAgICB0ZWNobm9sb2d5ICJKYXZhIgogICAgICAgICAgICAgICAgdXJsICJodHRwczovL2F1dGhlbnRpY2F0aW9uLm1hZC13b3JsZC5ldSIKICAgICAgICAgICAgfQogICAgICAgICAgICBkYiA9IGNvbnRhaW5lciAiRGF0YWJhc2UgU2NoZW1hIiB7CiAgICAgICAgICAgICAgICB0YWdzICJEYXRhYmFzZSIKICAgICAgICAgICAgICAgIHRlY2hub2xvZ3kgIlBvc3RncmVzcWwiCiAgICAgICAgICAgICAgICB1cmwgImh0dHBzOi8vZGF0YWJhc2UubWFkLXdvcmxkLmV1IgogICAgICAgICAgICB9CiAgICAgICAgfQogICAgICAgIG92aGNsb3VkID0gc29mdHdhcmVTeXN0ZW0gIk92aENsb3VkIiB7CiAgICAgICAgICAgIGRlc2NyaXB0aW9uICJDbG91ZCBTZXJ2aWNlIgogICAgICAgIH0KCiAgICAgICAgdXNlciAtPiBzeXN0ZW0ucG9ydGFsICJVc2VzIgogICAgICAgIGFkbWluaXN0cmF0b3IgLT4gc3lzdGVtLmFkbWluICJVc2VzIgogICAgICAgIHN5c3RlbS5wb3J0YWwgLT4gc3lzdGVtLmFwaSAiVXNlcyIKICAgICAgICBzeXN0ZW0uYWRtaW4gLT4gc3lzdGVtLmFwaSAiVXNlcyIKICAgICAgICBzeXN0ZW0uYXBpIC0+IHN5c3RlbS5rZXljbG9hayAiQXV0aG9yaXplIgogICAgICAgIHN5c3RlbS5hcGkgLT4gc3lzdGVtLmRiICJSZWFkcyBmcm9tIGFuZCB3cml0ZXMgdG8iCiAgICAgICAgc3lzdGVtLmFwaSAtPiBvdmhjbG91ZCAiRG93bmxvYWRzIGZyb20gYW5kIHVwbG9hZHMgdG8iCiAgICB9CgogICAgdmlld3MgewogICAgICAgIHN5c3RlbUNvbnRleHQgc3lzdGVtICJTeXN0ZW1Db250ZXh0IiB7CiAgICAgICAgICAgIGluY2x1ZGUgKgogICAgICAgIH0KCiAgICAgICAgY29udGFpbmVyIHN5c3RlbSAiQ29udGFpbmVycyIgewogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICB9CgogICAgICAgIHN0eWxlcyB7CiAgICAgICAgICAgIGVsZW1lbnQgIkVsZW1lbnQiIHsKICAgICAgICAgICAgICAgIGNvbG9yICMwNzczYWYKICAgICAgICAgICAgICAgIHN0cm9rZSAjMDc3M2FmCiAgICAgICAgICAgICAgICBzdHJva2VXaWR0aCA3CiAgICAgICAgICAgICAgICBzaGFwZSByb3VuZGVkYm94CiAgICAgICAgICAgIH0KICAgICAgICAgICAgZWxlbWVudCAiUGVyc29uIiB7CiAgICAgICAgICAgICAgICBzaGFwZSBwZXJzb24KICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJEYXRhYmFzZSIgewogICAgICAgICAgICAgICAgc2hhcGUgY3lsaW5kZXIKICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJTdG9yYWdlIiB7CiAgICAgICAgICAgICAgICBzaGFwZSBjeWxpbmRlcgogICAgICAgICAgICB9CiAgICAgICAgICAgIGVsZW1lbnQgIkJvdW5kYXJ5IiB7CiAgICAgICAgICAgICAgICBzdHJva2VXaWR0aCA1CiAgICAgICAgICAgIH0KICAgICAgICAgICAgcmVsYXRpb25zaGlwICJSZWxhdGlvbnNoaXAiIHsKICAgICAgICAgICAgICAgIHRoaWNrbmVzcyA0CiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICB9CgogICAgY29uZmlndXJhdGlvbiB7CiAgICAgICAgc2NvcGUgc29mdHdhcmVzeXN0ZW0KICAgIH0KCn0=",
     "structurizr.inspection.info" : "0",
     "structurizr.inspection.ignore" : "0",
     "structurizr.inspection.warning" : "0"
@@ -222,6 +247,8 @@
         "id" : "16"
       }, {
         "id" : "17"
+      }, {
+        "id" : "18"
       } ],
       "softwareSystemId" : "3"
     } ],
@@ -238,6 +265,10 @@
         "id" : "3",
         "x" : 0,
         "y" : 0
+      }, {
+        "id" : "9",
+        "x" : 0,
+        "y" : 0
       } ],
       "enterpriseBoundaryVisible" : true,
       "key" : "SystemContext",
@@ -247,6 +278,8 @@
         "id" : "11"
       }, {
         "id" : "13"
+      }, {
+        "id" : "19"
       } ],
       "softwareSystemId" : "3"
     } ]

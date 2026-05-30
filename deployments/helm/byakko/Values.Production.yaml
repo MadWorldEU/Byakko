@@ -41,3 +41,5 @@ api:
             accessKey: "changeme"
             secretKey: "changeme"
             region: "changeme"
+    encryption:
+        key: "changeme"

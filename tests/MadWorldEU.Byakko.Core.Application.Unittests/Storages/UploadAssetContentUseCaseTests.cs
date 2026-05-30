@@ -7,6 +7,7 @@ public sealed class UploadAssetContentUseCaseTests
     private static readonly Guid OtherUserId = Guid.NewGuid();
 
     private readonly IClock _clock = Substitute.For<IClock>();
+    private readonly IEncryptionService _encryptionService = Substitute.For<IEncryptionService>();
     private readonly IAssetRepository _assetRepository = Substitute.For<IAssetRepository>();
     private readonly IContentStorage _contentStorage = Substitute.For<IContentStorage>();
 
@@ -32,7 +33,7 @@ public sealed class UploadAssetContentUseCaseTests
     {
         _assetRepository.FindAsync(Arg.Any<Id>()).Returns(Task.FromResult(Result.Failure<Asset>(AssetErrors.NotFound)));
 
-        var useCase = new UploadAssetContentUseCase(_clock, _assetRepository, _contentStorage);
+        var useCase = new UploadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage);
 
         var result = await useCase.ExecuteAsync(
             Guid.NewGuid().ToString(), Stream.Null, 100,
@@ -48,7 +49,7 @@ public sealed class UploadAssetContentUseCaseTests
         var asset = BuildAsset();
         _assetRepository.FindAsync(Arg.Any<Id>()).Returns(Task.FromResult(Result.Success(asset)));
 
-        var useCase = new UploadAssetContentUseCase(_clock, _assetRepository, _contentStorage);
+        var useCase = new UploadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage);
 
         var result = await useCase.ExecuteAsync(
             asset.Id.Value.ToString(), Stream.Null, 100,
@@ -64,7 +65,7 @@ public sealed class UploadAssetContentUseCaseTests
         var asset = BuildAsset(name: "original.txt");
         _assetRepository.FindAsync(Arg.Any<Id>()).Returns(Task.FromResult(Result.Success(asset)));
 
-        var useCase = new UploadAssetContentUseCase(_clock, _assetRepository, _contentStorage);
+        var useCase = new UploadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage);
 
         var result = await useCase.ExecuteAsync(
             asset.Id.Value.ToString(), Stream.Null, 100,
@@ -80,7 +81,7 @@ public sealed class UploadAssetContentUseCaseTests
         var asset = BuildAsset(contentType: "text/plain");
         _assetRepository.FindAsync(Arg.Any<Id>()).Returns(Task.FromResult(Result.Success(asset)));
 
-        var useCase = new UploadAssetContentUseCase(_clock, _assetRepository, _contentStorage);
+        var useCase = new UploadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage);
 
         var result = await useCase.ExecuteAsync(
             asset.Id.Value.ToString(), Stream.Null, 100,
@@ -100,7 +101,7 @@ public sealed class UploadAssetContentUseCaseTests
         _contentStorage.UploadAsync(Arg.Any<AssetPath>(), Arg.Any<Stream>())
             .Returns(Task.FromResult(Result.Success()));
 
-        var useCase = new UploadAssetContentUseCase(_clock, _assetRepository, _contentStorage);
+        var useCase = new UploadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage);
 
         var result = await useCase.ExecuteAsync(
             asset.Id.Value.ToString(), Stream.Null, 100,
@@ -119,7 +120,7 @@ public sealed class UploadAssetContentUseCaseTests
         _contentStorage.UploadAsync(Arg.Any<AssetPath>(), Arg.Any<Stream>())
             .Returns(Task.FromResult(Result.Failure(storageError)));
 
-        var useCase = new UploadAssetContentUseCase(_clock, _assetRepository, _contentStorage);
+        var useCase = new UploadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage);
 
         var result = await useCase.ExecuteAsync(
             asset.Id.Value.ToString(), Stream.Null, 100,

@@ -38,7 +38,8 @@ jobs:
                     --set api.storage.ovhCloud.endpoint="https://dry-run.example.com" \
                     --set api.storage.ovhCloud.accessKey="dry-run" \
                     --set api.storage.ovhCloud.secretKey="dry-run" \
-                    --set api.storage.ovhCloud.region="dry-run" > /dev/null
+                    --set api.storage.ovhCloud.region="dry-run" \
+                    --set api.encryption.key="dry-run" > /dev/null
 
     deployment:
         if: github.event_name == 'push'
@@ -72,6 +73,7 @@ jobs:
                   OVHCLOUD_ACCESS_KEY: ${{ secrets.OVHCLOUD_ACCESS_KEY }}
                   OVHCLOUD_SECRET_KEY: ${{ secrets.OVHCLOUD_SECRET_KEY }}
                   OVHCLOUD_REGION: ${{ secrets.OVHCLOUD_REGION }}
+                  ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY }}
               run: |
                   helm upgrade --install byakko deployments/helm/byakko \
                     --values deployments/helm/byakko/Values.yaml \
@@ -89,5 +91,6 @@ jobs:
                     --set api.storage.ovhCloud.accessKey="$OVHCLOUD_ACCESS_KEY" \
                     --set api.storage.ovhCloud.secretKey="$OVHCLOUD_SECRET_KEY" \
                     --set api.storage.ovhCloud.region="$OVHCLOUD_REGION" \
+                    --set api.encryption.key="$ENCRYPTION_KEY" \
                     --wait \
                     --timeout 5m

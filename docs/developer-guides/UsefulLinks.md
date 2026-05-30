@@ -46,6 +46,7 @@ A curated list of websites and resources used in or relevant to this project.
 - [HTTP Security Headers](https://httpsecurityheaders.com/) — Scan and grade HTTP response security headers for a given URL
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/) — Standard reference for the most critical web application security risks
 - [Permissions Policy](https://www.permissionspolicy.com/) — Reference and generator for the Permissions-Policy HTTP header
+- [security.txt](https://securitytxt.org/) — Standard for defining a security policy and contact information for responsible disclosure (`/.well-known/security.txt`)
 - [SSL Labs](https://www.ssllabs.com/ssltest/) — Deep analysis and grading of a server's SSL/TLS configuration
 - [ZAP](https://www.zaproxy.org/) — Open source web application security scanner for finding vulnerabilities
 

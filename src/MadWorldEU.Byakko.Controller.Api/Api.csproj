@@ -26,6 +26,7 @@
       <ProjectReference Include="..\MadWorldEU.Byakko.Core.Domain\Domain.csproj" />
       <ProjectReference Include="..\MadWorldEU.Byakko.Infrastructure.Postgresql\Postgresql.csproj" />
       <ProjectReference Include="..\MadWorldEU.Byakko.Infrastructure.ObjectStorage\ObjectStorage.csproj" />
+      <ProjectReference Include="..\MadWorldEU.Byakko.Infrastructure.Security\Security.csproj" />
     </ItemGroup>
 
     <ItemGroup>
