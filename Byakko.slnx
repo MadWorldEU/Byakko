@@ -102,6 +102,7 @@
   <Folder Name="/src/infrastructure/">
     <Project Path="src/MadWorldEU.Byakko.Infrastructure.ObjectStorage/ObjectStorage.csproj" />
     <Project Path="src\MadWorldEU.Byakko.Infrastructure.Postgresql\Postgresql.csproj" />
+    <Project Path="src\MadWorldEU.Byakko.Infrastructure.Security\Security.csproj" />
   </Folder>
   <Folder Name="/tests/" />
   <Folder Name="/tests/controller/">
@@ -112,5 +113,8 @@
   <Folder Name="/tests/core/">
     <Project Path="tests\MadWorldEU.Byakko.Core.Application.Unittests\Application.Unittests.csproj" />
     <Project Path="tests\MadWorldEU.Byakko.Core.Domain.Unittests\Domain.Unittests.csproj" />
+  </Folder>
+  <Folder Name="/tests/infrastructure/">
+    <Project Path="tests/MadWorldEU.Byakko.Infrastructure.Security.Unittests/Security.Unittests.csproj" />
   </Folder>
 </Solution>
