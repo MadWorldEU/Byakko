@@ -55,6 +55,7 @@ Go to **Settings → Environments → vps-production → Add secret** and add th
 |------------------------------|------------------------------------------------------------------------------------------|
 | `KUBECONFIG`                 | kubeconfig file for the production cluster                                               |
 | `CLUSTER_ISSUER_EMAIL`       | Email address for Let's Encrypt certificates                                             |
+| `SECURITY_TXT_CONTACT`       | Contact URI for security.txt (e.g. `mailto:security@example.com`)                        |
 | `POSTGRES_PASSWORD`          | Application PostgreSQL password                                                          |
 | `KEYCLOAK_ADMIN_PASSWORD`    | Keycloak admin password                                                                  |
 | `KEYCLOAK_POSTGRES_PASSWORD` | Keycloak dedicated PostgreSQL password                                                   |

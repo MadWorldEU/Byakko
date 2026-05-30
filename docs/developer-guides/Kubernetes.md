@@ -241,12 +241,12 @@ sudo shutdown -h now
 
 ### After a server reboot
 
-MicroK8s and all cluster workloads start automatically after a reboot, but a few things require manual intervention before the cluster is fully operational.
+MicroK8s does not start automatically after a reboot. Follow the steps below to bring the cluster back up.
 
-#### Step 1 — Wait for MicroK8s to be ready
+#### Step 1 — Start MicroK8s
 
 ```shell
-sudo microk8s status --wait-ready
+sudo microk8s start
 ```
 
 #### Step 2 — Uncordon the node
@@ -257,7 +257,13 @@ If the node was drained before shutdown, mark it schedulable again:
 sudo microk8s kubectl uncordon <node-name>
 ```
 
-#### Step 3 — Verify all pods are running
+#### Step 3 — Wait for MicroK8s to be ready
+
+```shell
+sudo microk8s status --wait-ready
+```
+
+#### Step 4 — Verify all pods are running
 
 ```shell
 sudo microk8s kubectl get pods -A

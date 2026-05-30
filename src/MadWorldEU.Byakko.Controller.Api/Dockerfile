@@ -25,6 +25,7 @@ RUN dotnet build "./Api.csproj" -c "$BUILD_CONFIGURATION" -o /app/build
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./Api.csproj" -c "$BUILD_CONFIGURATION" -o /app/publish /p:UseAppHost=false
+RUN rm /app/publish/wwwroot/.well-known/security.txt.br /app/publish/wwwroot/.well-known/security.txt.gz
 
 FROM base AS final
 USER $APP_UID

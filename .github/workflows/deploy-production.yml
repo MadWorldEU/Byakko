@@ -30,6 +30,7 @@ jobs:
                     --set admin.image.tag="dry-run" \
                     --set portal.image.tag="dry-run" \
                     --set clusterIssuer.email="dry-run@example.com" \
+                    --set securityTxt.contact="mailto:dry-run@example.com" \
                     --set postgres.password="dry-run" \
                     --set keycloak.adminPassword="dry-run" \
                     --set keycloak.postgres.password="dry-run" \
@@ -64,6 +65,7 @@ jobs:
               env:
                   IMAGE_TAG: ${{ github.ref_name }}
                   CLUSTER_ISSUER_EMAIL: ${{ secrets.CLUSTER_ISSUER_EMAIL }}
+                  SECURITY_TXT_CONTACT: ${{ secrets.SECURITY_TXT_CONTACT }}
                   POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
                   KEYCLOAK_ADMIN_PASSWORD: ${{ secrets.KEYCLOAK_ADMIN_PASSWORD }}
                   KEYCLOAK_POSTGRES_PASSWORD: ${{ secrets.KEYCLOAK_POSTGRES_PASSWORD }}
@@ -82,6 +84,7 @@ jobs:
                     --set admin.image.tag="$IMAGE_TAG" \
                     --set portal.image.tag="$IMAGE_TAG" \
                     --set clusterIssuer.email="$CLUSTER_ISSUER_EMAIL" \
+                    --set securityTxt.contact="$SECURITY_TXT_CONTACT" \
                     --set postgres.password="$POSTGRES_PASSWORD" \
                     --set keycloak.adminPassword="$KEYCLOAK_ADMIN_PASSWORD" \
                     --set keycloak.postgres.password="$KEYCLOAK_POSTGRES_PASSWORD" \

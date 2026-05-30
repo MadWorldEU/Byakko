@@ -7,6 +7,9 @@ ingress:
 clusterIssuer:
     enabled: true
     email: "changeme"
+    
+securityTxt:
+    contact: "mailto:changeme"
 
 localstack:
     enabled: false

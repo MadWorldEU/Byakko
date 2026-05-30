@@ -11,6 +11,11 @@ clusterIssuer:
     name: "letsencrypt-byakko"
     email: "info@byakko.dev"
 
+securityTxt:
+    contact: "mailto:security@byakko.dev"
+    expires: "2027-12-31T23:59:59Z"
+    preferredLanguages: "en"
+
 localstack:
     enabled: false
     name: "localstack"

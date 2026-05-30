@@ -19,7 +19,12 @@ data:
               "email"
             ]
           }
-        }
+        }    
+    security.txt: |
+        Contact: {{ .Values.securityTxt.contact }}
+        Expires: {{ .Values.securityTxt.expires }}
+        Preferred-Languages: {{ .Values.securityTxt.preferredLanguages }}
+        Canonical: https://fileshare.{{ .Values.ingress.domain }}/.well-known/security.txt
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -58,6 +63,10 @@ spec:
                       - name: appsettings
                         mountPath: /usr/share/nginx/html/appsettings.json
                         subPath: appsettings.json
+                        readOnly: true
+                      - name: appsettings
+                        mountPath: /usr/share/nginx/html/.well-known/security.txt
+                        subPath: security.txt
                         readOnly: true
                   livenessProbe:
                       httpGet:
