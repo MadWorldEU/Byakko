@@ -4,6 +4,7 @@ namespace MadWorldEU.Byakko.Storages;
 public sealed class DownloadAssetContentUseCaseTests
 {
     private readonly IClock _clock = Substitute.For<IClock>();
+    private readonly IEncryptionService _encryptionService = Substitute.For<IEncryptionService>();
     private readonly IAssetRepository _assetRepository = Substitute.For<IAssetRepository>();
     private readonly IContentStorage _contentStorage = Substitute.For<IContentStorage>();
 
@@ -29,7 +30,7 @@ public sealed class DownloadAssetContentUseCaseTests
     {
         _assetRepository.FindAsync(Arg.Any<Id>()).Returns(Task.FromResult(Result.Failure<Asset>(AssetErrors.NotFound)));
 
-        var useCase = new DownloadAssetContentUseCase(_clock, _assetRepository, _contentStorage);
+        var useCase = new DownloadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage);
 
         var result = await useCase.ExecuteAsync(Guid.NewGuid().ToString());
 
@@ -44,7 +45,7 @@ public sealed class DownloadAssetContentUseCaseTests
         _clock.GetCurrentInstant().Returns(Instant.FromUnixTimeSeconds(0) + Duration.FromDays(31));
         _assetRepository.FindAsync(Arg.Any<Id>()).Returns(Task.FromResult(Result.Success(asset)));
 
-        var useCase = new DownloadAssetContentUseCase(_clock, _assetRepository, _contentStorage);
+        var useCase = new DownloadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage);
 
         var result = await useCase.ExecuteAsync(asset.Id.Value.ToString());
 
@@ -61,7 +62,7 @@ public sealed class DownloadAssetContentUseCaseTests
         _contentStorage.DownloadAsync(Arg.Any<AssetPath>())
             .Returns(Task.FromResult(Result.Failure<Stream>(storageError)));
 
-        var useCase = new DownloadAssetContentUseCase(_clock, _assetRepository, _contentStorage);
+        var useCase = new DownloadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage);
 
         var result = await useCase.ExecuteAsync(asset.Id.Value.ToString());
 

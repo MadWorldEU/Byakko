@@ -1,6 +1,8 @@
+using MadWorldEU.Byakko.Encryptions;
+
 namespace MadWorldEU.Byakko.Storages;
 
-public sealed class UploadAssetContentUseCase(IClock clock, IAssetRepository assetRepository, IContentStorage contentStorage)
+public sealed class UploadAssetContentUseCase(IClock clock, IEncryptionService encryptionService, IAssetRepository assetRepository, IContentStorage contentStorage)
 {
     public async Task<Result<UploadAssetContentResponse>> ExecuteAsync(string assetId, Stream content, long sizeInBytes, string userId, string fileName, string contentType)
     {
@@ -31,7 +33,9 @@ public sealed class UploadAssetContentUseCase(IClock clock, IAssetRepository ass
             return AssetErrors.ContentTypeMismatch;
         }
 
-        var uploadResult = await contentStorage.UploadAsync(asset.Value.GetPath(), content);
+        var encryptedContent = encryptionService.Encrypt(content);
+        
+        var uploadResult = await contentStorage.UploadAsync(asset.Value.GetPath(), encryptedContent);
         if (uploadResult.IsFailure) return uploadResult.Error;
 
         var updateSizeResult = asset.Value.UpdateSize(clock, sizeResult.Value);
