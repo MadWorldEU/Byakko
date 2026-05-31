@@ -79,6 +79,10 @@ spec:
                         value: {{ .Values.api.storage.ovhCloud.region | quote }}
                       - name: Encryption__Key
                         value: {{ .Values.api.encryption.key | quote }}
+                      - name: Assets__ValidityPeriodInDays
+                        value: {{ .Values.api.assets.validityPeriodInDays | quote }}
+                      - name: Assets__MaxUploadSizeInBytes
+                        value: {{ .Values.api.assets.maxUploadSizeInBytes | quote }}
                       - name: OpenApi__ServerUrl
                         value: "https://api.{{ .Values.ingress.domain }}"
                       - name: Cors__AllowedOrigins__0

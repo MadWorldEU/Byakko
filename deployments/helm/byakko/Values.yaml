@@ -221,6 +221,9 @@ api:
             region: "changeme"
     encryption:
         key: "changeme"
+    assets:
+        validityPeriodInDays: 30
+        maxUploadSizeInBytes: 1073741824
     observability:
         otlpEndpoint: "http://localhost:4040"
     resources:
@@ -258,6 +261,8 @@ portal:
     port: 8080
     oidc:
         clientId: "portal-client"
+    assets:
+        maxUploadSizeInBytes: 1073741824
     image:
         repository: "ghcr.io/madworldeu/byakko-portal"
         tag: "v0.6.1"

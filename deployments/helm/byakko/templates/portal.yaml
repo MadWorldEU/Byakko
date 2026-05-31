@@ -9,6 +9,9 @@ data:
     appsettings.json: |
         {
           "ApiBaseUrl": "https://api.{{ .Values.ingress.domain }}",
+          "Assets": {
+            "MaxUploadSizeInBytes": {{ .Values.portal.assets.maxUploadSizeInBytes }}
+          },
           "Oidc": {
             "Authority": "https://authentication.{{ .Values.ingress.domain }}/realms/{{ .Values.keycloak.realm }}",
             "ClientId": "{{ .Values.portal.oidc.clientId }}",
