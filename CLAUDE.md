@@ -281,8 +281,8 @@ The Helm chart lives in `deployments/helm/byakko/`. It deploys all services into
 | `api.storage.ovhCloud.region` | OVHCloud region (e.g. `de`); must match the subdomain in the endpoint URL |
 | `api.encryption.key` | Base64-encoded 32-byte AES-256 key; passed via `ENCRYPTION_KEY` GitHub secret |
 | `api.assets.validityPeriodInDays` | Number of days a newly created asset remains valid (default `30`); injected as `Assets__ValidityPeriodInDays` env var |
-| `api.assets.maxUploadSizeInBytes` | Maximum upload size enforced by the API (default `1073741824` / 1 GB); injected as `Assets__MaxUploadSizeInBytes` env var |
-| `portal.assets.maxUploadSizeInBytes` | Maximum upload size enforced by the Portal UI before sending the request (default `1073741824` / 1 GB); injected into the Portal `appsettings.json` ConfigMap |
+| `api.assets.maxUploadSizeInBytes` | Maximum upload size enforced by the API (default `"1073741824"` / 1 GB); injected as `Assets__MaxUploadSizeInBytes` env var. **Must be a quoted string** in `values.yaml` to prevent Helm YAML integer coercion from corrupting the value in the ConfigMap |
+| `portal.assets.maxUploadSizeInBytes` | Maximum upload size enforced by the Portal UI before sending the request (default `"1073741824"` / 1 GB); injected into the Portal `appsettings.json` ConfigMap. **Must be a quoted string** for the same reason as `api.assets.maxUploadSizeInBytes` |
 | `securityTxt.contact` | Contact URI for `security.txt` (e.g. `mailto:security@byakko.dev`); passed via `SECURITY_TXT_CONTACT` GitHub secret |
 | `securityTxt.expires` | ISO 8601 expiry date for `security.txt` (e.g. `2027-12-31T23:59:59Z`) |
 | `securityTxt.preferredLanguages` | Preferred languages for security reports (default `en`) |
