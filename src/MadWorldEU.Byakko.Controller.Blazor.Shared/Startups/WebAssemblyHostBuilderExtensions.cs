@@ -33,6 +33,7 @@ public static class WebAssemblyHostBuilderExtensions
 
     public static WebAssemblyHostBuilder AddByakkoServices(this WebAssemblyHostBuilder builder)
     {
+        builder.Services.Configure<AssetSettings>(builder.Configuration.GetSection(AssetSettings.Key));
         builder.Services.AddScoped<IAssetService, AssetService>();
 
         return builder;
