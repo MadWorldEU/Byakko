@@ -223,7 +223,7 @@ api:
         key: "changeme"
     assets:
         validityPeriodInDays: 30
-        maxUploadSizeInBytes: 1073741824
+        maxUploadSizeInBytes: "1073741824"
     observability:
         otlpEndpoint: "http://localhost:4040"
     resources:
@@ -233,7 +233,7 @@ api:
             ephemeral-storage: 1Gi
         limits:
             cpu: 500m
-            memory: 256Mi
+            memory: 2000Mi
             ephemeral-storage: 1Gi
 
 admin:
@@ -262,7 +262,7 @@ portal:
     oidc:
         clientId: "portal-client"
     assets:
-        maxUploadSizeInBytes: 1073741824
+        maxUploadSizeInBytes: "1073741824"
     image:
         repository: "ghcr.io/madworldeu/byakko-portal"
         tag: "v0.6.1"
