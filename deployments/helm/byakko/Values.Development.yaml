@@ -8,5 +8,16 @@ observability:
     enabled: true
     
 api:
+    tag: "latest"
     storage:
         mode: "LocalStack"
+    encryption:
+        key: "5E0YFcbU1M1f93S7OB673VYgN2qbslLEKXhwQA+sx44="
+        
+admin:
+    image: 
+        tag: "latest"
+    
+portal:
+    image:
+        tag: "latest"
