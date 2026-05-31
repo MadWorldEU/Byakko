@@ -7,4 +7,7 @@ public sealed class AssetSettings
 
     /// <summary>Number of days a newly created asset remains valid before it expires.</summary>
     public int ValidityPeriodInDays { get; init; }
+
+    /// <summary>Maximum allowed upload size in bytes. Enforced by both the API and the Portal UI.</summary>
+    public long MaxUploadSizeInBytes { get; init; }
 }
