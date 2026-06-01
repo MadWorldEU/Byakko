@@ -39,7 +39,6 @@ Open the required ports using UFW:
 
 ```bash
 # Public ports
-sudo ufw allow 22/tcp      # SSH
 sudo ufw allow 80/tcp      # HTTP
 sudo ufw allow 443/tcp     # HTTPS
 sudo ufw allow 1194/udp    # OpenVPN
@@ -51,7 +50,8 @@ sudo ufw enable
 The Kubernetes Dashboard should only be accessible over VPN. Replace `<internal-ip>` with your VPN subnet — the subnet varies per setup. To find yours, run `ifconfig tun0` and look for the `inet` line. Derive the subnet by replacing the last octet with 0 (e.g. `10.1.4.60` → `10.1.4.0/24`).
 
 ```bash
-sudo ufw allow from <internal-ip>/24 to any port 10443
+sudo ufw allow from <internal-ip>/24 to any port 22      # SSH
+sudo ufw allow from <internal-ip>/24 to any port 10443   # Kubernetes Dashboard
 ```
 
 Verify the rules are active:
@@ -62,10 +62,10 @@ sudo ufw status verbose
 
 ## Remote Access
 
-Once the VPN is running, connect to the server via its VPN IP:
+Once the VPN is running, connect to the server via its VPN IP. Replace `<internal-ip>` with the server's VPN address (e.g. `10.1.4.1`) — this is the first IP in your VPN subnet, assigned to the server itself:
 
 ```bash
-ssh username@10.8.0.1
+ssh username@<internal-ip>
 ```
 
 Restrict SSH to the VPN subnet for additional security by editing `/etc/ssh/sshd_config` or adding a UFW rule that denies SSH from outside `10.8.0.0/24`.
