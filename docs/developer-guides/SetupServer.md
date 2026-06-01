@@ -43,8 +43,6 @@ sudo ufw allow 80/tcp      # HTTP
 sudo ufw allow 443/tcp     # HTTPS
 sudo ufw allow 1194/udp    # OpenVPN
 sudo ufw allow 16443/tcp   # Kubernetes Deployment
-
-sudo ufw enable
 ```
 
 The Kubernetes Dashboard should only be accessible over VPN. Replace `<internal-ip>` with your VPN subnet — the subnet varies per setup. To find yours, run `ifconfig tun0` and look for the `inet` line. Derive the subnet by replacing the last octet with 0 (e.g. `10.1.4.60` → `10.1.4.0/24`).
@@ -52,6 +50,21 @@ The Kubernetes Dashboard should only be accessible over VPN. Replace `<internal-
 ```bash
 sudo ufw allow from <internal-ip>/24 to any port 22      # SSH
 sudo ufw allow from <internal-ip>/24 to any port 10443   # Kubernetes Dashboard
+```
+
+Now enable the firewall:
+```shell
+sudo ufw enable
+```
+
+Or reload when firewall is already enabled:
+```shell
+sudo ufw reload
+```
+
+Show added ports:
+```shell
+sudo ufw show added
 ```
 
 Verify the rules are active:
