@@ -30,6 +30,7 @@ A curated list of websites and resources used in or relevant to this project.
 - [Kubernetes](https://kubernetes.io/) — Container orchestration platform
 - [LocalStack](https://localstack.cloud/) — Local AWS cloud service emulator (S3, SQS, and more)
 - [LocalStack Explorer](https://github.com/fgiova/localstack-explorer) — Web UI for browsing LocalStack resources
+- [OpenVPN install](https://github.com/Nyr/openvpn-install) — Simple bash installer for setting up an OpenVPN server on Linux
 - [OVHcloud](https://www.ovhcloud.com/) — Cloud hosting provider (servers, managed Kubernetes, object storage)
 - [PostgreSQL](https://www.postgresql.org/) — Open source relational database
 - [Traefik](https://traefik.io/) — Cloud-native reverse proxy and ingress controller for Kubernetes

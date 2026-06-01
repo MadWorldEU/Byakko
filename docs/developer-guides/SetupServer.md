@@ -18,7 +18,13 @@ sudo apt install net-tools -y
 
 ## VPN Setup
 
-Follow the [OpenVPN installation guide](https://openvpn.net/community-resources/how-to/) and transfer your client profile to the server:
+Run the [openvpn-install](https://github.com/Nyr/openvpn-install) script to set up the VPN server:
+
+```bash
+wget https://git.io/vpn -O openvpn-install.sh && bash openvpn-install.sh
+```
+
+Then transfer your client profile to the local machine:
 
 ```bash
 scp client.ovpn username@<server-ip>:~/
