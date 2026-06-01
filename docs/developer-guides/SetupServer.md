@@ -27,7 +27,8 @@ wget https://git.io/vpn -O openvpn-install.sh && bash openvpn-install.sh
 Then transfer your client profile to the local machine:
 
 ```bash
-scp client.ovpn username@<server-ip>:~/
+scp <source> <destination>
+scp username@b:/path/to/file /path/to/destination
 ```
 
 Connect to the VPN before continuing with the firewall configuration.
