@@ -13,6 +13,18 @@ permissions:
 jobs:
     docker-build-push:
         runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                include:
+                    - name: API
+                      dockerfile: src/MadWorldEU.Byakko.Controller.Api/Dockerfile
+                      image: byakko-api
+                    - name: Portal
+                      dockerfile: src/MadWorldEU.Byakko.Controller.Portal/Dockerfile
+                      image: byakko-portal
+                    - name: Admin
+                      dockerfile: src/MadWorldEU.Byakko.Controller.Admin/Dockerfile
+                      image: byakko-admin
 
         steps:
             - name: Checkout repo
@@ -44,11 +56,5 @@ jobs:
                   echo "image_tag=$image_tag" >> $GITHUB_OUTPUT
                   echo "Using image tag: $image_tag"
 
-            - name: Build & push API
-              run: docker buildx build --platform linux/amd64,linux/arm64 -f src/MadWorldEU.Byakko.Controller.Api/Dockerfile --tag ghcr.io/madworldeu/byakko-api:${{ steps.tag.outputs.image_tag }} --push .
-
-            - name: Build & push Portal
-              run: docker buildx build --platform linux/amd64,linux/arm64 -f src/MadWorldEU.Byakko.Controller.Portal/Dockerfile --tag ghcr.io/madworldeu/byakko-portal:${{ steps.tag.outputs.image_tag }} --push .
-
-            - name: Build & push Admin
-              run: docker buildx build --platform linux/amd64,linux/arm64 -f src/MadWorldEU.Byakko.Controller.Admin/Dockerfile --tag ghcr.io/madworldeu/byakko-admin:${{ steps.tag.outputs.image_tag }} --push .
+            - name: Build & push ${{ matrix.name }}
+              run: docker buildx build --platform linux/amd64,linux/arm64 -f ${{ matrix.dockerfile }} --tag ghcr.io/madworldeu/${{ matrix.image }}:${{ steps.tag.outputs.image_tag }} --push .
