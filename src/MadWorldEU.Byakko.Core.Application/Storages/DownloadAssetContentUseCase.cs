@@ -22,10 +22,11 @@ public sealed class DownloadAssetContentUseCase(IClock clock, IEncryptionService
         if (encryptedContent.IsFailure) return encryptedContent.Error;
 
         var content = encryptionService.Decrypt(encryptedContent.Value);
+        if (content.IsFailure) return content.Error;
         
         return new DownloadAssetContentResponse
         {
-            Content = content,
+            Content = content.Value,
             ContentType = asset.Value.ContentType.Value,
             FileName = asset.Value.Name.Value
         };
