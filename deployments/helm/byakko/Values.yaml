@@ -206,9 +206,11 @@ observability:
 api:
     name: "api"
     image: "ghcr.io/madworldeu/byakko-api"
-    tag: "v0.6.1"
+    tag: "v0.8.1"
     containerPort: 8080
     servicePort: 80
+    ingress:
+        responseHeaderTimeout: "1800s"
     database:
         autoMigrate: true
     storage:
@@ -244,7 +246,7 @@ admin:
         clientId: "admin-client"
     image:
         repository: "ghcr.io/madworldeu/byakko-admin"
-        tag: "v0.6.1"
+        tag: "v0.8.1"
     resources:
         requests:
             cpu: 50m
@@ -265,7 +267,7 @@ portal:
         maxUploadSizeInBytes: "1073741824"
     image:
         repository: "ghcr.io/madworldeu/byakko-portal"
-        tag: "v0.6.1"
+        tag: "v0.8.1"
     resources:
         requests:
             cpu: 50m

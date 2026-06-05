@@ -1,6 +1,36 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+    name: byakko-ingress-api
+    namespace: {{ .Values.namespace }}
+    annotations:
+        kubernetes.io/ingress.class: "traefik"
+        traefik.ingress.kubernetes.io/router.middlewares: {{ .Values.namespace }}-security-headers@kubernetescrd
+        traefik.ingress.kubernetes.io/service.serversTransport: {{ .Values.namespace }}-api-transport@kubernetescrd
+        {{- if .Values.clusterIssuer.enabled }}
+        cert-manager.io/cluster-issuer: {{ .Values.clusterIssuer.name | quote }}
+        {{- end }}
+spec:
+    ingressClassName: {{ .Values.ingress.className }}
+    tls:
+        - secretName: {{ .Values.ingress.tlsSecret }}-api
+          hosts:
+              - api.{{ .Values.ingress.domain }}
+    rules:
+        - host: api.{{ .Values.ingress.domain }}
+          http:
+              paths:
+                  - path: /
+                    pathType: Prefix
+                    backend:
+                        service:
+                            name: {{ .Values.api.name }}
+                            port:
+                                number: {{ .Values.api.servicePort }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
     name: byakko-ingress
     namespace: {{ .Values.namespace }}
     annotations:
@@ -17,7 +47,6 @@ spec:
               - {{ .Values.ingress.domain }}
               - www.{{ .Values.ingress.domain }}
               - fileshare.{{ .Values.ingress.domain }}
-              - api.{{ .Values.ingress.domain }}
               - admin.{{ .Values.ingress.domain }}
               - database.{{ .Values.ingress.domain }}
               - authentication.{{ .Values.ingress.domain }}
@@ -25,16 +54,6 @@ spec:
               - grafana.{{ .Values.ingress.domain }}
               {{- end }}
     rules:
-        - host: api.{{ .Values.ingress.domain }}
-          http:
-              paths:
-                  - path: /
-                    pathType: Prefix
-                    backend:
-                        service:
-                            name: {{ .Values.api.name }}
-                            port:
-                                number: {{ .Values.api.servicePort }}
         - host: admin.{{ .Values.ingress.domain }}
           http:
               paths:
