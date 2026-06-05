@@ -55,7 +55,10 @@ Install Traefik as the ingress controller:
 helm repo add traefik https://traefik.github.io/charts
 helm repo update
 helm install traefik traefik/traefik -n traefik --create-namespace
-helm upgrade traefik traefik/traefik -n traefik --set-json 'providers.kubernetesIngress.namespaces=["byakko-development"]'
+helm upgrade traefik traefik/traefik -n traefik \
+  --set-json 'providers.kubernetesIngress.namespaces=["byakko-development"]' \
+  --set ports.web.transport.respondingTimeouts.readTimeout=0 \
+  --set ports.websecure.transport.respondingTimeouts.readTimeout=0
 ```
 
 ### Setup TLS with mkcert
@@ -146,7 +149,9 @@ sudo microk8s helm upgrade traefik traefik/traefik -n traefik \
   --set ports.web.hostPort=80 \
   --set ports.websecure.hostPort=443 \
   --set "additionalArguments={--entrypoints.web.http.redirections.entryPoint.to=:443,--entrypoints.web.http.redirections.entryPoint.scheme=https}" \
-  --set deployment.strategy.type=Recreate
+  --set deployment.strategy.type=Recreate \
+  --set ports.web.transport.respondingTimeouts.readTimeout=0 \
+  --set ports.websecure.transport.respondingTimeouts.readTimeout=0
 ```
 
 If the new Traefik pod is stuck in `Pending` after an upgrade, the old pod may still be holding ports 80/443. Delete it manually:
