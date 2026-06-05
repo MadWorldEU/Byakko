@@ -13,7 +13,7 @@ metadata:
 spec:
     ingressClassName: {{ .Values.ingress.className }}
     tls:
-        - secretName: {{ .Values.ingress.tlsSecret }}
+        - secretName: {{ .Values.ingress.tlsSecret }}-api
           hosts:
               - api.{{ .Values.ingress.domain }}
     rules:
