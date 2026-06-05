@@ -209,6 +209,8 @@ api:
     tag: "v0.6.1"
     containerPort: 8080
     servicePort: 80
+    ingress:
+        responseHeaderTimeout: "1800s"
     database:
         autoMigrate: true
     storage:
