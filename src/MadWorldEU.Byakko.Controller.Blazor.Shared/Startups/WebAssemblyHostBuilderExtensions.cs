@@ -21,6 +21,7 @@ public static class WebAssemblyHostBuilderExtensions
         builder.Services.AddHttpClient(HttpClients.ApiAuthorized, client =>
         {
             client.BaseAddress = new Uri(apiBaseUrl);
+            client.Timeout = Timeout.InfiniteTimeSpan;
         }).AddHttpMessageHandler(sp =>
         {
             var handler = sp.GetRequiredService<AuthorizationMessageHandler>()

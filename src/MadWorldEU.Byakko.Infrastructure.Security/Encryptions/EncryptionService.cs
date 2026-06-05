@@ -3,40 +3,48 @@ using System.Security.Cryptography;
 namespace MadWorldEU.Byakko.Encryptions;
 
 /// <summary>AES-256-CBC encryption service. The IV is randomly generated per call and prepended to the ciphertext.</summary>
-public sealed class EncryptionService : IEncryptionService
+public sealed class EncryptionService(IOptions<EncryptionOptions> options, ILogger<EncryptionService> logger) : IEncryptionService
 {
-    private readonly byte[] _key;
+    private readonly byte[] _key = Convert.FromBase64String(options.Value.Key);
 
-    public EncryptionService(IOptions<EncryptionOptions> options)
-    {
-        _key = Convert.FromBase64String(options.Value.Key);
-    }
-
-    public string Decrypt(string encryptedContent)
+    public Result<string> Decrypt(string encryptedContent)
     {
         using var input = new MemoryStream(Convert.FromBase64String(encryptedContent));
-        using var output = (MemoryStream)Decrypt(input);
+        var contentResult = Decrypt(input);
+        
+        if (contentResult.IsFailure) 
+            return Result.Failure<string>(contentResult.Error);
+        
+        using var output = (MemoryStream)contentResult.Value;
         return Encoding.UTF8.GetString(output.ToArray());
     }
 
-    public Stream Decrypt(Stream encryptedContent)
+    public Result<Stream> Decrypt(Stream encryptedContent)
     {
-        using var aes = Aes.Create();
-        aes.Key = _key;
-
-        var iv = new byte[aes.BlockSize / 8];
-        encryptedContent.ReadExactly(iv);
-        aes.IV = iv;
-
-        var output = new MemoryStream();
-
-        using (var cryptoStream = new CryptoStream(encryptedContent, aes.CreateDecryptor(), CryptoStreamMode.Read))
+        try
         {
-            cryptoStream.CopyTo(output);
-        }
+            using var aes = Aes.Create();
+            aes.Key = _key;
 
-        output.Position = 0;
-        return output;
+            var iv = new byte[aes.BlockSize / 8];
+            encryptedContent.ReadExactly(iv);
+            aes.IV = iv;
+
+            var output = new MemoryStream();
+
+            using (var cryptoStream = new CryptoStream(encryptedContent, aes.CreateDecryptor(), CryptoStreamMode.Read))
+            {
+                cryptoStream.CopyTo(output);
+            }
+
+            output.Position = 0;
+            return output;
+        }
+        catch (Exception ex) when (ex is CryptographicException or EndOfStreamException)
+        {
+            logger.LogError(ex, "Failed to decrypt content.");
+            return Result.Failure<Stream>(EncryptionErrors.DecryptionFailed);
+        }
     }
 
     public string Encrypt(string content)
