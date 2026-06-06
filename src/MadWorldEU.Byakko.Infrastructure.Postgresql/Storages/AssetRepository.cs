@@ -64,9 +64,32 @@ public sealed class AssetRepository(ByakkoContext context, IClock clock, ILogger
         return asset;
     }
 
-    public Task<Result<PagedResult<Asset>>> GetAllPagesAsync(Page page)
+    public async Task<Result<PagedResult<Asset>>> GetAllPagesAsync(Page page)
     {
-        throw new NotImplementedException();
+        var pageSize = PageSize.Create(20).Value;
+
+        try
+        {
+            var totalCount = await context.Assets.CountAsync();
+            var items = await context.Assets
+                .OrderByDescending(a => a.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return new PagedResult<Asset>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize
+            };
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Failed to query paged assets.");
+            return AssetErrors.QueryFailed;
+        }
     }
 
     public async Task<Result<IReadOnlyList<Asset>>> GetExpiredContentAsync()
