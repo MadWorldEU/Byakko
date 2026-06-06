@@ -70,13 +70,15 @@ By default Keycloak maps realm roles under `realm_access.roles`. Change it to a 
 2. Open the **Role mapping** tab.
 3. Click **Assign role**, select `Administrator` or `User`, and confirm.
 
-### Enable Login Screen Customization
-
-To allow themes and branding to be applied to the Keycloak login screen:
+### Enable Login Settings
 
 1. Go to **Realm settings** in the Keycloak Admin UI.
 2. Open the **Login** tab.
-3. Enable the options you want — commonly **User registration**, **Forgot password**, and **Remember me**.
+3. Enable the following options:
+   - **User registration** — allows new users to self-register
+   - **Forgot password** — shows a password reset link on the login screen
+   - **Remember me** — lets users stay logged in across browser sessions
+   - **Verify email** — requires users to verify their email address after registration
 4. Click **Save**.
 
 ### Configure Email
