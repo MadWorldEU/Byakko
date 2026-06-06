@@ -122,12 +122,12 @@ Content encrypted AES-256 before upload; IV prepended to ciphertext. Error mappi
 
 - **Database:** PostgreSQL via `ByakkoContext`. Connection string key: `byakko-db`. Auto-migrate: `Database:AutoMigrate` (default `false`; `true` in Development). Migrations in `Infrastructure.Postgresql/Migrations/`. See `docs/Database.md`.
 - **Object storage:** `IAmazonS3` registered by `AddObjectStorage`. Connection string key: `localstack`. Settings: `Storage:Mode` (`LocalStack`/`OvhCloud`), `BucketName`, `AutoCreateBucket`. `DeleteAsync` uses `GetObjectMetadataAsync` + `DeleteObjectAsync` with `VersionId` (required for OVHCloud versioning).
-- **Encryption:** AES-256-CBC via `AddSecurity`. Config key: `Encryption:Key` (base64 32-byte; `openssl rand -base64 32`). Random IV per call, prepended to ciphertext.
+- **Encryption:** AES-256-CBC via `AddSecurity`. Config key: `Encryption:Key` (base64 32-byte; `openssl rand -base64 32`). Random IV per call, prepended to ciphertext. `EncryptionService.Decrypt` returns `Result<T>`; catches `CryptographicException` / `EndOfStreamException` → `EncryptionErrors.DecryptionFailed`.
 - **Aspire:** Provisions Postgres, LocalStack, Keycloak. `RunMode` in `appsettings.json`: `Project` / `DockerFile` / `ContainerImage`. See `docs/Aspire.md`.
 - **CORS:** `Cors:AllowedOrigins` array; empty = allow any. Registered by `AddDefaultCors()`.
 - **Security headers:** API via `SecurityHeadersMiddleware`. Portal/Admin via nginx config. Traefik via `middlewares.yaml`. `X-Frame-Options` intentionally omitted from Traefik (Keycloak needs frameability for OIDC).
 - **Rate limiting:** `AddApiRateLimiter()`. Global 100 req/min; `content` policy 20 req/min for upload/download. Toggle: `RateLimiting:Enabled`. Disabled in Development and tests.
-- **Auth:** JWT Bearer via Keycloak (`Authentication:Authority`). Blazor OIDC via `AddOidcAuthentication`; config in `wwwroot/appsettings.json` under `Oidc`. Bearer attached via `AuthorizationMessageHandler` on `HttpClients.ApiAuthorized`.
+- **Auth:** JWT Bearer via Keycloak (`Authentication:Authority`). Blazor OIDC via `AddOidcAuthentication`; config in `wwwroot/appsettings.json` under `Oidc`. Bearer attached via `AuthorizationMessageHandler` on `HttpClients.ApiAuthorized`. Blazor OIDC settings bound via `IOptions<OidcSettings>` (shared); `OidcSettings.GetEditAccountUrl()` returns the Keycloak account page URL.
 - **Asset settings:** `Assets:ValidityPeriodInDays` (default `30`), `Assets:MaxUploadSizeInBytes` (default `1073741824`). **Must be quoted string** in Helm values to prevent YAML integer coercion.
 - **Scheduled cleanup:** Two `BackgroundService`s in `HostedServices/`, triggered daily at `Cleanup:TriggerHourUtc` (default `2`).
 - **Observability:** OTLP via `OTEL_EXPORTER_OTLP_ENDPOINT`. When `observability.enabled`, exports to Tempo/Prometheus/Loki → Grafana.
@@ -136,11 +136,11 @@ Content encrypted AES-256 before upload; IV prepended to ciphertext. Error mappi
 
 ## Admin UI
 
-Blazor WebAssembly, Bootstrap 5 dark theme (`data-bs-theme="dark"`). Desktop-first with 240px sticky sidebar (`Layout/MainLayout.razor`). Nav sections: Overview, Management, Support, System. Auth via `<AuthorizeView Policy="@AuthorizationPolicies.Administrator">`. Manual Triggers page: `Pages/HostServices/ManualTriggers.razor`.
+Blazor WebAssembly, Bootstrap 5 dark theme (`data-bs-theme="dark"`). Desktop-first with 240px sticky sidebar (`Layout/MainLayout.razor`). Nav sections: Overview, Management, Support, System. Auth via `<AuthorizeView Policy="@AuthorizationPolicies.Administrator">`. Sidebar footer shows username, edit-profile link (Keycloak account page via `OidcSettings.GetEditAccountUrl()`), and logout. Manual Triggers page: `Pages/HostServices/ManualTriggers.razor`.
 
 ## Portal UI
 
-Blazor WebAssembly, Bootstrap 5 dark theme. Sticky top navbar with auth dropdown. Pages: `Pages/Storage/Upload.razor` (`/storage/upload`), `Pages/Storage/Download.razor` (shows expiry warning client-side; server enforces). Max upload size from `IOptions<AssetSettings>` → `IBrowserFile.OpenReadStream(maxAllowedSize)`.
+Blazor WebAssembly, Bootstrap 5 dark theme. Sticky top navbar with auth dropdown (username, edit-profile link via `OidcSettings.GetEditAccountUrl()`, logout). Pages: `Pages/Storage/Upload.razor` (`/storage/upload`), `Pages/Storage/Download.razor` (shows expiry warning client-side; server enforces). Max upload size from `IOptions<AssetSettings>` → `IBrowserFile.OpenReadStream(maxAllowedSize)`.
 
 ## Project Conventions
 
@@ -154,7 +154,7 @@ See `.claude/rules/code-standard.md` for full standards. Key points:
 - **`var`:** preferred everywhere
 - **Global usings:** third-party group then `MadWorldEU.Byakko.*` group, each alphabetical
 - **Endpoint classes:** `internal static` with `internal static` extension on `WebApplication`; under `Endpoints/<Feature>/`
-- **HTTP clients:** `HttpClients.ApiAnonymous` / `HttpClients.ApiAuthorized` from `Controller.Blazor.Shared/HttpClients.cs`
+- **HTTP clients:** `HttpClients.ApiAnonymous` / `HttpClients.ApiAuthorized` from `Controller.Blazor.Shared/HttpClients.cs`. `ApiAuthorized` has `Timeout = Timeout.InfiniteTimeSpan` — upload timeouts are governed by Traefik's `responseHeaderTimeout` (1800s), not the client.
 - **appsettings schemas:** each `appsettings.json` has a companion `appsettings-schema.json`; update schema when adding config keys
 - **EF Core constructor:** `private`, `[UsedImplicitly]`, XML `<summary>` saying "Required for EF Core"
 - **Errors:** `static readonly` fields on `{Domain}Errors` class; code format `"Domain.Reason"`
