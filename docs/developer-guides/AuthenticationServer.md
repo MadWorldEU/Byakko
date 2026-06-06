@@ -70,6 +70,33 @@ By default Keycloak maps realm roles under `realm_access.roles`. Change it to a 
 2. Open the **Role mapping** tab.
 3. Click **Assign role**, select `Administrator` or `User`, and confirm.
 
+### Enable Login Settings
+
+1. Go to **Realm settings** in the Keycloak Admin UI.
+2. Open the **Login** tab.
+3. Enable the following options:
+   - **User registration** — allows new users to self-register
+   - **Forgot password** — shows a password reset link on the login screen
+   - **Remember me** — lets users stay logged in across browser sessions
+   - **Verify email** — requires users to verify their email address after registration
+4. Click **Save**.
+
+### Configure Email
+
+Keycloak uses an SMTP server to send verification, password reset, and other system emails. To configure it:
+
+1. Go to **Realm settings** in the Keycloak Admin UI.
+2. Open the **Email** tab.
+3. Fill in the following fields:
+   - **From** — The sender email address (e.g. `noreply@example.com`)
+   - **From display name** — The human-readable sender name shown in email clients (e.g. `Byakko`)
+   - **Host** — The SMTP server hostname (e.g. `smtp.example.com`)
+   - **Port** — The SMTP port (e.g. `587` for StartTLS, `465` for SSL)
+   - **Enable StartTLS** — Toggle on when using port 587 to upgrade the connection to TLS
+   - **Username** — The SMTP account username used to authenticate
+   - **Password** — The SMTP account password used to authenticate
+4. Click **Save**, then use the **Test connection** button to verify Keycloak can reach the mail server.
+
 ### Test Login with Keycloak Using the Official Test App
 You can verify that your Keycloak server is correctly issuing tokens (including the `aud` claim) by using Keycloak's official test app:
 
