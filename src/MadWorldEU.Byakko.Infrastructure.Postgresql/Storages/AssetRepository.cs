@@ -1,3 +1,4 @@
+using MadWorldEU.Byakko.Common.Pages;
 using MadWorldEU.Byakko.Functional;
 using Microsoft.Extensions.Logging;
 using NodaTime;
@@ -63,7 +64,12 @@ public sealed class AssetRepository(ByakkoContext context, IClock clock, ILogger
         return asset;
     }
 
-    public async Task<Result<List<Asset>>> GetExpiredContentAsync()
+    public Task<Result<PagedResult<Asset>>> GetAllPagesAsync(Page page)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<Result<IReadOnlyList<Asset>>> GetExpiredContentAsync()
     {
         var now = clock.GetCurrentInstant();
 
@@ -73,7 +79,7 @@ public sealed class AssetRepository(ByakkoContext context, IClock clock, ILogger
                 .Where(a => a.DeletedAt == null && a.ExpiresAt < now)
                 .ToListAsync();
 
-            return Result.Success(expiredAssets);
+            return Result.Success<IReadOnlyList<Asset>>(expiredAssets);
         }
         catch (Exception exception)
         {

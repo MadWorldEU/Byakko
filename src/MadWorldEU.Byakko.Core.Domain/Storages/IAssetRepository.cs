@@ -1,3 +1,5 @@
+using MadWorldEU.Byakko.Common.Pages;
+
 namespace MadWorldEU.Byakko.Storages;
 
 public interface IAssetRepository
@@ -5,6 +7,7 @@ public interface IAssetRepository
     Task<Result> AddAsync(Asset asset);
     Task<Result> UpdateAsync(Asset asset);
     Task<Result<Asset>> FindAsync(Id id);
-    Task<Result<List<Asset>>> GetExpiredContentAsync();
+    Task<Result<PagedResult<Asset>>> GetAllPagesAsync(Page page);
+    Task<Result<IReadOnlyList<Asset>>> GetExpiredContentAsync();
     Task<Result> DeleteExpiredAssets();
 }
