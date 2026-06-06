@@ -13,6 +13,17 @@ internal static class AssetsEndpoints
         var assetsEndpoints = app.MapGroup("/assets")
             .WithTags("Assets");
 
+        assetsEndpoints.MapGet("/", async (int page, GetAssetsMetaDataUseCase useCase) =>
+            {
+                var result = await useCase.ExecuteAsync(page);
+                return result.Match(
+                    onSuccess: Results.Ok,
+                    onFailure: error => Results.BadRequest(error.Description)
+                );
+            })
+            .RequireAuthorization(AuthorizationPolicies.Administrator)
+            .WithName("GetAssetsMetadata");
+
         assetsEndpoints.MapPost("/", async (CreateAssetRequest request, ClaimsPrincipal user, CreateAssetMetadataUseCase useCase) =>
             {
                 var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value
