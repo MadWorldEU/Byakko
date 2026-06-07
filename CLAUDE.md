@@ -37,16 +37,26 @@ See `.claude/rules/testing.md` for full conventions. Test projects:
 | `Core.Domain.Unittests` | TUnit + NSubstitute + Shouldly | Domain entity error paths |
 | `Controller.Portal.Componenttests` | bUnit + WireMock.Net + TUnit | Portal Blazor components |
 | `Controller.Admin.Componenttests` | bUnit + WireMock.Net + TUnit | Admin Blazor components |
+| `ArchitectureTests` | ArchUnitNET + Reqnroll + TUnit | Layer dependency rules |
 
 Key test notes:
 - Integration tests use real PostgreSQL + MinIO Testcontainers — no mocks. `Authentication:ValidateUser = false` for self-signed tokens.
 - Application unit tests cover error paths only (happy paths via integration tests). Use `Result.Failure<T>(error)` not `Result<T>.Failure(error)`.
 - Domain unit tests use a `BuildAsset()` helper for constructing valid aggregates.
 - Component tests: use `BunitContext` (not obsolete `TestContext`), `ctx.Render<T>()`, `cut.WaitForState()`, CSS selectors for assertions.
+- Architecture tests: BDD feature files + `BaseArchitectureTests` (loads all assemblies via marker interfaces); step definitions scoped per feature with `[Scope(Feature = "...")]`; assertions via `rule.HasNoViolations(Architecture).ShouldBeTrue(rule.Description)`. Every assembly under test must have a marker interface (e.g. `IPostgresqlMarker`) in its root namespace.
 
 ## Architecture
 
 Clean Architecture. Dependencies flow inward: Controller → Application → Domain ← Infrastructure.
+
+**Enforced dependency rules** (verified by `ArchitectureTests`):
+- **BuildingBlocks** — must not depend on any other layer.
+- **Domain** — must not depend on Application, Contracts, Infrastructure, or Controllers.
+- **Contracts** — must not depend on Application, Infrastructure, or Controllers.
+- **Application** — must not depend on any Infrastructure layer (Postgresql, ObjectStorage, Security) or Controllers.
+- **Infrastructure** (Postgresql, ObjectStorage, Security) — must not depend on Controllers.
+- **Blazor projects** (Admin, Portal, Blazor.Shared) — must not depend on Domain, Application, any Infrastructure layer, or Controller.Api; may only depend on Contracts and Blazor.Shared.
 
 | Layer | Project | Role |
 |---|---|---|
