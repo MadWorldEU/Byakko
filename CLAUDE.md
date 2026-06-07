@@ -112,8 +112,9 @@ Endpoints in `Controller.Api/Endpoints/Storages/AssetsEndpoints.cs`:
 |---|---|---|---|
 | `GET` | `/assets` | `GetAssetsMetaDataUseCase` | Paged (20/page); requires `Administrator` policy; query param `page` |
 | `POST` | `/assets` | `CreateAssetMetadataUseCase` | Creates record; validity from `Assets:ValidityPeriodInDays` |
-| `GET` | `/assets/{id}` | `GetAssetMetadataUseCase` | 404 when not found |
+| `GET` | `/assets/{id}` | `GetAssetMetadataUseCase` | 404 when not found; returns metadata even for deleted assets |
 | `PUT` | `/assets/{id}/content` | `UploadAssetContentUseCase` | 404 not found, 403 not owner |
+| `DELETE` | `/assets/{id}/content` | `DeleteContentOfAssetUseCase` | Requires `Administrator` policy; 404 not found, 409 already deleted |
 | `GET` | `/assets/{id}/content` | `DownloadAssetContentUseCase` | 404 not found, 400 expired |
 
 Content encrypted AES-256 before upload; IV prepended to ciphertext. Error mapping: check `error.Code` against `AssetErrors`, fall back to `400`.
@@ -121,7 +122,7 @@ Content encrypted AES-256 before upload; IV prepended to ciphertext. Error mappi
 **Asset lifecycle:**
 - `ExpiresAt` — `CreatedAt + ValidityPeriodInDays`. `IsExpired(clock)` gates downloads.
 - `DeletedAt` — set by `asset.Delete(clock)`. `IsDeleted` = `DeletedAt.HasValue`.
-- `Delete(clock)` → `AssetErrors.AlreadyDeleted` if already deleted.
+- `Delete(clock)` → `AssetErrors.AlreadyDeleted` if already deleted. Also sets `ExpiresAt = now` if it was still in the future.
 - `UpdateSize(clock, size)` → `AssetErrors.SizeAlreadySet` if `Size.Value > 0`.
 - `ValidityPeriod` value object enforces `Days > 0`.
 
