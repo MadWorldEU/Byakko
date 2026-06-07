@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+        <PackageReference Include="Reqnroll.TUnit" />
+        <PackageReference Include="Shouldly" />
+        <PackageReference Include="TngTech.ArchUnitNET" />
+        <PackageReference Include="TUnit" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\MadWorldEU.Byakko.Controller.Admin\Admin.csproj" />
+        <ProjectReference Include="..\..\src\MadWorldEU.Byakko.Controller.Blazor.Shared\Blazor.Shared.csproj" />
+        <ProjectReference Include="..\..\src\MadWorldEU.Byakko.Controller.Portal\Portal.csproj" />
+        <ProjectReference Include="..\..\src\MadWorldEU.Byakko.Core.BuildingBlocks\BuildingBlocks.csproj" />
+        <ProjectReference Include="..\..\src\MadWorldEU.Byakko.Core.Domain\Domain.csproj" />
+        <ProjectReference Include="..\..\src\MadWorldEU.Byakko.Core.Application\Application.csproj" />
+        <ProjectReference Include="..\..\src\MadWorldEU.Byakko.Core.Contracts\Contracts.csproj" />
+        <ProjectReference Include="..\..\src\MadWorldEU.Byakko.Infrastructure.ObjectStorage\ObjectStorage.csproj" />
+        <ProjectReference Include="..\..\src\MadWorldEU.Byakko.Infrastructure.Postgresql\Postgresql.csproj" />
+        <ProjectReference Include="..\..\src\MadWorldEU.Byakko.Infrastructure.Security\Security.csproj" />
+        <ProjectReference Include="..\..\src\MadWorldEU.Byakko.Controller.Api\Api.csproj" />
+    </ItemGroup>
+
+</Project>
