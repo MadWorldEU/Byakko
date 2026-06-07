@@ -72,6 +72,28 @@ public sealed class AssetsSteps(ScenarioContext scenarioContext)
         scenarioContext.Set(createResponse!.Id, AssetIdKey);
     }
 
+    [Given("I have uploaded content for the created asset")]
+    public async Task GivenIHaveUploadedContentForTheCreatedAsset()
+    {
+        var client = scenarioContext.Get<HttpClient>();
+        var assetId = scenarioContext.Get<Guid>(AssetIdKey);
+        var fileContent = new ByteArrayContent("Hello, World!"u8.ToArray());
+        fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("text/plain");
+        var formData = new MultipartFormDataContent();
+        formData.Add(fileContent, "file", "delete-test.txt");
+        var response = await client.PutAsync($"/assets/{assetId}/content", formData);
+        response.EnsureSuccessStatusCode();
+    }
+
+    [When("I delete the content of the created asset")]
+    public async Task WhenIDeleteTheContentOfTheCreatedAsset()
+    {
+        var client = scenarioContext.Get<HttpClient>();
+        var assetId = scenarioContext.Get<Guid>(AssetIdKey);
+        var response = await client.DeleteAsync($"/assets/{assetId}/content");
+        scenarioContext.Set(response, ScenarioContextKeys.LastResponse);
+    }
+
     [When("I upload content for the created asset")]
     public async Task WhenIUploadContentForTheCreatedAsset()
     {
