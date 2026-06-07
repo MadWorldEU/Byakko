@@ -85,6 +85,24 @@ public sealed class AssetsSteps(ScenarioContext scenarioContext)
         response.EnsureSuccessStatusCode();
     }
 
+    [When("I retrieve the metadata of the created asset")]
+    public async Task WhenIRetrieveTheMetadataOfTheCreatedAsset()
+    {
+        var client = scenarioContext.Get<HttpClient>();
+        var assetId = scenarioContext.Get<Guid>(AssetIdKey);
+        var response = await client.GetAsync($"/assets/{assetId}");
+        scenarioContext.Set(response, ScenarioContextKeys.LastResponse);
+    }
+
+    [Then("the expire date of the created asset should be in the past")]
+    public async Task ThenTheExpireDateOfTheCreatedAssetShouldBeInThePast()
+    {
+        var response = scenarioContext.Get<HttpResponseMessage>(ScenarioContextKeys.LastResponse);
+        var metadata = await response.Content.ReadFromJsonAsync<GetAssetMetadataResponse>();
+        metadata.ShouldNotBeNull();
+        metadata.ExpiresAt.ShouldBeLessThanOrEqualTo(DateTimeOffset.UtcNow);
+    }
+
     [When("I delete the content of the created asset")]
     public async Task WhenIDeleteTheContentOfTheCreatedAsset()
     {

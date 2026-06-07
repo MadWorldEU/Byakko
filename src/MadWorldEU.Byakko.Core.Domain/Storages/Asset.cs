@@ -10,7 +10,7 @@ public sealed class Asset : Entity<Id>
     public Size Size { get; private set; } = null!;
     public Instant CreatedAt { get; private init; }
     public Instant UpdatedAt { get; private set; }
-    public Instant ExpiresAt { get; private init; }
+    public Instant ExpiresAt { get; private set; }
     public Instant? DeletedAt { get; private set; }
     public bool IsDeleted => DeletedAt.HasValue;
     
@@ -56,6 +56,12 @@ public sealed class Asset : Entity<Id>
         var now = clock.GetCurrentInstant();
         DeletedAt = now;
         UpdatedAt = now;
+
+        if (ExpiresAt > now)
+        {
+            ExpiresAt = now;
+        }
+
         return Result.Success();
     }
 

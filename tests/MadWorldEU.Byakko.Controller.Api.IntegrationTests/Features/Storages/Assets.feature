@@ -13,6 +13,9 @@ Scenario: Delete content of an asset as an administrator
     And I have uploaded content for the created asset
     When I delete the content of the created asset
     Then the response status code should be 200
+    When I retrieve the metadata of the created asset
+    Then the response status code should be 200
+    And the expire date of the created asset should be in the past
 
 Scenario: Upload and download a file for an asset
     Given I am authenticated as a user
