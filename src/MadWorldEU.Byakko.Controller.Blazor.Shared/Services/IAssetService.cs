@@ -8,6 +8,9 @@ public interface IAssetService
     /// <summary>Creates a new asset metadata record and returns the assigned ID.</summary>
     Task<CreateAssetResponse?> CreateAssetAsync(CreateAssetRequest request);
 
+    /// <summary>Returns a paged list of asset metadata for administrators.</summary>
+    Task<GetAssetsMetadataResponse?> GetAssetsMetadataAsync(int page);
+
     /// <summary>Returns the metadata of an asset by ID.</summary>
     Task<GetAssetMetadataResponse?> GetAssetMetadataAsync(Guid id);
 

@@ -1,0 +1,124 @@
+@page "/storages/assets"
+@attribute [Authorize(Policy = AuthorizationPolicies.Administrator)]
+@inject IAssetService AssetService
+
+<PageTitle>Assets – Byakko Admin</PageTitle>
+
+<div class="d-flex align-items-start justify-content-between flex-wrap gap-2 mb-4">
+    <div>
+        <h1 class="h3 fw-bold mb-1">Assets</h1>
+        <p class="text-secondary mb-0 small">Overview of all uploaded assets, 20 per page.</p>
+    </div>
+</div>
+
+@if (_loading)
+{
+    <div class="d-flex justify-content-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading…</span>
+        </div>
+    </div>
+}
+else if (_error is not null)
+{
+    <div class="alert alert-danger" role="alert">@_error</div>
+}
+else if (_response is not null)
+{
+    <div class="card border-0 bg-body-tertiary">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Content Type</th>
+                        <th>User ID</th>
+                        <th>Created</th>
+                        <th>Expires</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var asset in _response.Assets)
+                    {
+                        <tr>
+                            <td>@asset.Name</td>
+                            <td><span class="badge bg-secondary fw-normal">@asset.ContentType</span></td>
+                            <td class="font-monospace small text-secondary">@asset.UserId</td>
+                            <td class="small">@asset.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                            <td class="small">@asset.ExpiresAt.ToString("yyyy-MM-dd HH:mm")</td>
+                        </tr>
+                    }
+                    @if (_response.Assets.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center text-secondary py-4">No assets found.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="d-flex align-items-center justify-content-between mt-3 flex-wrap gap-2">
+        <span class="text-secondary small">
+            @_response.TotalCount total &middot; Page @_currentPage &middot; @_response.PageSize per page
+        </span>
+        <div class="d-flex gap-2">
+            <button class="btn btn-sm btn-outline-secondary" @onclick="PreviousPageAsync" disabled="@(_currentPage <= 1)">Previous</button>
+            <button class="btn btn-sm btn-outline-secondary" @onclick="NextPageAsync" disabled="@(!_response.HasNextPage)">Next</button>
+        </div>
+    </div>
+}
+
+@code {
+    private bool _loading = true;
+    private string? _error;
+    private GetAssetsMetadataResponse? _response;
+    private int _currentPage = 1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPageAsync();
+    }
+
+    private async Task LoadPageAsync()
+    {
+        _loading = true;
+        _error = null;
+
+        try
+        {
+            _response = await AssetService.GetAssetsMetadataAsync(_currentPage);
+        }
+        catch (Exception ex)
+        {
+            _error = $"Failed to load assets: {ex.Message}";
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private async Task PreviousPageAsync()
+    {
+        if (_currentPage <= 1)
+        {
+            return;
+        }
+
+        _currentPage--;
+        await LoadPageAsync();
+    }
+
+    private async Task NextPageAsync()
+    {
+        if (_response?.HasNextPage != true)
+        {
+            return;
+        }
+
+        _currentPage++;
+        await LoadPageAsync();
+    }
+}
