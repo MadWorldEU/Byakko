@@ -43,7 +43,7 @@ Key test notes:
 - Integration tests use real PostgreSQL + MinIO Testcontainers — no mocks. `Authentication:ValidateUser = false` for self-signed tokens.
 - Application unit tests cover error paths only (happy paths via integration tests). Use `Result.Failure<T>(error)` not `Result<T>.Failure(error)`.
 - Domain unit tests use a `BuildAsset()` helper for constructing valid aggregates.
-- Component tests: use `BunitContext` (not obsolete `TestContext`), `ctx.Render<T>()`, `cut.WaitForState()`, CSS selectors for assertions.
+- Component tests: use `BunitContext` (not obsolete `TestContext`), `ctx.Render<T>()`, `cut.WaitForState()`, CSS selectors for assertions. Set `ctx.JSInterop.Mode = JSRuntimeMode.Loose` when the component calls JS interop (e.g. `initTooltips`). For async flows triggered by a button click, wait on a DOM change that only occurs after the async operation completes (e.g. wait for the confirm button to disappear rather than waiting on the spinner, which may not appear yet). Use `.TextContent.Trim()` when a `<td>` contains both text and child elements.
 - Architecture tests: BDD feature files + `BaseArchitectureTests` (loads all assemblies via marker interfaces); step definitions scoped per feature with `[Scope(Feature = "...")]`; assertions via `rule.HasNoViolations(Architecture).ShouldBeTrue(rule.Description)`. Every assembly under test must have a marker interface (e.g. `IPostgresqlMarker`) in its root namespace.
 
 ## Architecture
