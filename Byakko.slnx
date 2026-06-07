@@ -44,6 +44,7 @@
     <File Path="docs\user-guides\toc.yml" />
   </Folder>
   <Folder Name="/github/">
+    <File Path=".github\FUNDING.yml" />
     <File Path=".github\pull_request_template.md" />
   </Folder>
   <Folder Name="/github/issue-templates/">
