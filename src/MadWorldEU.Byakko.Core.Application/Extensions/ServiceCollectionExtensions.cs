@@ -13,6 +13,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<CreateAssetMetadataUseCase>();
         services.AddScoped<DeleteAllExpiredContentOfAssetsUseCase>();
         services.AddScoped<DeleteAllExpiredMetaDataAssetsUseCase>();
+        services.AddScoped<DeleteContentOfAssetUseCase>();
         services.AddScoped<GetAssetMetadataUseCase>();
         services.AddScoped<GetAssetsMetaDataUseCase>();
         services.AddScoped<UploadAssetContentUseCase>();

@@ -76,6 +76,21 @@ internal static class AssetsEndpoints
             .RequireAuthorization()
             .RequireRateLimiting(RateLimiterPolicies.Content);
 
+        assetsEndpoints.MapDelete("/{id}/content", async (string id, DeleteContentOfAssetUseCase useCase) =>
+            {
+                var result = await useCase.ExecuteAsync(id);
+                return result.Match(
+                    onSuccess: Results.Ok,
+                    onFailure: error => error.Code == AssetErrors.NotFound.Code
+                        ? Results.NotFound()
+                        : error.Code == AssetErrors.AlreadyDeleted.Code
+                            ? Results.Conflict(error.Description)
+                            : Results.BadRequest(error.Description)
+                );
+            })
+            .RequireAuthorization(AuthorizationPolicies.Administrator)
+            .WithName("DeleteAssetContent");
+
         assetsEndpoints.MapGet("/{id}/content", async (string id, DownloadAssetContentUseCase useCase) =>
             {
                 var result = await useCase.ExecuteAsync(id);
