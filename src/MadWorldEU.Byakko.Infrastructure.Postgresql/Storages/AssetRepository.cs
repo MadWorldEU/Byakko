@@ -92,6 +92,21 @@ public sealed class AssetRepository(ByakkoContext context, IClock clock, ILogger
         }
     }
 
+    public async Task<Result<int>> GetCountOfActiveAssetsAsync()
+    {
+        try
+        {
+            return await context.Assets
+                .Where(a => a.DeletedAt == null)
+                .CountAsync();
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Failed to query total active assets.");
+            return AssetErrors.QueryFailed;
+        }
+    }
+
     public async Task<Result<IReadOnlyList<Asset>>> GetExpiredContentAsync()
     {
         var now = clock.GetCurrentInstant();
@@ -110,7 +125,24 @@ public sealed class AssetRepository(ByakkoContext context, IClock clock, ILogger
             return AssetErrors.QueryFailed;
         }
     }
-    
+
+    public async Task<Result<Size>> GetTotalSavedSizeAsync()
+    {
+        try
+        {
+            var totalSize = await context.Assets
+                .Where(a => a.DeletedAt == null)
+                .SumAsync(a => a.Size.Value);
+
+            return Size.Create(totalSize);
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Failed to query total storage size of assets.");
+            return AssetErrors.QueryFailed;
+        }
+    }
+
     public async Task<Result> DeleteExpiredAssets()
     {
         var lastYear = clock.GetCurrentInstant()
