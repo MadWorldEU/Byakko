@@ -17,6 +17,9 @@ public interface IAssetService
     /// <summary>Uploads binary content for an existing asset.</summary>
     Task<UploadAssetContentResponse?> UploadAssetContentAsync(Guid id, Stream content, string fileName, string contentType);
 
+    /// <summary>Deletes the content of an asset by ID. Throws <see cref="HttpRequestException"/> on failure.</summary>
+    Task DeleteAssetContentAsync(Guid id);
+
     /// <summary>Returns the direct URL to download the binary content of an asset. The browser streams it natively — no in-memory buffering.</summary>
     string GetContentUrl(Guid id);
 }

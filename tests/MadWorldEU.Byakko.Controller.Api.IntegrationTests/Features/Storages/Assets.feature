@@ -7,6 +7,16 @@ Scenario: Retrieve two assets as an administrator
     Then the response status code should be 200
     And the response should contain the created assets
 
+Scenario: Delete content of an asset as an administrator
+    Given I am authenticated as an administrator
+    And I have created an asset with name "delete-test.txt" and content type "text/plain"
+    And I have uploaded content for the created asset
+    When I delete the content of the created asset
+    Then the response status code should be 200
+    When I retrieve the metadata of the created asset
+    Then the response status code should be 200
+    And the expire date of the created asset should be in the past
+
 Scenario: Upload and download a file for an asset
     Given I am authenticated as a user
     And I have created an asset with name "test-file.txt" and content type "text/plain"

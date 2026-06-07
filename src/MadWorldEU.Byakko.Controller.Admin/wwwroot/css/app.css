@@ -155,3 +155,8 @@ code {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+
+/* ── Tooltips ── */
+.tooltip-wide .tooltip-inner {
+    max-width: 260px;
+}

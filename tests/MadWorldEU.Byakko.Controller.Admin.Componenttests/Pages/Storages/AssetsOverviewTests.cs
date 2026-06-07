@@ -20,7 +20,7 @@ public sealed class AssetsOverviewTests
         cut.WaitForState(() => !cut.FindAll(".spinner-border").Any(), TimeSpan.FromSeconds(5));
 
         cut.FindAll("tbody tr").Count.ShouldBe(2);
-        cut.Find("tbody tr td").TextContent.ShouldBe("document.pdf");
+        cut.Find("tbody tr td").TextContent.Trim().ShouldBe("document.pdf");
     }
 
     [Test]
@@ -123,11 +123,125 @@ public sealed class AssetsOverviewTests
             () => cut.FindAll("td").Any(td => td.TextContent.Contains("page2-file.png")),
             TimeSpan.FromSeconds(5));
 
-        cut.Find("tbody tr td").TextContent.ShouldBe("page2-file.png");
+        cut.Find("tbody tr td").TextContent.Trim().ShouldBe("page2-file.png");
+    }
+
+    [Test]
+    public void RequestDelete_WhenAssetIsNotDeleted_ShouldShowDeleteButton()
+    {
+        using var server = WireMockServer.Start();
+        server
+            .Given(Request.Create().WithPath("/assets").UsingGet())
+            .RespondWith(Response.Create()
+                .WithStatusCode(200)
+                .WithBodyAsJson(MakeResponse([MakeAsset("document.pdf")])));
+
+        using var ctx = new BunitContext();
+        RegisterServices(ctx, server.Url!);
+
+        var cut = ctx.Render<AssetsOverview>();
+        cut.WaitForState(() => !cut.FindAll(".spinner-border").Any(), TimeSpan.FromSeconds(5));
+
+        cut.FindAll("button.btn-outline-danger").Count.ShouldBe(1);
+    }
+
+    [Test]
+    public void RequestDelete_WhenAssetIsDeleted_ShouldNotShowDeleteButton()
+    {
+        using var server = WireMockServer.Start();
+        server
+            .Given(Request.Create().WithPath("/assets").UsingGet())
+            .RespondWith(Response.Create()
+                .WithStatusCode(200)
+                .WithBodyAsJson(MakeResponse([MakeAsset("document.pdf", isDeleted: true)])));
+
+        using var ctx = new BunitContext();
+        RegisterServices(ctx, server.Url!);
+
+        var cut = ctx.Render<AssetsOverview>();
+        cut.WaitForState(() => !cut.FindAll(".spinner-border").Any(), TimeSpan.FromSeconds(5));
+
+        cut.FindAll("button.btn-outline-danger").ShouldBeEmpty();
+    }
+
+    [Test]
+    public void RequestDelete_WhenDeleteButtonClicked_ShouldShowConfirmPrompt()
+    {
+        using var server = WireMockServer.Start();
+        server
+            .Given(Request.Create().WithPath("/assets").UsingGet())
+            .RespondWith(Response.Create()
+                .WithStatusCode(200)
+                .WithBodyAsJson(MakeResponse([MakeAsset("document.pdf")])));
+
+        using var ctx = new BunitContext();
+        RegisterServices(ctx, server.Url!);
+
+        var cut = ctx.Render<AssetsOverview>();
+        cut.WaitForState(() => !cut.FindAll(".spinner-border").Any(), TimeSpan.FromSeconds(5));
+
+        cut.Find("button.btn-outline-danger").Click();
+
+        cut.FindAll("button.btn-danger").ShouldNotBeEmpty();
+        cut.FindAll(".text-warning").ShouldNotBeEmpty();
+    }
+
+    [Test]
+    public void CancelDelete_WhenCancelClicked_ShouldRestoreDeleteButton()
+    {
+        using var server = WireMockServer.Start();
+        server
+            .Given(Request.Create().WithPath("/assets").UsingGet())
+            .RespondWith(Response.Create()
+                .WithStatusCode(200)
+                .WithBodyAsJson(MakeResponse([MakeAsset("document.pdf")])));
+
+        using var ctx = new BunitContext();
+        RegisterServices(ctx, server.Url!);
+
+        var cut = ctx.Render<AssetsOverview>();
+        cut.WaitForState(() => !cut.FindAll(".spinner-border").Any(), TimeSpan.FromSeconds(5));
+
+        cut.Find("button.btn-outline-danger").Click();
+        cut.Find("td button.btn-outline-secondary").Click();
+
+        cut.FindAll("button.btn-danger").ShouldBeEmpty();
+        cut.FindAll("button.btn-outline-danger").Count.ShouldBe(1);
+    }
+
+    [Test]
+    public async Task ConfirmDeleteAsync_WhenConfirmed_ShouldCallDeleteApiAndReload()
+    {
+        var assetId = Guid.NewGuid();
+        using var server = WireMockServer.Start();
+        server
+            .Given(Request.Create().WithPath("/assets").UsingGet())
+            .RespondWith(Response.Create()
+                .WithStatusCode(200)
+                .WithBodyAsJson(MakeResponse([MakeAsset("document.pdf", id: assetId)])));
+        server
+            .Given(Request.Create().WithPath($"/assets/{assetId}/content").UsingDelete())
+            .RespondWith(Response.Create().WithStatusCode(200));
+
+        using var ctx = new BunitContext();
+        RegisterServices(ctx, server.Url!);
+
+        var cut = ctx.Render<AssetsOverview>();
+        cut.WaitForState(() => !cut.FindAll(".spinner-border").Any(), TimeSpan.FromSeconds(5));
+
+        cut.Find("button.btn-outline-danger").Click();
+        cut.Find("button.btn-danger").Click();
+        await cut.WaitForStateAsync(() => !cut.FindAll("button.btn-danger").Any(), TimeSpan.FromSeconds(5));
+
+        var deleteRequests = server.LogEntries
+            .Count(e => e.RequestMessage?.Path == $"/assets/{assetId}/content"
+                        && e.RequestMessage?.Method == "DELETE");
+        deleteRequests.ShouldBe(1);
     }
 
     private static void RegisterServices(BunitContext ctx, string serverUrl)
     {
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         ctx.Services.AddHttpClient(HttpClients.ApiAnonymous, client =>
             client.BaseAddress = new Uri(serverUrl));
         ctx.Services.AddHttpClient(HttpClients.ApiAuthorized, client =>
@@ -147,14 +261,16 @@ public sealed class AssetsOverviewTests
         HasNextPage = hasNextPage
     };
 
-    private static AssetMetadataResponse MakeAsset(string name) => new()
+    private static AssetMetadataResponse MakeAsset(string name, bool isDeleted = false, Guid? id = null) => new()
     {
-        Id = Guid.NewGuid(),
+        Id = id ?? Guid.NewGuid(),
         Name = name,
         ContentType = "application/pdf",
         UserId = Guid.NewGuid(),
         CreatedAt = DateTimeOffset.Parse("2026-05-01T10:00:00Z"),
         UpdatedAt = DateTimeOffset.Parse("2026-05-01T10:00:00Z"),
-        ExpiresAt = DateTimeOffset.Parse("2026-06-01T10:00:00Z")
+        ExpiresAt = DateTimeOffset.Parse("2026-06-01T10:00:00Z"),
+        IsDeleted = isDeleted,
+        Size = 1024
     };
 }

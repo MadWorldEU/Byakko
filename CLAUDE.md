@@ -43,7 +43,7 @@ Key test notes:
 - Integration tests use real PostgreSQL + MinIO Testcontainers — no mocks. `Authentication:ValidateUser = false` for self-signed tokens.
 - Application unit tests cover error paths only (happy paths via integration tests). Use `Result.Failure<T>(error)` not `Result<T>.Failure(error)`.
 - Domain unit tests use a `BuildAsset()` helper for constructing valid aggregates.
-- Component tests: use `BunitContext` (not obsolete `TestContext`), `ctx.Render<T>()`, `cut.WaitForState()`, CSS selectors for assertions.
+- Component tests: use `BunitContext` (not obsolete `TestContext`), `ctx.Render<T>()`, `cut.WaitForState()`, CSS selectors for assertions. Set `ctx.JSInterop.Mode = JSRuntimeMode.Loose` when the component calls JS interop (e.g. `initTooltips`). For async flows triggered by a button click, wait on a DOM change that only occurs after the async operation completes (e.g. wait for the confirm button to disappear rather than waiting on the spinner, which may not appear yet). Use `.TextContent.Trim()` when a `<td>` contains both text and child elements.
 - Architecture tests: BDD feature files + `BaseArchitectureTests` (loads all assemblies via marker interfaces); step definitions scoped per feature with `[Scope(Feature = "...")]`; assertions via `rule.HasNoViolations(Architecture).ShouldBeTrue(rule.Description)`. Every assembly under test must have a marker interface (e.g. `IPostgresqlMarker`) in its root namespace.
 
 ## Architecture
@@ -112,8 +112,9 @@ Endpoints in `Controller.Api/Endpoints/Storages/AssetsEndpoints.cs`:
 |---|---|---|---|
 | `GET` | `/assets` | `GetAssetsMetaDataUseCase` | Paged (20/page); requires `Administrator` policy; query param `page` |
 | `POST` | `/assets` | `CreateAssetMetadataUseCase` | Creates record; validity from `Assets:ValidityPeriodInDays` |
-| `GET` | `/assets/{id}` | `GetAssetMetadataUseCase` | 404 when not found |
+| `GET` | `/assets/{id}` | `GetAssetMetadataUseCase` | 404 when not found; returns metadata even for deleted assets |
 | `PUT` | `/assets/{id}/content` | `UploadAssetContentUseCase` | 404 not found, 403 not owner |
+| `DELETE` | `/assets/{id}/content` | `DeleteContentOfAssetUseCase` | Requires `Administrator` policy; 404 not found, 409 already deleted |
 | `GET` | `/assets/{id}/content` | `DownloadAssetContentUseCase` | 404 not found, 400 expired |
 
 Content encrypted AES-256 before upload; IV prepended to ciphertext. Error mapping: check `error.Code` against `AssetErrors`, fall back to `400`.
@@ -121,7 +122,7 @@ Content encrypted AES-256 before upload; IV prepended to ciphertext. Error mappi
 **Asset lifecycle:**
 - `ExpiresAt` — `CreatedAt + ValidityPeriodInDays`. `IsExpired(clock)` gates downloads.
 - `DeletedAt` — set by `asset.Delete(clock)`. `IsDeleted` = `DeletedAt.HasValue`.
-- `Delete(clock)` → `AssetErrors.AlreadyDeleted` if already deleted.
+- `Delete(clock)` → `AssetErrors.AlreadyDeleted` if already deleted. Also sets `ExpiresAt = now` if it was still in the future.
 - `UpdateSize(clock, size)` → `AssetErrors.SizeAlreadySet` if `Size.Value > 0`.
 - `ValidityPeriod` value object enforces `Days > 0`.
 
@@ -147,7 +148,12 @@ Content encrypted AES-256 before upload; IV prepended to ciphertext. Error mappi
 
 ## Admin UI
 
-Blazor WebAssembly, Bootstrap 5 dark theme (`data-bs-theme="dark"`). Desktop-first with 240px sticky sidebar (`Layout/MainLayout.razor`). Nav sections: Overview, Management, Support, System. Auth via `<AuthorizeView Policy="@AuthorizationPolicies.Administrator">`. Sidebar footer shows username, edit-profile link (Keycloak account page via `OidcSettings.GetEditAccountUrl()`), and logout. Pages: `Pages/HostServices/ManualTriggers.razor`, `Pages/Storages/AssetsOverview.razor` (`/storages/assets` — paged asset table, 20/page, with previous/next pagination). The Management nav "Assets" link points to `/storages/assets`. `IAssetService` (shared) exposes `GetAssetsMetadataAsync(int page)` for admin use; `MadWorldEU.Byakko.Services` and `MadWorldEU.Byakko.Storages` are global usings in `_Imports.razor`.
+Blazor WebAssembly, Bootstrap 5 dark theme (`data-bs-theme="dark"`). Desktop-first with 240px sticky sidebar (`Layout/MainLayout.razor`). Nav sections: Overview, Management, Support, System. Auth via `<AuthorizeView Policy="@AuthorizationPolicies.Administrator">`. Sidebar footer shows username, edit-profile link (Keycloak account page via `OidcSettings.GetEditAccountUrl()`), and logout. Pages: `Pages/Home.razor` (`/dashboard` — three stat cards only: Total Files, Active Customers, Storage Used), `Pages/HostServices/ManualTriggers.razor`, `Pages/Storages/AssetsOverview.razor` (`/storages/assets` — paged asset table, 20/page, with previous/next pagination). The Management nav "Assets" link points to `/storages/assets`. `IAssetService` (shared) exposes `GetAssetsMetadataAsync(int page)` and `DeleteAssetContentAsync(Guid id)` for admin use; `MadWorldEU.Byakko.Services` and `MadWorldEU.Byakko.Storages` are global usings in `_Imports.razor`.
+
+**AssetsOverview features:**
+- Each row has an info icon (Bootstrap Icons info-circle SVG) next to the filename; hovering shows a Bootstrap tooltip (`data-bs-html="true"`) with file size and last updated date on separate lines. Tooltip initialization via `initTooltips()` in `wwwroot/js/app.js` (loaded in `index.html`), called from `OnAfterRenderAsync`.
+- Each non-deleted asset row has a **Delete** button; clicking it shows an inline confirm prompt ("Delete content? Yes / No") in the same row. Confirming calls `DeleteAssetContentAsync` and reloads the page.
+- `AssetMetadataResponse` (in `Core.Contracts`) includes `IsDeleted` and `Size` (bytes as `long`) in addition to the base fields.
 
 ## Portal UI
 
