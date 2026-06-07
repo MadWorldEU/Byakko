@@ -100,6 +100,7 @@ Endpoints in `Controller.Api/Endpoints/Storages/AssetsEndpoints.cs`:
 
 | Method | Route | Use case | Notes |
 |---|---|---|---|
+| `GET` | `/assets` | `GetAssetsMetaDataUseCase` | Paged (20/page); requires `Administrator` policy; query param `page` |
 | `POST` | `/assets` | `CreateAssetMetadataUseCase` | Creates record; validity from `Assets:ValidityPeriodInDays` |
 | `GET` | `/assets/{id}` | `GetAssetMetadataUseCase` | 404 when not found |
 | `PUT` | `/assets/{id}/content` | `UploadAssetContentUseCase` | 404 not found, 403 not owner |
@@ -136,7 +137,7 @@ Content encrypted AES-256 before upload; IV prepended to ciphertext. Error mappi
 
 ## Admin UI
 
-Blazor WebAssembly, Bootstrap 5 dark theme (`data-bs-theme="dark"`). Desktop-first with 240px sticky sidebar (`Layout/MainLayout.razor`). Nav sections: Overview, Management, Support, System. Auth via `<AuthorizeView Policy="@AuthorizationPolicies.Administrator">`. Sidebar footer shows username, edit-profile link (Keycloak account page via `OidcSettings.GetEditAccountUrl()`), and logout. Manual Triggers page: `Pages/HostServices/ManualTriggers.razor`.
+Blazor WebAssembly, Bootstrap 5 dark theme (`data-bs-theme="dark"`). Desktop-first with 240px sticky sidebar (`Layout/MainLayout.razor`). Nav sections: Overview, Management, Support, System. Auth via `<AuthorizeView Policy="@AuthorizationPolicies.Administrator">`. Sidebar footer shows username, edit-profile link (Keycloak account page via `OidcSettings.GetEditAccountUrl()`), and logout. Pages: `Pages/HostServices/ManualTriggers.razor`, `Pages/Storages/AssetsOverview.razor` (`/storages/assets` — paged asset table, 20/page, with previous/next pagination). The Management nav "Assets" link points to `/storages/assets`. `IAssetService` (shared) exposes `GetAssetsMetadataAsync(int page)` for admin use; `MadWorldEU.Byakko.Services` and `MadWorldEU.Byakko.Storages` are global usings in `_Imports.razor`.
 
 ## Portal UI
 
