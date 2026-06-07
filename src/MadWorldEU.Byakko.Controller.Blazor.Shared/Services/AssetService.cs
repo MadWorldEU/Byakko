@@ -50,6 +50,13 @@ public sealed class AssetService : IAssetService
     }
 
     /// <inheritdoc />
+    public async Task DeleteAssetContentAsync(Guid id)
+    {
+        var response = await _httpClientAuthorized.DeleteAsync($"/assets/{id}/content");
+        response.EnsureSuccessStatusCode();
+    }
+
+    /// <inheritdoc />
     public string GetContentUrl(Guid id)
     {
         var baseAddress = _httpClientAnonymous.BaseAddress?.ToString().TrimEnd('/') ?? string.Empty;

@@ -10,4 +10,5 @@ public sealed class AssetMetadataResponse
     public required DateTimeOffset CreatedAt { get; init; }
     public required DateTimeOffset UpdatedAt { get; init; }
     public required DateTimeOffset ExpiresAt { get; init; }
+    public required bool IsDeleted { get; init; }
 }
