@@ -16,5 +16,6 @@ internal static class AssetMappingExtensions
             UpdatedAt = asset.UpdatedAt.ToDateTimeOffset(),
             ExpiresAt = asset.ExpiresAt.ToDateTimeOffset(),
             IsDeleted = asset.IsDeleted,
+            Size = asset.Size.Value,
         };
 }

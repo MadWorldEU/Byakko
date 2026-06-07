@@ -156,6 +156,7 @@ public sealed class AssetsOverviewTests
         CreatedAt = DateTimeOffset.Parse("2026-05-01T10:00:00Z"),
         UpdatedAt = DateTimeOffset.Parse("2026-05-01T10:00:00Z"),
         ExpiresAt = DateTimeOffset.Parse("2026-06-01T10:00:00Z"),
-        IsDeleted = false
+        IsDeleted = false,
+        Size = 1024
     };
 }
