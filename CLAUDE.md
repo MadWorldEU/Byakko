@@ -130,6 +130,16 @@ Content encrypted AES-256 before upload; IV prepended to ciphertext. Error mappi
 - `POST /host-services/manual-triggers/clean-up/assets-content` → `DeleteAllExpiredContentOfAssetsUseCase`
 - `POST /host-services/manual-triggers/clean-up/assets-metadata` → `DeleteAllExpiredMetaDataAssetsUseCase`
 
+## Storage Statistics API
+
+Endpoint in `Controller.Api/Endpoints/Storages/GeneralStorageEndpoints.cs`:
+
+| Method | Route | Use case | Notes |
+|---|---|---|---|
+| `GET` | `/storage/statistics` | `GetStorageStatisticsUseCase` | Requires `Administrator` policy; returns `GetStorageStatisticsResponse` |
+
+`GetStorageStatisticsResponse` (in `Core.Contracts`) has `TotalFiles` (`int`) and `TotalBytes` (`long`) — counts and sums only non-deleted assets. `GetTotalSavedSizeAsync` uses `EF.Property<long>` + `Select` to work around EF Core's inability to translate `.Value` on a value-object property in `SumAsync`.
+
 ## Key Infrastructure
 
 - **Database:** PostgreSQL via `ByakkoContext`. Connection string key: `byakko-db`. Auto-migrate: `Database:AutoMigrate` (default `false`; `true` in Development). Migrations in `Infrastructure.Postgresql/Migrations/`. See `docs/Database.md`.
@@ -148,7 +158,7 @@ Content encrypted AES-256 before upload; IV prepended to ciphertext. Error mappi
 
 ## Admin UI
 
-Blazor WebAssembly, Bootstrap 5 dark theme (`data-bs-theme="dark"`). Desktop-first with 240px sticky sidebar (`Layout/MainLayout.razor`). Nav sections: Overview, Management, Support, System. Auth via `<AuthorizeView Policy="@AuthorizationPolicies.Administrator">`. Sidebar footer shows username, edit-profile link (Keycloak account page via `OidcSettings.GetEditAccountUrl()`), and logout. Pages: `Pages/Home.razor` (`/dashboard` — two stat cards only: Total Files, Storage Used), `Pages/HostServices/ManualTriggers.razor`, `Pages/Storages/AssetsOverview.razor` (`/storages/assets` — paged asset table, 20/page, with previous/next pagination). The Management nav "Assets" link points to `/storages/assets`. `IAssetService` (shared) exposes `GetAssetsMetadataAsync(int page)` and `DeleteAssetContentAsync(Guid id)` for admin use; `MadWorldEU.Byakko.Services` and `MadWorldEU.Byakko.Storages` are global usings in `_Imports.razor`.
+Blazor WebAssembly, Bootstrap 5 dark theme (`data-bs-theme="dark"`). Desktop-first with 240px sticky sidebar (`Layout/MainLayout.razor`). Nav sections: Overview, Management, Support, System. Auth via `<AuthorizeView Policy="@AuthorizationPolicies.Administrator">`. Sidebar footer shows username, edit-profile link (Keycloak account page via `OidcSettings.GetEditAccountUrl()`), and logout. Pages: `Pages/Home.razor` (`/dashboard` — two stat cards: Total Files and Storage Used, populated from `GET /storage/statistics` via `IStorageService`), `Pages/HostServices/ManualTriggers.razor`, `Pages/Storages/AssetsOverview.razor` (`/storages/assets` — paged asset table, 20/page, with previous/next pagination). The Management nav "Assets" link points to `/storages/assets`. `IAssetService` (shared) exposes `GetAssetsMetadataAsync(int page)` and `DeleteAssetContentAsync(Guid id)` for admin use; `IStorageService` (shared) exposes `GetStorageStatisticsAsync()` for the dashboard; `MadWorldEU.Byakko.Services`, `MadWorldEU.Byakko.Storages`, and `MadWorldEU.Byakko.Formatters` are global usings in `_Imports.razor`.
 
 **AssetsOverview features:**
 - Each row has an info icon (Bootstrap Icons info-circle SVG) next to the filename; hovering shows a Bootstrap tooltip (`data-bs-html="true"`) with file size and last updated date on separate lines. Tooltip initialization via `initTooltips()` in `wwwroot/js/app.js` (loaded in `index.html`), called from `OnAfterRenderAsync`.
@@ -172,6 +182,8 @@ See `.claude/rules/code-standard.md` for full standards. Key points:
 - **Global usings:** third-party group then `MadWorldEU.Byakko.*` group, each alphabetical
 - **Endpoint classes:** `internal static` with `internal static` extension on `WebApplication`; under `Endpoints/<Feature>/`
 - **HTTP clients:** `HttpClients.ApiAnonymous` / `HttpClients.ApiAuthorized` from `Controller.Blazor.Shared/HttpClients.cs`. `ApiAuthorized` has `Timeout = Timeout.InfiniteTimeSpan` — upload timeouts are governed by Traefik's `responseHeaderTimeout` (1800s), not the client.
+- **Shared services:** `IAssetService`/`AssetService` and `IStorageService`/`StorageService` live in `Controller.Blazor.Shared/Services/` and are registered in `WebAssemblyHostBuilderExtensions.AddByakkoServices()`.
+- **Shared formatters:** `ByteFormatter.Format(long?)` in `Controller.Blazor.Shared/Formatters/ByteFormatter.cs` — formats byte counts to B/KB/MB/GB using `InvariantCulture` (always `.` as decimal separator).
 - **appsettings schemas:** each `appsettings.json` has a companion `appsettings-schema.json`; update schema when adding config keys
 - **EF Core constructor:** `private`, `[UsedImplicitly]`, XML `<summary>` saying "Required for EF Core"
 - **Errors:** `static readonly` fields on `{Domain}Errors` class; code format `"Domain.Reason"`
