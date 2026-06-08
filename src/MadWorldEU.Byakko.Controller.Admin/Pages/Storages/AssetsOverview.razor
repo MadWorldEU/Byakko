@@ -1,5 +1,4 @@
 @page "/storages/assets"
-@using MadWorldEU.Byakko.Storages.Summaries
 @attribute [Authorize(Policy = AuthorizationPolicies.Administrator)]
 @inject IAssetService AssetService
 @inject IJSRuntime JsRuntime
@@ -33,7 +32,7 @@ else if (_response is not null)
                placeholder="Filter by Asset ID or User ID…"
                @bind="_searchQuery"
                @bind:event="oninput"
-               @bind:after="OnSearchChangedAsync" />
+               @onkeydown="OnSearchKeyDownAsync" />
     </div>
 
     <div class="card border-0 bg-body-tertiary">
@@ -153,8 +152,13 @@ else if (_response is not null)
         }
     }
 
-    private async Task OnSearchChangedAsync()
+    private async Task OnSearchKeyDownAsync(KeyboardEventArgs e)
     {
+        if (e.Key != "Enter")
+        {
+            return;
+        }
+
         _currentPage = 1;
         await LoadPageAsync();
     }
