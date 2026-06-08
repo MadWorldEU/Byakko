@@ -3,6 +3,7 @@ namespace MadWorldEU.Byakko.Common;
 public sealed class UserId : ValueObject
 {
     public Guid Value { get; }
+    public bool IsEmpty => Value == Guid.Empty;
 
     private UserId(Guid value)
     {
@@ -33,6 +34,8 @@ public sealed class UserId : ValueObject
 
         return Create(guid);
     }
+    
+    public static UserId Empty => new (Guid.Empty);
 
     protected override IEnumerable<object?> GetEqualityComponents()
     {

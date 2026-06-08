@@ -32,7 +32,8 @@ else if (_response is not null)
                class="form-control"
                placeholder="Filter by Asset ID or User ID…"
                @bind="_searchQuery"
-               @bind:event="oninput" />
+               @bind:event="oninput"
+               @bind:after="OnSearchChangedAsync" />
     </div>
 
     <div class="card border-0 bg-body-tertiary">
@@ -50,7 +51,7 @@ else if (_response is not null)
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var asset in FilteredAssets)
+                    @foreach (var asset in _response.Assets)
                     {
                         <tr>
                             <td>
@@ -90,7 +91,7 @@ else if (_response is not null)
                             </td>
                         </tr>
                     }
-                    @if (!FilteredAssets.Any())
+                    @if (_response.Assets.Count == 0)
                     {
                         <tr>
                             <td colspan="7" class="text-center text-secondary py-4">No assets found.</td>
@@ -121,12 +122,7 @@ else if (_response is not null)
     private bool _deleting;
     private string _searchQuery = string.Empty;
 
-    private IEnumerable<AssetMetadataResponse> FilteredAssets =>
-        _response?.Assets.Where(a =>
-            string.IsNullOrWhiteSpace(_searchQuery) ||
-            a.Id.ToString().Contains(_searchQuery, StringComparison.OrdinalIgnoreCase) ||
-            a.UserId.ToString().Contains(_searchQuery, StringComparison.OrdinalIgnoreCase)
-        ) ?? [];
+    private Guid? SearchGuid => Guid.TryParse(_searchQuery, out var g) ? g : null;
 
     protected override async Task OnInitializedAsync()
     {
@@ -145,7 +141,7 @@ else if (_response is not null)
 
         try
         {
-            _response = await AssetService.GetAssetsMetadataAsync(_currentPage);
+            _response = await AssetService.GetAssetsMetadataAsync(_currentPage, SearchGuid, SearchGuid);
         }
         catch (Exception ex)
         {
@@ -155,6 +151,12 @@ else if (_response is not null)
         {
             _loading = false;
         }
+    }
+
+    private async Task OnSearchChangedAsync()
+    {
+        _currentPage = 1;
+        await LoadPageAsync();
     }
 
     private async Task PreviousPageAsync()
