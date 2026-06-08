@@ -1,5 +1,6 @@
 @page "/dashboard"
 @attribute [Authorize(Policy = AuthorizationPolicies.Administrator)]
+@inject IStorageService StorageService
 
 <PageTitle>Dashboard – Byakko Admin</PageTitle>
 
@@ -25,8 +26,8 @@
                         </svg>
                     </div>
                 </div>
-                <div class="fw-bold fs-2 lh-1 mb-1">—</div>
-                <div class="text-secondary small">No uploads yet</div>
+                <div class="fw-bold fs-2 lh-1 mb-1">@(_statistics?.TotalFiles.ToString() ?? "—")</div>
+                <div class="text-secondary small">Active files in storage</div>
             </div>
         </div>
     </div>
@@ -41,10 +42,18 @@
                         </svg>
                     </div>
                 </div>
-                <div class="fw-bold fs-2 lh-1 mb-1">0 B</div>
+                <div class="fw-bold fs-2 lh-1 mb-1">@ByteFormatter.Format(_statistics?.TotalBytes)</div>
                 <div class="text-secondary small">Across all customers</div>
             </div>
         </div>
     </div>
-
 </div>
+
+@code {
+    private GetStorageStatisticsResponse? _statistics;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _statistics = await StorageService.GetStorageStatisticsAsync();
+    }
+}

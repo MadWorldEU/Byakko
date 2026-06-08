@@ -50,7 +50,7 @@ else if (_response is not null)
                                       data-bs-placement="top"
                                       data-bs-html="true"
                                       data-bs-custom-class="tooltip-wide"
-                                      title="@($"Size: {FormatSize(asset.Size)}<br>Updated: {asset.UpdatedAt:yyyy-MM-dd HH:mm}")"
+                                      title="@($"Size: {ByteFormatter.Format(asset.Size)}<br>Updated: {asset.UpdatedAt:yyyy-MM-dd HH:mm}")"
                                       style="cursor: default; display: inline-flex; align-items: center;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16">
                                         <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
@@ -159,14 +159,6 @@ else if (_response is not null)
         _currentPage++;
         await LoadPageAsync();
     }
-
-    private static string FormatSize(long bytes) => bytes switch
-    {
-        < 1024 => $"{bytes} B",
-        < 1024 * 1024 => $"{bytes / 1024.0:F1} KB",
-        < 1024L * 1024 * 1024 => $"{bytes / (1024.0 * 1024):F1} MB",
-        _ => $"{bytes / (1024.0 * 1024 * 1024):F1} GB"
-    };
 
     private void RequestDelete(Guid id)
     {
