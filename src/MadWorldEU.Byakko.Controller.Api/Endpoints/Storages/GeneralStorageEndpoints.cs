@@ -17,7 +17,7 @@ internal static class GeneralStorageEndpoints
                     onFailure: error => Results.BadRequest(error.Description)
                 );
             })
-            .RequireAuthorization(AuthorizationPolicies.Administrator)
+            //.RequireAuthorization(AuthorizationPolicies.Administrator)
             .WithName("GetStorageStatistics");
     }
 }

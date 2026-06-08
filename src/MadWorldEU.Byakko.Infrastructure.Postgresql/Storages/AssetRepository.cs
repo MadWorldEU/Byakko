@@ -132,7 +132,7 @@ public sealed class AssetRepository(ByakkoContext context, IClock clock, ILogger
         {
             var totalSize = await context.Assets
                 .Where(a => a.DeletedAt == null)
-                .SumAsync(a => a.Size.Value);
+                .SumAsync(a => a.Size);
 
             return Size.Create(totalSize);
         }
