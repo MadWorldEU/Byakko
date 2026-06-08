@@ -75,6 +75,7 @@ if (app.Configuration.GetValue("RateLimiting:Enabled", true))
 }
 
 app.AddAssetsEndpoints();
+app.AddGeneralStorageEndpoints();
 app.AddManualTriggersEndpoints();
 app.AddTestsEndpoints();
 

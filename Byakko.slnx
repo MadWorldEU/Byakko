@@ -44,6 +44,7 @@
     <File Path="docs\user-guides\toc.yml" />
   </Folder>
   <Folder Name="/github/">
+    <File Path=".github\FUNDING.yml" />
     <File Path=".github\pull_request_template.md" />
   </Folder>
   <Folder Name="/github/issue-templates/">
@@ -70,6 +71,7 @@
     <File Path="samples\README.md" />
   </Folder>
   <Folder Name="/solution/">
+    <File Path=".claudeignore" />
     <File Path=".dockerignore" />
     <File Path=".editorconfig" />
     <File Path=".gitattributes" />

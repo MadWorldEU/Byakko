@@ -19,6 +19,8 @@ public sealed class Size : ValueObject
 
         return new Size(sizeInBytes);
     }
+    
+    public static implicit operator long(Size size) => size.Value;
 
     protected override IEnumerable<object?> GetEqualityComponents()
     {
