@@ -13,9 +13,9 @@ internal static class AssetsEndpoints
         var assetsEndpoints = app.MapGroup("/assets")
             .WithTags("Assets");
 
-        assetsEndpoints.MapGet("/", async (int page, GetAssetsMetaDataUseCase useCase) =>
+        assetsEndpoints.MapGet("/", async (int page, Guid? assetId, Guid? userId, GetAssetsMetaDataUseCase useCase) =>
             {
-                var result = await useCase.ExecuteAsync(page);
+                var result = await useCase.ExecuteAsync(page, assetId, userId);
                 return result.Match(
                     onSuccess: Results.Ok,
                     onFailure: error => Results.BadRequest(error.Description)

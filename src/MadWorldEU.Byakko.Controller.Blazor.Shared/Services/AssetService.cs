@@ -25,9 +25,12 @@ public sealed class AssetService : IAssetService
     }
 
     /// <inheritdoc />
-    public async Task<GetAssetsMetadataResponse?> GetAssetsMetadataAsync(int page)
+    public async Task<GetAssetsMetadataResponse?> GetAssetsMetadataAsync(int page, Guid? assetId = null, Guid? userId = null)
     {
-        return await _httpClientAuthorized.GetFromJsonAsync<GetAssetsMetadataResponse>($"/assets?page={page}");
+        var url = $"/assets?page={page}";
+        if (assetId.HasValue) url += $"&assetId={assetId}";
+        if (userId.HasValue) url += $"&userId={userId}";
+        return await _httpClientAuthorized.GetFromJsonAsync<GetAssetsMetadataResponse>(url);
     }
 
     /// <inheritdoc />

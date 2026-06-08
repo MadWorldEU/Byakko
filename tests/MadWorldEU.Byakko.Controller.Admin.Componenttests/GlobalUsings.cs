@@ -1,4 +1,5 @@
 global using Bunit;
+global using Microsoft.AspNetCore.Components.Web;
 global using Microsoft.Extensions.DependencyInjection;
 global using Shouldly;
 global using WireMock.RequestBuilders;

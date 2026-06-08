@@ -1,7 +1,7 @@
 @page "/storages/assets"
 @attribute [Authorize(Policy = AuthorizationPolicies.Administrator)]
 @inject IAssetService AssetService
-@inject IJSRuntime JS
+@inject IJSRuntime JsRuntime
 
 <PageTitle>Assets – Byakko Admin</PageTitle>
 
@@ -26,12 +26,22 @@ else if (_error is not null)
 }
 else if (_response is not null)
 {
+    <div class="mb-3">
+        <input type="search"
+               class="form-control"
+               placeholder="Filter by Asset ID or User ID…"
+               @bind="_searchQuery"
+               @bind:event="oninput"
+               @onkeydown="OnSearchKeyDownAsync" />
+    </div>
+
     <div class="card border-0 bg-body-tertiary">
         <div class="table-responsive">
             <table class="table table-hover mb-0">
                 <thead>
                     <tr>
                         <th>Name</th>
+                        <th>Asset ID</th>
                         <th>Content Type</th>
                         <th>User ID</th>
                         <th>Created</th>
@@ -58,6 +68,7 @@ else if (_response is not null)
                                     </svg>
                                 </span>
                             </td>
+                            <td class="font-monospace small text-secondary">@asset.Id</td>
                             <td><span class="badge bg-secondary fw-normal">@asset.ContentType</span></td>
                             <td class="font-monospace small text-secondary">@asset.UserId</td>
                             <td class="small">@asset.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
@@ -82,7 +93,7 @@ else if (_response is not null)
                     @if (_response.Assets.Count == 0)
                     {
                         <tr>
-                            <td colspan="6" class="text-center text-secondary py-4">No assets found.</td>
+                            <td colspan="7" class="text-center text-secondary py-4">No assets found.</td>
                         </tr>
                     }
                 </tbody>
@@ -108,6 +119,9 @@ else if (_response is not null)
     private int _currentPage = 1;
     private Guid? _confirmingDeleteId;
     private bool _deleting;
+    private string _searchQuery = string.Empty;
+
+    private Guid? SearchGuid => Guid.TryParse(_searchQuery, out var g) ? g : null;
 
     protected override async Task OnInitializedAsync()
     {
@@ -116,7 +130,7 @@ else if (_response is not null)
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await JS.InvokeVoidAsync("initTooltips");
+        await JsRuntime.InvokeVoidAsync("initTooltips");
     }
 
     private async Task LoadPageAsync()
@@ -126,7 +140,7 @@ else if (_response is not null)
 
         try
         {
-            _response = await AssetService.GetAssetsMetadataAsync(_currentPage);
+            _response = await AssetService.GetAssetsMetadataAsync(_currentPage, SearchGuid, SearchGuid);
         }
         catch (Exception ex)
         {
@@ -136,6 +150,17 @@ else if (_response is not null)
         {
             _loading = false;
         }
+    }
+
+    private async Task OnSearchKeyDownAsync(KeyboardEventArgs e)
+    {
+        if (e.Key != "Enter")
+        {
+            return;
+        }
+
+        _currentPage = 1;
+        await LoadPageAsync();
     }
 
     private async Task PreviousPageAsync()

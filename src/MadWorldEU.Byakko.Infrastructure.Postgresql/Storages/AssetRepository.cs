@@ -64,14 +64,20 @@ public sealed class AssetRepository(ByakkoContext context, IClock clock, ILogger
         return asset;
     }
 
-    public async Task<Result<PagedResult<Asset>>> GetAllPagesAsync(Page page)
+    public async Task<Result<PagedResult<Asset>>> GetAllPagesAsync(Id id, UserId userId, Page page)
     {
         var pageSize = PageSize.Create(20).Value;
 
         try
         {
-            var totalCount = await context.Assets.CountAsync();
-            var items = await context.Assets
+            var query = context.Assets
+                .AsQueryable()
+                .Where(a => 
+                    id.IsEmpty || a.Id == id
+                || userId.IsEmpty || a.CreatedBy == userId);
+
+            var totalCount = await query.CountAsync();
+            var items = await query
                 .OrderByDescending(a => a.CreatedAt)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
