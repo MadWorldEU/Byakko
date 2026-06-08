@@ -239,6 +239,95 @@ public sealed class AssetsOverviewTests
         deleteRequests.ShouldBe(1);
     }
 
+    [Test]
+    public async Task OnSearchKeyDownAsync_WhenEnterPressedWithValidGuid_ShouldReloadWithSearchParams()
+    {
+        var searchGuid = Guid.NewGuid();
+        using var server = WireMockServer.Start();
+        server
+            .Given(Request.Create().WithPath("/assets").UsingGet())
+            .RespondWith(Response.Create()
+                .WithStatusCode(200)
+                .WithBodyAsJson(MakeResponse([MakeAsset("initial.pdf")])));
+        server
+            .Given(Request.Create()
+                .WithPath("/assets")
+                .WithParam("assetId", searchGuid.ToString())
+                .WithParam("userId", searchGuid.ToString())
+                .UsingGet())
+            .RespondWith(Response.Create()
+                .WithStatusCode(200)
+                .WithBodyAsJson(MakeResponse([MakeAsset("filtered.pdf")])));
+
+        using var ctx = new BunitContext();
+        RegisterServices(ctx, server.Url!);
+
+        var cut = ctx.Render<AssetsOverview>();
+        cut.WaitForState(() => !cut.FindAll(".spinner-border").Any(), TimeSpan.FromSeconds(5));
+
+        var input = cut.Find("input[type=search]");
+        input.Input(searchGuid.ToString());
+        await input.TriggerEventAsync("onkeydown", new KeyboardEventArgs { Key = "Enter" });
+        await cut.WaitForStateAsync(
+            () => cut.FindAll("td").Any(td => td.TextContent.Contains("filtered.pdf")),
+            TimeSpan.FromSeconds(5));
+
+        cut.Find("tbody tr td").TextContent.Trim().ShouldBe("filtered.pdf");
+    }
+
+    [Test]
+    public async Task OnSearchKeyDownAsync_WhenEnterPressedWithInvalidInput_ShouldReloadWithoutSearchParams()
+    {
+        using var server = WireMockServer.Start();
+        server
+            .Given(Request.Create().WithPath("/assets").UsingGet())
+            .RespondWith(Response.Create()
+                .WithStatusCode(200)
+                .WithBodyAsJson(MakeResponse([MakeAsset("document.pdf")])));
+
+        using var ctx = new BunitContext();
+        RegisterServices(ctx, server.Url!);
+
+        var cut = ctx.Render<AssetsOverview>();
+        cut.WaitForState(() => !cut.FindAll(".spinner-border").Any(), TimeSpan.FromSeconds(5));
+
+        var input = cut.Find("input[type=search]");
+        input.Input("not-a-guid");
+        await input.TriggerEventAsync("onkeydown", new KeyboardEventArgs { Key = "Enter" });
+        await cut.WaitForStateAsync(
+            () => server.LogEntries.Count(e => e.RequestMessage?.Path == "/assets") >= 2,
+            TimeSpan.FromSeconds(5));
+
+        server.LogEntries
+            .Where(e => e.RequestMessage?.Path == "/assets")
+            .All(e => e.RequestMessage?.Query?.ContainsKey("assetId") != true)
+            .ShouldBeTrue();
+    }
+
+    [Test]
+    public async Task OnSearchKeyDownAsync_WhenOtherKeyPressed_ShouldNotReload()
+    {
+        using var server = WireMockServer.Start();
+        server
+            .Given(Request.Create().WithPath("/assets").UsingGet())
+            .RespondWith(Response.Create()
+                .WithStatusCode(200)
+                .WithBodyAsJson(MakeResponse([MakeAsset("document.pdf")])));
+
+        using var ctx = new BunitContext();
+        RegisterServices(ctx, server.Url!);
+
+        var cut = ctx.Render<AssetsOverview>();
+        cut.WaitForState(() => !cut.FindAll(".spinner-border").Any(), TimeSpan.FromSeconds(5));
+
+        await cut.Find("input[type=search]")
+            .TriggerEventAsync("onkeydown", new KeyboardEventArgs { Key = "a" });
+
+        server.LogEntries
+            .Count(e => e.RequestMessage?.Path == "/assets" && e.RequestMessage?.Method == "GET")
+            .ShouldBe(1);
+    }
+
     private static void RegisterServices(BunitContext ctx, string serverUrl)
     {
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
