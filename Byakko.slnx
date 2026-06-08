@@ -71,6 +71,7 @@
     <File Path="samples\README.md" />
   </Folder>
   <Folder Name="/solution/">
+    <File Path=".claudeignore" />
     <File Path=".dockerignore" />
     <File Path=".editorconfig" />
     <File Path=".gitattributes" />
