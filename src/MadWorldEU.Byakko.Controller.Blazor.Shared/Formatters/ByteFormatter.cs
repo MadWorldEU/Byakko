@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace MadWorldEU.Byakko.Formatters;
 
 /// <summary>Formats byte counts into human-readable size strings.</summary>
@@ -7,9 +9,13 @@ public static class ByteFormatter
     public static string Format(long? bytes)
     {
         if (bytes is null) return "—";
-        if (bytes < 1024) return $"{bytes} B";
-        if (bytes < 1024 * 1024) return $"{bytes / 1024.0:F1} KB";
-        if (bytes < 1024 * 1024 * 1024) return $"{bytes / (1024.0 * 1024):F1} MB";
-        return $"{bytes / (1024.0 * 1024 * 1024):F2} GB";
+        var totalBytes = bytes.Value;
+        return totalBytes switch
+        {
+            < 1024 => $"{totalBytes} B",
+            < 1024 * 1024 => (totalBytes / 1024.0).ToString("F1", CultureInfo.InvariantCulture) + " KB",
+            < 1024 * 1024 * 1024 => (totalBytes / (1024.0 * 1024)).ToString("F1", CultureInfo.InvariantCulture) + " MB",
+            _ => (totalBytes / (1024.0 * 1024 * 1024)).ToString("F2", CultureInfo.InvariantCulture) + " GB"
+        };
     }
 }
