@@ -18,6 +18,7 @@ public abstract class BaseArchitectureTests
             .LoadAssembly(typeof(IPostgresqlMarker).Assembly)
             .LoadAssembly(typeof(ISecurityMarker).Assembly)
             .LoadAssembly(typeof(IApiMarker).Assembly)
+            .LoadAssembly(typeof(IStatusMarker).Assembly)
             .Build();
 
     protected readonly IObjectProvider<IType> AdminLayer =
@@ -52,4 +53,7 @@ public abstract class BaseArchitectureTests
 
     protected readonly IObjectProvider<IType> ApiLayer =
         Types().That().ResideInAssembly(typeof(IApiMarker).Assembly).As("Api Layer");
+
+    protected readonly IObjectProvider<IType> StatusLayer =
+        Types().That().ResideInAssembly(typeof(IStatusMarker).Assembly).As("Status Layer");
 }

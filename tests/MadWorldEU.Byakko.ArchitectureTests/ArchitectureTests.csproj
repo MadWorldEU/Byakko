@@ -19,6 +19,7 @@
         <ProjectReference Include="..\..\src\MadWorldEU.Byakko.Infrastructure.Postgresql\Postgresql.csproj" />
         <ProjectReference Include="..\..\src\MadWorldEU.Byakko.Infrastructure.Security\Security.csproj" />
         <ProjectReference Include="..\..\src\MadWorldEU.Byakko.Controller.Api\Api.csproj" />
+        <ProjectReference Include="..\..\src\MadWorldEU.Byakko.Controller.Status\Status.csproj" />
     </ItemGroup>
 
 </Project>

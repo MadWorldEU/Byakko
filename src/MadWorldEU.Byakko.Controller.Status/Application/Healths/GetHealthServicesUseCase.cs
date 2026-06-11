@@ -15,7 +15,8 @@ internal sealed class GetHealthServicesUseCase(
     IOptions<HealthCheckSettings> settings,
     ILogger<GetHealthServicesUseCase> logger)
 {
-    private readonly TimeSpan _defaultTimeout = TimeSpan.FromSeconds(2);
+    private readonly TimeSpan _defaultCloudTimeout = TimeSpan.FromSeconds(4);
+    private readonly TimeSpan _defaultWebTimeout = TimeSpan.FromSeconds(2);
     
     internal async Task<IReadOnlyList<ServiceInfo>> ExecuteAsync()
     {
@@ -60,7 +61,7 @@ internal sealed class GetHealthServicesUseCase(
 
     private async Task<ServiceInfo> CheckObjectStorageAsync(string name)
     {
-        using var cts = new CancellationTokenSource(_defaultTimeout);
+        using var cts = new CancellationTokenSource(_defaultCloudTimeout);
 
         try
         {
@@ -84,7 +85,7 @@ internal sealed class GetHealthServicesUseCase(
         try
         {
             var client = httpClientFactory.CreateClient();
-            client.Timeout = _defaultTimeout;
+            client.Timeout = _defaultWebTimeout;
             var response = await client.GetAsync(url);
 
             if (!response.IsSuccessStatusCode)

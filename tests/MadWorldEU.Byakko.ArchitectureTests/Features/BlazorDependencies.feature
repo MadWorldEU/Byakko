@@ -17,6 +17,7 @@ Scenario: Admin should not depend on server-side layers
     And the Admin layer should not depend on the ObjectStorage layer
     And the Admin layer should not depend on the Security layer
     And the Admin layer should not depend on the Api layer
+    And the Admin layer should not depend on the Status layer
 
 Scenario: Portal should not depend on server-side layers
     Given the architecture is loaded
@@ -26,3 +27,4 @@ Scenario: Portal should not depend on server-side layers
     And the Portal layer should not depend on the ObjectStorage layer
     And the Portal layer should not depend on the Security layer
     And the Portal layer should not depend on the Api layer
+    And the Portal layer should not depend on the Status layer
