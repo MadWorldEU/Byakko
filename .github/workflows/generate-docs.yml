@@ -26,7 +26,7 @@ jobs:
             - run: dotnet tool update -g docfx
             - run: docfx docs/docfx.json
             - name: Upload artifact
-              if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+              if: github.event_name == 'push'
               uses: actions/upload-pages-artifact@v3
               with:
                   path: 'docs/_site'
@@ -37,7 +37,7 @@ jobs:
             pages: write
             id-token: write
         needs: build-docs
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        if: github.event_name == 'push'
         environment:
             name: github-pages
             url: ${{ steps.deployment.outputs.page_url }}
