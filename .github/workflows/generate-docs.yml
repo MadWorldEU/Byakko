@@ -1,16 +1,16 @@
 name: Generate Documentation
 
+permissions:
+    actions: read
+    pages: write
+    id-token: write
+
 on:
     push:
         branches:
             - main
     pull_request:
         types: [opened, synchronize, reopened]
-
-permissions:
-    actions: read
-    pages: write
-    id-token: write
 
 concurrency:
     group: "pages"
