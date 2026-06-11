@@ -25,6 +25,9 @@ jobs:
                     - name: Admin
                       dockerfile: src/MadWorldEU.Byakko.Controller.Admin/Dockerfile
                       image: byakko-admin
+                    - name: Status
+                      dockerfile: src/MadWorldEU.Byakko.Controller.Status/Dockerfile
+                      image: byakko-status
 
         steps:
             - name: Checkout repo
