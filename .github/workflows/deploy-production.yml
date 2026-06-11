@@ -4,8 +4,8 @@ on:
         tags:
             - 'v*'
     pull_request:
-        branches:
-            - main
+        types: [opened, synchronize, reopened]
+        
 
 permissions:
     contents: read
@@ -41,7 +41,7 @@ jobs:
                     --set api.encryption.key="dry-run" > /dev/null
 
     deployment:
-        if: github.event_name == 'push'
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         runs-on: ubuntu-latest
         environment: vps-production
         steps:

@@ -38,12 +38,13 @@ observability:
         adminPassword: "changeme"
 
 api:
-    storage:
-        mode: "OvhCloud"
-        ovhCloud:
-            endpoint: "changeme"
-            accessKey: "changeme"
-            secretKey: "changeme"
-            region: "changeme"
     encryption:
         key: "changeme"
+        
+storage:
+    mode: "OvhCloud"
+    ovhCloud:
+        endpoint: "changeme"
+        accessKey: "changeme"
+        secretKey: "changeme"
+        region: "changeme"

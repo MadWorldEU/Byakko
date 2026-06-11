@@ -51,13 +51,13 @@ spec:
                       - name: ConnectionStrings__localstack
                         value: "http://{{ .Values.localstack.name }}.{{ .Values.namespace }}:{{ .Values.localstack.servicePort }}"
                       - name: HealthChecks__Api
-                        value: "https://api.{{ .Values.ingress.domain }}/health"
+                        value: {{ .Values.status.healthChecks.api | default (printf "https://api.%s/health" .Values.ingress.domain) | quote }}
                       - name: HealthChecks__Admin
-                        value: "https://admin.{{ .Values.ingress.domain }}/health.txt"
+                        value: {{ .Values.status.healthChecks.admin | default (printf "https://admin.%s/health.txt" .Values.ingress.domain) | quote }}
                       - name: HealthChecks__Portal
-                        value: "https://fileshare.{{ .Values.ingress.domain }}/health.txt"
+                        value: {{ .Values.status.healthChecks.portal | default (printf "https://fileshare.%s/health.txt" .Values.ingress.domain) | quote }}
                       - name: HealthChecks__Authentication
-                        value: "https://authentication.{{ .Values.ingress.domain }}/"
+                        value: {{ .Values.status.healthChecks.authentication | default (printf "https://authentication.%s/" .Values.ingress.domain) | quote }}
                       - name: Storage__Mode
                         value: {{ .Values.storage.mode | quote }}
                       - name: Storage__BucketName

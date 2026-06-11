@@ -242,6 +242,11 @@ api:
 status:
     name: "status"
     image: "ghcr.io/madworldeu/byakko-status"
+    healthChecks:
+        api: ""
+        admin: ""
+        portal: ""
+        authentication: ""
     containerPort: 8080
     servicePort: 80
     resources:

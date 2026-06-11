@@ -11,7 +11,7 @@ public sealed class StorageOptions
     /// <summary>When true, <see cref="BucketInitializer"/> creates the bucket on startup if it does not exist.</summary>
     public bool AutoCreateBucket { get; init; }
 
-    /// <summary>OVHCloud S3-compatible storage credentials. Required when <see cref="Mode"/> is <c>OvhCloud</c>.</summary>
+    /// <summary>OVHCloud S3-compatible storage credentials. Required when Mode is <c>OvhCloud</c>.</summary>
     public OvhCloudOptions OvhCloud { get; init; } = new();
 }
 
