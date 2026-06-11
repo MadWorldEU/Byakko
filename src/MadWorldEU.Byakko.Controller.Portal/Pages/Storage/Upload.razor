@@ -30,6 +30,23 @@
             <div class="card border-0 bg-body-tertiary">
                 <div class="card-body p-4">
                     <InputFile class="form-control mb-4" OnChange="OnFileSelected" disabled="@_isUploading" />
+
+                    @if (_isUploading)
+                    {
+                        <div class="mb-3">
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated"
+                                     role="progressbar"
+                                     style="width: @(_uploadProgressPercent)%"
+                                     aria-valuenow="@_uploadProgressPercent"
+                                     aria-valuemin="0"
+                                     aria-valuemax="100">
+                                    @(_uploadProgressPercent)%
+                                </div>
+                            </div>
+                        </div>
+                    }
+
                     <button class="btn btn-primary w-100 fw-semibold"
                             @onclick="UploadAsync"
                             disabled="@(_selectedFile is null || _isUploading)">
@@ -57,6 +74,7 @@
     private Guid? _uploadedId;
     private bool _isUploading;
     private string? _errorMessage;
+    private int _uploadProgressPercent;
 
     private long MaxUploadSizeInBytes => AssetSettings.Value.MaxUploadSizeInBytes;
 
@@ -81,6 +99,7 @@
         _isUploading = true;
         _errorMessage = null;
         _uploadedId = null;
+        _uploadProgressPercent = 0;
 
         try
         {
@@ -97,9 +116,15 @@
             }
 
             await using var stream = _selectedFile.OpenReadStream(maxAllowedSize: MaxUploadSizeInBytes);
+            await using var progressStream = new ProgressStream(stream, _selectedFile.Size, async percent =>
+            {
+                _uploadProgressPercent = percent;
+                await InvokeAsync(StateHasChanged);
+            });
+
             var uploadResponse = await AssetService.UploadAssetContentAsync(
                 createResponse.Id,
-                stream,
+                progressStream,
                 _selectedFile.Name,
                 _selectedFile.ContentType);
 
