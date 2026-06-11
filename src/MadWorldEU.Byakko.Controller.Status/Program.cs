@@ -1,3 +1,4 @@
+using MadWorldEU.Byakko.Application.Healths;
 using MadWorldEU.Byakko.Components;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +8,8 @@ builder.Services.AddHealthChecks();
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddScoped<GetHealthServicesUseCase>();
 
 var app = builder.Build();
 
