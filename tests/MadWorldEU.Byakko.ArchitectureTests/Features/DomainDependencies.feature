@@ -7,6 +7,7 @@ Scenario: BuildingBlocks should not depend on any other layer
     And the BuildingBlocks layer should not depend on the Contracts layer
     And the BuildingBlocks layer should not depend on the Postgresql layer
     And the BuildingBlocks layer should not depend on the Api layer
+    And the BuildingBlocks layer should not depend on the Status layer
 
 Scenario: Domain layer should only depend on BuildingBlocks
     Given the architecture is loaded
@@ -14,9 +15,11 @@ Scenario: Domain layer should only depend on BuildingBlocks
     And the Domain layer should not depend on the Contracts layer
     And the Domain layer should not depend on the Postgresql layer
     And the Domain layer should not depend on the Api layer
+    And the Domain layer should not depend on the Status layer
 
 Scenario: Contracts layer should not depend on Application, Infrastructure or Controllers
     Given the architecture is loaded
     Then the Contracts layer should not depend on the Application layer
     And the Contracts layer should not depend on the Postgresql layer
     And the Contracts layer should not depend on the Api layer
+    And the Contracts layer should not depend on the Status layer

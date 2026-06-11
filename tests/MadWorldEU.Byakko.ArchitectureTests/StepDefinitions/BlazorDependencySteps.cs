@@ -24,7 +24,8 @@ public sealed class BlazorDependencySteps : BaseArchitectureTests
             ["ObjectStorage"] = ObjectStorageLayer,
             ["Postgresql"] = PostgresqlLayer,
             ["Security"] = SecurityLayer,
-            ["Api"] = ApiLayer
+            ["Api"] = ApiLayer,
+            ["Status"] = StatusLayer
         };
     }
 
