@@ -28,11 +28,12 @@ internal sealed class DockerContainerResourceFactory(IDistributedApplicationBuil
             .BuildPortal(api);
     }
 
-    public IResourceBuilder<IResource> CreateStatusBuilder(IResourceBuilder<IResource> api, IResourceBuilder<PostgresDatabaseResource> byakkoDb, IResourceBuilder<ILocalStackResource> localstack,
+    public IResourceBuilder<IResource> CreateStatusBuilder(IResourceBuilder<PostgresDatabaseResource> byakkoDb, 
+        IResourceBuilder<ILocalStackResource> localstack,
         IResourceBuilder<KeycloakResource> keycloak)
     {
         return builder.AddContainer(nameof(Status), DockerImages.ByakkoStatusImage)
             .WithHttpEndpoint(targetPort: 8080, port: StatusPort)
-            .BuildStatus(api, byakkoDb, localstack, keycloak);
+            .BuildStatus(byakkoDb, localstack, keycloak);
     }
 }

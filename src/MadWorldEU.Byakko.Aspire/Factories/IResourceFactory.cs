@@ -9,8 +9,7 @@ internal interface IResourceFactory
     internal IResourceBuilder<IResource> CreateAdminBuilder(IResourceBuilder<IResource> api);
     internal IResourceBuilder<IResource> CreatePortalBuilder(IResourceBuilder<IResource> api);
 
-    internal IResourceBuilder<IResource> CreateStatusBuilder(IResourceBuilder<IResource> api,
-        IResourceBuilder<PostgresDatabaseResource> byakkoDb,
+    internal IResourceBuilder<IResource> CreateStatusBuilder(IResourceBuilder<PostgresDatabaseResource> byakkoDb,
         IResourceBuilder<ILocalStackResource> localstack,
         IResourceBuilder<KeycloakResource> keycloak);
 }
