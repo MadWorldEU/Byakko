@@ -5,5 +5,6 @@ global using Shouldly;
 global using System.Net;
 global using Testcontainers.LocalStack;
 global using Testcontainers.PostgreSql;
+global using WireMock.Server;
 
 global using MadWorldEU.Byakko.Common;

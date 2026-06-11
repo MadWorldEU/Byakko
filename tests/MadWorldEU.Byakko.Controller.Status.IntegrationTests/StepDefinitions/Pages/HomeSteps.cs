@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 namespace MadWorldEU.Byakko.StepDefinitions.Pages;
 
 [Binding]
@@ -32,5 +34,14 @@ public sealed class HomeSteps(ScenarioContext scenarioContext)
         var response = scenarioContext.Get<HttpResponseMessage>(ScenarioContextKeys.LastResponse);
         var body = await response.Content.ReadAsStringAsync();
         body.ShouldContain(expectedContent);
+    }
+
+    [Then("the service {string} should have status {string}")]
+    public async Task ThenTheServiceShouldHaveStatus(string serviceName, string status)
+    {
+        var response = scenarioContext.Get<HttpResponseMessage>(ScenarioContextKeys.LastResponse);
+        var body = await response.Content.ReadAsStringAsync();
+        var pattern = $@"{Regex.Escape(serviceName)}[\s\S]{{0,300}}{Regex.Escape(status)}";
+        Regex.IsMatch(body, pattern).ShouldBeTrue($"Expected service '{serviceName}' to have status '{status}'");
     }
 }

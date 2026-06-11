@@ -8,6 +8,7 @@
         <PackageReference Include="Reqnroll.TUnit" />
         <PackageReference Include="Shouldly" />
         <PackageReference Include="TUnit" />
+        <PackageReference Include="WireMock.Net" />
     </ItemGroup>
 
     <ItemGroup>

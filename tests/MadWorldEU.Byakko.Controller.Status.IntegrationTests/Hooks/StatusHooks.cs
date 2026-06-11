@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using WireMock.RequestBuilders;
+using WireMock.ResponseBuilders;
 
 namespace MadWorldEU.Byakko.Hooks;
 
@@ -8,6 +10,7 @@ public sealed class StatusHooks(ScenarioContext scenarioContext)
 {
     private static PostgreSqlContainer _postgres = null!;
     private static LocalStackContainer _localstack = null!;
+    private static WireMockServer _healthMockServer = null!;
     private static WebApplicationFactory<Program>? _factory;
     private static HttpClient? _client;
 
@@ -22,6 +25,13 @@ public sealed class StatusHooks(ScenarioContext scenarioContext)
             .Build();
         await _localstack.StartAsync();
 
+        _healthMockServer = WireMockServer.Start();
+        _healthMockServer
+            .Given(Request.Create().WithPath("/health").UsingGet())
+            .RespondWith(Response.Create().WithStatusCode(200).WithBody("Healthy"));
+
+        var mockHealthUrl = $"{_healthMockServer.Urls[0]}/health";
+
         _factory = new WebApplicationFactory<Program>()
             .WithWebHostBuilder(host =>
             {
@@ -31,10 +41,10 @@ public sealed class StatusHooks(ScenarioContext scenarioContext)
                     {
                         ["ConnectionStrings:byakko-db"] = _postgres.GetConnectionString(),
                         ["ConnectionStrings:localstack"] = _localstack.GetConnectionString(),
-                        ["HealthChecks:Api"] = string.Empty,
-                        ["HealthChecks:Admin"] = string.Empty,
-                        ["HealthChecks:Portal"] = string.Empty,
-                        ["HealthChecks:Authentication"] = string.Empty,
+                        ["HealthChecks:Api"] = mockHealthUrl,
+                        ["HealthChecks:Admin"] = mockHealthUrl,
+                        ["HealthChecks:Portal"] = mockHealthUrl,
+                        ["HealthChecks:Authentication"] = mockHealthUrl,
                         ["Storage:Mode"] = "LocalStack",
                         ["Storage:AutoCreateBucket"] = "true"
                     });
@@ -56,6 +66,7 @@ public sealed class StatusHooks(ScenarioContext scenarioContext)
     {
         _client?.Dispose();
         await (_factory?.DisposeAsync() ?? ValueTask.CompletedTask);
+        _healthMockServer.Stop();
         await _postgres.DisposeAsync();
         await _localstack.DisposeAsync();
     }
