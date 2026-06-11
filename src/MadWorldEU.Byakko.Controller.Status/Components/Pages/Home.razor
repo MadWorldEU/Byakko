@@ -1,7 +1,53 @@
-﻿@page "/"
+@page "/"
 
-<PageTitle>Home</PageTitle>
+<PageTitle>System Status</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="container py-4">
+    <div class="mb-4">
+        <h1 class="display-5 fw-bold">System Status</h1>
+        <p class="text-muted">Current health status of all services.</p>
+    </div>
 
-Welcome to your new app.
+    <div class="row g-3">
+        @foreach (var service in _services)
+        {
+            <div class="col-12 col-md-6 col-xl-4">
+                <div class="card h-100 shadow-sm border-start border-4 border-@GetStatusColor(service.Status)">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <span class="status-dot bg-@GetStatusColor(service.Status)"></span>
+                        <div>
+                            <h5 class="card-title mb-1">@service.Name</h5>
+                            <span class="badge rounded-pill text-bg-@GetStatusColor(service.Status)">
+                                @service.Status
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private enum ServiceStatus { Healthy, Degraded, Unhealthy, Unknown }
+
+    private record ServiceInfo(string Name, ServiceStatus Status);
+
+    private readonly List<ServiceInfo> _services =
+    [
+        new("API", ServiceStatus.Healthy),
+        new("Portal", ServiceStatus.Healthy),
+        new("Admin", ServiceStatus.Healthy),
+        new("Database", ServiceStatus.Healthy),
+        new("Object Storage", ServiceStatus.Healthy),
+        new("Authentication", ServiceStatus.Healthy),
+    ];
+
+    private static string GetStatusColor(ServiceStatus status) => status switch
+    {
+        ServiceStatus.Healthy => "success",
+        ServiceStatus.Degraded => "warning",
+        ServiceStatus.Unhealthy => "danger",
+        _ => "secondary"
+    };
+}
