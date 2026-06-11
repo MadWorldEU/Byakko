@@ -36,10 +36,10 @@ jobs:
                     --set keycloak.postgres.password="dry-run" \
                     --set pgadmin.password="dry-run" \
                     --set observability.grafana.adminPassword="dry-run" \
-                    --set api.storage.ovhCloud.endpoint="https://dry-run.example.com" \
-                    --set api.storage.ovhCloud.accessKey="dry-run" \
-                    --set api.storage.ovhCloud.secretKey="dry-run" \
-                    --set api.storage.ovhCloud.region="dry-run" \
+                    --set storage.ovhCloud.endpoint="https://dry-run.example.com" \
+                    --set storage.ovhCloud.accessKey="dry-run" \
+                    --set storage.ovhCloud.secretKey="dry-run" \
+                    --set storage.ovhCloud.region="dry-run" \
                     --set api.encryption.key="dry-run" > /dev/null
 
     deployment:
@@ -90,10 +90,10 @@ jobs:
                     --set keycloak.postgres.password="$KEYCLOAK_POSTGRES_PASSWORD" \
                     --set pgadmin.password="$PGADMIN_PASSWORD" \
                     --set observability.grafana.adminPassword="$GRAFANA_ADMIN_PASSWORD" \
-                    --set api.storage.ovhCloud.endpoint="$OVHCLOUD_ENDPOINT" \
-                    --set api.storage.ovhCloud.accessKey="$OVHCLOUD_ACCESS_KEY" \
-                    --set api.storage.ovhCloud.secretKey="$OVHCLOUD_SECRET_KEY" \
-                    --set api.storage.ovhCloud.region="$OVHCLOUD_REGION" \
+                    --set storage.ovhCloud.endpoint="$OVHCLOUD_ENDPOINT" \
+                    --set storage.ovhCloud.accessKey="$OVHCLOUD_ACCESS_KEY" \
+                    --set storage.ovhCloud.secretKey="$OVHCLOUD_SECRET_KEY" \
+                    --set storage.ovhCloud.region="$OVHCLOUD_REGION" \
                     --set api.encryption.key="$ENCRYPTION_KEY" \
                     --wait \
                     --timeout 5m

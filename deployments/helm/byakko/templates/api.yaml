@@ -66,17 +66,17 @@ spec:
                       - name: Database__AutoMigrate
                         value: {{ .Values.api.database.autoMigrate | quote }}
                       - name: Storage__Mode
-                        value: {{ .Values.api.storage.mode | quote }}
+                        value: {{ .Values.storage.mode | quote }}
                       - name: Storage__BucketName
-                        value: {{ .Values.api.storage.bucketName | quote }}
+                        value: {{ .Values.storage.bucketName | quote }}
                       - name: Storage__OvhCloud__Endpoint
-                        value: {{ .Values.api.storage.ovhCloud.endpoint | quote }}
+                        value: {{ .Values.storage.ovhCloud.endpoint | quote }}
                       - name: Storage__OvhCloud__AccessKey
-                        value: {{ .Values.api.storage.ovhCloud.accessKey | quote }}
+                        value: {{ .Values.storage.ovhCloud.accessKey | quote }}
                       - name: Storage__OvhCloud__SecretKey
-                        value: {{ .Values.api.storage.ovhCloud.secretKey | quote }}
+                        value: {{ .Values.storage.ovhCloud.secretKey | quote }}
                       - name: Storage__OvhCloud__Region
-                        value: {{ .Values.api.storage.ovhCloud.region | quote }}
+                        value: {{ .Values.storage.ovhCloud.region | quote }}
                       - name: Encryption__Key
                         value: {{ .Values.api.encryption.key | quote }}
                       - name: Assets__ValidityPeriodInDays

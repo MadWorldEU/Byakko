@@ -16,6 +16,15 @@ securityTxt:
     expires: "2027-12-31T23:59:59Z"
     preferredLanguages: "en"
 
+storage:
+    mode: "OvhCloud"
+    bucketName: "byakko"
+    ovhCloud:
+        endpoint: "http://changeme"
+        accessKey: "changeme"
+        secretKey: "changeme"
+        region: "changeme"
+
 localstack:
     enabled: false
     name: "localstack"
@@ -213,14 +222,6 @@ api:
         responseHeaderTimeout: "1800s"
     database:
         autoMigrate: true
-    storage:
-        mode: "OvhCloud"
-        bucketName: "byakko"
-        ovhCloud:
-            endpoint: "http://changeme"
-            accessKey: "changeme"
-            secretKey: "changeme"
-            region: "changeme"
     encryption:
         key: "changeme"
     assets:
@@ -244,14 +245,6 @@ status:
     tag: "v0.8.1"
     containerPort: 8080
     servicePort: 80
-    storage:
-        mode: "OvhCloud"
-        bucketName: "byakko"
-        ovhCloud:
-            endpoint: "http://changeme"
-            accessKey: "changeme"
-            secretKey: "changeme"
-            region: "changeme"
     resources:
         requests:
             cpu: 50m

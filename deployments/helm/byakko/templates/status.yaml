@@ -55,21 +55,21 @@ spec:
                       - name: HealthChecks__Admin
                         value: "https://admin.{{ .Values.ingress.domain }}/health.txt"
                       - name: HealthChecks__Portal
-                        value: "https://{{ .Values.ingress.domain }}/health.txt"
+                        value: "https://fileshare.{{ .Values.ingress.domain }}/health.txt"
                       - name: HealthChecks__Authentication
                         value: "https://authentication.{{ .Values.ingress.domain }}/"
                       - name: Storage__Mode
-                        value: {{ .Values.status.storage.mode | quote }}
+                        value: {{ .Values.storage.mode | quote }}
                       - name: Storage__BucketName
-                        value: {{ .Values.status.storage.bucketName | quote }}
+                        value: {{ .Values.storage.bucketName | quote }}
                       - name: Storage__OvhCloud__Endpoint
-                        value: {{ .Values.status.storage.ovhCloud.endpoint | quote }}
+                        value: {{ .Values.storage.ovhCloud.endpoint | quote }}
                       - name: Storage__OvhCloud__AccessKey
-                        value: {{ .Values.status.storage.ovhCloud.accessKey | quote }}
+                        value: {{ .Values.storage.ovhCloud.accessKey | quote }}
                       - name: Storage__OvhCloud__SecretKey
-                        value: {{ .Values.status.storage.ovhCloud.secretKey | quote }}
+                        value: {{ .Values.storage.ovhCloud.secretKey | quote }}
                       - name: Storage__OvhCloud__Region
-                        value: {{ .Values.status.storage.ovhCloud.region | quote }}
+                        value: {{ .Values.storage.ovhCloud.region | quote }}
                   volumeMounts:
                       - name: security-txt
                         mountPath: /app/wwwroot/.well-known/security.txt
