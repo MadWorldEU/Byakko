@@ -1,5 +1,6 @@
 namespace: "byakko"
 imagePullPolicy: "IfNotPresent"
+appVersion: "v0.8.1"
 
 ingress:
     className: "traefik"
@@ -215,7 +216,6 @@ observability:
 api:
     name: "api"
     image: "ghcr.io/madworldeu/byakko-api"
-    tag: "v0.8.1"
     containerPort: 8080
     servicePort: 80
     ingress:
@@ -242,7 +242,6 @@ api:
 status:
     name: "status"
     image: "ghcr.io/madworldeu/byakko-status"
-    tag: "v0.8.1"
     containerPort: 8080
     servicePort: 80
     resources:
@@ -263,7 +262,6 @@ admin:
         clientId: "admin-client"
     image:
         repository: "ghcr.io/madworldeu/byakko-admin"
-        tag: "v0.8.1"
     resources:
         requests:
             cpu: 50m
@@ -284,7 +282,6 @@ portal:
         maxUploadSizeInBytes: "1073741824"
     image:
         repository: "ghcr.io/madworldeu/byakko-portal"
-        tag: "v0.8.1"
     resources:
         requests:
             cpu: 50m

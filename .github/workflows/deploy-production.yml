@@ -26,9 +26,7 @@ jobs:
                   helm template byakko deployments/helm/byakko \
                     --values deployments/helm/byakko/Values.yaml \
                     --values deployments/helm/byakko/Values.Production.yaml \
-                    --set api.tag="dry-run" \
-                    --set admin.image.tag="dry-run" \
-                    --set portal.image.tag="dry-run" \
+                    --set appVersion="dry-run" \
                     --set clusterIssuer.email="dry-run@example.com" \
                     --set securityTxt.contact="mailto:dry-run@example.com" \
                     --set postgres.password="dry-run" \
@@ -80,9 +78,7 @@ jobs:
                   helm upgrade --install byakko deployments/helm/byakko \
                     --values deployments/helm/byakko/Values.yaml \
                     --values deployments/helm/byakko/Values.Production.yaml \
-                    --set api.tag="$IMAGE_TAG" \
-                    --set admin.image.tag="$IMAGE_TAG" \
-                    --set portal.image.tag="$IMAGE_TAG" \
+                    --set appVersion="$IMAGE_TAG" \
                     --set clusterIssuer.email="$CLUSTER_ISSUER_EMAIL" \
                     --set securityTxt.contact="$SECURITY_TXT_CONTACT" \
                     --set postgres.password="$POSTGRES_PASSWORD" \

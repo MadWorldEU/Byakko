@@ -46,7 +46,7 @@ spec:
             automountServiceAccountToken: false
             containers:
                 - name: {{ .Values.admin.name }}
-                  image: "{{ .Values.admin.image.repository }}:{{ .Values.admin.image.tag }}"
+                  image: "{{ .Values.admin.image.repository }}:{{ .Values.appVersion }}"
                   imagePullPolicy: {{ .Values.imagePullPolicy }}
                   ports:
                       - containerPort: {{ .Values.admin.port }}

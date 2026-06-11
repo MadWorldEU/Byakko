@@ -32,7 +32,7 @@ spec:
             automountServiceAccountToken: false
             containers:
                 - name: {{ .Values.status.name }}
-                  image: "{{ .Values.status.image }}:{{ .Values.status.tag }}"
+                  image: "{{ .Values.status.image }}:{{ .Values.appVersion }}"
                   imagePullPolicy: {{ .Values.imagePullPolicy }}
                   ports:
                       - containerPort: {{ .Values.status.containerPort }}
