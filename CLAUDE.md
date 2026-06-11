@@ -22,9 +22,10 @@ Build all three from the **repository root**:
 docker build -f src/MadWorldEU.Byakko.Controller.Api/Dockerfile .
 docker build -f src/MadWorldEU.Byakko.Controller.Portal/Dockerfile .
 docker build -f src/MadWorldEU.Byakko.Controller.Admin/Dockerfile .
+docker build -f src/MadWorldEU.Byakko.Controller.Status/Dockerfile .
 ```
 
-Portal/Admin are nginx:alpine on port 8080 (non-root `nginx` user). Shared nginx config: `Controller.Blazor.Shared/DockerConfigs/nginx.conf`. CI builds multi-arch images to GHCR on `main`; production deploys on `v*` tags. See `docs/developer-guides/Pipelines.md`.
+Portal/Admin are nginx:alpine on port 8080 (non-root `nginx` user). Status is aspnet:10.0 (Blazor Server). Shared nginx config: `Controller.Blazor.Shared/DockerConfigs/nginx.conf`. CI builds multi-arch images to GHCR on `main`; production deploys on `v*` tags. See `docs/developer-guides/Pipelines.md`.
 
 ## Testing
 
@@ -32,7 +33,8 @@ See `.claude/rules/testing.md` for full conventions. Test projects:
 
 | Project | Framework | Purpose |
 |---|---|---|
-| `Controller.Api.IntegrationTests` | Reqnroll + TUnit | BDD integration tests |
+| `Controller.Api.IntegrationTests` | Reqnroll + TUnit | BDD integration tests for the API |
+| `Controller.Status.IntegrationTests` | Reqnroll + TUnit + WireMock.Net | BDD integration tests for the Status dashboard |
 | `Core.Application.Unittests` | TUnit + NSubstitute + Shouldly | Use case error paths |
 | `Core.Domain.Unittests` | TUnit + NSubstitute + Shouldly | Domain entity error paths |
 | `Controller.Portal.Componenttests` | bUnit + WireMock.Net + TUnit | Portal Blazor components |
@@ -40,7 +42,8 @@ See `.claude/rules/testing.md` for full conventions. Test projects:
 | `ArchitectureTests` | ArchUnitNET + Reqnroll + TUnit | Layer dependency rules |
 
 Key test notes:
-- Integration tests use real PostgreSQL + MinIO Testcontainers — no mocks. `Authentication:ValidateUser = false` for self-signed tokens.
+- API integration tests use real PostgreSQL + LocalStack Testcontainers — no mocks. `Authentication:ValidateUser = false` for self-signed tokens.
+- Status integration tests use real PostgreSQL + LocalStack Testcontainers for database/storage checks; WireMock.Net stubs the 4 HTTP health endpoints (API, Portal, Admin, Authentication) returning `200 Healthy`. No auth (Status is public). The `the service X should have status Y` step uses a regex proximity check on the prerendered HTML.
 - Application unit tests cover error paths only (happy paths via integration tests). Use `Result.Failure<T>(error)` not `Result<T>.Failure(error)`.
 - Domain unit tests use a `BuildAsset()` helper for constructing valid aggregates.
 - Component tests: use `BunitContext` (not obsolete `TestContext`), `ctx.Render<T>()`, `cut.WaitForState()`, CSS selectors for assertions. Set `ctx.JSInterop.Mode = JSRuntimeMode.Loose` when the component calls JS interop (e.g. `initTooltips`). For async flows triggered by a button click, wait on a DOM change that only occurs after the async operation completes (e.g. wait for the confirm button to disappear rather than waiting on the spinner, which may not appear yet). Use `.TextContent.Trim()` when a `<td>` contains both text and child elements.
@@ -63,6 +66,7 @@ Clean Architecture. Dependencies flow inward: Controller → Application → Dom
 | Controller | `Controller.Api` | ASP.NET Core Minimal APIs |
 | Controller | `Controller.Admin` | Blazor WebAssembly admin UI |
 | Controller | `Controller.Portal` | Blazor WebAssembly portal UI |
+| Controller | `Controller.Status` | Blazor Server status dashboard (public, no auth) |
 | Controller | `Controller.Blazor.Shared` | Razor Class Library shared by Admin and Portal |
 | Application | `Core.Application` | Business logic / use cases |
 | Contracts | `Core.Contracts` | Shared request/response DTOs |
@@ -169,6 +173,17 @@ Blazor WebAssembly, Bootstrap 5 dark theme (`data-bs-theme="dark"`). Desktop-fir
 
 Blazor WebAssembly, Bootstrap 5 dark theme. Sticky top navbar with auth dropdown (username, edit-profile link via `OidcSettings.GetEditAccountUrl()`, logout). Pages: `Pages/Storage/Upload.razor` (`/storage/upload`), `Pages/Storage/Download.razor` (shows expiry warning client-side; server enforces). Max upload size from `IOptions<AssetSettings>` → `IBrowserFile.OpenReadStream(maxAllowedSize)`.
 
+## Status UI
+
+Blazor Server (static SSR), Bootstrap 5 dark theme (`data-bs-theme="dark"`). Public — no authentication. 240px sticky sidebar (`Layout/MainLayout.razor`) with `status-sidebar` / `status-nav-link` CSS classes (`wwwroot/app.css`). Single page: `Components/Pages/Home.razor` (`/`) — Bootstrap card grid showing health status for 6 services.
+
+Health checks wired via `GetHealthServicesUseCase` (`Application/Healths/`) — runs all 6 checks in parallel with a 2-second timeout each:
+- **API, Portal, Admin, Authentication** — HTTP GET to configurable URLs (`HealthChecks:*` config keys); 200 = Healthy, non-200 = Unhealthy, body `"Degraded"` = Degraded, empty URL = Unknown.
+- **Database** — `ByakkoContext.Database.CanConnectAsync()`.
+- **Object Storage** — `IAmazonS3.ListBucketsAsync()` with `CancellationTokenSource` timeout.
+
+Config: `HealthChecks:Api/Admin/Portal/Authentication` URLs; `ConnectionStrings:byakko-db`; `ConnectionStrings:localstack`; `Storage:*` (same keys as API). Liveness/readiness probe at `/health`.
+
 ## Project Conventions
 
 See `.claude/rules/code-standard.md` for full standards. Key points:
@@ -192,9 +207,11 @@ See `.claude/rules/code-standard.md` for full standards. Key points:
 
 Chart in `deployments/helm/byakko/`. See `docs/developer-guides/Kubernetes.md` for setup.
 
-Key templates: `api.yaml`, `portal.yaml`, `admin.yaml`, `database.yaml`, `keycloak.yaml`, `keycloak-database.yaml`, `pgadmin.yaml`, `localstack.yaml` (guarded by `localstack.enabled`), observability stack (`otel-collector`, `prometheus`, `tempo`, `loki`, `grafana` — guarded by `observability.enabled`), `ingress.yaml`, `middlewares.yaml`.
+Key templates: `api.yaml`, `portal.yaml`, `admin.yaml`, `status.yaml`, `database.yaml`, `keycloak.yaml`, `keycloak-database.yaml`, `pgadmin.yaml`, `localstack.yaml` (guarded by `localstack.enabled`), observability stack (`otel-collector`, `prometheus`, `tempo`, `loki`, `grafana` — guarded by `observability.enabled`), `ingress.yaml`, `middlewares.yaml`.
 
-Subdomains: `byakko.dev`/`www.`/`fileshare.` → Portal; `api.` → API; `admin.` → Admin; `database.` → pgAdmin; `authentication.` → Keycloak; `grafana.` → Grafana.
+Subdomains: `byakko.dev`/`www.`/`fileshare.` → Portal; `api.` → API; `admin.` → Admin; `status.` → Status; `database.` → pgAdmin; `authentication.` → Keycloak; `grafana.` → Grafana.
+
+All app image tags are controlled by a single top-level `appVersion` in `values.yaml` (set via `--set appVersion` in the pipeline). Storage config (`Storage:Mode`, `BucketName`, `OvhCloud.*`) lives under the top-level `storage:` key, shared by both `api.yaml` and `status.yaml`.
 
 TLS local: `mkcert byakko.dev "*.byakko.dev"` + `kubectl create secret tls`. TLS production: `clusterIssuer.enabled = true` + cert-manager HTTP-01. Remove AAAA records if no IPv6.
 

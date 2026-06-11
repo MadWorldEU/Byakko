@@ -1,5 +1,6 @@
 namespace: "byakko"
 imagePullPolicy: "IfNotPresent"
+appVersion: "v0.8.1"
 
 ingress:
     className: "traefik"
@@ -15,6 +16,15 @@ securityTxt:
     contact: "mailto:security@byakko.dev"
     expires: "2027-12-31T23:59:59Z"
     preferredLanguages: "en"
+
+storage:
+    mode: "OvhCloud"
+    bucketName: "byakko"
+    ovhCloud:
+        endpoint: "http://changeme"
+        accessKey: "changeme"
+        secretKey: "changeme"
+        region: "changeme"
 
 localstack:
     enabled: false
@@ -206,21 +216,12 @@ observability:
 api:
     name: "api"
     image: "ghcr.io/madworldeu/byakko-api"
-    tag: "v0.8.1"
     containerPort: 8080
     servicePort: 80
     ingress:
         responseHeaderTimeout: "1800s"
     database:
         autoMigrate: true
-    storage:
-        mode: "OvhCloud"
-        bucketName: "byakko"
-        ovhCloud:
-            endpoint: "http://changeme"
-            accessKey: "changeme"
-            secretKey: "changeme"
-            region: "changeme"
     encryption:
         key: "changeme"
     assets:
@@ -238,6 +239,21 @@ api:
             memory: 2000Mi
             ephemeral-storage: 1Gi
 
+status:
+    name: "status"
+    image: "ghcr.io/madworldeu/byakko-status"
+    containerPort: 8080
+    servicePort: 80
+    resources:
+        requests:
+            cpu: 50m
+            memory: 128Mi
+            ephemeral-storage: 512Mi
+        limits:
+            cpu: 200m
+            memory: 512Mi
+            ephemeral-storage: 512Mi
+
 admin:
     name: "admin"
     replicas: 1
@@ -246,7 +262,6 @@ admin:
         clientId: "admin-client"
     image:
         repository: "ghcr.io/madworldeu/byakko-admin"
-        tag: "v0.8.1"
     resources:
         requests:
             cpu: 50m
@@ -267,7 +282,6 @@ portal:
         maxUploadSizeInBytes: "1073741824"
     image:
         repository: "ghcr.io/madworldeu/byakko-portal"
-        tag: "v0.8.1"
     resources:
         requests:
             cpu: 50m

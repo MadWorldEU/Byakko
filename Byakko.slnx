@@ -94,6 +94,7 @@
     <Project Path="src\MadWorldEU.Byakko.Controller.Api\Api.csproj" />
     <Project Path="src\MadWorldEU.Byakko.Controller.Blazor.Shared\Blazor.Shared.csproj" />
     <Project Path="src\MadWorldEU.Byakko.Controller.Portal\Portal.csproj" />
+    <Project Path="src\MadWorldEU.Byakko.Controller.Status\Status.csproj" />
   </Folder>
   <Folder Name="/src/core/">
     <Project Path="src\MadWorldEU.Byakko.Core.Application\Application.csproj" />
@@ -113,6 +114,7 @@
     <Project Path="tests\MadWorldEU.Byakko.Controller.Admin.Componenttests\Admin.Componenttests.csproj" />
     <Project Path="tests\MadWorldEU.Byakko.Controller.Api.IntegrationTests\Api.IntegrationTests.csproj" />
     <Project Path="tests\MadWorldEU.Byakko.Controller.Portal.Componenttests\Portal.Componenttests.csproj" />
+    <Project Path="tests\MadWorldEU.Byakko.Controller.Status.IntegrationTests\Status.IntegrationTests.csproj" />
   </Folder>
   <Folder Name="/tests/core/">
     <Project Path="tests\MadWorldEU.Byakko.Core.Application.Unittests\Application.Unittests.csproj" />

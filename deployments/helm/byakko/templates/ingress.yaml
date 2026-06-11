@@ -48,6 +48,7 @@ spec:
               - www.{{ .Values.ingress.domain }}
               - fileshare.{{ .Values.ingress.domain }}
               - admin.{{ .Values.ingress.domain }}
+              - status.{{ .Values.ingress.domain }}
               - database.{{ .Values.ingress.domain }}
               - authentication.{{ .Values.ingress.domain }}
               {{- if .Values.observability.enabled }}
@@ -64,6 +65,16 @@ spec:
                             name: {{ .Values.admin.name }}
                             port:
                                 number: {{ .Values.admin.port }}
+        - host: status.{{ .Values.ingress.domain }}
+          http:
+              paths:
+                  - path: /
+                    pathType: Prefix
+                    backend:
+                        service:
+                            name: {{ .Values.status.name }}
+                            port:
+                                number: {{ .Values.status.servicePort }}
         - host: database.{{ .Values.ingress.domain }}
           http:
               paths:

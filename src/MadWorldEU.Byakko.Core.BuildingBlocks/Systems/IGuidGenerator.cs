@@ -1,4 +1,4 @@
-namespace MadWorldEU.Byakko.System;
+namespace MadWorldEU.Byakko.Systems;
 
 public interface IGuidGenerator
 {

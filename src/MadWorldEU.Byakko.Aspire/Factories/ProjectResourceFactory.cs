@@ -19,4 +19,12 @@ internal sealed class ProjectResourceFactory(IDistributedApplicationBuilder buil
         return builder.AddProject<Portal>(nameof(Portal))
             .BuildPortal(api);
     }
+
+    public IResourceBuilder<IResource> CreateStatusBuilder(IResourceBuilder<PostgresDatabaseResource> byakkoDb, 
+        IResourceBuilder<ILocalStackResource> localstack, 
+        IResourceBuilder<KeycloakResource> keycloak)
+    {
+        return builder.AddProject<Status>(nameof(Status))
+            .BuildStatus(byakkoDb, localstack, keycloak);
+    }
 }

@@ -1,4 +1,4 @@
 Contact: mailto:security@byakko.dev
 Expires: 2027-12-31T23:59:59Z
 Preferred-Languages: en
-Canonical: https://byakko.dev/.well-known/security.txt
+Canonical: https://fileshare.byakko.dev/.well-known/security.txt

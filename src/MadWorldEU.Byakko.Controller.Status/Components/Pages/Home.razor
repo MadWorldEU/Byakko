@@ -1,0 +1,51 @@
+@page "/"
+@using MadWorldEU.Byakko.Application.Healths
+@using MadWorldEU.Byakko.Healths
+@inject GetHealthServicesUseCase GetHealthServicesUseCase
+
+<PageTitle>System Status</PageTitle>
+
+<div class="container py-4">
+    <div class="mb-4">
+        <h1 class="display-5 fw-bold">System Status</h1>
+        <p class="text-muted">Current health status of all services.</p>
+    </div>
+
+    <div class="row g-3">
+        @foreach (var service in _services)
+        {
+            <div class="col-12 col-md-6 col-xl-4">
+                <div class="card h-100 shadow-sm border-start border-4 border-@GetStatusColor(service.Status)">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <span class="status-dot bg-@GetStatusColor(service.Status)"></span>
+                        <div>
+                            <h5 class="card-title mb-1">@service.Name</h5>
+                            <span class="badge rounded-pill text-bg-@GetStatusColor(service.Status)">
+                                @service.Status
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private IReadOnlyList<ServiceInfo> _services = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        _services = await GetHealthServicesUseCase.ExecuteAsync();
+    }
+
+    private static string GetStatusColor(ServiceStatus status) => status switch
+    {
+        ServiceStatus.Healthy => "success",
+        ServiceStatus.Degraded => "warning",
+        ServiceStatus.Unhealthy => "danger",
+        _ => "secondary"
+    };
+}

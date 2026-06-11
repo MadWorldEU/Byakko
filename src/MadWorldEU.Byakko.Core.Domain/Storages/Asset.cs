@@ -1,3 +1,5 @@
+using MadWorldEU.Byakko.Systems;
+
 namespace MadWorldEU.Byakko.Storages;
 
 public sealed class Asset : Entity<Id>
