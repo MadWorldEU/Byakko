@@ -13,8 +13,8 @@ builder.Services.AddPostgresql(builder.Configuration);
 builder.Services.AddHttpClient();
 builder.Services.Configure<HealthCheckSettings>(builder.Configuration.GetSection("HealthChecks"));
 builder.Services.AddScoped<GetHealthServicesUseCase>();
+builder.Services.AddStatusRateLimiter(builder.Configuration);
 
-// Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
@@ -35,6 +35,11 @@ app.MapHealthChecks("/health")
 
 app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
 app.UseHttpsRedirection();
+
+if (app.Configuration.GetValue("RateLimiting:Enabled", true))
+{
+    app.UseRateLimiter();
+}
 
 app.UseAntiforgery();
 

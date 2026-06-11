@@ -41,6 +41,7 @@ public sealed class StatusHooks(ScenarioContext scenarioContext)
                     {
                         ["ConnectionStrings:byakko-db"] = _postgres.GetConnectionString(),
                         ["ConnectionStrings:localstack"] = _localstack.GetConnectionString(),
+                        ["RateLimiting:Enabled"] = "false",
                         ["HealthChecks:Api"] = mockHealthUrl,
                         ["HealthChecks:Admin"] = mockHealthUrl,
                         ["HealthChecks:Portal"] = mockHealthUrl,
