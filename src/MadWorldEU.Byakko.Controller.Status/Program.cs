@@ -43,3 +43,8 @@ app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
 app.Run();
+
+public sealed partial class Program
+{
+    private Program() {}
+}

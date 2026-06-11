@@ -114,6 +114,7 @@
     <Project Path="tests\MadWorldEU.Byakko.Controller.Admin.Componenttests\Admin.Componenttests.csproj" />
     <Project Path="tests\MadWorldEU.Byakko.Controller.Api.IntegrationTests\Api.IntegrationTests.csproj" />
     <Project Path="tests\MadWorldEU.Byakko.Controller.Portal.Componenttests\Portal.Componenttests.csproj" />
+    <Project Path="tests\MadWorldEU.Byakko.Controller.Status.IntegrationTests\Status.IntegrationTests.csproj" />
   </Folder>
   <Folder Name="/tests/core/">
     <Project Path="tests\MadWorldEU.Byakko.Core.Application.Unittests\Application.Unittests.csproj" />
