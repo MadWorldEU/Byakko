@@ -1,6 +1,8 @@
 using MadWorldEU.Byakko.Application.Healths;
 using MadWorldEU.Byakko.Components;
 using MadWorldEU.Byakko.Configurations;
+using MadWorldEU.Byakko.Infrastructure.Postgresql;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +16,9 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddScoped<GetHealthServicesUseCase>();
+
+builder.Services.AddDbContext<ByakkoContext>(options => 
+    options.UseNpgsql(builder.Configuration.GetConnectionString("byakko-db")));
 
 var app = builder.Build();
 
