@@ -1,5 +1,4 @@
 using MadWorldEU.Byakko.Application.Healths;
-using MadWorldEU.Byakko.Components;
 using MadWorldEU.Byakko.Configurations;
 using MadWorldEU.Byakko.Extensions;
 
@@ -44,7 +43,7 @@ if (app.Configuration.GetValue("RateLimiting:Enabled", true))
 app.UseAntiforgery();
 
 app.MapStaticAssets();
-app.MapRazorComponents<App>()
+app.MapRazorComponents<MadWorldEU.Byakko.Components.App>()
     .AddInteractiveServerRenderMode();
 
 app.Run();

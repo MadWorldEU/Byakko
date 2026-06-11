@@ -1,4 +1,4 @@
-    # Useful Links
+# Useful Links
 
 A curated list of websites and resources used in or relevant to this project.
 
