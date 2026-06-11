@@ -34,11 +34,11 @@
 @code {
     private IReadOnlyList<ServiceInfo> _services = [];
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
-        
-        _services = GetHealthServicesUseCase.Execute();
+        await base.OnInitializedAsync();
+
+        _services = await GetHealthServicesUseCase.ExecuteAsync();
     }
 
     private static string GetStatusColor(ServiceStatus status) => status switch

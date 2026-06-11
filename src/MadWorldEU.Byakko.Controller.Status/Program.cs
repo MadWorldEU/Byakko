@@ -1,9 +1,13 @@
 using MadWorldEU.Byakko.Application.Healths;
 using MadWorldEU.Byakko.Components;
+using MadWorldEU.Byakko.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHealthChecks();
+
+builder.Services.AddHttpClient();
+builder.Services.Configure<HealthCheckSettings>(builder.Configuration.GetSection("HealthChecks"));
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
