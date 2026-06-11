@@ -19,6 +19,7 @@
       <ProjectReference Include="..\MadWorldEU.Byakko.Controller.Admin\Admin.csproj" />
       <ProjectReference Include="..\MadWorldEU.Byakko.Controller.Api\Api.csproj" />
       <ProjectReference Include="..\MadWorldEU.Byakko.Controller.Portal\Portal.csproj" />
+      <ProjectReference Include="..\MadWorldEU.Byakko.Controller.Status\Status.csproj" />
     </ItemGroup>
 
 </Project>

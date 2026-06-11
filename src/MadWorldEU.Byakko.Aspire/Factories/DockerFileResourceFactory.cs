@@ -5,6 +5,7 @@ internal sealed class DockerFileResourceFactory(IDistributedApplicationBuilder b
     private const int ApiPort = 5062;
     private const int AdminPort = 5042;
     private const int PortalPort = 5100;
+    private const int StatusPort = 5063;
     
     public IResourceBuilder<IResource> CreateApiBuilder(IResourceBuilder<PostgresDatabaseResource> byakkoDb, IResourceBuilder<ILocalStackResource> localstack, IResourceBuilder<KeycloakResource> keycloak)
     {
@@ -25,5 +26,13 @@ internal sealed class DockerFileResourceFactory(IDistributedApplicationBuilder b
         return builder.AddDockerfile(nameof(Portal), "../../", "src/MadWorldEU.Byakko.Controller.Portal/Dockerfile")
             .WithHttpEndpoint(targetPort: 8080, port: PortalPort)
             .BuildPortal(api);
+    }
+
+    public IResourceBuilder<IResource> CreateStatusBuilder(IResourceBuilder<IResource> api, IResourceBuilder<PostgresDatabaseResource> byakkoDb, IResourceBuilder<ILocalStackResource> localstack,
+        IResourceBuilder<KeycloakResource> keycloak)
+    {
+        return builder.AddDockerfile(nameof(StatusPort), "../../", "src/MadWorldEU.Byakko.Controller.Status/Dockerfile")
+            .WithHttpEndpoint(targetPort: 8080, port: StatusPort)
+            .BuildStatus(api, byakkoDb, localstack, keycloak);
     }
 }

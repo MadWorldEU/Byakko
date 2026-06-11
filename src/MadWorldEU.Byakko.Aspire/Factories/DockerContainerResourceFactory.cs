@@ -5,6 +5,7 @@ internal sealed class DockerContainerResourceFactory(IDistributedApplicationBuil
     private const int ApiPort = 5062;
     private const int AdminPort = 5042;
     private const int PortalPort = 5100;
+    private const int StatusPort = 5063;
     
     public IResourceBuilder<IResource> CreateApiBuilder(IResourceBuilder<PostgresDatabaseResource> byakkoDb, IResourceBuilder<ILocalStackResource> localstack, IResourceBuilder<KeycloakResource> keycloak)
     {
@@ -25,5 +26,13 @@ internal sealed class DockerContainerResourceFactory(IDistributedApplicationBuil
         return builder.AddContainer(nameof(Portal), DockerImages.ByakkoPortalImage)
             .WithHttpEndpoint(targetPort: 8080, port: PortalPort)
             .BuildPortal(api);
+    }
+
+    public IResourceBuilder<IResource> CreateStatusBuilder(IResourceBuilder<IResource> api, IResourceBuilder<PostgresDatabaseResource> byakkoDb, IResourceBuilder<ILocalStackResource> localstack,
+        IResourceBuilder<KeycloakResource> keycloak)
+    {
+        return builder.AddContainer(nameof(Status), DockerImages.ByakkoStatusImage)
+            .WithHttpEndpoint(targetPort: 8080, port: StatusPort)
+            .BuildStatus(api, byakkoDb, localstack, keycloak);
     }
 }

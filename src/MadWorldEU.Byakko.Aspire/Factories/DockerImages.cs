@@ -7,6 +7,7 @@ public static class DockerImages
     public const string ByakkoApiImage = $"ghcr.io/madworldeu/byakko-api:{ByakkoTag}";
     public const string ByakkoAdminImage = $"ghcr.io/madworldeu/byakko-admin:{ByakkoTag}";
     public const string ByakkoPortalImage = $"ghcr.io/madworldeu/byakko-portal:{ByakkoTag}";
+    public const string ByakkoStatusImage = $"ghcr.io/madworldeu/byakko-status:{ByakkoTag}";
     
     private const string ByakkoTag = "v0.3.0";
 }

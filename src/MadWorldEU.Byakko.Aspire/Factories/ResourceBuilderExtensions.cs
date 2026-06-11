@@ -30,4 +30,22 @@ internal static class ResourceBuilderExtensions
             .WaitFor(api)
             .WithHttpHealthCheck("/health.txt");
     }
+    
+    internal static IResourceBuilder<TResource> BuildStatus<TResource>(this IResourceBuilder<TResource> statusBuilder, 
+        IResourceBuilder<IResource> api, 
+        IResourceBuilder<PostgresDatabaseResource> byakkoDb, 
+        IResourceBuilder<ILocalStackResource> localstack, 
+        IResourceBuilder<KeycloakResource> keycloak)
+        where TResource : IResource, IResourceWithWaitSupport, IResourceWithEnvironment, IResourceWithEndpoints
+    {
+        return statusBuilder
+            .WaitFor(api)
+            .WaitFor(byakkoDb)
+            .WaitFor(localstack)
+            .WaitFor(keycloak)
+            .WithReference(byakkoDb)
+            .WithReference(localstack)
+            .WithReference(keycloak)
+            .WithHttpHealthCheck("/health");
+    }
 }

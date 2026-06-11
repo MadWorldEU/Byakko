@@ -94,6 +94,7 @@
     <Project Path="src\MadWorldEU.Byakko.Controller.Api\Api.csproj" />
     <Project Path="src\MadWorldEU.Byakko.Controller.Blazor.Shared\Blazor.Shared.csproj" />
     <Project Path="src\MadWorldEU.Byakko.Controller.Portal\Portal.csproj" />
+    <Project Path="src\MadWorldEU.Byakko.Controller.Status\Status.csproj" />
   </Folder>
   <Folder Name="/src/core/">
     <Project Path="src\MadWorldEU.Byakko.Core.Application\Application.csproj" />
