@@ -9,8 +9,15 @@ observability:
     enabled: true
     
 api:
-    tag: "latest"
-    storage:
-        mode: "LocalStack"
     encryption:
         key: "5E0YFcbU1M1f93S7OB673VYgN2qbslLEKXhwQA+sx44="
+        
+storage:
+    mode: "LocalStack"
+
+status:
+    healthChecks:
+        api: "http://api.byakko-development:80/health"
+        admin: "http://admin.byakko-development:8080/health.txt"
+        portal: "http://portal.byakko-development:8080/health.txt"
+        authentication: "http://keycloak.byakko-development:80/"

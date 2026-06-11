@@ -1,9 +1,10 @@
 name: Build and Publish Documentation
 
-# Your GitHub workflow file under .github/workflows/
-# Trigger the action on push to main
 on:
     push:
+        branches:
+            - main
+    pull_request:
         branches:
             - main
 
@@ -37,10 +38,11 @@ jobs:
             - run: docfx docs/docfx.json
 
             - name: Upload artifact
+              if: github.event_name == 'push'
               uses: actions/upload-pages-artifact@v3
               with:
-                  # Upload entire repository
                   path: 'docs/_site'
             - name: Deploy to GitHub Pages
+              if: github.event_name == 'push'
               id: deployment
               uses: actions/deploy-pages@v4
