@@ -13,11 +13,12 @@ internal sealed class GetHealthServicesUseCase(
 {
     internal async Task<IReadOnlyList<ServiceInfo>> ExecuteAsync()
     {
-        var apiTask = CheckServiceAsync("Api", settings.Value.Api);
+        var apiTask = CheckServiceAsync("API", settings.Value.Api);
         var portalTask = CheckServiceAsync("Portal", settings.Value.Portal);
         var adminTask = CheckServiceAsync("Admin", settings.Value.Admin);
+        var authTask = CheckServiceAsync("Authentication", settings.Value.Authentication);
 
-        await Task.WhenAll(apiTask, portalTask, adminTask);
+        await Task.WhenAll(apiTask, portalTask, adminTask, authTask);
 
         return
         [
@@ -26,7 +27,7 @@ internal sealed class GetHealthServicesUseCase(
             await adminTask,
             new ServiceInfo("Database", ServiceStatus.Healthy),
             new ServiceInfo("Object Storage", ServiceStatus.Healthy),
-            new ServiceInfo("Authentication", ServiceStatus.Healthy),
+            await authTask,
         ];
     }
 
@@ -42,14 +43,14 @@ internal sealed class GetHealthServicesUseCase(
             var client = httpClientFactory.CreateClient();
             client.Timeout = TimeSpan.FromSeconds(2);
             var response = await client.GetAsync(url);
-            var body = (await response.Content.ReadAsStringAsync()).Trim();
 
-            var status = body switch
+            if (!response.IsSuccessStatusCode)
             {
-                "Healthy" => ServiceStatus.Healthy,
-                "Degraded" => ServiceStatus.Degraded,
-                _ => ServiceStatus.Unhealthy
-            };
+                return new ServiceInfo(name, ServiceStatus.Unhealthy);
+            }
+
+            var body = (await response.Content.ReadAsStringAsync()).Trim();
+            var status = body == "Degraded" ? ServiceStatus.Degraded : ServiceStatus.Healthy;
 
             return new ServiceInfo(name, status);
         }
