@@ -1,4 +1,4 @@
-namespace MadWorldEU.Byakko.Domain.Healths;
+namespace MadWorldEU.Byakko.Healths;
 
 public enum ServiceStatus
 {

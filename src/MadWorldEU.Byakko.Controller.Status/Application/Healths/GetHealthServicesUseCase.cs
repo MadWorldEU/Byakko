@@ -1,6 +1,6 @@
+using Amazon.S3;
 using MadWorldEU.Byakko.Configurations;
-using MadWorldEU.Byakko.Domain.Healths;
-using MadWorldEU.Byakko.Infrastructure.Postgresql;
+using MadWorldEU.Byakko.Healths;
 using Microsoft.Extensions.Options;
 
 namespace MadWorldEU.Byakko.Application.Healths;
@@ -10,19 +10,23 @@ namespace MadWorldEU.Byakko.Application.Healths;
 /// </summary>
 internal sealed class GetHealthServicesUseCase(
     ByakkoContext context,
+    IAmazonS3 s3Client,
     IHttpClientFactory httpClientFactory,
     IOptions<HealthCheckSettings> settings,
     ILogger<GetHealthServicesUseCase> logger)
 {
+    private readonly TimeSpan _defaultTimeout = TimeSpan.FromSeconds(2);
+    
     internal async Task<IReadOnlyList<ServiceInfo>> ExecuteAsync()
     {
         var apiTask = CheckServiceAsync("API", settings.Value.Api);
         var portalTask = CheckServiceAsync("Portal", settings.Value.Portal);
         var adminTask = CheckServiceAsync("Admin", settings.Value.Admin);
         var databaseTask = CheckDatabaseAsync("Database");
+        var objectStorageTask = CheckObjectStorageAsync("Object Storage");
         var authTask = CheckServiceAsync("Authentication", settings.Value.Authentication);
 
-        await Task.WhenAll(apiTask, portalTask, adminTask, authTask);
+        await Task.WhenAll(apiTask, portalTask, adminTask, databaseTask, objectStorageTask, authTask);
 
         return
         [
@@ -30,7 +34,7 @@ internal sealed class GetHealthServicesUseCase(
             await portalTask,
             await adminTask,
             await databaseTask,
-            new ServiceInfo("Object Storage", ServiceStatus.Healthy),
+            await objectStorageTask,
             await authTask,
         ];
     }
@@ -53,7 +57,23 @@ internal sealed class GetHealthServicesUseCase(
         
         return new ServiceInfo(name, ServiceStatus.Unhealthy);
     }
-    
+
+    private async Task<ServiceInfo> CheckObjectStorageAsync(string name)
+    {
+        using var cts = new CancellationTokenSource(_defaultTimeout);
+
+        try
+        {
+            await s3Client.ListBucketsAsync(cts.Token);
+            return new ServiceInfo(name, ServiceStatus.Healthy);
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Object storage connection check failed");
+            return new ServiceInfo(name, ServiceStatus.Unhealthy);
+        }
+    }
+
     private async Task<ServiceInfo> CheckServiceAsync(string name, string url)
     {
         if (string.IsNullOrWhiteSpace(url))
@@ -64,7 +84,7 @@ internal sealed class GetHealthServicesUseCase(
         try
         {
             var client = httpClientFactory.CreateClient();
-            client.Timeout = TimeSpan.FromSeconds(2);
+            client.Timeout = _defaultTimeout;
             var response = await client.GetAsync(url);
 
             if (!response.IsSuccessStatusCode)
