@@ -1,0 +1,108 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: {{ .Values.status.name }}-security-config
+    namespace: {{ .Values.namespace }}
+    labels:
+        app: {{ .Values.status.name }}
+data:
+    security.txt: |
+        Contact: {{ .Values.securityTxt.contact }}
+        Expires: {{ .Values.securityTxt.expires }}
+        Preferred-Languages: {{ .Values.securityTxt.preferredLanguages }}
+        Canonical: https://status.{{ .Values.ingress.domain }}/.well-known/security.txt
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: {{ .Values.status.name }}
+    namespace: {{ .Values.namespace }}
+    labels:
+        app: {{ .Values.status.name }}
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: {{ .Values.status.name }}
+    template:
+        metadata:
+            labels:
+                app: {{ .Values.status.name }}
+        spec:
+            automountServiceAccountToken: false
+            containers:
+                - name: {{ .Values.status.name }}
+                  image: "{{ .Values.status.image }}:{{ .Values.status.tag }}"
+                  imagePullPolicy: {{ .Values.imagePullPolicy }}
+                  ports:
+                      - containerPort: {{ .Values.status.containerPort }}
+                  resources:
+                      requests:
+                          cpu: {{ .Values.status.resources.requests.cpu }}
+                          memory: {{ .Values.status.resources.requests.memory }}
+                          ephemeral-storage: {{ index .Values.status.resources.requests "ephemeral-storage" }}
+                      limits:
+                          cpu: {{ .Values.status.resources.limits.cpu }}
+                          memory: {{ .Values.status.resources.limits.memory }}
+                          ephemeral-storage: {{ index .Values.status.resources.limits "ephemeral-storage" }}
+                  env:
+                      - name: ConnectionStrings__byakko-db
+                        value: "Host={{ .Values.postgres.name }};Port={{ .Values.postgres.containerPort }};Username={{ .Values.postgres.username }};Password={{ .Values.postgres.password }};Database={{ .Values.postgres.database }}"
+                      - name: ConnectionStrings__localstack
+                        value: "http://{{ .Values.localstack.name }}.{{ .Values.namespace }}:{{ .Values.localstack.servicePort }}"
+                      - name: HealthChecks__Api
+                        value: "https://api.{{ .Values.ingress.domain }}/health"
+                      - name: HealthChecks__Admin
+                        value: "https://admin.{{ .Values.ingress.domain }}/health.txt"
+                      - name: HealthChecks__Portal
+                        value: "https://{{ .Values.ingress.domain }}/health.txt"
+                      - name: HealthChecks__Authentication
+                        value: "https://authentication.{{ .Values.ingress.domain }}/"
+                      - name: Storage__Mode
+                        value: {{ .Values.status.storage.mode | quote }}
+                      - name: Storage__BucketName
+                        value: {{ .Values.status.storage.bucketName | quote }}
+                      - name: Storage__OvhCloud__Endpoint
+                        value: {{ .Values.status.storage.ovhCloud.endpoint | quote }}
+                      - name: Storage__OvhCloud__AccessKey
+                        value: {{ .Values.status.storage.ovhCloud.accessKey | quote }}
+                      - name: Storage__OvhCloud__SecretKey
+                        value: {{ .Values.status.storage.ovhCloud.secretKey | quote }}
+                      - name: Storage__OvhCloud__Region
+                        value: {{ .Values.status.storage.ovhCloud.region | quote }}
+                  volumeMounts:
+                      - name: security-txt
+                        mountPath: /app/wwwroot/.well-known/security.txt
+                        subPath: security.txt
+                        readOnly: true
+                  livenessProbe:
+                      httpGet:
+                          path: /health
+                          port: {{ .Values.status.containerPort }}
+                      initialDelaySeconds: 10
+                      periodSeconds: 10
+                  readinessProbe:
+                      httpGet:
+                          path: /health
+                          port: {{ .Values.status.containerPort }}
+                      initialDelaySeconds: 5
+                      periodSeconds: 10
+            volumes:
+                - name: security-txt
+                  configMap:
+                      name: {{ .Values.status.name }}-security-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: {{ .Values.status.name }}
+    namespace: {{ .Values.namespace }}
+    labels:
+        app: {{ .Values.status.name }}
+spec:
+    selector:
+        app: {{ .Values.status.name }}
+    ports:
+        - port: {{ .Values.status.servicePort }}
+          targetPort: {{ .Values.status.containerPort }}
+          protocol: TCP

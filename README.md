@@ -15,11 +15,12 @@ Byakko (白虎) is the Japanese name for the White Tiger, one of the four mythol
 
 The production environment is hosted at [mad-world.eu](https://mad-world.eu). The following services are publicly accessible:
 
-| Service               | URL                                                          |
-|-----------------------|--------------------------------------------------------------|
-| File sharing (Portal) | [fileshare.mad-world.eu](https://fileshare.mad-world.eu)     |
-| Admin                 | [admin.mad-world.eu](https://admin.mad-world.eu)             |
-| API reference         | [api.mad-world.eu/scalar](https://api.mad-world.eu/scalar)   |
+| Service               | URL                                                              |
+|-----------------------|------------------------------------------------------------------|
+| File sharing (Portal) | [fileshare.mad-world.eu](https://fileshare.mad-world.eu)         |
+| Admin                 | [admin.mad-world.eu](https://admin.mad-world.eu)                 |
+| API reference         | [api.mad-world.eu/scalar](https://api.mad-world.eu/scalar)       |
+| Status                | [status.mad-world.eu](https://status.mad-world.eu)               |
 
 ## Documentation
 

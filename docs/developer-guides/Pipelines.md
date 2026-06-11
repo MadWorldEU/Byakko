@@ -3,7 +3,7 @@
 This repository has three CI/CD pipelines:
 
 - **Build and Test** — builds the solution and runs all tests on every push and pull request.
-- **Build & Push Docker** — builds and pushes multi-arch Docker images for the API, Portal, and Admin to the GitHub Container Registry (GHCR) on every push to `main`.
+- **Build & Push Docker** — builds and pushes multi-arch Docker images for the API, Portal, Admin, and Status to the GitHub Container Registry (GHCR) on every push to `main`.
 - **SonarCloud** — runs static code analysis and reports code quality, security hotspots, and coverage to [SonarCloud](https://sonarcloud.io) on every push and pull request.
 
 ## Required Repository Secrets
@@ -86,7 +86,7 @@ After the pipeline runs for the first time, each image is created as a private p
 3. Click **Package settings** (bottom-right)
 4. Under **Connect repository**, search for and select `MadWorldEU/Byakko`
 5. Optionally change **Package visibility** to `Public` if the image should be publicly pullable
-6. Repeat for `byakko-portal` and `byakko-admin`
+6. Repeat for `byakko-portal`, `byakko-admin`, and `byakko-status`
 
 Once linked, the packages appear on the repository's main page under **Packages**.
 
@@ -99,3 +99,4 @@ After a successful run the following images are available:
 | API    | `ghcr.io/madworldeu/byakko-api:latest`     |
 | Portal | `ghcr.io/madworldeu/byakko-portal:latest`  |
 | Admin  | `ghcr.io/madworldeu/byakko-admin:latest`   |
+| Status | `ghcr.io/madworldeu/byakko-status:latest`  |

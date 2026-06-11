@@ -238,6 +238,30 @@ api:
             memory: 2000Mi
             ephemeral-storage: 1Gi
 
+status:
+    name: "status"
+    image: "ghcr.io/madworldeu/byakko-status"
+    tag: "v0.8.1"
+    containerPort: 8080
+    servicePort: 80
+    storage:
+        mode: "OvhCloud"
+        bucketName: "byakko"
+        ovhCloud:
+            endpoint: "http://changeme"
+            accessKey: "changeme"
+            secretKey: "changeme"
+            region: "changeme"
+    resources:
+        requests:
+            cpu: 50m
+            memory: 128Mi
+            ephemeral-storage: 512Mi
+        limits:
+            cpu: 200m
+            memory: 512Mi
+            ephemeral-storage: 512Mi
+
 admin:
     name: "admin"
     replicas: 1

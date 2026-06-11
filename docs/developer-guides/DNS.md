@@ -15,6 +15,7 @@ Configure the following A records, replacing `<cluster-ip>` with the public IP o
 | `fileshare.example.com`      | Portal file sharing alias            |
 | `api.example.com`            | REST API                             |
 | `admin.example.com`          | Admin UI                             |
+| `status.example.com`         | Status page (service health)         |
 | `database.example.com`       | pgAdmin (database management)        |
 | `authentication.example.com` | Keycloak (identity server)           |
 | `grafana.example.com`        | Grafana (observability dashboards)   |

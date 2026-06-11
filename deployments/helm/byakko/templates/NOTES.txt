@@ -6,6 +6,7 @@ Byakko has been deployed to namespace: {{ .Values.namespace }}
   User Portal (www): https://www.{{ .Values.ingress.domain }}
   File Share:       https://fileshare.{{ .Values.ingress.domain }}
   Admin Portal:     https://admin.{{ .Values.ingress.domain }}
+  Status:           https://status.{{ .Values.ingress.domain }}
   API:              https://api.{{ .Values.ingress.domain }}
   API Reference:    https://api.{{ .Values.ingress.domain }}/scalar/v1
   Database:         https://database.{{ .Values.ingress.domain }}
@@ -19,6 +20,7 @@ Byakko has been deployed to namespace: {{ .Values.namespace }}
   API:          https://api.{{ .Values.ingress.domain }}/health
   User Portal:  https://{{ .Values.ingress.domain }}/health.txt
   Admin Portal: https://admin.{{ .Values.ingress.domain }}/health.txt
+  Status:       https://status.{{ .Values.ingress.domain }}/health
 
 === Backing Services ===
 
