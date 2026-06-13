@@ -6,7 +6,7 @@ Byakko lets you upload a file and share it with anyone via a link — no account
 
 1. Sign in to the Portal.
 2. Navigate to **Storage → Upload** (`/storage/upload`).
-3. Click the file picker and select a file (maximum 100 MB).
+3. Click the file picker and select a file (maximum 1000 MB).
 4. Click **Upload**.
 5. Once the upload completes, a shareable link appears. Click **Copy link** to copy it to your clipboard.
 

@@ -17,6 +17,14 @@ public sealed class CreateAssetMetadataUseCase(IClock clock, IGuidGenerator guid
         var userIdResult = UserId.Create(userId);
         if (userIdResult.IsFailure) return userIdResult.Error;
 
+        var sizeResult = Size.Create(request.Size);
+        if (sizeResult.IsFailure) return sizeResult.Error;
+        if (sizeResult.Value > settings.Value.MaxUploadSizeInBytes) return AssetErrors.FileTooLarge;
+
+        var countActiveAssetsResult = await repository.GetCountOfActiveAssetsAsync(userIdResult.Value);
+        if (countActiveAssetsResult.IsFailure) return countActiveAssetsResult.Error;
+        if (countActiveAssetsResult.Value >= settings.Value.MaxFilesEachUser) return AssetErrors.MaxFilesReached;
+
         var validityPeriodResult = ValidityPeriod.Create(settings.Value.ValidityPeriodInDays);
         if (validityPeriodResult.IsFailure) return validityPeriodResult.Error;
 

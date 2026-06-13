@@ -9,7 +9,7 @@ public sealed class CreateAssetMetadataUseCaseTests
     private readonly IClock _clock = Substitute.For<IClock>();
     private readonly IGuidGenerator _guidGenerator = Substitute.For<IGuidGenerator>();
     private readonly IAssetRepository _repository = Substitute.For<IAssetRepository>();
-    private readonly IOptions<AssetSettings> _settings = Options.Create(new AssetSettings { ValidityPeriodInDays = 30 });
+    private readonly IOptions<AssetSettings> _settings = Options.Create(new AssetSettings { ValidityPeriodInDays = 30, MaxFilesEachUser = 10, MaxUploadSizeInBytes = 1073741824 });
 
     [Test]
     public async Task ExecuteAsync_WhenNameIsEmpty_ShouldReturnFailure()
@@ -49,6 +49,7 @@ public sealed class CreateAssetMetadataUseCaseTests
     {
         _clock.GetCurrentInstant().Returns(Instant.FromUnixTimeSeconds(0));
         _guidGenerator.New().Returns(Guid.NewGuid());
+        _repository.GetCountOfActiveAssetsAsync(Arg.Any<UserId>()).Returns(Task.FromResult(Result.Success(0)));
         _repository.AddAsync(Arg.Any<Asset>()).Returns(Task.FromResult(Result.Failure(AssetErrors.SaveFailed)));
 
         var useCase = new CreateAssetMetadataUseCase(_clock, _guidGenerator, _repository, _settings);

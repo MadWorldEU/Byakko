@@ -1,8 +1,9 @@
 using MadWorldEU.Byakko.Encryptions;
+using Microsoft.Extensions.Options;
 
 namespace MadWorldEU.Byakko.Storages;
 
-public sealed class UploadAssetContentUseCase(IClock clock, IEncryptionService encryptionService, IAssetRepository assetRepository, IContentStorage contentStorage)
+public sealed class UploadAssetContentUseCase(IClock clock, IEncryptionService encryptionService, IAssetRepository assetRepository, IContentStorage contentStorage, IOptions<AssetSettings> settings)
 {
     public async Task<Result<UploadAssetContentResponse>> ExecuteAsync(string assetId, Stream content, long sizeInBytes, string userId, string fileName, string contentType)
     {
@@ -11,7 +12,8 @@ public sealed class UploadAssetContentUseCase(IClock clock, IEncryptionService e
 
         var sizeResult = Size.Create(sizeInBytes);
         if (sizeResult.IsFailure) return sizeResult.Error;
-
+        if (sizeResult.Value > settings.Value.MaxUploadSizeInBytes) return AssetErrors.FileTooLarge;
+        
         var userIdResult = UserId.Create(userId);
         if (userIdResult.IsFailure) return userIdResult.Error;
 

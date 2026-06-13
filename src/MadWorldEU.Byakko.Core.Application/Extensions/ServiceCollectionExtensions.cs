@@ -14,11 +14,12 @@ public static class ServiceCollectionExtensions
         services.AddScoped<DeleteAllExpiredContentOfAssetsUseCase>();
         services.AddScoped<DeleteAllExpiredMetaDataAssetsUseCase>();
         services.AddScoped<DeleteContentOfAssetUseCase>();
+        services.AddScoped<DownloadAssetContentUseCase>();
         services.AddScoped<GetAssetMetadataUseCase>();
         services.AddScoped<GetAssetsMetaDataUseCase>();
         services.AddScoped<GetStorageStatisticsUseCase>();
+        services.AddScoped<GetUserUploadLimitsUseCase>();
         services.AddScoped<UploadAssetContentUseCase>();
-        services.AddScoped<DownloadAssetContentUseCase>();
 
         return services;
     }

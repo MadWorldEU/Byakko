@@ -10,4 +10,7 @@ public sealed class AssetSettings
 
     /// <summary>Maximum allowed upload size in bytes. Enforced by both the API and the Portal UI.</summary>
     public long MaxUploadSizeInBytes { get; init; }
+
+    /// <summary>Maximum number of active (non-deleted, non-expired) files a single user may have at one time.</summary>
+    public int MaxFilesEachUser { get; init; }
 }

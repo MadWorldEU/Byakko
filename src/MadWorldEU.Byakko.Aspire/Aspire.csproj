@@ -13,6 +13,7 @@
         <PackageReference Include="Aspire.Hosting.PostgreSQL" />
         <PackageReference Include="AWSSDK.S3" />
         <PackageReference Include="LocalStack.Aspire.Hosting" />
+        <PackageReference Include="MessagePack" />
     </ItemGroup>
 
     <ItemGroup>
