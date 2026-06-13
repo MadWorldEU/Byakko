@@ -5,8 +5,10 @@ using NodaTime;
 
 namespace MadWorldEU.Byakko.Storages;
 
+/// <summary>PostgreSQL implementation of <see cref="IAssetRepository"/> backed by <see cref="ByakkoContext"/>.</summary>
 public sealed class AssetRepository(ByakkoContext context, IClock clock, ILogger<AssetRepository> logger) : IAssetRepository
 {
+    /// <inheritdoc />
     public async Task<Result> AddAsync(Asset asset)
     {
         try
@@ -24,6 +26,7 @@ public sealed class AssetRepository(ByakkoContext context, IClock clock, ILogger
         }
     }
 
+    /// <inheritdoc />
     public async Task<Result> UpdateAsync(Asset asset)
     {
         try
@@ -41,6 +44,7 @@ public sealed class AssetRepository(ByakkoContext context, IClock clock, ILogger
         }
     }
 
+    /// <inheritdoc />
     public async Task<Result<Asset>> FindAsync(Id id)
     {
         Asset? asset;
@@ -64,6 +68,7 @@ public sealed class AssetRepository(ByakkoContext context, IClock clock, ILogger
         return asset;
     }
 
+    /// <inheritdoc />
     public async Task<Result<PagedResult<Asset>>> GetAllPagesAsync(Id id, UserId userId, Page page)
     {
         var pageSize = PageSize.Create(20).Value;
@@ -98,6 +103,7 @@ public sealed class AssetRepository(ByakkoContext context, IClock clock, ILogger
         }
     }
 
+    /// <inheritdoc />
     public async Task<Result<int>> GetCountOfActiveAssetsAsync()
     {
         try
@@ -113,6 +119,24 @@ public sealed class AssetRepository(ByakkoContext context, IClock clock, ILogger
         }
     }
 
+    /// <inheritdoc />
+    public async Task<Result<int>> GetCountOfActiveAssetsAsync(UserId userId)
+    {
+        try
+        {
+            return await context.Assets
+                .Where(a => a.CreatedBy == userId &&
+                    a.DeletedAt == null)
+                .CountAsync();
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Failed to query total active assets.");
+            return AssetErrors.QueryFailed;
+        }
+    }
+
+    /// <inheritdoc />
     public async Task<Result<IReadOnlyList<Asset>>> GetExpiredContentAsync()
     {
         var now = clock.GetCurrentInstant();
@@ -132,6 +156,7 @@ public sealed class AssetRepository(ByakkoContext context, IClock clock, ILogger
         }
     }
 
+    /// <inheritdoc />
     public async Task<Result<Size>> GetTotalSavedSizeAsync()
     {
         try
@@ -149,6 +174,7 @@ public sealed class AssetRepository(ByakkoContext context, IClock clock, ILogger
         }
     }
 
+    /// <inheritdoc />
     public async Task<Result> DeleteExpiredAssets()
     {
         var lastYear = clock.GetCurrentInstant()

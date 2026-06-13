@@ -106,7 +106,8 @@
             var createResponse = await AssetService.CreateAssetAsync(new()
             {
                 Name = _selectedFile.Name,
-                ContentType = _selectedFile.ContentType
+                ContentType = _selectedFile.ContentType,
+                Size = _selectedFile.Size
             });
 
             if (createResponse is null)

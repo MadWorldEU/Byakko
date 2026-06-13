@@ -1,4 +1,5 @@
 using MadWorldEU.Byakko.Configurations;
+using MadWorldEU.Byakko.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MadWorldEU.Byakko.Endpoints.Storages;
@@ -13,6 +14,19 @@ internal static class AssetsEndpoints
         var assetsEndpoints = app.MapGroup("/assets")
             .WithTags("Assets");
 
+        assetsEndpoints.MapGet("/limits", async (ClaimsPrincipal user, GetUserUploadLimitsUseCase useCase) =>
+            {
+                var userId = user.GetUserId();
+
+                var result = await useCase.ExecuteAsync(userId);
+                return result.Match(
+                    onSuccess: Results.Ok,
+                    onFailure: error => Results.BadRequest(error.Description)
+                );
+            })
+            .RequireAuthorization()
+            .WithName("GetUserUploadLimits");
+
         assetsEndpoints.MapGet("/", async (int page, Guid? assetId, Guid? userId, GetAssetsMetaDataUseCase useCase) =>
             {
                 var result = await useCase.ExecuteAsync(page, assetId, userId);
@@ -26,9 +40,7 @@ internal static class AssetsEndpoints
 
         assetsEndpoints.MapPost("/", async (CreateAssetRequest request, ClaimsPrincipal user, CreateAssetMetadataUseCase useCase) =>
             {
-                var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value
-                    ?? user.FindFirst("sub")?.Value
-                    ?? string.Empty;
+                var userId = user.GetUserId();
 
                 var result = await useCase.ExecuteAsync(request, userId);
                 return result.Match(
@@ -54,9 +66,7 @@ internal static class AssetsEndpoints
         assetsEndpoints.MapPut("/{id}/content",
                 async (string id, IFormFile file, ClaimsPrincipal user, UploadAssetContentUseCase useCase) =>
                 {
-                    var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value
-                                 ?? user.FindFirst("sub")?.Value
-                                 ?? string.Empty;
+                    var userId = user.GetUserId();
 
                     await using var content = file.OpenReadStream();
                     var result = await useCase.ExecuteAsync(id, content, file.Length, userId, file.FileName,
