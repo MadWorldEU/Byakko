@@ -17,6 +17,12 @@ public sealed class AssetService : IAssetService
     }
 
     /// <inheritdoc />
+    public async Task<GetUserUploadLimitsResponse?> GetUserUploadLimitsAsync()
+    {
+        return await _httpClientAuthorized.GetFromJsonAsync<GetUserUploadLimitsResponse>("/assets/limits");
+    }
+
+    /// <inheritdoc />
     public async Task<CreateAssetResponse?> CreateAssetAsync(CreateAssetRequest request)
     {
         var response = await _httpClientAuthorized.PostAsJsonAsync("/assets", request);

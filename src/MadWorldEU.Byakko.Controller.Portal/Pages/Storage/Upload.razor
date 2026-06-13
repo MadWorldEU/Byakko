@@ -11,6 +11,22 @@
             <h2 class="fw-bold mb-1">Upload a file</h2>
             <p class="text-secondary mb-4">Pick any file and we'll generate a shareable link for you.</p>
 
+            @if (_limits is not null)
+            {
+                var filesLeft = _limits.MaxFiles - _limits.ActiveFiles;
+                <div class="alert @(filesLeft == 0 ? "alert-warning" : "alert-info") d-flex gap-4 mb-4 py-2 px-3" role="alert">
+                    <div>
+                        <div class="text-secondary small">Max file size</div>
+                        <div class="fw-semibold">@ByteFormatter.Format(_limits.MaxUploadSizeInBytes)</div>
+                    </div>
+                    <div class="vr"></div>
+                    <div>
+                        <div class="text-secondary small">Files remaining</div>
+                        <div class="fw-semibold @(filesLeft == 0 ? "text-warning" : "")">@filesLeft of @_limits.MaxFiles</div>
+                    </div>
+                </div>
+            }
+
             @if (_uploadedId is not null)
             {
                 <div class="alert alert-success d-flex flex-column gap-2" role="alert">
@@ -49,7 +65,7 @@
 
                     <button class="btn btn-primary w-100 fw-semibold"
                             @onclick="UploadAsync"
-                            disabled="@(_selectedFile is null || _isUploading)">
+                            disabled="@(_selectedFile is null || _isUploading || FileLimitReached)">
                         @if (_isUploading)
                         {
                             <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
@@ -75,12 +91,19 @@
     private bool _isUploading;
     private string? _errorMessage;
     private int _uploadProgressPercent;
+    private GetUserUploadLimitsResponse? _limits;
 
-    private long MaxUploadSizeInBytes => AssetSettings.Value.MaxUploadSizeInBytes;
+    private long MaxUploadSizeInBytes => _limits?.MaxUploadSizeInBytes ?? AssetSettings.Value.MaxUploadSizeInBytes;
+    private bool FileLimitReached => _limits is not null && _limits.ActiveFiles >= _limits.MaxFiles;
 
     private string ShareLink => _uploadedId is not null
         ? $"{Navigation.BaseUri}storage/download/{_uploadedId}"
         : string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _limits = await AssetService.GetUserUploadLimitsAsync();
+    }
 
     private void OnFileSelected(InputFileChangeEventArgs e)
     {
@@ -136,6 +159,7 @@
             }
 
             _uploadedId = uploadResponse.Id;
+            _limits = await AssetService.GetUserUploadLimitsAsync();
         }
         catch (Exception ex)
         {

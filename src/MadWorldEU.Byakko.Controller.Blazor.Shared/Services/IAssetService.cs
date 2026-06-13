@@ -5,6 +5,9 @@ namespace MadWorldEU.Byakko.Services;
 /// <summary>Wraps the Assets API endpoints for use in Blazor WebAssembly applications.</summary>
 public interface IAssetService
 {
+    /// <summary>Returns the upload limits and current file usage for the authenticated user.</summary>
+    Task<GetUserUploadLimitsResponse?> GetUserUploadLimitsAsync();
+
     /// <summary>Creates a new asset metadata record and returns the assigned ID.</summary>
     Task<CreateAssetResponse?> CreateAssetAsync(CreateAssetRequest request);
 
