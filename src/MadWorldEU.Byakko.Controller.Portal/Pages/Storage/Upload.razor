@@ -88,8 +88,8 @@
 </div>
 
 @code {
-    [Inject] private NavigationManager Navigation { get; set; } = default!;
-    [Inject] private IJSRuntime JS { get; set; } = default!;
+    [Inject] private NavigationManager Navigation { get; set; } = null!;
+    [Inject] private IJSRuntime Js { get; set; } = null!;
 
     private IBrowserFile? _selectedFile;
     private Guid? _uploadedId;
@@ -179,7 +179,7 @@
 
     private async Task CopyLink()
     {
-        await JS.InvokeVoidAsync("navigator.clipboard.writeText", ShareLink);
+        await Js.InvokeVoidAsync("navigator.clipboard.writeText", ShareLink);
         _linkCopied = true;
         StateHasChanged();
         await Task.Delay(2000);
