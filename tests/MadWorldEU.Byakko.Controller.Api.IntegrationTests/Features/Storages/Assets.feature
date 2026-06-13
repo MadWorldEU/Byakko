@@ -17,6 +17,13 @@ Scenario: Delete content of an asset as an administrator
     Then the response status code should be 200
     And the expire date of the created asset should be in the past
 
+Scenario: Retrieve upload limits for an authenticated user
+    Given I am authenticated as a user
+    And I have created an asset with name "limits-test.txt" and content type "text/plain"
+    When I request my upload limits
+    Then the response status code should be 200
+    And the upload limits should reflect my usage
+
 Scenario: Upload and download a file for an asset
     Given I am authenticated as a user
     And I have created an asset with name "test-file.txt" and content type "text/plain"

@@ -5,6 +5,7 @@ public sealed class AssetsSteps(ScenarioContext scenarioContext)
 {
     private const string AssetIdKey = "AssetId";
     private const string CreatedAssetIdsKey = "CreatedAssetIds";
+    private const string UploadLimitsKey = "UploadLimits";
 
     [Given("I am authenticated as a user")]
     public void GivenIAmAuthenticatedAsAUser()
@@ -132,5 +133,26 @@ public sealed class AssetsSteps(ScenarioContext scenarioContext)
         var assetId = scenarioContext.Get<Guid>(AssetIdKey);
         var response = await client.GetAsync($"/assets/{assetId}/content");
         scenarioContext.Set(response, ScenarioContextKeys.LastResponse);
+    }
+
+    [When("I request my upload limits")]
+    public async Task WhenIRequestMyUploadLimits()
+    {
+        var client = scenarioContext.Get<HttpClient>();
+        var response = await client.GetAsync("/assets/limits");
+        scenarioContext.Set(response, ScenarioContextKeys.LastResponse);
+
+        var limits = await response.Content.ReadFromJsonAsync<GetUserUploadLimitsResponse>();
+        scenarioContext.Set(limits, UploadLimitsKey);
+    }
+
+    [Then("the upload limits should reflect my usage")]
+    public void ThenTheUploadLimitsShouldReflectMyUsage()
+    {
+        var limits = scenarioContext.Get<GetUserUploadLimitsResponse>(UploadLimitsKey);
+        limits.ShouldNotBeNull();
+        limits.MaxFiles.ShouldBeGreaterThan(0);
+        limits.MaxUploadSizeInBytes.ShouldBeGreaterThan(0);
+        limits.ActiveFiles.ShouldBeGreaterThanOrEqualTo(1);
     }
 }

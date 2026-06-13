@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Options;
+
 namespace MadWorldEU.Byakko.Pages.Storage;
 
 /// <summary>Component tests for the Upload page.</summary>
@@ -10,6 +12,11 @@ public sealed class UploadPageTests
 
         using var server = WireMockServer.Start();
         server
+            .Given(Request.Create().WithPath("/assets/limits").UsingGet())
+            .RespondWith(Response.Create()
+                .WithStatusCode(200)
+                .WithBodyAsJson(new GetUserUploadLimitsResponse { MaxFiles = 10, MaxUploadSizeInBytes = 1073741824, ActiveFiles = 0 }));
+        server
             .Given(Request.Create().WithPath("/assets").UsingPost())
             .RespondWith(Response.Create()
                 .WithStatusCode(200)
@@ -21,6 +28,7 @@ public sealed class UploadPageTests
                 .WithBodyAsJson(new UploadAssetContentResponse { Id = assetId }));
 
         using var ctx = new BunitContext();
+        ctx.Services.AddSingleton(Options.Create(new AssetSettings { MaxUploadSizeInBytes = 1073741824 }));
         ctx.Services.AddHttpClient(HttpClients.ApiAnonymous, client =>
             client.BaseAddress = new Uri(server.Url!));
         ctx.Services.AddHttpClient(HttpClients.ApiAuthorized, client =>
