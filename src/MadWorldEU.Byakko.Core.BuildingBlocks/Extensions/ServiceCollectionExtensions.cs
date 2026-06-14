@@ -8,9 +8,20 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddBuildingBlocks(this IServiceCollection services)
     {
-        services.AddSingleton<IClock>(SystemClock.Instance);
-        services.AddSingleton<IGuidGenerator, GuidGenerator>();
+        services.AddEventDrivenDevelopment();
+        services.AddSystems();
         
         return services;
+    }
+
+    private static void AddEventDrivenDevelopment(this IServiceCollection services)
+    {
+        services.AddScoped<IDomainEventsDispatcher, DomainEventsDispatcher>();
+    }
+    
+    private static void AddSystems(this IServiceCollection services)
+    {
+        services.AddSingleton<IClock>(SystemClock.Instance);
+        services.AddSingleton<IGuidGenerator, GuidGenerator>();
     }
 }

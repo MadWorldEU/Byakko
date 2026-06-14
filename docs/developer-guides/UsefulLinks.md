@@ -38,6 +38,7 @@ A curated list of websites and resources used in or relevant to this project.
 ## Architecture
 
 - [ASP.NET Core repo structure (davidfowl)](https://gist.github.com/davidfowl/ed7564297c61fe9ab814) — Recommended C# repository layout for ASP.NET Core projects
+- [Building a custom domain events dispatcher in .NET (Milan Jovanović)](https://www.milanjovanovic.tech/blog/building-a-custom-domain-events-dispatcher-in-dotnet) — Guide to implementing a domain event dispatcher with EF Core and MediatR
 - [C4 Model](https://c4model.com/) — A model for visualising software architecture
 - [Structurizr](https://docs.structurizr.com/) — Tooling for creating C4 model diagrams as code
 

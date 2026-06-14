@@ -1,3 +1,5 @@
+using MadWorldEU.Byakko.Audits;
+using MadWorldEU.Byakko.DomainDrivenDevelopment;
 using Microsoft.Extensions.Configuration;
 
 namespace MadWorldEU.Byakko.Extensions;
@@ -6,6 +8,14 @@ namespace MadWorldEU.Byakko.Extensions;
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddAssets(configuration);
+        services.AddAudits();
+        
+        return services;
+    }
+
+    private static void AddAssets(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<AssetSettings>(options =>
             configuration.GetSection(AssetSettings.Key).Bind(options));
@@ -20,7 +30,11 @@ public static class ServiceCollectionExtensions
         services.AddScoped<GetStorageStatisticsUseCase>();
         services.AddScoped<GetUserUploadLimitsUseCase>();
         services.AddScoped<UploadAssetContentUseCase>();
-
-        return services;
+    }
+    
+    private static void AddAudits(this IServiceCollection services)
+    {
+        services.AddScoped<IDomainEventHandler<AssetMetaDataCreatedEvent>, AuditAssetsHandler>();
+        services.AddScoped<IDomainEventHandler<AssetContentUploadedEvent>, AuditAssetsHandler>();
     }
 }

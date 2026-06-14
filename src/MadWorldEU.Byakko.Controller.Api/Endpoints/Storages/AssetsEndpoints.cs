@@ -38,11 +38,12 @@ internal static class AssetsEndpoints
             .RequireAuthorization(AuthorizationPolicies.Administrator)
             .WithName("GetAssetsMetadata");
 
-        assetsEndpoints.MapPost("/", async (CreateAssetRequest request, ClaimsPrincipal user, CreateAssetMetadataUseCase useCase) =>
+        assetsEndpoints.MapPost("/", async (CreateAssetRequest request, ClaimsPrincipal user, HttpContext httpContext, CreateAssetMetadataUseCase useCase) =>
             {
                 var userId = user.GetUserId();
+                var ipAddress = httpContext.Connection.RemoteIpAddress;
 
-                var result = await useCase.ExecuteAsync(request, userId);
+                var result = await useCase.ExecuteAsync(request, userId, ipAddress);
                 return result.Match(
                     onSuccess: response => Results.Created($"/assets/{response.Id}", response),
                     onFailure: error => Results.BadRequest(error.Description)
@@ -64,12 +65,13 @@ internal static class AssetsEndpoints
             .WithName("GetAssetMetadata");
 
         assetsEndpoints.MapPut("/{id}/content",
-                async (string id, IFormFile file, ClaimsPrincipal user, UploadAssetContentUseCase useCase) =>
+                async (string id, IFormFile file, ClaimsPrincipal user, HttpContext httpContext, UploadAssetContentUseCase useCase) =>
                 {
                     var userId = user.GetUserId();
+                    var ipAddress = httpContext.Connection.RemoteIpAddress;
 
                     await using var content = file.OpenReadStream();
-                    var result = await useCase.ExecuteAsync(id, content, file.Length, userId, file.FileName,
+                    var result = await useCase.ExecuteAsync(id, content, file.Length, userId, ipAddress, file.FileName,
                         file.ContentType);
                     return result.Match(
                         onSuccess: Results.Ok,
