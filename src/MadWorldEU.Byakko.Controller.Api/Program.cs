@@ -43,7 +43,7 @@ builder.Services.AddOpenTelemetry()
         .AddRuntimeInstrumentation()
         .AddOtlpExporter())
     .WithLogging(logging => logging
-        .AddOtlpExporter());
+        .AddOtlpExporter(), options => options.IncludeFormattedMessage = true);
 
 var app = builder.Build();
 

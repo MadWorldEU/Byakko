@@ -25,7 +25,7 @@ builder.Services.AddOpenTelemetry()
         .AddRuntimeInstrumentation()
         .AddOtlpExporter())
     .WithLogging(logging => logging
-        .AddOtlpExporter());
+        .AddOtlpExporter(), options => options.IncludeFormattedMessage = true);
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
