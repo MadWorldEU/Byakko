@@ -1,18 +1,38 @@
 using MadWorldEU.Byakko.DomainDrivenDevelopment;
+using MadWorldEU.Byakko.Systems;
 
 namespace MadWorldEU.Byakko.Audits;
 
-public sealed class AuditAssetsHandler 
+/// <summary>Handles asset domain events by writing an audit log entry for each action.</summary>
+public sealed class AuditAssetsHandler(
+    IClock clock,
+    IGuidGenerator guidGenerator,
+    IAuditRepository auditRepository,
+    ILogger<AuditAssetsHandler> logger)
     : IDomainEventHandler<AssetMetaDataCreatedEvent>,
         IDomainEventHandler<AssetContentUploadedEvent>
 {
-    public Task Handle(AssetMetaDataCreatedEvent domainEvent, CancellationToken cancellationToken = default)
+    public async Task Handle(AssetMetaDataCreatedEvent domainEvent, CancellationToken cancellationToken = default)
     {
-        return Task.CompletedTask;
+        var auditResult = AuditLog.Create(clock, guidGenerator, domainEvent.AssetId, domainEvent.IpAddress, domainEvent.CreatedBy);
+        if (auditResult.IsFailure)
+        {
+            logger.LogWarning("Failed to create audit log for asset '{AssetId}': {Error}", domainEvent.AssetId, auditResult.Error.Description);
+            return;
+        }
+
+        await auditRepository.AddAsync(auditResult.Value);
     }
 
-    public Task Handle(AssetContentUploadedEvent domainEvent, CancellationToken cancellationToken = default)
+    public async Task Handle(AssetContentUploadedEvent domainEvent, CancellationToken cancellationToken = default)
     {
-        return Task.CompletedTask;
+        var auditResult = AuditLog.Create(clock, guidGenerator, domainEvent.AssetId, domainEvent.IpAddress, domainEvent.CreatedBy);
+        if (auditResult.IsFailure)
+        {
+            logger.LogWarning("Failed to create audit log for asset '{AssetId}': {Error}", domainEvent.AssetId, auditResult.Error.Description);
+            return;
+        }
+
+        await auditRepository.AddAsync(auditResult.Value);
     }
 }

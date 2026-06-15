@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 
 namespace MadWorldEU.Byakko.DomainDrivenDevelopment;
 
+/// <summary>Resolves and invokes all registered handlers for each dispatched domain event.</summary>
 internal sealed class DomainEventsDispatcher(IServiceProvider serviceProvider)
     : IDomainEventsDispatcher
 {
