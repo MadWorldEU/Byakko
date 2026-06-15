@@ -9,6 +9,17 @@ public sealed class IpAddress : ValueObject
         Value = ipAddress;   
     }
     
+    public static Result<IpAddress> Create(string ipAddress)
+    {
+        if (string.IsNullOrWhiteSpace(ipAddress) || 
+            !System.Net.IPAddress.TryParse(ipAddress, out _))
+        {
+            return AuditErrors.InvalidIpAddress;
+        }
+        
+        return new IpAddress(ipAddress);
+    }
+    
     public static Result<IpAddress> Create(System.Net.IPAddress? ipAddress)
     {
         if (ipAddress is null)

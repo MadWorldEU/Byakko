@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace MadWorldEU.Byakko.Storages;
 
-internal class AssetEntityTypeConfiguration : IEntityTypeConfiguration<Asset>
+internal sealed class AssetEntityTypeConfiguration : IEntityTypeConfiguration<Asset>
 {
     public void Configure(EntityTypeBuilder<Asset> builder)
     {
