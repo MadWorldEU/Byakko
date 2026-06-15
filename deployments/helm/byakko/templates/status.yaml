@@ -50,6 +50,12 @@ spec:
                         value: "Host={{ .Values.postgres.name }};Port={{ .Values.postgres.containerPort }};Username={{ .Values.postgres.username }};Password={{ .Values.postgres.password }};Database={{ .Values.postgres.database }}"
                       - name: ConnectionStrings__localstack
                         value: "http://{{ .Values.localstack.name }}.{{ .Values.namespace }}:{{ .Values.localstack.servicePort }}"
+                      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+                      {{- if .Values.observability.enabled }}
+                        value: "http://{{ .Values.observability.otelCollector.name }}:4317"
+                      {{- else }}
+                        value: {{ .Values.api.observability.otlpEndpoint | quote }}
+                      {{- end }}
                       - name: HealthChecks__Api
                         value: {{ .Values.status.healthChecks.api | default (printf "https://api.%s/health" .Values.ingress.domain) | quote }}
                       - name: HealthChecks__Admin

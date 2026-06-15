@@ -3,7 +3,7 @@ namespace MadWorldEU.Byakko.Storages;
 /// <summary>Returns a paged list of asset metadata records.</summary>
 public sealed class GetAssetsMetaDataUseCase(IAssetRepository assetRepository)
 {
-    public async Task<Result<GetAssetsMetadataResponse>> ExecuteAsync(int page, Guid? assetId = null, Guid? userId = null)
+    public async Task<Result<GetAssetsMetadataResponse>> QueryAsync(int page, Guid? assetId = null, Guid? userId = null)
     {
         var pageResult = Page.Create(page);
         if (pageResult.IsFailure) return pageResult.Error;

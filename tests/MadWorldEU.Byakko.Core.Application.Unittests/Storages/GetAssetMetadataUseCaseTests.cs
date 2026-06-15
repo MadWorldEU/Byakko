@@ -10,7 +10,7 @@ public sealed class GetAssetMetadataUseCaseTests
     {
         var useCase = new GetAssetMetadataUseCase(_repository);
 
-        var result = await useCase.ExecuteAsync("not-a-guid");
+        var result = await useCase.QueryAsync("not-a-guid");
 
         result.IsFailure.ShouldBeTrue();
     }
@@ -22,7 +22,7 @@ public sealed class GetAssetMetadataUseCaseTests
 
         var useCase = new GetAssetMetadataUseCase(_repository);
 
-        var result = await useCase.ExecuteAsync(Guid.NewGuid().ToString());
+        var result = await useCase.QueryAsync(Guid.NewGuid().ToString());
 
         result.IsFailure.ShouldBeTrue();
         result.Error.ShouldBe(AssetErrors.NotFound);

@@ -1,4 +1,5 @@
 using MadWorldEU.Byakko.Configurations;
+using MadWorldEU.Byakko.Endpoints.Audits;
 using MadWorldEU.Byakko.Endpoints.Development;
 using MadWorldEU.Byakko.Endpoints.HostServices;
 using MadWorldEU.Byakko.Endpoints.Storages;
@@ -74,6 +75,7 @@ if (app.Configuration.GetValue("RateLimiting:Enabled", true))
     app.UseRateLimiter();   
 }
 
+app.AddAuditEndpoints();
 app.AddAssetsEndpoints();
 app.AddGeneralStorageEndpoints();
 app.AddManualTriggersEndpoints();

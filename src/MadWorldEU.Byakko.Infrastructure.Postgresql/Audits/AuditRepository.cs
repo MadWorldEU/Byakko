@@ -23,4 +23,22 @@ public sealed class AuditRepository(ByakkoContext context, ILogger<AuditReposito
             return Result.Failure(AuditErrors.SaveFailed);
         }
     }
+    
+    /// <inheritdoc />
+    public async Task<Result<IReadOnlyList<AuditLog>>> GetAsync(Id entityId)
+    {
+        try
+        {
+            var auditLogs = await context.AuditLogs
+                .Where(al => al.EntityId == entityId)
+                .ToListAsync();
+
+            return Result.Success<IReadOnlyList<AuditLog>>(auditLogs);
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Failed to query expired audit logs.");
+            return AuditErrors.QueryFailed;
+        }
+    }
 }

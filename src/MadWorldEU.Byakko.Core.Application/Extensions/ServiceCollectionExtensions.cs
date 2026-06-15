@@ -36,5 +36,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<IDomainEventHandler<AssetMetaDataCreatedEvent>, AuditAssetsHandler>();
         services.AddScoped<IDomainEventHandler<AssetContentUploadedEvent>, AuditAssetsHandler>();
+
+        services.AddScoped<GetAuditLogsUseCase>();
     }
 }

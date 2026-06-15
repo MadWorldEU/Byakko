@@ -6,7 +6,7 @@ namespace MadWorldEU.Byakko.Storages;
 public sealed class GetUserUploadLimitsUseCase(IAssetRepository repository, IOptions<AssetSettings> settings)
 {
     /// <summary>Executes the use case for the given <paramref name="userId"/>.</summary>
-    public async Task<Result<GetUserUploadLimitsResponse>> ExecuteAsync(string userId)
+    public async Task<Result<GetUserUploadLimitsResponse>> QueryAsync(string userId)
     {
         var userIdResult = UserId.Create(userId);
         if (userIdResult.IsFailure) return userIdResult.Error;

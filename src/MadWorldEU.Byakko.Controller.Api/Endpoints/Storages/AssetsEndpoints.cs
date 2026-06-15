@@ -18,7 +18,7 @@ internal static class AssetsEndpoints
             {
                 var userId = user.GetUserId();
 
-                var result = await useCase.ExecuteAsync(userId);
+                var result = await useCase.QueryAsync(userId);
                 return result.Match(
                     onSuccess: Results.Ok,
                     onFailure: error => Results.BadRequest(error.Description)
@@ -29,7 +29,7 @@ internal static class AssetsEndpoints
 
         assetsEndpoints.MapGet("/", async (int page, Guid? assetId, Guid? userId, GetAssetsMetaDataUseCase useCase) =>
             {
-                var result = await useCase.ExecuteAsync(page, assetId, userId);
+                var result = await useCase.QueryAsync(page, assetId, userId);
                 return result.Match(
                     onSuccess: Results.Ok,
                     onFailure: error => Results.BadRequest(error.Description)
@@ -54,7 +54,7 @@ internal static class AssetsEndpoints
 
         assetsEndpoints.MapGet("/{id}", async (string id, GetAssetMetadataUseCase useCase) =>
             {
-                var result = await useCase.ExecuteAsync(id);
+                var result = await useCase.QueryAsync(id);
                 return result.Match(
                     onSuccess: Results.Ok,
                     onFailure: error => error.Code == AssetErrors.NotFound.Code
@@ -105,7 +105,7 @@ internal static class AssetsEndpoints
 
         assetsEndpoints.MapGet("/{id}/content", async (string id, DownloadAssetContentUseCase useCase) =>
             {
-                var result = await useCase.ExecuteAsync(id);
+                var result = await useCase.QueryAsync(id);
                 
                 return result.Match(
                     onSuccess: response => Results.File(response.Content, response.ContentType, response.FileName),
