@@ -14,7 +14,7 @@ public sealed class AuditAssetsHandler(
 {
     public async Task Handle(AssetMetaDataCreatedEvent domainEvent, CancellationToken cancellationToken = default)
     {
-        var auditResult = AuditLog.Create(clock, guidGenerator, domainEvent.AssetId, domainEvent.IpAddress, domainEvent.CreatedBy);
+        var auditResult = AuditLog.Create(clock, guidGenerator, domainEvent.AssetId, AuditAction.Created, domainEvent.IpAddress, domainEvent.CreatedBy);
         if (auditResult.IsFailure)
         {
             logger.LogWarning("Failed to create audit log for asset '{AssetId}': {Error}", domainEvent.AssetId, auditResult.Error.Description);
@@ -26,7 +26,7 @@ public sealed class AuditAssetsHandler(
 
     public async Task Handle(AssetContentUploadedEvent domainEvent, CancellationToken cancellationToken = default)
     {
-        var auditResult = AuditLog.Create(clock, guidGenerator, domainEvent.AssetId, domainEvent.IpAddress, domainEvent.CreatedBy);
+        var auditResult = AuditLog.Create(clock, guidGenerator, domainEvent.AssetId, AuditAction.Uploaded, domainEvent.IpAddress, domainEvent.CreatedBy);
         if (auditResult.IsFailure)
         {
             logger.LogWarning("Failed to create audit log for asset '{AssetId}': {Error}", domainEvent.AssetId, auditResult.Error.Description);

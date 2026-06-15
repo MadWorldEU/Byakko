@@ -3,6 +3,7 @@ using System;
 using MadWorldEU.Byakko;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NodaTime;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MadWorldEU.Byakko.Migrations
 {
     [DbContext(typeof(ByakkoContext))]
-    partial class ByakkoContextModelSnapshot : ModelSnapshot
+    [Migration("20260615140021_AddAudit")]
+    partial class AddAudit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

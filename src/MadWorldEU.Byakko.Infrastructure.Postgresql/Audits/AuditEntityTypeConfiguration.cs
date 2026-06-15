@@ -10,14 +10,20 @@ internal sealed class AuditEntityTypeConfiguration : IEntityTypeConfiguration<Au
 
         builder.Property(a => a.Id)
             .HasConversion<Guid>(id => id.Value, id => Id.Create(id).Value);
+
+        builder.Property(a => a.EntityType)
+            .IsRequired();
+        
+        builder.Property(a => a.EntityId)
+            .IsRequired()
+            .HasConversion<Guid>(id => id.Value, id => Id.Create(id).Value);
+
+        builder.Property(a => a.Action)
+            .IsRequired();
         
         builder.Property(a => a.IpAddress)
             .IsRequired()
             .HasConversion<string>(ip => ip.Value, ip => IpAddress.Create(ip).Value);
-
-        builder.Property(a => a.EntityId)
-            .IsRequired()
-            .HasConversion<Guid>(id => id.Value, id => Id.Create(id).Value);
         
         builder.Property(a => a.OccurredBy)
             .IsRequired()
