@@ -13,3 +13,10 @@ Scenario: Manually trigger expired asset metadata cleanup
     When I trigger the expired asset metadata cleanup
     Then the response status code should be 200
     And the soft-deleted asset should be permanently removed
+
+Scenario: Manually trigger expired asset metadata cleanup removes associated audit logs
+    Given I am authenticated as an administrator
+    And I have set up a soft-deleted asset
+    When I trigger the expired asset metadata cleanup
+    Then the response status code should be 200
+    And the audit logs for the soft-deleted asset should be removed
