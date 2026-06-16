@@ -30,7 +30,7 @@ headlamp:
     enabled: false
     name: "headlamp"
     externalName: "my-headlamp.kube-system.svc.cluster.local"
-    servicePort: 4466
+    servicePort: 80
 
 localstack:
     enabled: false
