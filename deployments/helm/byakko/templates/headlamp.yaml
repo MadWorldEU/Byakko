@@ -1,0 +1,16 @@
+{{- if .Values.headlamp.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+    name: {{ .Values.headlamp.name }}
+    namespace: {{ .Values.namespace }}
+    labels:
+        app: {{ .Values.headlamp.name }}
+spec:
+    type: ExternalName
+    externalName: {{ .Values.headlamp.externalName }}
+    ports:
+        - port: {{ .Values.headlamp.servicePort }}
+          targetPort: {{ .Values.headlamp.servicePort }}
+          protocol: TCP
+{{- end }}

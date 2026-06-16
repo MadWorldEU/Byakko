@@ -26,6 +26,12 @@ storage:
         secretKey: "changeme"
         region: "changeme"
 
+headlamp:
+    enabled: false
+    name: "headlamp"
+    externalName: "my-headlamp.kube-system.svc.cluster.local"
+    servicePort: 4466
+
 localstack:
     enabled: false
     name: "localstack"

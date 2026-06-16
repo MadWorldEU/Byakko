@@ -87,6 +87,7 @@ Add the following entries to your hosts file so the local domains resolve to you
 127.0.0.1       database.byakko.dev
 127.0.0.1       authentication.byakko.dev
 127.0.0.1       grafana.byakko.dev
+127.0.0.1       kubernetes.byakko.dev
 ```
 
 ### Deploy to Development
@@ -209,6 +210,18 @@ sudo microk8s kubectl create token my-headlamp --namespace kube-system
 
 #### Step 5 — Access Headlamp
 
+**Option A — Via the byakko ingress (recommended for production)**
+
+After deploying the Helm chart with `headlamp.enabled: true`, access the dashboard at:
+
+```
+https://kubernetes.<domain>
+```
+
+Use the token from Step 4 to log in.
+
+**Option B — Via port forwarding (local / without ingress)**
+
 Forward the Headlamp port to access the dashboard:
 
 ```shell
@@ -216,6 +229,8 @@ export POD_NAME=$(sudo microk8s kubectl get pods --namespace kube-system -l "app
 export CONTAINER_PORT=$(sudo microk8s kubectl get pod --namespace kube-system $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
 sudo microk8s kubectl --namespace kube-system port-forward --address 0.0.0.0 $POD_NAME 10443:$CONTAINER_PORT
 ```
+
+Then open `http://localhost:10443` and use the token from Step 4 to log in.
 
 ### Before a server shutdown
 
