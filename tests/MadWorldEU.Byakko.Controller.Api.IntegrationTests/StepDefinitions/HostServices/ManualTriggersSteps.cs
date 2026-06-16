@@ -103,4 +103,16 @@ public sealed class ManualTriggersSteps(ScenarioContext scenarioContext)
         var response = await client.GetAsync($"/assets/{assetId}");
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
+
+    [Then("the audit logs for the soft-deleted asset should be removed")]
+    public async Task ThenTheAuditLogsForTheSoftDeletedAssetShouldBeRemoved()
+    {
+        var assetId = scenarioContext.Get<Guid>(MetadataAssetIdKey);
+        var client = scenarioContext.Get<HttpClient>();
+        var response = await client.GetAsync($"/audits/{assetId}");
+        response.EnsureSuccessStatusCode();
+        var body = await response.Content.ReadFromJsonAsync<GetAuditLogsResponse>();
+        body.ShouldNotBeNull();
+        body.Logs.ShouldBeEmpty();
+    }
 }

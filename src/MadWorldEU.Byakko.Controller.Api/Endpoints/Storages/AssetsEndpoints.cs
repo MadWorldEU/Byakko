@@ -18,7 +18,7 @@ internal static class AssetsEndpoints
             {
                 var userId = user.GetUserId();
 
-                var result = await useCase.ExecuteAsync(userId);
+                var result = await useCase.QueryAsync(userId);
                 return result.Match(
                     onSuccess: Results.Ok,
                     onFailure: error => Results.BadRequest(error.Description)
@@ -29,7 +29,7 @@ internal static class AssetsEndpoints
 
         assetsEndpoints.MapGet("/", async (int page, Guid? assetId, Guid? userId, GetAssetsMetaDataUseCase useCase) =>
             {
-                var result = await useCase.ExecuteAsync(page, assetId, userId);
+                var result = await useCase.QueryAsync(page, assetId, userId);
                 return result.Match(
                     onSuccess: Results.Ok,
                     onFailure: error => Results.BadRequest(error.Description)
@@ -38,11 +38,12 @@ internal static class AssetsEndpoints
             .RequireAuthorization(AuthorizationPolicies.Administrator)
             .WithName("GetAssetsMetadata");
 
-        assetsEndpoints.MapPost("/", async (CreateAssetRequest request, ClaimsPrincipal user, CreateAssetMetadataUseCase useCase) =>
+        assetsEndpoints.MapPost("/", async (CreateAssetRequest request, ClaimsPrincipal user, HttpContext httpContext, CreateAssetMetadataUseCase useCase) =>
             {
                 var userId = user.GetUserId();
+                var ipAddress = httpContext.Connection.RemoteIpAddress;
 
-                var result = await useCase.ExecuteAsync(request, userId);
+                var result = await useCase.ExecuteAsync(request, userId, ipAddress);
                 return result.Match(
                     onSuccess: response => Results.Created($"/assets/{response.Id}", response),
                     onFailure: error => Results.BadRequest(error.Description)
@@ -53,7 +54,7 @@ internal static class AssetsEndpoints
 
         assetsEndpoints.MapGet("/{id}", async (string id, GetAssetMetadataUseCase useCase) =>
             {
-                var result = await useCase.ExecuteAsync(id);
+                var result = await useCase.QueryAsync(id);
                 return result.Match(
                     onSuccess: Results.Ok,
                     onFailure: error => error.Code == AssetErrors.NotFound.Code
@@ -64,12 +65,13 @@ internal static class AssetsEndpoints
             .WithName("GetAssetMetadata");
 
         assetsEndpoints.MapPut("/{id}/content",
-                async (string id, IFormFile file, ClaimsPrincipal user, UploadAssetContentUseCase useCase) =>
+                async (string id, IFormFile file, ClaimsPrincipal user, HttpContext httpContext, UploadAssetContentUseCase useCase) =>
                 {
                     var userId = user.GetUserId();
+                    var ipAddress = httpContext.Connection.RemoteIpAddress;
 
                     await using var content = file.OpenReadStream();
-                    var result = await useCase.ExecuteAsync(id, content, file.Length, userId, file.FileName,
+                    var result = await useCase.ExecuteAsync(id, content, file.Length, userId, ipAddress, file.FileName,
                         file.ContentType);
                     return result.Match(
                         onSuccess: Results.Ok,
@@ -86,9 +88,11 @@ internal static class AssetsEndpoints
             .RequireAuthorization()
             .RequireRateLimiting(RateLimiterPolicies.Content);
 
-        assetsEndpoints.MapDelete("/{id}/content", async (string id, DeleteContentOfAssetUseCase useCase) =>
+        assetsEndpoints.MapDelete("/{id}/content", async (string id, HttpContext httpContext, DeleteContentOfAssetUseCase useCase) =>
             {
-                var result = await useCase.ExecuteAsync(id);
+                var ipAddress = httpContext.Connection.RemoteIpAddress;
+                
+                var result = await useCase.ExecuteAsync(id, ipAddress);
                 return result.Match(
                     onSuccess: Results.Ok,
                     onFailure: error => error.Code == AssetErrors.NotFound.Code
@@ -103,7 +107,7 @@ internal static class AssetsEndpoints
 
         assetsEndpoints.MapGet("/{id}/content", async (string id, DownloadAssetContentUseCase useCase) =>
             {
-                var result = await useCase.ExecuteAsync(id);
+                var result = await useCase.QueryAsync(id);
                 
                 return result.Match(
                     onSuccess: response => Results.File(response.Content, response.ContentType, response.FileName),

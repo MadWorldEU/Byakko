@@ -1,4 +1,5 @@
 using MadWorldEU.Byakko.Configurations;
+using MadWorldEU.Byakko.Endpoints.Audits;
 using MadWorldEU.Byakko.Endpoints.Development;
 using MadWorldEU.Byakko.Endpoints.HostServices;
 using MadWorldEU.Byakko.Endpoints.Storages;
@@ -42,7 +43,7 @@ builder.Services.AddOpenTelemetry()
         .AddRuntimeInstrumentation()
         .AddOtlpExporter())
     .WithLogging(logging => logging
-        .AddOtlpExporter());
+        .AddOtlpExporter(), options => options.IncludeFormattedMessage = true);
 
 var app = builder.Build();
 
@@ -74,6 +75,7 @@ if (app.Configuration.GetValue("RateLimiting:Enabled", true))
     app.UseRateLimiter();   
 }
 
+app.AddAuditEndpoints();
 app.AddAssetsEndpoints();
 app.AddGeneralStorageEndpoints();
 app.AddManualTriggersEndpoints();

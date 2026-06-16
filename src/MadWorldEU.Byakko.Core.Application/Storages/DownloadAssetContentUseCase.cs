@@ -5,7 +5,7 @@ namespace MadWorldEU.Byakko.Storages;
 /// <summary>Downloads the binary content of an asset from object storage.</summary>
 public sealed class DownloadAssetContentUseCase(IClock clock, IEncryptionService encryptionService, IAssetRepository assetRepository, IContentStorage contentStorage)
 {
-    public async Task<Result<DownloadAssetContentResponse>> ExecuteAsync(string assetId)
+    public async Task<Result<DownloadAssetContentResponse>> QueryAsync(string assetId)
     {
         var id = Id.Create(assetId);
         if (id.IsFailure) return id.Error;

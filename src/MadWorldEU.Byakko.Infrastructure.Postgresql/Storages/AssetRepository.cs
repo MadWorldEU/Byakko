@@ -182,6 +182,17 @@ public sealed class AssetRepository(ByakkoContext context, IClock clock, ILogger
 
         try
         {
+            var expiredAssetIds = await context.Assets
+                .Where(a => a.DeletedAt != null && a.DeletedAt < lastYear)
+                .Select(a => a.Id)
+                .ToListAsync();
+
+            var auditLogsDeleted = await context.AuditLogs
+                .Where(al => expiredAssetIds.Contains(al.EntityId))
+                .ExecuteDeleteAsync();
+
+            logger.LogInformation("Deleted {Count} audit log(s) for expired assets.", auditLogsDeleted);
+
             var assetsDeleted = await context.Assets
                 .Where(a => a.DeletedAt != null && a.DeletedAt < lastYear)
                 .ExecuteDeleteAsync();

@@ -2,7 +2,7 @@ namespace MadWorldEU.Byakko.Storages;
 
 public sealed class GetStorageStatisticsUseCase(IAssetRepository assetRepository)
 {
-    public async Task<Result<GetStorageStatisticsResponse>> ExecuteAsync()
+    public async Task<Result<GetStorageStatisticsResponse>> QueryAsync()
     {
         var savedSizeResult = await assetRepository.GetTotalSavedSizeAsync();
         if (savedSizeResult.IsFailure) return savedSizeResult.Error;

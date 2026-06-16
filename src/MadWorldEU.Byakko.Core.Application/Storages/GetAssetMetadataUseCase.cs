@@ -3,7 +3,7 @@ namespace MadWorldEU.Byakko.Storages;
 /// <summary>Retrieves the metadata of an existing asset by its identifier.</summary>
 public sealed class GetAssetMetadataUseCase(IAssetRepository assetRepository)
 {
-    public async Task<Result<GetAssetMetadataResponse>> ExecuteAsync(string assetId)
+    public async Task<Result<GetAssetMetadataResponse>> QueryAsync(string assetId)
     {
         var id = Id.Create(assetId);
         if (id.IsFailure) return id.Error;

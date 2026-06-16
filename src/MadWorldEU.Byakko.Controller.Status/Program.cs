@@ -14,6 +14,19 @@ builder.Services.Configure<HealthCheckSettings>(builder.Configuration.GetSection
 builder.Services.AddScoped<GetHealthServicesUseCase>();
 builder.Services.AddStatusRateLimiter(builder.Configuration);
 
+builder.Services.AddOpenTelemetry()
+    .WithTracing(tracing => tracing
+        .AddAspNetCoreInstrumentation()
+        .AddHttpClientInstrumentation()
+        .AddOtlpExporter())
+    .WithMetrics(metrics => metrics
+        .AddAspNetCoreInstrumentation()
+        .AddHttpClientInstrumentation()
+        .AddRuntimeInstrumentation()
+        .AddOtlpExporter())
+    .WithLogging(logging => logging
+        .AddOtlpExporter(), options => options.IncludeFormattedMessage = true);
+
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 

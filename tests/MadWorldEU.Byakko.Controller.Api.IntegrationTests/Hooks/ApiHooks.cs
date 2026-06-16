@@ -43,10 +43,12 @@ public sealed class ApiHooks(ScenarioContext scenarioContext)
         await context.Database.MigrateAsync();
 
         _client = _factory.CreateClient();
+        _client.DefaultRequestHeaders.Add("X-Forwarded-For", "171.129.229.213");
 
         _authenticatedClient = _factory.CreateClient();
         _authenticatedClient.DefaultRequestHeaders.Authorization =
             new AuthenticationHeaderValue("Bearer", TestJwtToken.Create("b7c12261-3707-43f6-9403-045a41422f25"));
+        _authenticatedClient.DefaultRequestHeaders.Add("X-Forwarded-For", "171.129.229.213");
     }
 
     [AfterTestRun]

@@ -34,7 +34,7 @@ public sealed class DownloadAssetContentUseCaseTests
 
         var useCase = new DownloadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage);
 
-        var result = await useCase.ExecuteAsync(Guid.NewGuid().ToString());
+        var result = await useCase.QueryAsync(Guid.NewGuid().ToString());
 
         result.IsFailure.ShouldBeTrue();
         result.Error.ShouldBe(AssetErrors.NotFound);
@@ -49,7 +49,7 @@ public sealed class DownloadAssetContentUseCaseTests
 
         var useCase = new DownloadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage);
 
-        var result = await useCase.ExecuteAsync(asset.Id.Value.ToString());
+        var result = await useCase.QueryAsync(asset.Id.Value.ToString());
 
         result.IsFailure.ShouldBeTrue();
         result.Error.ShouldBe(AssetErrors.Expired);
@@ -66,7 +66,7 @@ public sealed class DownloadAssetContentUseCaseTests
 
         var useCase = new DownloadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage);
 
-        var result = await useCase.ExecuteAsync(asset.Id.Value.ToString());
+        var result = await useCase.QueryAsync(asset.Id.Value.ToString());
 
         result.IsFailure.ShouldBeTrue();
         result.Error.ShouldBe(storageError);

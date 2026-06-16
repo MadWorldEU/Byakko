@@ -1,11 +1,19 @@
+using MadWorldEU.Byakko.Audits;
+using MadWorldEU.Byakko.DomainDrivenDevelopment;
 using MadWorldEU.Byakko.Encryptions;
 using Microsoft.Extensions.Options;
 
 namespace MadWorldEU.Byakko.Storages;
 
-public sealed class UploadAssetContentUseCase(IClock clock, IEncryptionService encryptionService, IAssetRepository assetRepository, IContentStorage contentStorage, IOptions<AssetSettings> settings)
+public sealed class UploadAssetContentUseCase(
+    IClock clock, 
+    IEncryptionService encryptionService, 
+    IAssetRepository assetRepository, 
+    IContentStorage contentStorage, 
+    IDomainEventsDispatcher domainEventsDispatcher,
+    IOptions<AssetSettings> settings)
 {
-    public async Task<Result<UploadAssetContentResponse>> ExecuteAsync(string assetId, Stream content, long sizeInBytes, string userId, string fileName, string contentType)
+    public async Task<Result<UploadAssetContentResponse>> ExecuteAsync(string assetId, Stream content, long sizeInBytes, string userId, System.Net.IPAddress? ipAddress, string fileName, string contentType)
     {
         var id = Id.Create(assetId);
         if (id.IsFailure) return id.Error;
@@ -16,6 +24,9 @@ public sealed class UploadAssetContentUseCase(IClock clock, IEncryptionService e
         
         var userIdResult = UserId.Create(userId);
         if (userIdResult.IsFailure) return userIdResult.Error;
+        
+        var ipAddressResult = IpAddress.Create(ipAddress);
+        if (ipAddressResult.IsFailure) return ipAddressResult.Error;
 
         var asset = await assetRepository.FindAsync(id.Value);
         if (asset.IsFailure) return asset.Error;
@@ -45,6 +56,9 @@ public sealed class UploadAssetContentUseCase(IClock clock, IEncryptionService e
 
         var updateResult = await assetRepository.UpdateAsync(asset.Value);
         if (updateResult.IsFailure) return updateResult.Error;
+        
+        var assetMetaDataCreatedEvent = new AssetContentUploadedEvent(asset.Value.Id, ipAddressResult.Value, asset.Value.CreatedBy, asset.Value.CreatedAt);
+        await domainEventsDispatcher.DispatchAsync([assetMetaDataCreatedEvent]);
 
         return new UploadAssetContentResponse { Id = asset.Value.Id.Value };
     }

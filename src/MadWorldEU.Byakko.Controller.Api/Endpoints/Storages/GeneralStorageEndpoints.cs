@@ -11,7 +11,7 @@ internal static class GeneralStorageEndpoints
 
         storageEndpoints.MapGet("/statistics", async (GetStorageStatisticsUseCase useCase) =>
             {
-                var result = await useCase.ExecuteAsync();
+                var result = await useCase.QueryAsync();
                 return result.Match(
                     onSuccess: Results.Ok,
                     onFailure: error => Results.BadRequest(error.Description)

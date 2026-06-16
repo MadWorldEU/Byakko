@@ -9,5 +9,6 @@ global using System.Net.Http.Json;
 global using Testcontainers.LocalStack;
 global using Testcontainers.PostgreSql;
 
+global using MadWorldEU.Byakko.Audits;
 global using MadWorldEU.Byakko.Common;
 global using MadWorldEU.Byakko.Storages;

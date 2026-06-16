@@ -1,3 +1,4 @@
+using System.Net;
 using MadWorldEU.Byakko.Systems;
 
 namespace MadWorldEU.Byakko.Storages;
@@ -12,6 +13,7 @@ public sealed class UploadAssetContentUseCaseTests
     private readonly IEncryptionService _encryptionService = Substitute.For<IEncryptionService>();
     private readonly IAssetRepository _assetRepository = Substitute.For<IAssetRepository>();
     private readonly IContentStorage _contentStorage = Substitute.For<IContentStorage>();
+    private readonly IDomainEventsDispatcher _domainEventsDispatcher = Substitute.For<IDomainEventsDispatcher>();
     private readonly IOptions<AssetSettings> _settings = Options.Create(new AssetSettings { MaxUploadSizeInBytes = 1073741824 });
 
     private static Asset BuildAsset(string name = "test.txt", string contentType = "text/plain")
@@ -36,11 +38,13 @@ public sealed class UploadAssetContentUseCaseTests
     {
         _assetRepository.FindAsync(Arg.Any<Id>()).Returns(Task.FromResult(Result.Failure<Asset>(AssetErrors.NotFound)));
 
-        var useCase = new UploadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage, _settings);
+        var useCase = new UploadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage, _domainEventsDispatcher, _settings);
 
+        var ipAddress = new IPAddress([127, 0, 0, 1]);
+        
         var result = await useCase.ExecuteAsync(
             Guid.NewGuid().ToString(), Stream.Null, 100,
-            OwnerId.ToString(), "test.txt", "text/plain");
+            OwnerId.ToString(), ipAddress, "test.txt", "text/plain");
 
         result.IsFailure.ShouldBeTrue();
         result.Error.ShouldBe(AssetErrors.NotFound);
@@ -52,11 +56,13 @@ public sealed class UploadAssetContentUseCaseTests
         var asset = BuildAsset();
         _assetRepository.FindAsync(Arg.Any<Id>()).Returns(Task.FromResult(Result.Success(asset)));
 
-        var useCase = new UploadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage, _settings);
+        var useCase = new UploadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage, _domainEventsDispatcher, _settings);
 
+        var ipAddress = new IPAddress([127, 0, 0, 1]);
+        
         var result = await useCase.ExecuteAsync(
             asset.Id.Value.ToString(), Stream.Null, 100,
-            OtherUserId.ToString(), "test.txt", "text/plain");
+            OtherUserId.ToString(), ipAddress, "test.txt", "text/plain");
 
         result.IsFailure.ShouldBeTrue();
         result.Error.ShouldBe(AssetErrors.Forbidden);
@@ -68,11 +74,13 @@ public sealed class UploadAssetContentUseCaseTests
         var asset = BuildAsset(name: "original.txt");
         _assetRepository.FindAsync(Arg.Any<Id>()).Returns(Task.FromResult(Result.Success(asset)));
 
-        var useCase = new UploadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage, _settings);
+        var useCase = new UploadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage, _domainEventsDispatcher, _settings);
 
+        var ipAddress = new IPAddress([127, 0, 0, 1]);
+        
         var result = await useCase.ExecuteAsync(
             asset.Id.Value.ToString(), Stream.Null, 100,
-            OwnerId.ToString(), "different.txt", "text/plain");
+            OwnerId.ToString(), ipAddress, "different.txt", "text/plain");
 
         result.IsFailure.ShouldBeTrue();
         result.Error.ShouldBe(AssetErrors.FileNameMismatch);
@@ -84,11 +92,13 @@ public sealed class UploadAssetContentUseCaseTests
         var asset = BuildAsset(contentType: "text/plain");
         _assetRepository.FindAsync(Arg.Any<Id>()).Returns(Task.FromResult(Result.Success(asset)));
 
-        var useCase = new UploadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage, _settings);
+        var useCase = new UploadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage, _domainEventsDispatcher, _settings);
 
+        var ipAddress = new IPAddress([127, 0, 0, 1]);
+        
         var result = await useCase.ExecuteAsync(
             asset.Id.Value.ToString(), Stream.Null, 100,
-            OwnerId.ToString(), "test.txt", "application/pdf");
+            OwnerId.ToString(), ipAddress, "test.txt", "application/pdf");
 
         result.IsFailure.ShouldBeTrue();
         result.Error.ShouldBe(AssetErrors.ContentTypeMismatch);
@@ -104,11 +114,13 @@ public sealed class UploadAssetContentUseCaseTests
         _contentStorage.UploadAsync(Arg.Any<AssetPath>(), Arg.Any<Stream>())
             .Returns(Task.FromResult(Result.Success()));
 
-        var useCase = new UploadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage, _settings);
+        var useCase = new UploadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage, _domainEventsDispatcher, _settings);
 
+        var ipAddress = new IPAddress([127, 0, 0, 1]);
+        
         var result = await useCase.ExecuteAsync(
             asset.Id.Value.ToString(), Stream.Null, 100,
-            OwnerId.ToString(), "test.txt", "text/plain");
+            OwnerId.ToString(), ipAddress, "test.txt", "text/plain");
 
         result.IsFailure.ShouldBeTrue();
         result.Error.ShouldBe(AssetErrors.SizeAlreadySet);
@@ -123,11 +135,13 @@ public sealed class UploadAssetContentUseCaseTests
         _contentStorage.UploadAsync(Arg.Any<AssetPath>(), Arg.Any<Stream>())
             .Returns(Task.FromResult(Result.Failure(storageError)));
 
-        var useCase = new UploadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage, _settings);
+        var useCase = new UploadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage, _domainEventsDispatcher, _settings);
 
+        var ipAddress = new IPAddress([127, 0, 0, 1]);
+        
         var result = await useCase.ExecuteAsync(
             asset.Id.Value.ToString(), Stream.Null, 100,
-            OwnerId.ToString(), "test.txt", "text/plain");
+            OwnerId.ToString(), ipAddress, "test.txt", "text/plain");
 
         result.IsFailure.ShouldBeTrue();
         result.Error.ShouldBe(storageError);
