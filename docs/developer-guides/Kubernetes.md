@@ -153,7 +153,8 @@ sudo microk8s helm upgrade traefik traefik/traefik -n traefik \
   --set "additionalArguments={--entrypoints.web.http.redirections.entryPoint.to=:443,--entrypoints.web.http.redirections.entryPoint.scheme=https}" \
   --set deployment.strategy.type=Recreate \
   --set ports.web.transport.respondingTimeouts.readTimeout=0 \
-  --set ports.websecure.transport.respondingTimeouts.readTimeout=0
+  --set ports.websecure.transport.respondingTimeouts.readTimeout=0 \
+  --set providers.kubernetesIngress.allowExternalNameServices=true
 ```
 
 If the new Traefik pod is stuck in `Pending` after an upgrade, the old pod may still be holding ports 80/443. Delete it manually:
@@ -253,9 +254,9 @@ Then copy the client secret from the **Credentials** tab.
 
 ```shell
 sudo microk8s helm upgrade my-headlamp headlamp/headlamp --namespace kube-system \
-  --set config.oidc.issuerURL="https://authentication.<domain>/realms/MadWorld" \
+  --set config.oidc.issuerURL="https://authentication.mad-world.eu/realms/MadWorld" \
   --set config.oidc.clientID="headlamp-client" \
-  --set config.oidc.clientSecret="<your-client-secret>" \
+  --set config.oidc.clientSecret="494RwyJz1AAs0eASbsG41dFVXlPUl2IE" \
   --set config.oidc.scopes="profile email groups"
 ```
 
@@ -267,8 +268,8 @@ Keycloak controls authentication; Kubernetes RBAC controls what users can do. Cr
 
 ```shell
 sudo microk8s kubectl create clusterrolebinding headlamp-view \
-  --clusterrole=view \
-  --user=<keycloak-username>
+  --clusterrole=cluster-admin \
+  --user=oveldman
 ```
 
 Replace `view` with `cluster-admin` to grant full access, or create a custom `ClusterRole` for finer-grained control.
