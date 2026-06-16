@@ -134,7 +134,7 @@ Content encrypted AES-256 before upload; IV prepended to ciphertext. Error mappi
 
 **Manual cleanup triggers** (`ManualTriggersEndpoints.cs`, requires auth):
 - `POST /host-services/manual-triggers/clean-up/assets-content` → `DeleteAllExpiredContentOfAssetsUseCase`
-- `POST /host-services/manual-triggers/clean-up/assets-metadata` → `DeleteAllExpiredMetaDataAssetsUseCase`
+- `POST /host-services/manual-triggers/clean-up/assets-metadata` → `DeleteAllExpiredMetaDataAssetsUseCase` — also bulk-deletes all audit logs whose `EntityId` matches the deleted assets (fetches IDs first, then `ExecuteDeleteAsync` on `AuditLogs`, then on `Assets`)
 
 ## Audits API
 
@@ -152,7 +152,7 @@ Endpoint in `Controller.Api/Endpoints/Audits/AuditEndpoints.cs`:
 - `AuditAction` enum — actions recorded on entities (e.g. `Created`, `Uploaded`).
 - `AuditEntityType` enum — types of domain entities that can be audited.
 - `AuditErrors` — `InvalidIpAddress`, `SaveFailed`, `QueryFailed`.
-- `IAuditRepository` — `AddAsync(AuditLog)` and `GetAsync(Id entityId)`; PostgreSQL implementation in `Infrastructure.Postgresql/Audits/AuditRepository.cs`.
+- `IAuditRepository` — `AddAsync(AuditLog)` and `GetAsync(Id entityId)`; PostgreSQL implementation in `Infrastructure.Postgresql/Audits/AuditRepository.cs`. Audit log deletion for expired assets is handled directly in `AssetRepository.DeleteExpiredAssets`, not through `IAuditRepository`.
 
 **AuditAssetsHandler** (`Core.Application/Audits/AuditAssetsHandler.cs`) — `IDomainEventHandler<AssetMetaDataCreatedEvent>` and `IDomainEventHandler<AssetContentUploadedEvent>`; writes an `AuditLog` entry per event. Audit creation failure is non-fatal: logs a warning via `ILogger` and returns without throwing.
 
