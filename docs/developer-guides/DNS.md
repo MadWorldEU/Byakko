@@ -19,6 +19,7 @@ Configure the following A records, replacing `<cluster-ip>` with the public IP o
 | `database.example.com`       | pgAdmin (database management)        |
 | `authentication.example.com` | Keycloak (identity server)           |
 | `grafana.example.com`        | Grafana (observability dashboards)   |
+| `kubernetes.example.com`     | Headlamp (Kubernetes dashboard)      |
 
 ## Simplified Configuration Using Wildcard Records
 

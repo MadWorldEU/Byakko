@@ -12,6 +12,9 @@ clusterIssuer:
 securityTxt:
     contact: "mailto:changeme"
 
+headlamp:
+    enabled: true
+
 localstack:
     enabled: false
 

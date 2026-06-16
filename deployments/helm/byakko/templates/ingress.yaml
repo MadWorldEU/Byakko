@@ -54,6 +54,9 @@ spec:
               {{- if .Values.observability.enabled }}
               - grafana.{{ .Values.ingress.domain }}
               {{- end }}
+              {{- if .Values.headlamp.enabled }}
+              - kubernetes.{{ .Values.ingress.domain }}
+              {{- end }}
     rules:
         - host: admin.{{ .Values.ingress.domain }}
           http:
@@ -126,6 +129,18 @@ spec:
                             name: {{ .Values.observability.grafana.name }}
                             port:
                                 number: {{ .Values.observability.grafana.servicePort }}
+        {{- end }}
+        {{- if .Values.headlamp.enabled }}
+        - host: kubernetes.{{ .Values.ingress.domain }}
+          http:
+              paths:
+                  - path: /
+                    pathType: Prefix
+                    backend:
+                        service:
+                            name: {{ .Values.headlamp.name }}
+                            port:
+                                number: {{ .Values.headlamp.servicePort }}
         {{- end }}
         - host: {{ .Values.ingress.domain }}
           http:
