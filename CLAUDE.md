@@ -232,9 +232,11 @@ See `.claude/rules/code-standard.md` for full standards. Key points:
 
 Chart in `deployments/helm/byakko/`. See `docs/developer-guides/Kubernetes.md` for setup.
 
-Key templates: `api.yaml`, `portal.yaml`, `admin.yaml`, `status.yaml`, `database.yaml`, `keycloak.yaml`, `keycloak-database.yaml`, `pgadmin.yaml`, `localstack.yaml` (guarded by `localstack.enabled`), observability stack (`otel-collector`, `prometheus`, `tempo`, `loki`, `grafana` — guarded by `observability.enabled`), `ingress.yaml`, `middlewares.yaml`.
+Key templates: `api.yaml`, `portal.yaml`, `admin.yaml`, `status.yaml`, `database.yaml`, `keycloak.yaml`, `keycloak-database.yaml`, `pgadmin.yaml`, `localstack.yaml` (guarded by `localstack.enabled`), observability stack (`otel-collector`, `prometheus`, `tempo`, `loki`, `grafana` — guarded by `observability.enabled`), `headlamp.yaml` (guarded by `headlamp.enabled`), `ingress.yaml`, `middlewares.yaml`.
 
-Subdomains: `byakko.dev`/`www.`/`fileshare.` → Portal; `api.` → API; `admin.` → Admin; `status.` → Status; `database.` → pgAdmin; `authentication.` → Keycloak; `grafana.` → Grafana.
+Subdomains: `byakko.dev`/`www.`/`fileshare.` → Portal; `api.` → API; `admin.` → Admin; `status.` → Status; `database.` → pgAdmin; `authentication.` → Keycloak; `grafana.` → Grafana; `kubernetes.` → Headlamp (guarded by `headlamp.enabled`).
+
+**Headlamp**: `headlamp.yaml` creates an `ExternalName` Service in the byakko namespace pointing to `my-headlamp.kube-system.svc.cluster.local` (Headlamp must be pre-installed in `kube-system` via its own Helm chart). The ingress routes `kubernetes.<domain>` to this service. OIDC login via Keycloak is optional — see `docs/developer-guides/Kubernetes.md` Step 6 for setup.
 
 All app image tags are controlled by a single top-level `appVersion` in `values.yaml` (set via `--set appVersion` in the pipeline). Storage config (`Storage:Mode`, `BucketName`, `OvhCloud.*`) lives under the top-level `storage:` key, shared by both `api.yaml` and `status.yaml`.
 
