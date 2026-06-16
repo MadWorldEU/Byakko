@@ -87,9 +87,11 @@ Clean Architecture. Dependencies flow inward: Controller → Application → Dom
 | `Entity<TId>` | Entity with identity; equality by `Id` |
 | `ValueObject` | Immutable concept; structural equality via `GetEqualityComponents()` |
 | `IDomainEvent` | Marker interface for domain events |
+| `IDomainEventHandler<T>` | Handle a specific domain event type; implement per handler class |
+| `IDomainEventsDispatcher` / `DomainEventsDispatcher` | Dispatches domain events raised on aggregates to all registered handlers; resolves `IDomainEventHandler<T>` from DI via `IServiceProvider.GetServices()` using a cached `HandlerWrapper` pattern |
 | `IGuidGenerator` / `GuidGenerator` | Abstracts `Guid.NewGuid()`; inject into use cases |
 
-Register via `services.AddBuildingBlocks()`.
+Register via `services.AddBuildingBlocks()`. After a use case completes its work, call `IDomainEventsDispatcher.DispatchAsync(aggregate)` to fire all queued domain events.
 
 ### Functional Patterns
 
@@ -134,6 +136,26 @@ Content encrypted AES-256 before upload; IV prepended to ciphertext. Error mappi
 - `POST /host-services/manual-triggers/clean-up/assets-content` → `DeleteAllExpiredContentOfAssetsUseCase`
 - `POST /host-services/manual-triggers/clean-up/assets-metadata` → `DeleteAllExpiredMetaDataAssetsUseCase`
 
+## Audits API
+
+Endpoint in `Controller.Api/Endpoints/Audits/AuditEndpoints.cs`:
+
+| Method | Route | Use case | Notes |
+|---|---|---|---|
+| `GET` | `/audits/{entityId}` | `GetAuditLogsUseCase` | Requires `Administrator` policy; returns `GetAuditLogsResponse` |
+
+`GetAuditLogsResponse` (in `Core.Contracts/Audits/`) has `IReadOnlyList<AuditLogResponse> Logs`. Each `AuditLogResponse` (in `Core.Contracts/Audits/Summaries/`) carries: `Guid Id`, `string EntityType`, `string Action`, `string IpAddress`, `DateTimeOffset OccurredAt`, `Guid OccurredByUserId`.
+
+**Audit log domain** (`Core.Domain/Audits/`):
+- `AuditLog` entity — `Id`, `EntityId`, `EntityType` (`AuditEntityType` enum), `Action` (`AuditAction` enum), `IpAddress` value object, `OccurredAt` (`Instant`), `OccurredBy` (`Id`). Created via `AuditLog.Create(...)`.
+- `IpAddress` value object — wraps `string Value`; two `Create` overloads: `Create(string)` and `Create(System.Net.IPAddress?)`.  Returns `AuditErrors.InvalidIpAddress` when null/empty.
+- `AuditAction` enum — actions recorded on entities (e.g. `Created`, `Uploaded`).
+- `AuditEntityType` enum — types of domain entities that can be audited.
+- `AuditErrors` — `InvalidIpAddress`, `SaveFailed`, `QueryFailed`.
+- `IAuditRepository` — `AddAsync(AuditLog)` and `GetAsync(Id entityId)`; PostgreSQL implementation in `Infrastructure.Postgresql/Audits/AuditRepository.cs`.
+
+**AuditAssetsHandler** (`Core.Application/Audits/AuditAssetsHandler.cs`) — `IDomainEventHandler<AssetMetaDataCreatedEvent>` and `IDomainEventHandler<AssetContentUploadedEvent>`; writes an `AuditLog` entry per event. Audit creation failure is non-fatal: logs a warning via `ILogger` and returns without throwing.
+
 ## Storage Statistics API
 
 Endpoint in `Controller.Api/Endpoints/Storages/GeneralStorageEndpoints.cs`:
@@ -156,22 +178,25 @@ Endpoint in `Controller.Api/Endpoints/Storages/GeneralStorageEndpoints.cs`:
 - **Auth:** JWT Bearer via Keycloak (`Authentication:Authority`). Blazor OIDC via `AddOidcAuthentication`; config in `wwwroot/appsettings.json` under `Oidc`. Bearer attached via `AuthorizationMessageHandler` on `HttpClients.ApiAuthorized`. Blazor OIDC settings bound via `IOptions<OidcSettings>` (shared); `OidcSettings.GetEditAccountUrl()` returns the Keycloak account page URL.
 - **Asset settings:** `Assets:ValidityPeriodInDays` (default `30`), `Assets:MaxUploadSizeInBytes` (default `1073741824`). **Must be quoted string** in Helm values to prevent YAML integer coercion.
 - **Scheduled cleanup:** Two `BackgroundService`s in `HostedServices/`, triggered daily at `Cleanup:TriggerHourUtc` (default `2`).
-- **Observability:** OTLP via `OTEL_EXPORTER_OTLP_ENDPOINT`. When `observability.enabled`, exports to Tempo/Prometheus/Loki → Grafana.
+- **Observability:** OTLP via `OTEL_EXPORTER_OTLP_ENDPOINT`. When `observability.enabled`, exports to Tempo/Prometheus/Loki → Grafana. Both API and Status projects export OTLP. Logging uses `IncludeFormattedMessage = true` so Aspire's structured log view renders the fully interpolated message (e.g. `Now listening on: https://…`) instead of the raw template.
+- **IP address forwarding:** API reads `X-Forwarded-For` via `UseForwardedHeaders`. Integration tests set `X-Forwarded-For: 171.129.229.213` as a default header on both anonymous and authenticated `HttpClient`s so `HttpContext.Connection.RemoteIpAddress` is populated for audit logging.
 - **OpenAPI server URL:** `OpenApi:ServerUrl` overridden by `ServerUrlDocumentTransformer` (Scalar "Try It Out").
 - **Debug endpoints:** `/debug/*` — Development only. **Test endpoint:** `GET /tests/ping` — always registered.
 
 ## Admin UI
 
-Blazor WebAssembly, Bootstrap 5 dark theme (`data-bs-theme="dark"`). Desktop-first with 240px sticky sidebar (`Layout/MainLayout.razor`). Nav sections: Overview, Management, Support, System. Auth via `<AuthorizeView Policy="@AuthorizationPolicies.Administrator">`. Sidebar footer shows username, edit-profile link (Keycloak account page via `OidcSettings.GetEditAccountUrl()`), and logout. Pages: `Pages/Home.razor` (`/dashboard` — two stat cards: Total Files and Storage Used, populated from `GET /storage/statistics` via `IStorageService`), `Pages/HostServices/ManualTriggers.razor`, `Pages/Storages/AssetsOverview.razor` (`/storages/assets` — paged asset table, 20/page, with previous/next pagination). The Management nav "Assets" link points to `/storages/assets`. `IAssetService` (shared) exposes `GetAssetsMetadataAsync(int page)` and `DeleteAssetContentAsync(Guid id)` for admin use; `IStorageService` (shared) exposes `GetStorageStatisticsAsync()` for the dashboard; `MadWorldEU.Byakko.Services`, `MadWorldEU.Byakko.Storages`, and `MadWorldEU.Byakko.Formatters` are global usings in `_Imports.razor`.
+Blazor WebAssembly, Bootstrap 5 dark theme (`data-bs-theme="dark"`). Desktop-first with 240px sticky sidebar (`Layout/MainLayout.razor`). Nav sections: Overview, Management, Support, System. Auth via `<AuthorizeView Policy="@AuthorizationPolicies.Administrator">`. Sidebar footer shows username, edit-profile link (Keycloak account page via `OidcSettings.GetEditAccountUrl()`), and logout. Pages: `Pages/Home.razor` (`/dashboard` — two stat cards: Total Files and Storage Used, populated from `GET /storage/statistics` via `IStorageService`), `Pages/HostServices/ManualTriggers.razor`, `Pages/Storages/AssetsOverview.razor` (`/storages/assets` — paged asset table, 20/page, with previous/next pagination), `Pages/Audits/AuditLogs.razor` (`/audits/{EntityId:guid}` — all audit log entries for a single entity). The Management nav "Assets" link points to `/storages/assets`. `IAssetService` (shared) exposes `GetAssetsMetadataAsync(int page)` and `DeleteAssetContentAsync(Guid id)` for admin use; `IStorageService` (shared) exposes `GetStorageStatisticsAsync()` for the dashboard; `IAuditService` (shared) exposes `GetAuditLogsAsync(Guid entityId)` for the audit log page; `MadWorldEU.Byakko.Services`, `MadWorldEU.Byakko.Storages`, `MadWorldEU.Byakko.Audits`, `MadWorldEU.Byakko.Audits.Summaries`, and `MadWorldEU.Byakko.Formatters` are global usings in `_Imports.razor`.
 
 **AssetsOverview features:**
 - Each row has an info icon (Bootstrap Icons info-circle SVG) next to the filename; hovering shows a Bootstrap tooltip (`data-bs-html="true"`) with file size and last updated date on separate lines. Tooltip initialization via `initTooltips()` in `wwwroot/js/app.js` (loaded in `index.html`), called from `OnAfterRenderAsync`.
-- Each non-deleted asset row has a **Delete** button; clicking it shows an inline confirm prompt ("Delete content? Yes / No") in the same row. Confirming calls `DeleteAssetContentAsync` and reloads the page.
+- Each asset row has a **Logs** button (links to `/audits/{id}`). Each non-deleted asset row also has a **Delete** button; clicking it shows an inline confirm prompt ("Delete content? Yes / No") in the same row. The **Logs** button is hidden while the confirm prompt is visible. Confirming calls `DeleteAssetContentAsync` and reloads the page.
 - `AssetMetadataResponse` (in `Core.Contracts`) includes `IsDeleted` and `Size` (bytes as `long`) in addition to the base fields.
+
+**AuditLogs page** (`Pages/Audits/AuditLogs.razor`, route `/audits/{EntityId:guid}`): Shows a table of audit log entries (Entity Type badge, Action badge, IP Address, User ID, Occurred At) for the given entity. Requires `Administrator` policy. Back link to `/storages/assets`.
 
 ## Portal UI
 
-Blazor WebAssembly, Bootstrap 5 dark theme. Sticky top navbar with auth dropdown (username, edit-profile link via `OidcSettings.GetEditAccountUrl()`, logout). Pages: `Pages/Storage/Upload.razor` (`/storage/upload`), `Pages/Storage/Download.razor` (shows expiry warning client-side; server enforces). Max upload size from `IOptions<AssetSettings>` → `IBrowserFile.OpenReadStream(maxAllowedSize)`.
+Blazor WebAssembly, Bootstrap 5 dark theme. Sticky top navbar with auth dropdown (username, edit-profile link via `OidcSettings.GetEditAccountUrl()`, logout). Pages: `Pages/Storage/Upload.razor` (`/storage/upload`), `Pages/Storage/Download.razor` (shows expiry warning client-side; server enforces), `Pages/UserAgreement.razor` (`/user-agreement` — static page with 9 sections covering acceptance, prohibited content, file retention, privacy, liability, changes, and contact). Max upload size from `IOptions<AssetSettings>` → `IBrowserFile.OpenReadStream(maxAllowedSize)`. Footer (`Layout/MainLayout.razor`) includes a "User Agreement" link to `/user-agreement`.
 
 ## Status UI
 
@@ -197,7 +222,7 @@ See `.claude/rules/code-standard.md` for full standards. Key points:
 - **Global usings:** third-party group then `MadWorldEU.Byakko.*` group, each alphabetical
 - **Endpoint classes:** `internal static` with `internal static` extension on `WebApplication`; under `Endpoints/<Feature>/`
 - **HTTP clients:** `HttpClients.ApiAnonymous` / `HttpClients.ApiAuthorized` from `Controller.Blazor.Shared/HttpClients.cs`. `ApiAuthorized` has `Timeout = Timeout.InfiniteTimeSpan` — upload timeouts are governed by Traefik's `responseHeaderTimeout` (1800s), not the client.
-- **Shared services:** `IAssetService`/`AssetService` and `IStorageService`/`StorageService` live in `Controller.Blazor.Shared/Services/` and are registered in `WebAssemblyHostBuilderExtensions.AddByakkoServices()`.
+- **Shared services:** `IAssetService`/`AssetService`, `IStorageService`/`StorageService`, and `IAuditService`/`AuditService` live in `Controller.Blazor.Shared/Services/` and are registered in `WebAssemblyHostBuilderExtensions.AddByakkoServices()`.
 - **Shared formatters:** `ByteFormatter.Format(long?)` in `Controller.Blazor.Shared/Formatters/ByteFormatter.cs` — formats byte counts to B/KB/MB/GB using `InvariantCulture` (always `.` as decimal separator).
 - **appsettings schemas:** each `appsettings.json` has a companion `appsettings-schema.json`; update schema when adding config keys
 - **EF Core constructor:** `private`, `[UsedImplicitly]`, XML `<summary>` saying "Required for EF Core"
