@@ -18,6 +18,7 @@ public sealed class GetAuditLogsUseCase(IAuditRepository auditRepository)
             .Select(log => new AuditLogResponse
             {
                 Id = log.Id.Value,
+                EntityType = log.EntityType.ToString(),
                 Action = log.Action.ToString(),
                 IpAddress = log.IpAddress.Value,
                 OccurredAt = log.OccurredAt.ToDateTimeOffset(),

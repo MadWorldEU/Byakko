@@ -88,9 +88,11 @@ internal static class AssetsEndpoints
             .RequireAuthorization()
             .RequireRateLimiting(RateLimiterPolicies.Content);
 
-        assetsEndpoints.MapDelete("/{id}/content", async (string id, DeleteContentOfAssetUseCase useCase) =>
+        assetsEndpoints.MapDelete("/{id}/content", async (string id, HttpContext httpContext, DeleteContentOfAssetUseCase useCase) =>
             {
-                var result = await useCase.ExecuteAsync(id);
+                var ipAddress = httpContext.Connection.RemoteIpAddress;
+                
+                var result = await useCase.ExecuteAsync(id, ipAddress);
                 return result.Match(
                     onSuccess: Results.Ok,
                     onFailure: error => error.Code == AssetErrors.NotFound.Code

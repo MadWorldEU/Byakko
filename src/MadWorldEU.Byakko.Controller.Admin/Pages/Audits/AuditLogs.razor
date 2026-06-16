@@ -1,0 +1,86 @@
+@page "/audits/{EntityId:guid}"
+@attribute [Authorize(Policy = AuthorizationPolicies.Administrator)]
+@inject IAuditService AuditService
+
+<PageTitle>Audit Logs – Byakko Admin</PageTitle>
+
+<div class="d-flex align-items-start justify-content-between flex-wrap gap-2 mb-4">
+    <div>
+        <h1 class="h3 fw-bold mb-1">Audit Logs</h1>
+        <p class="text-secondary mb-0 small font-monospace">@EntityId</p>
+    </div>
+    <a href="/storages/assets" class="btn btn-sm btn-outline-secondary">← Back to Assets</a>
+</div>
+
+@if (_loading)
+{
+    <div class="d-flex justify-content-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading…</span>
+        </div>
+    </div>
+}
+else if (_error is not null)
+{
+    <div class="alert alert-danger" role="alert">@_error</div>
+}
+else if (_response is not null)
+{
+    <div class="card border-0 bg-body-tertiary">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Entity Type</th>
+                        <th>Action</th>
+                        <th>IP Address</th>
+                        <th>User ID</th>
+                        <th>Occurred At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var log in _response.Logs)
+                    {
+                        <tr>
+                            <td><span class="badge bg-primary fw-normal">@log.EntityType</span></td>
+                            <td><span class="badge bg-secondary fw-normal">@log.Action</span></td>
+                            <td class="font-monospace small text-secondary">@log.IpAddress</td>
+                            <td class="font-monospace small text-secondary">@log.OccurredByUserId</td>
+                            <td class="small">@log.OccurredAt.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                        </tr>
+                    }
+                    @if (_response.Logs.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center text-secondary py-4">No audit log entries found.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public Guid EntityId { get; set; }
+
+    private bool _loading = true;
+    private string? _error;
+    private GetAuditLogsResponse? _response;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _response = await AuditService.GetAuditLogsAsync(EntityId);
+        }
+        catch (Exception ex)
+        {
+            _error = $"Failed to load audit logs: {ex.Message}";
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+}

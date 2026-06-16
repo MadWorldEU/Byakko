@@ -6,6 +6,9 @@ public sealed class AuditLogResponse
     /// <summary>Unique identifier of the audit log entry.</summary>
     public required Guid Id { get; init; }
 
+    /// <summary>The type of entity the action was performed on.</summary>
+    public required string EntityType { get; init; }
+
     /// <summary>The action that was performed.</summary>
     public required string Action { get; init; }
 

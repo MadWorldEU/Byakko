@@ -36,6 +36,7 @@ public static class WebAssemblyHostBuilderExtensions
     {
         builder.Services.Configure<AssetSettings>(builder.Configuration.GetSection(AssetSettings.Key));
         builder.Services.Configure<OidcSettings>(builder.Configuration.GetSection(OidcSettings.Key));
+        builder.Services.AddScoped<IAuditService, AuditService>();
         builder.Services.AddScoped<IAssetService, AssetService>();
         builder.Services.AddScoped<IStorageService, StorageService>();
 

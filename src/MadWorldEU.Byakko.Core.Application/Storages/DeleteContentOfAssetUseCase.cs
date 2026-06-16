@@ -1,9 +1,20 @@
+using MadWorldEU.Byakko.Audits;
+using MadWorldEU.Byakko.DomainDrivenDevelopment;
+
 namespace MadWorldEU.Byakko.Storages;
 
-public sealed class DeleteContentOfAssetUseCase(IClock clock, IAssetRepository repository, IContentStorage contentStorage, ILogger<DeleteContentOfAssetUseCase> logger)
+public sealed class DeleteContentOfAssetUseCase(
+    IClock clock, 
+    IAssetRepository repository, 
+    IContentStorage contentStorage, 
+    IDomainEventsDispatcher domainEventsDispatcher,
+    ILogger<DeleteContentOfAssetUseCase> logger)
 {
-    public async Task<Result<DeleteAssetContentResponse>> ExecuteAsync(string assetId)
+    public async Task<Result<DeleteAssetContentResponse>> ExecuteAsync(string assetId, System.Net.IPAddress? ipAddress)
     {
+        var ipAddressResult = IpAddress.Create(ipAddress);
+        if (ipAddressResult.IsFailure) return ipAddressResult.Error;
+        
         var id = Id.Create(assetId);
         if (id.IsFailure) return id.Error;
         
@@ -31,6 +42,9 @@ public sealed class DeleteContentOfAssetUseCase(IClock clock, IAssetRepository r
             logger.LogError("Failed to mark asset '{AssetId}' as deleted: {Error}", asset.Id.Value, updateResult.Error.Description);
             return updateResult.Error;
         }
+        
+        var assetMetaDataCreatedEvent = new AssetContentDeletedEvent(assetResult.Value.Id, ipAddressResult.Value, assetResult.Value.CreatedBy, assetResult.Value.CreatedAt);
+        await domainEventsDispatcher.DispatchAsync([assetMetaDataCreatedEvent]);
         
         return new DeleteAssetContentResponse
         {
