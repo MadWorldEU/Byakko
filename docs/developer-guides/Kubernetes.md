@@ -232,6 +232,47 @@ sudo microk8s kubectl --namespace kube-system port-forward --address 0.0.0.0 $PO
 
 Then open `http://localhost:10443` and use the token from Step 4 to log in.
 
+#### Step 6 — Connect Headlamp with Keycloak (optional)
+
+By default Headlamp uses token-based login. To use Keycloak instead, follow these steps.
+
+**Create a Keycloak client**
+
+In the `MadWorld` realm at `https://authentication.<domain>`, create a new client with these settings:
+
+| Setting                  | Value                                   |
+|--------------------------|-----------------------------------------|
+| Client ID                | `headlamp-client`                       |
+| Client authentication    | On (confidential)                       |
+| Valid redirect URIs      | `https://kubernetes.<domain>/*`         |
+| Web origins              | `https://kubernetes.<domain>`           |
+
+Then copy the client secret from the **Credentials** tab.
+
+**Upgrade Headlamp with OIDC configuration**
+
+```shell
+sudo microk8s helm upgrade my-headlamp headlamp/headlamp --namespace kube-system \
+  --set config.oidc.issuerURL="https://authentication.<domain>/realms/MadWorld" \
+  --set config.oidc.clientID="headlamp-client" \
+  --set config.oidc.clientSecret="<your-client-secret>" \
+  --set config.oidc.scopes="profile email groups"
+```
+
+After this, Headlamp redirects unauthenticated users to Keycloak automatically.
+
+**Grant Kubernetes permissions to Keycloak users**
+
+Keycloak controls authentication; Kubernetes RBAC controls what users can do. Create a `ClusterRoleBinding` to grant a Keycloak user read-only access to the cluster:
+
+```shell
+sudo microk8s kubectl create clusterrolebinding headlamp-view \
+  --clusterrole=view \
+  --user=<keycloak-username>
+```
+
+Replace `view` with `cluster-admin` to grant full access, or create a custom `ClusterRole` for finer-grained control.
+
 ### Before a server shutdown
 
 Gracefully drain the cluster before shutting down to avoid data corruption and incomplete requests.
