@@ -31,6 +31,12 @@ public sealed class AssetsSteps(ScenarioContext scenarioContext)
         {
             var request = new CreateAssetRequest { Name = $"file-{i + 1}.txt", ContentType = "text/plain", Size = 10 };
             var response = await client.PostAsJsonAsync("/assets", request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var test = await response.Content.ReadAsStringAsync();
+            }
+            
             response.EnsureSuccessStatusCode();
             var createResponse = await response.Content.ReadFromJsonAsync<CreateAssetResponse>();
             ids.Add(createResponse!.Id);
