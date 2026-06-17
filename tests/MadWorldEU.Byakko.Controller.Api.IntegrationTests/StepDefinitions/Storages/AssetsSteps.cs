@@ -29,7 +29,7 @@ public sealed class AssetsSteps(ScenarioContext scenarioContext)
 
         for (var i = 0; i < count; i++)
         {
-            var request = new CreateAssetRequest { Name = $"file-{i + 1}.txt", ContentType = "text/plain" };
+            var request = new CreateAssetRequest { Name = $"file-{i + 1}.txt", ContentType = "text/plain", Size = 10 };
             var response = await client.PostAsJsonAsync("/assets", request);
             response.EnsureSuccessStatusCode();
             var createResponse = await response.Content.ReadFromJsonAsync<CreateAssetResponse>();
@@ -44,6 +44,14 @@ public sealed class AssetsSteps(ScenarioContext scenarioContext)
     {
         var client = scenarioContext.Get<HttpClient>();
         var response = await client.GetAsync($"/assets?page={page}");
+        scenarioContext.Set(response, ScenarioContextKeys.LastResponse);
+    }
+
+    [When("I request page {int} of my assets")]
+    public async Task WhenIRequestPageOfMyAssets(int page)
+    {
+        var client = scenarioContext.Get<HttpClient>();
+        var response = await client.GetAsync($"/assets/me?page={page}");
         scenarioContext.Set(response, ScenarioContextKeys.LastResponse);
     }
 

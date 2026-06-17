@@ -24,6 +24,13 @@ Scenario: Retrieve upload limits for an authenticated user
     Then the response status code should be 200
     And the upload limits should reflect my usage
 
+Scenario: Retrieve my own assets as an authenticated user
+    Given I am authenticated as a user
+    And I have created 2 assets
+    When I request page 1 of my assets
+    Then the response status code should be 200
+    And the response should contain the created assets
+
 Scenario: Upload and download a file for an asset
     Given I am authenticated as a user
     And I have created an asset with name "test-file.txt" and content type "text/plain"
