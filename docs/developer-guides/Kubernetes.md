@@ -255,23 +255,53 @@ Then copy the client secret from the **Credentials** tab.
 sudo microk8s helm upgrade my-headlamp headlamp/headlamp --namespace kube-system \
   --set config.oidc.issuerURL="https://authentication.<domain>/realms/MadWorld" \
   --set config.oidc.clientID="headlamp-client" \
-  --set config.oidc.clientSecret="<<SECRET>>" \
-  --set config.oidc.scopes="profile email" 
+  --set config.oidc.clientSecret="<your-client-secret>" \
+  --set config.oidc.scopes="profile email"
 ```
 
 After this, Headlamp redirects unauthenticated users to Keycloak automatically.
 
+**Configure the Kubernetes API server for OIDC**
+
+The API server must be configured to validate Keycloak tokens. Find the versioned args file (use the highest number):
+
+```shell
+sudo find /var/snap/microk8s -name "kube-apiserver" 2>/dev/null
+```
+
+Edit the file:
+
+```shell
+sudo nano /var/snap/microk8s/<version>/args/kube-apiserver
+```
+
+Add these lines at the end:
+
+```
+--oidc-issuer-url=https://authentication.<domain>/realms/MadWorld
+--oidc-client-id=headlamp-client
+--oidc-username-claim=email
+--oidc-groups-claim=groups
+```
+
+Restart microk8s and verify the flags loaded:
+
+```shell
+sudo microk8s stop && sudo microk8s start && sudo microk8s status --wait-ready
+sudo cat /var/snap/microk8s/<version>/args/kube-apiserver | grep oidc
+```
+
 **Grant Kubernetes permissions to Keycloak users**
 
-Keycloak controls authentication; Kubernetes RBAC controls what users can do. Create a `ClusterRoleBinding` to grant a Keycloak user read-only access to the cluster:
+Keycloak controls authentication; Kubernetes RBAC controls what users can do. Create a `ClusterRoleBinding` to grant a Keycloak user access to the cluster:
 
 ```shell
 sudo microk8s kubectl create clusterrolebinding headlamp-view \
-  --clusterrole=cluster-admin \
-  --user=madworld@oscarveldman.eu
+  --clusterrole=view \
+  --user=<keycloak-email>
 ```
 
-Replace `view` with `cluster-admin` to grant full access, or create a custom `ClusterRole` for finer-grained control.
+The `--user` value must match the `email` field of the user in Keycloak (**Admin console** → **MadWorld** realm → **Users** → your user → **Details** tab). Replace `view` with `cluster-admin` to grant full access, or create a custom `ClusterRole` for finer-grained control.
 
 ### Before a server shutdown
 
