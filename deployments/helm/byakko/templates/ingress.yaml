@@ -54,6 +54,9 @@ spec:
               {{- if .Values.observability.enabled }}
               - grafana.{{ .Values.ingress.domain }}
               {{- end }}
+              {{- if .Values.headlamp.enabled }}
+              - kubernetes.{{ .Values.ingress.domain }}
+              {{- end }}
     rules:
         - host: admin.{{ .Values.ingress.domain }}
           http:
@@ -127,35 +130,7 @@ spec:
                             port:
                                 number: {{ .Values.observability.grafana.servicePort }}
         {{- end }}
-        - host: {{ .Values.ingress.domain }}
-          http:
-              paths:
-                  - path: /
-                    pathType: Prefix
-                    backend:
-                        service:
-                            name: {{ .Values.portal.name }}
-                            port:
-                                number: {{ .Values.portal.port }}
-{{- if .Values.headlamp.enabled }}
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-    name: byakko-ingress-headlamp
-    namespace: {{ .Values.namespace }}
-    annotations:
-        kubernetes.io/ingress.class: "traefik"
-        {{- if .Values.clusterIssuer.enabled }}
-        cert-manager.io/cluster-issuer: {{ .Values.clusterIssuer.name | quote }}
-        {{- end }}
-spec:
-    ingressClassName: {{ .Values.ingress.className }}
-    tls:
-        - secretName: {{ .Values.ingress.tlsSecret }}-headlamp
-          hosts:
-              - kubernetes.{{ .Values.ingress.domain }}
-    rules:
+        {{- if .Values.headlamp.enabled }}
         - host: kubernetes.{{ .Values.ingress.domain }}
           http:
               paths:
@@ -166,4 +141,14 @@ spec:
                             name: {{ .Values.headlamp.name }}
                             port:
                                 number: {{ .Values.headlamp.servicePort }}
-{{- end }}
+        {{- end }}
+        - host: {{ .Values.ingress.domain }}
+          http:
+              paths:
+                  - path: /
+                    pathType: Prefix
+                    backend:
+                        service:
+                            name: {{ .Values.portal.name }}
+                            port:
+                                number: {{ .Values.portal.port }}
