@@ -103,7 +103,7 @@ internal static class AssetsEndpoints
         assetsEndpoints.MapDelete("/{id}/content", async (string id, HttpContext httpContext, DeleteContentOfAssetUseCase useCase) =>
             {
                 var ipAddress = httpContext.Connection.RemoteIpAddress;
-                
+
                 var result = await useCase.ExecuteAsync(id, ipAddress);
                 return result.Match(
                     onSuccess: Results.Ok,
@@ -116,6 +116,26 @@ internal static class AssetsEndpoints
             })
             .RequireAuthorization(AuthorizationPolicies.Administrator)
             .WithName("DeleteAssetContent");
+
+        assetsEndpoints.MapDelete("/me/{id}/content", async (string id, ClaimsPrincipal user, HttpContext httpContext, DeleteMyAssetContentUseCase useCase) =>
+            {
+                var userId = user.GetUserId();
+                var ipAddress = httpContext.Connection.RemoteIpAddress;
+
+                var result = await useCase.ExecuteAsync(id, userId, ipAddress);
+                return result.Match(
+                    onSuccess: Results.Ok,
+                    onFailure: error => error.Code == AssetErrors.NotFound.Code
+                        ? Results.NotFound()
+                        : error.Code == AssetErrors.Forbidden.Code
+                            ? Results.Forbid()
+                            : error.Code == AssetErrors.AlreadyDeleted.Code
+                                ? Results.Conflict(error.Description)
+                                : Results.BadRequest(error.Description)
+                );
+            })
+            .RequireAuthorization(AuthorizationPolicies.User)
+            .WithName("DeleteMyAssetContent");
 
         assetsEndpoints.MapGet("/{id}/content", async (string id, DownloadAssetContentUseCase useCase) =>
             {

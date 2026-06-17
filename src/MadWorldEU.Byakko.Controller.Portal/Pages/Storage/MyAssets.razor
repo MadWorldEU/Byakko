@@ -1,6 +1,7 @@
 @page "/storage/my-assets"
 @attribute [Authorize]
 @inject IAssetService AssetService
+@inject IJSRuntime JsRuntime
 
 <PageTitle>Byakko – My Files</PageTitle>
 
@@ -32,25 +33,18 @@
         }
         else
         {
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Size</th>
-                            <th>Expires</th>
-                            <th>Status</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var asset in _response.Assets)
-                        {
-                            <tr>
-                                <td>@asset.Name</td>
-                                <td class="text-secondary small">@ByteFormatter.Format(asset.Size)</td>
-                                <td class="text-secondary small">@asset.ExpiresAt.ToString("d MMM yyyy", System.Globalization.CultureInfo.InvariantCulture)</td>
-                                <td>
+            <div class="list-group">
+                @foreach (var asset in _response.Assets)
+                {
+                    var isActive = !asset.IsDeleted && asset.ExpiresAt >= DateTimeOffset.UtcNow;
+                    <div class="list-group-item p-3">
+                        <div class="d-flex justify-content-between align-items-start gap-2">
+                            <div class="flex-grow-1" style="min-width:0">
+                                <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                                    <span class="fw-medium text-truncate"
+                                      data-bs-toggle="tooltip"
+                                      data-bs-placement="top"
+                                      title="@asset.Name">@asset.Name</span>
                                     @if (asset.IsDeleted)
                                     {
                                         <span class="badge text-bg-secondary">Deleted</span>
@@ -63,20 +57,29 @@
                                     {
                                         <span class="badge text-bg-success">Active</span>
                                     }
-                                </td>
-                                <td class="text-end">
-                                    @if (!asset.IsDeleted && asset.ExpiresAt >= DateTimeOffset.UtcNow)
-                                    {
-                                        <a class="btn btn-outline-primary btn-sm"
-                                           href="/storage/download/@asset.Id">
-                                            Download
-                                        </a>
-                                    }
-                                </td>
-                            </tr>
+                                </div>
+                                <div class="text-secondary small">
+                                    @ByteFormatter.Format(asset.Size) &middot; Expires @asset.ExpiresAt.ToString("d MMM yyyy", System.Globalization.CultureInfo.InvariantCulture)
+                                </div>
+                            </div>
+                            @if (isActive && _confirmingDeleteId != asset.Id)
+                            {
+                                <div class="d-flex gap-2 flex-shrink-0">
+                                    <a class="btn btn-outline-primary btn-sm" href="/storage/download/@asset.Id">Download</a>
+                                    <button class="btn btn-sm btn-outline-danger" @onclick="() => RequestDelete(asset.Id)">Delete</button>
+                                </div>
+                            }
+                        </div>
+                        @if (isActive && _confirmingDeleteId == asset.Id)
+                        {
+                            <div class="d-flex align-items-center gap-2 mt-2 flex-wrap">
+                                <span class="small text-warning">Delete content?</span>
+                                <button class="btn btn-sm btn-danger" @onclick="() => ConfirmDeleteAsync(asset.Id)" disabled="@_deleting">Yes</button>
+                                <button class="btn btn-sm btn-outline-secondary" @onclick="CancelDelete" disabled="@_deleting">No</button>
+                            </div>
                         }
-                    </tbody>
-                </table>
+                    </div>
+                }
             </div>
 
             <div class="d-flex justify-content-between align-items-center mt-3">
@@ -102,10 +105,17 @@
     private bool _isLoading = true;
     private string? _errorMessage;
     private int _page = 1;
+    private Guid? _confirmingDeleteId;
+    private bool _deleting;
 
     protected override async Task OnInitializedAsync()
     {
         await LoadAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JsRuntime.InvokeVoidAsync("initTooltips");
     }
 
     private async Task PreviousPage()
@@ -118,6 +128,38 @@
     {
         _page++;
         await LoadAsync();
+    }
+
+    private void RequestDelete(Guid id)
+    {
+        _confirmingDeleteId = id;
+    }
+
+    private void CancelDelete()
+    {
+        _confirmingDeleteId = null;
+    }
+
+    private async Task ConfirmDeleteAsync(Guid id)
+    {
+        _deleting = true;
+        _errorMessage = null;
+
+        try
+        {
+            await AssetService.DeleteMyAssetContentAsync(id);
+            _confirmingDeleteId = null;
+            await LoadAsync();
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Failed to delete file: {ex.Message}";
+            _confirmingDeleteId = null;
+        }
+        finally
+        {
+            _deleting = false;
+        }
     }
 
     private async Task LoadAsync()

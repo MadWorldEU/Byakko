@@ -121,6 +121,15 @@ public sealed class AssetsSteps(ScenarioContext scenarioContext)
         scenarioContext.Set(response, ScenarioContextKeys.LastResponse);
     }
 
+    [When("I delete my own asset content")]
+    public async Task WhenIDeleteMyOwnAssetContent()
+    {
+        var client = scenarioContext.Get<HttpClient>();
+        var assetId = scenarioContext.Get<Guid>(AssetIdKey);
+        var response = await client.DeleteAsync($"/assets/me/{assetId}/content");
+        scenarioContext.Set(response, ScenarioContextKeys.LastResponse);
+    }
+
     [When("I upload content for the created asset")]
     public async Task WhenIUploadContentForTheCreatedAsset()
     {

@@ -1,4 +1,3 @@
-using System.Net.Http.Headers;
 using Microsoft.EntityFrameworkCore;
 
 namespace MadWorldEU.Byakko.Hooks;
@@ -33,7 +32,8 @@ public sealed class ApiHooks(ScenarioContext scenarioContext)
                         ["ConnectionStrings:byakko-db"] = _postgres.GetConnectionString(),
                         ["ConnectionStrings:localstack"] = _localstack.GetConnectionString(),
                         ["RateLimiting:Enabled"] = "false",
-                        ["Authentication:ValidateUser"] = "false"
+                        ["Authentication:ValidateUser"] = "false",
+                        ["Assets:MaxFilesEachUser"] = "1000"
                     });
                 });
             });
