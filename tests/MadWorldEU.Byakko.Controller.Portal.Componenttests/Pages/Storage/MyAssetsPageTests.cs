@@ -43,6 +43,7 @@ public sealed class MyAssetsPageTests
                 }));
 
         using var ctx = new BunitContext();
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         ctx.Services.AddHttpClient(HttpClients.ApiAnonymous, client =>
             client.BaseAddress = new Uri(server.Url!));
         ctx.Services.AddHttpClient(HttpClients.ApiAuthorized, client =>
@@ -50,11 +51,11 @@ public sealed class MyAssetsPageTests
         ctx.Services.AddScoped<IAssetService, AssetService>();
 
         var cut = ctx.Render<MyAssets>();
-        cut.WaitForState(() => cut.FindAll("table").Any(), TimeSpan.FromSeconds(5));
+        cut.WaitForState(() => cut.FindAll(".list-group-item").Any(), TimeSpan.FromSeconds(5));
 
-        cut.Find("tbody tr td").TextContent.ShouldBe("test-file.txt");
+        cut.Find(".list-group-item .fw-medium").TextContent.ShouldBe("test-file.txt");
         cut.Find(".badge.text-bg-success").TextContent.ShouldBe("Active");
-        cut.Find("tbody tr td a.btn").GetAttribute("href")!.ShouldContain($"storage/download/{assetId}");
+        cut.Find(".list-group-item a.btn").GetAttribute("href")!.ShouldContain($"storage/download/{assetId}");
     }
 
     [Test]
@@ -80,6 +81,7 @@ public sealed class MyAssetsPageTests
                 }));
 
         using var ctx = new BunitContext();
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         ctx.Services.AddHttpClient(HttpClients.ApiAnonymous, client =>
             client.BaseAddress = new Uri(server.Url!));
         ctx.Services.AddHttpClient(HttpClients.ApiAuthorized, client =>

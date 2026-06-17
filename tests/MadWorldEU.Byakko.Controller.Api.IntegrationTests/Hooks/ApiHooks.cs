@@ -1,4 +1,3 @@
-using System.Net.Http.Headers;
 using Microsoft.EntityFrameworkCore;
 
 namespace MadWorldEU.Byakko.Hooks;
