@@ -8,6 +8,22 @@
     <h2 class="fw-bold mb-1">My files</h2>
     <p class="text-secondary mb-4">An overview of all files you have uploaded.</p>
 
+    @if (_limits is not null)
+    {
+        var filesLeft = _limits.MaxFiles - _limits.ActiveFiles;
+        <div class="alert @(filesLeft == 0 ? "alert-warning" : "alert-info") d-flex gap-4 mb-4 py-2 px-3" role="alert">
+            <div>
+                <div class="text-secondary small">Max file size</div>
+                <div class="fw-semibold">@ByteFormatter.Format(_limits.MaxUploadSizeInBytes)</div>
+            </div>
+            <div class="vr"></div>
+            <div>
+                <div class="text-secondary small">Files remaining</div>
+                <div class="fw-semibold @(filesLeft == 0 ? "text-warning" : "")">@filesLeft of @_limits.MaxFiles</div>
+            </div>
+        </div>
+    }
+
     @if (_isLoading)
     {
         <div class="d-flex justify-content-center py-5">
@@ -96,6 +112,7 @@
 
 @code {
     private GetAssetsMetadataResponse? _response;
+    private GetUserUploadLimitsResponse? _limits;
     private bool _isLoading = true;
     private string? _errorMessage;
     private int _page = 1;
@@ -124,7 +141,13 @@
 
         try
         {
-            _response = await AssetService.GetMyAssetsMetadataAsync(_page);
+            var limitsTask = _page == 1 ? AssetService.GetUserUploadLimitsAsync() : Task.FromResult(_limits);
+            var assetsTask = AssetService.GetMyAssetsMetadataAsync(_page);
+
+            await Task.WhenAll(limitsTask, assetsTask);
+
+            _limits = limitsTask.Result;
+            _response = assetsTask.Result;
         }
         catch (Exception ex)
         {
