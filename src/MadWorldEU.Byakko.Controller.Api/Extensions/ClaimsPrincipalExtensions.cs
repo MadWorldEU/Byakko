@@ -6,4 +6,12 @@ internal static class ClaimsPrincipalExtensions
         user.FindFirst(ClaimTypes.NameIdentifier)?.Value
             ?? user.FindFirst("sub")?.Value
             ?? string.Empty;
+
+    internal static Guid GetUserIdAsGuid(this ClaimsPrincipal user)
+    {
+        var userId = user.GetUserId();
+        return string.IsNullOrEmpty(userId) 
+            ? Guid.Empty 
+            : Guid.Parse(userId);
+    }
 }

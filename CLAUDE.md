@@ -196,7 +196,11 @@ Blazor WebAssembly, Bootstrap 5 dark theme (`data-bs-theme="dark"`). Desktop-fir
 
 ## Portal UI
 
-Blazor WebAssembly, Bootstrap 5 dark theme. Sticky top navbar with auth dropdown (username, edit-profile link via `OidcSettings.GetEditAccountUrl()`, logout). Pages: `Pages/Storage/Upload.razor` (`/storage/upload`), `Pages/Storage/Download.razor` (shows expiry warning client-side; server enforces), `Pages/UserAgreement.razor` (`/user-agreement` — static page with 9 sections covering acceptance, prohibited content, file retention, privacy, liability, changes, and contact). Max upload size from `IOptions<AssetSettings>` → `IBrowserFile.OpenReadStream(maxAllowedSize)`. Footer (`Layout/MainLayout.razor`) includes a "User Agreement" link to `/user-agreement`.
+Blazor WebAssembly, Bootstrap 5 dark theme. Sticky top navbar with auth dropdown (username, edit-profile link via `OidcSettings.GetEditAccountUrl()`, logout) and a "My files" link (visible when authenticated). Pages: `Pages/Storage/Upload.razor` (`/storage/upload`), `Pages/Storage/Download.razor` (shows expiry warning client-side; server enforces), `Pages/Storage/MyAssets.razor` (`/storage/my-assets` — paged table of the authenticated user's own assets with status badges Active/Expired/Deleted, size, expiry, and download links; fetches from `GET /assets/me`), `Pages/UserAgreement.razor` (`/user-agreement` — static page with 9 sections covering acceptance, prohibited content, file retention, privacy, liability, changes, and contact). Max upload size from `IOptions<AssetSettings>` → `IBrowserFile.OpenReadStream(maxAllowedSize)`. Footer (`Layout/MainLayout.razor`) includes a "User Agreement" link to `/user-agreement`.
+
+**Portal components** (`Components/`): `UploadLimitsAlert.razor` — reusable alert showing max file size and files remaining (amber when limit reached); used in `Upload.razor` and `MyAssets.razor`. Takes a `GetUserUploadLimitsResponse?` parameter. Namespace `MadWorldEU.Byakko.Components` is a global using in `_Imports.razor`.
+
+`IAssetService` (shared) additionally exposes `GetMyAssetsMetadataAsync(int page)` — calls `GET /assets/me?page={page}` with the authorized client.
 
 ## Status UI
 

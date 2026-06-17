@@ -36,7 +36,19 @@ internal static class AssetsEndpoints
                 );
             })
             .RequireAuthorization(AuthorizationPolicies.Administrator)
-            .WithName("GetAssetsMetadata");
+            .WithName("GetAllAssetsMetadata");
+        
+        assetsEndpoints.MapGet("/me", async (int page, Guid? assetId, ClaimsPrincipal user, GetAssetsMetaDataUseCase useCase) =>
+            {
+                var userId = user.GetUserIdAsGuid();
+                var result = await useCase.QueryAsync(page, assetId, userId);
+                return result.Match(
+                    onSuccess: Results.Ok,
+                    onFailure: error => Results.BadRequest(error.Description)
+                );
+            })
+            .RequireAuthorization(AuthorizationPolicies.User)
+            .WithName("GetMyAssetsMetadata");
 
         assetsEndpoints.MapPost("/", async (CreateAssetRequest request, ClaimsPrincipal user, HttpContext httpContext, CreateAssetMetadataUseCase useCase) =>
             {

@@ -40,6 +40,12 @@ public sealed class AssetService : IAssetService
     }
 
     /// <inheritdoc />
+    public async Task<GetAssetsMetadataResponse?> GetMyAssetsMetadataAsync(int page)
+    {
+        return await _httpClientAuthorized.GetFromJsonAsync<GetAssetsMetadataResponse>($"/assets/me?page={page}");
+    }
+
+    /// <inheritdoc />
     public async Task<GetAssetMetadataResponse?> GetAssetMetadataAsync(Guid id)
     {
         return await _httpClientAnonymous.GetFromJsonAsync<GetAssetMetadataResponse>($"/assets/{id}");

@@ -1,0 +1,147 @@
+@page "/storage/my-assets"
+@attribute [Authorize]
+@inject IAssetService AssetService
+
+<PageTitle>Byakko – My Files</PageTitle>
+
+<div class="container py-5">
+    <h2 class="fw-bold mb-1">My files</h2>
+    <p class="text-secondary mb-4">An overview of all files you have uploaded.</p>
+
+    <UploadLimitsAlert Limits="_limits" />
+
+    @if (_isLoading)
+    {
+        <div class="d-flex justify-content-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading…</span>
+            </div>
+        </div>
+    }
+    else if (_errorMessage is not null)
+    {
+        <div class="alert alert-danger" role="alert">@_errorMessage</div>
+    }
+    else if (_response is not null)
+    {
+        @if (_response.Assets.Count == 0)
+        {
+            <div class="alert alert-info" role="alert">
+                You have not uploaded any files yet. <a href="/storage/upload" class="alert-link">Upload your first file.</a>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Size</th>
+                            <th>Expires</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var asset in _response.Assets)
+                        {
+                            <tr>
+                                <td>@asset.Name</td>
+                                <td class="text-secondary small">@ByteFormatter.Format(asset.Size)</td>
+                                <td class="text-secondary small">@asset.ExpiresAt.ToString("d MMM yyyy", System.Globalization.CultureInfo.InvariantCulture)</td>
+                                <td>
+                                    @if (asset.IsDeleted)
+                                    {
+                                        <span class="badge text-bg-secondary">Deleted</span>
+                                    }
+                                    else if (asset.ExpiresAt < DateTimeOffset.UtcNow)
+                                    {
+                                        <span class="badge text-bg-warning">Expired</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge text-bg-success">Active</span>
+                                    }
+                                </td>
+                                <td class="text-end">
+                                    @if (!asset.IsDeleted && asset.ExpiresAt >= DateTimeOffset.UtcNow)
+                                    {
+                                        <a class="btn btn-outline-primary btn-sm"
+                                           href="/storage/download/@asset.Id">
+                                            Download
+                                        </a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <button class="btn btn-outline-secondary btn-sm"
+                        @onclick="PreviousPage"
+                        disabled="@(_page <= 1)">
+                    Previous
+                </button>
+                <span class="text-secondary small">Page @_page</span>
+                <button class="btn btn-outline-secondary btn-sm"
+                        @onclick="NextPage"
+                        disabled="@(!_response.HasNextPage)">
+                    Next
+                </button>
+            </div>
+        }
+    }
+</div>
+
+@code {
+    private GetAssetsMetadataResponse? _response;
+    private GetUserUploadLimitsResponse? _limits;
+    private bool _isLoading = true;
+    private string? _errorMessage;
+    private int _page = 1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync();
+    }
+
+    private async Task PreviousPage()
+    {
+        _page--;
+        await LoadAsync();
+    }
+
+    private async Task NextPage()
+    {
+        _page++;
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        _isLoading = true;
+        _errorMessage = null;
+
+        try
+        {
+            var limitsTask = _page == 1 ? AssetService.GetUserUploadLimitsAsync() : Task.FromResult(_limits);
+            var assetsTask = AssetService.GetMyAssetsMetadataAsync(_page);
+
+            await Task.WhenAll(limitsTask, assetsTask);
+
+            _limits = limitsTask.Result;
+            _response = assetsTask.Result;
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Could not load files: {ex.Message}";
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+}
