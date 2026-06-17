@@ -14,6 +14,9 @@ public interface IAssetService
     /// <summary>Returns a paged list of asset metadata for administrators. Optionally filters by asset ID or user ID.</summary>
     Task<GetAssetsMetadataResponse?> GetAssetsMetadataAsync(int page, Guid? assetId = null, Guid? userId = null);
 
+    /// <summary>Returns a paged list of asset metadata for the authenticated user.</summary>
+    Task<GetAssetsMetadataResponse?> GetMyAssetsMetadataAsync(int page);
+
     /// <summary>Returns the metadata of an asset by ID.</summary>
     Task<GetAssetMetadataResponse?> GetAssetMetadataAsync(Guid id);
 
