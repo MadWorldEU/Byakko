@@ -26,6 +26,9 @@ public interface IAssetService
     /// <summary>Deletes the content of an asset by ID. Throws <see cref="HttpRequestException"/> on failure.</summary>
     Task DeleteAssetContentAsync(Guid id);
 
+    /// <summary>Deletes the content of the authenticated user's own asset by ID. Throws <see cref="HttpRequestException"/> on failure.</summary>
+    Task DeleteMyAssetContentAsync(Guid id);
+
     /// <summary>Returns the direct URL to download the binary content of an asset. The browser streams it natively — no in-memory buffering.</summary>
     string GetContentUrl(Guid id);
 }

@@ -31,6 +31,16 @@ Scenario: Retrieve my own assets as an authenticated user
     Then the response status code should be 200
     And the response should contain the created assets
 
+Scenario: Delete content of my own asset as an authenticated user
+    Given I am authenticated as a user
+    And I have created an asset with name "delete-test.txt" and content type "text/plain"
+    And I have uploaded content for the created asset
+    When I delete my own asset content
+    Then the response status code should be 200
+    When I retrieve the metadata of the created asset
+    Then the response status code should be 200
+    And the expire date of the created asset should be in the past
+
 Scenario: Upload and download a file for an asset
     Given I am authenticated as a user
     And I have created an asset with name "test-file.txt" and content type "text/plain"
