@@ -81,6 +81,37 @@ By default Keycloak maps realm roles under `realm_access.roles`. Change it to a 
    - **Verify email** — requires users to verify their email address after registration
 4. Click **Save**.
 
+> 💡 In the developer environment, **User registration** is enabled automatically via `MadWorld-realm.json`. In production, enable it manually after first deploy.
+
+### Terms and Conditions
+
+Byakko shows a Terms and Conditions acceptance screen (linking to `/user-agreement`) before users can complete their first login. This is implemented via a Keycloak Required Action and a custom `byakko` login theme.
+
+#### How it works
+
+- The `byakko` login theme overrides only the `termsText` message key. All other UI inherits from `keycloak.v2`.
+- The Required Action `TERMS_AND_CONDITIONS` intercepts the login flow and presents the acceptance screen.
+- `defaultAction: true` means every user (new and existing) must accept once.
+
+#### Developer environment (Aspire)
+
+This is configured automatically:
+
+- `MadWorld-realm.json` has `"loginTheme": "byakko"` and `TERMS_AND_CONDITIONS` enabled with `defaultAction: true`.
+- The theme files are bind-mounted from `src/MadWorldEU.Byakko.Aspire/Configurations/KeyCloak/themes/` into the Keycloak container.
+
+To change the terms link, edit `themes/byakko/login/messages/messages_en.properties` and restart the Keycloak container.
+
+#### Production environment (Helm)
+
+The theme files are injected via the `keycloak-theme-byakko` ConfigMap in `templates/keycloak.yaml`. The `termsText` URL is derived from `{{ .Values.ingress.domain }}` and resolves to `https://byakko.dev/user-agreement`.
+
+To enable the Required Action in a fresh production realm:
+
+1. Go to **Authentication** → **Required Actions** in the Keycloak Admin UI.
+2. Find **Terms and Conditions** and toggle **Enabled** on.
+3. Toggle **Default Action** on so existing users are prompted on next login.
+
 ### Configure Email
 
 Keycloak uses an SMTP server to send verification, password reset, and other system emails. To configure it:
