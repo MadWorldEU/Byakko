@@ -14,6 +14,11 @@
     </span>
 </div>
 
+@if (_error is not null)
+{
+    <div class="alert alert-danger" role="alert">@_error</div>
+}
+
 <div class="row g-3">
     <div class="col-sm-6 col-xl-6">
         <div class="stat-card card border-0 bg-body-tertiary stat-card-primary h-100">
@@ -51,9 +56,19 @@
 
 @code {
     private GetStorageStatisticsResponse? _statistics;
+    private string? _error;
 
     protected override async Task OnInitializedAsync()
     {
-        _statistics = await StorageService.GetStorageStatisticsAsync();
+        var result = await StorageService.GetStorageStatisticsAsync();
+
+        if (result.IsSuccess)
+        {
+            _statistics = result.Response;
+        }
+        else
+        {
+            _error = result.Failure?.Description ?? "An unexpected error occurred.";
+        }
     }
 }

@@ -15,7 +15,7 @@ internal static class AuditEndpoints
                 var result = await useCase.QueryAsync(entityId);
                 return result.Match(
                     onSuccess: Results.Ok,
-                    onFailure: error => Results.BadRequest(error.Description)
+                    onFailure: error => error.ToBadRequest()
                 );
             })
             .RequireAuthorization(AuthorizationPolicies.Administrator)

@@ -6,5 +6,5 @@ namespace MadWorldEU.Byakko.Services;
 public interface IStorageService
 {
     /// <summary>Returns aggregate statistics for all active assets in storage.</summary>
-    Task<GetStorageStatisticsResponse?> GetStorageStatisticsAsync();
+    Task<ResultResponse<GetStorageStatisticsResponse>> GetStorageStatisticsAsync();
 }

@@ -21,7 +21,7 @@ internal static class AssetsEndpoints
                 var result = await useCase.QueryAsync(userId);
                 return result.Match(
                     onSuccess: Results.Ok,
-                    onFailure: error => Results.BadRequest(error.Description)
+                    onFailure: error => error.ToBadRequest()
                 );
             })
             .RequireAuthorization()
@@ -32,7 +32,7 @@ internal static class AssetsEndpoints
                 var result = await useCase.QueryAsync(page, assetId, userId);
                 return result.Match(
                     onSuccess: Results.Ok,
-                    onFailure: error => Results.BadRequest(error.Description)
+                    onFailure: error => error.ToBadRequest()
                 );
             })
             .RequireAuthorization(AuthorizationPolicies.Administrator)
@@ -44,7 +44,7 @@ internal static class AssetsEndpoints
                 var result = await useCase.QueryAsync(page, assetId, userId);
                 return result.Match(
                     onSuccess: Results.Ok,
-                    onFailure: error => Results.BadRequest(error.Description)
+                    onFailure: error => error.ToBadRequest()
                 );
             })
             .RequireAuthorization(AuthorizationPolicies.User)
@@ -58,7 +58,7 @@ internal static class AssetsEndpoints
                 var result = await useCase.ExecuteAsync(request, userId, ipAddress);
                 return result.Match(
                     onSuccess: response => Results.Created($"/assets/{response.Id}", response),
-                    onFailure: error => Results.BadRequest(error.Description)
+                    onFailure: error => error.ToBadRequest()
                 );
             })
             .RequireAuthorization()
@@ -70,8 +70,8 @@ internal static class AssetsEndpoints
                 return result.Match(
                     onSuccess: Results.Ok,
                     onFailure: error => error.Code == AssetErrors.NotFound.Code
-                        ? Results.NotFound()
-                        : Results.BadRequest(error.Description)
+                        ? error.ToNotFound()
+                        : error.ToBadRequest()
                 );
             })
             .WithName("GetAssetMetadata");
@@ -88,10 +88,10 @@ internal static class AssetsEndpoints
                     return result.Match(
                         onSuccess: Results.Ok,
                         onFailure: error => error.Code == AssetErrors.NotFound.Code
-                            ? Results.NotFound()
+                            ? error.ToNotFound()
                             : error.Code == AssetErrors.Forbidden.Code
                                 ? Results.Forbid()
-                                : Results.BadRequest(error.Description));
+                                : error.ToBadRequest());
                 })
             .WithName("UploadAssetContent")
             .WithMetadata(new RequestSizeLimitAttribute(maxUploadSizeInBytes))
@@ -108,10 +108,10 @@ internal static class AssetsEndpoints
                 return result.Match(
                     onSuccess: Results.Ok,
                     onFailure: error => error.Code == AssetErrors.NotFound.Code
-                        ? Results.NotFound()
+                        ? error.ToNotFound()
                         : error.Code == AssetErrors.AlreadyDeleted.Code
-                            ? Results.Conflict(error.Description)
-                            : Results.BadRequest(error.Description)
+                            ? error.ToConflict()
+                            : error.ToBadRequest()
                 );
             })
             .RequireAuthorization(AuthorizationPolicies.Administrator)
@@ -126,12 +126,12 @@ internal static class AssetsEndpoints
                 return result.Match(
                     onSuccess: Results.Ok,
                     onFailure: error => error.Code == AssetErrors.NotFound.Code
-                        ? Results.NotFound()
+                        ? error.ToNotFound()
                         : error.Code == AssetErrors.Forbidden.Code
                             ? Results.Forbid()
                             : error.Code == AssetErrors.AlreadyDeleted.Code
-                                ? Results.Conflict(error.Description)
-                                : Results.BadRequest(error.Description)
+                                ? error.ToConflict()
+                                : error.ToBadRequest()
                 );
             })
             .RequireAuthorization(AuthorizationPolicies.User)
@@ -144,8 +144,8 @@ internal static class AssetsEndpoints
                 return result.Match(
                     onSuccess: response => Results.File(response.Content, response.ContentType, response.FileName),
                     onFailure: error => error.Code == AssetErrors.NotFound.Code
-                        ? Results.NotFound()
-                        : Results.BadRequest(error.Description)
+                        ? error.ToNotFound()
+                        : error.ToBadRequest()
                 );
             })
             .WithName("DownloadAssetContent")

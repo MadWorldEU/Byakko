@@ -72,7 +72,16 @@ else if (_response is not null)
     {
         try
         {
-            _response = await AuditService.GetAuditLogsAsync(EntityId);
+            var result = await AuditService.GetAuditLogsAsync(EntityId);
+
+            if (result.IsSuccess)
+            {
+                _response = result.Response;
+            }
+            else
+            {
+                _error = result.Failure?.Description ?? "An unexpected error occurred.";
+            }
         }
         catch (Exception ex)
         {
