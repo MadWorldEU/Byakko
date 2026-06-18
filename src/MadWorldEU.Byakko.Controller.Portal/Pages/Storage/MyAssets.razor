@@ -1,5 +1,5 @@
 @page "/storage/my-assets"
-@attribute [Authorize]
+@attribute [Authorize(Policy = AuthorizationPolicies.User)]
 @inject IAssetService AssetService
 @inject IJSRuntime JsRuntime
 
