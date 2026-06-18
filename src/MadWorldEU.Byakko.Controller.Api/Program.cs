@@ -3,7 +3,6 @@ using MadWorldEU.Byakko.Endpoints.Audits;
 using MadWorldEU.Byakko.Endpoints.Development;
 using MadWorldEU.Byakko.Endpoints.HostServices;
 using MadWorldEU.Byakko.Endpoints.Storages;
-using MadWorldEU.Byakko.Extensions;
 using MadWorldEU.Byakko.HostedServices;
 using MadWorldEU.Byakko.Middlewares;
 using Microsoft.AspNetCore.HttpOverrides;
