@@ -169,13 +169,24 @@
 
         try
         {
-            var limitsTask = _page == 1 ? AssetService.GetUserUploadLimitsAsync() : Task.FromResult(_limits);
-            var assetsTask = AssetService.GetMyAssetsMetadataAsync(_page);
+            if (_page == 1)
+            {
+                var limitsResult = await AssetService.GetUserUploadLimitsAsync();
+                if (limitsResult.IsSuccess)
+                {
+                    _limits = limitsResult.Response;
+                }
+            }
 
-            await Task.WhenAll(limitsTask, assetsTask);
-
-            _limits = limitsTask.Result;
-            _response = assetsTask.Result;
+            var assetsResult = await AssetService.GetMyAssetsMetadataAsync(_page);
+            if (assetsResult.IsSuccess)
+            {
+                _response = assetsResult.Response;
+            }
+            else
+            {
+                _errorMessage = assetsResult.Failure?.Description ?? "An unexpected error occurred.";
+            }
         }
         catch (Exception ex)
         {

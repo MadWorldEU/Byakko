@@ -94,11 +94,15 @@
 
         try
         {
-            _metadata = await AssetService.GetAssetMetadataAsync(guid);
+            var result = await AssetService.GetAssetMetadataAsync(guid);
 
-            if (_metadata is null)
+            if (result.IsSuccess)
             {
-                _errorMessage = "File not found.";
+                _metadata = result.Response;
+            }
+            else
+            {
+                _errorMessage = result.Failure?.Description ?? "Could not load file.";
             }
         }
         catch (Exception ex)

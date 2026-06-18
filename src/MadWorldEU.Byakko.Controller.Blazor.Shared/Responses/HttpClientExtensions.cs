@@ -17,4 +17,26 @@ public static class HttpClientExtensions
 
         return (await response.Content.ReadFromJsonAsync<FailureResponse>())!;
     }
+
+    public static async Task<ResultResponse<TResponse>> PostResultResponseFromJsonAsync<TRequest, TResponse>(this HttpClient httpClient, string requestUri, TRequest request)
+    {
+        var response = await httpClient.PostAsJsonAsync(requestUri, request);
+        if (response.IsSuccessStatusCode)
+        {
+            return (await response.Content.ReadFromJsonAsync<TResponse>())!;
+        }
+
+        return (await response.Content.ReadFromJsonAsync<FailureResponse>())!;
+    }
+
+    public static async Task<ResultResponse<TResponse>> PutResultResponseFromJsonAsync<TResponse>(this HttpClient httpClient, string requestUri, HttpContent content)
+    {
+        var response = await httpClient.PutAsync(requestUri, content);
+        if (response.IsSuccessStatusCode)
+        {
+            return (await response.Content.ReadFromJsonAsync<TResponse>())!;
+        }
+
+        return (await response.Content.ReadFromJsonAsync<FailureResponse>())!;
+    }
 }

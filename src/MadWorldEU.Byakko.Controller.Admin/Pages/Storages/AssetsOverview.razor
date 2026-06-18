@@ -144,7 +144,16 @@ else if (_response is not null)
 
         try
         {
-            _response = await AssetService.GetAssetsMetadataAsync(_currentPage, SearchGuid, SearchGuid);
+            var result = await AssetService.GetAssetsMetadataAsync(_currentPage, SearchGuid, SearchGuid);
+
+            if (result.IsSuccess)
+            {
+                _response = result.Response;
+            }
+            else
+            {
+                _error = result.Failure?.Description ?? "An unexpected error occurred.";
+            }
         }
         catch (Exception ex)
         {
