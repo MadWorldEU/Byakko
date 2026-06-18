@@ -14,7 +14,7 @@ internal static class GeneralStorageEndpoints
                 var result = await useCase.QueryAsync();
                 return result.Match(
                     onSuccess: Results.Ok,
-                    onFailure: error => Results.BadRequest(error.Description)
+                    onFailure: error => error.ToBadRequest()
                 );
             })
             .RequireAuthorization(AuthorizationPolicies.Administrator)

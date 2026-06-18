@@ -94,7 +94,12 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _limits = await AssetService.GetUserUploadLimitsAsync();
+        var result = await AssetService.GetUserUploadLimitsAsync();
+
+        if (result.IsSuccess)
+        {
+            _limits = result.Response;
+        }
     }
 
     private void OnFileSelected(InputFileChangeEventArgs e)
@@ -118,18 +123,20 @@
 
         try
         {
-            var createResponse = await AssetService.CreateAssetAsync(new()
+            var createResult = await AssetService.CreateAssetAsync(new()
             {
                 Name = _selectedFile.Name,
                 ContentType = _selectedFile.ContentType,
                 Size = _selectedFile.Size
             });
 
-            if (createResponse is null)
+            if (!createResult.IsSuccess)
             {
-                _errorMessage = "Failed to create asset record.";
+                _errorMessage = createResult.Failure?.Description ?? "Failed to create asset record.";
                 return;
             }
+
+            var createResponse = createResult.Response!;
 
             await using var stream = _selectedFile.OpenReadStream(maxAllowedSize: MaxUploadSizeInBytes);
             await using var progressStream = new ProgressStream(stream, _selectedFile.Size, async percent =>
@@ -138,20 +145,24 @@
                 await InvokeAsync(StateHasChanged);
             });
 
-            var uploadResponse = await AssetService.UploadAssetContentAsync(
+            var uploadResult = await AssetService.UploadAssetContentAsync(
                 createResponse.Id,
                 progressStream,
                 _selectedFile.Name,
                 _selectedFile.ContentType);
 
-            if (uploadResponse is null)
+            if (!uploadResult.IsSuccess)
             {
-                _errorMessage = "File content upload failed.";
+                _errorMessage = uploadResult.Failure?.Description ?? "File content upload failed.";
                 return;
             }
 
-            _uploadedId = uploadResponse.Id;
-            _limits = await AssetService.GetUserUploadLimitsAsync();
+            _uploadedId = uploadResult.Response!.Id;
+            var limitsResult = await AssetService.GetUserUploadLimitsAsync();
+            if (limitsResult.IsSuccess)
+            {
+                _limits = limitsResult.Response;
+            }
         }
         catch (Exception ex)
         {

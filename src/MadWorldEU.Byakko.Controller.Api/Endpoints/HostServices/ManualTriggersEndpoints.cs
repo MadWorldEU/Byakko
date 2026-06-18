@@ -15,7 +15,7 @@ internal static class ManualTriggersEndpoints
             var result = await useCase.ExecuteAsync();
             return result.Match(
                 onSuccess: () => Results.Ok(),
-                onFailure: error => Results.BadRequest(error.Description)
+                onFailure: error => error.ToBadRequest()
             );
         });
 
@@ -24,7 +24,7 @@ internal static class ManualTriggersEndpoints
             var result = await useCase.ExecuteAsync();
             return result.Match(
                 onSuccess: () => Results.Ok(),
-                onFailure: error => Results.BadRequest(error.Description)
+                onFailure: error => error.ToBadRequest()
             );
         });
     }

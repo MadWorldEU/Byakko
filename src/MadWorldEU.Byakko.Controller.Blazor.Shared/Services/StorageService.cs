@@ -15,8 +15,8 @@ public sealed class StorageService : IStorageService
     }
 
     /// <inheritdoc />
-    public async Task<GetStorageStatisticsResponse?> GetStorageStatisticsAsync()
+    public async Task<ResultResponse<GetStorageStatisticsResponse>> GetStorageStatisticsAsync()
     {
-        return await _httpClient.GetFromJsonAsync<GetStorageStatisticsResponse>("/storage/statistics");
+        return await _httpClient.GetResultResponseFromJsonAsync<GetStorageStatisticsResponse>("/storage/statistics");
     }
 }

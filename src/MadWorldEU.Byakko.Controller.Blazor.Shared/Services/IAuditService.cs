@@ -6,5 +6,5 @@ namespace MadWorldEU.Byakko.Services;
 public interface IAuditService
 {
     /// <summary>Returns all audit log entries for the given entity ID.</summary>
-    Task<GetAuditLogsResponse?> GetAuditLogsAsync(Guid entityId);
+    Task<ResultResponse<GetAuditLogsResponse>> GetAuditLogsAsync(Guid entityId);
 }

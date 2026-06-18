@@ -7,4 +7,5 @@ global using OpenTelemetry.Metrics;
 global using OpenTelemetry.Trace;
 global using Scalar.AspNetCore;
 
+global using MadWorldEU.Byakko.Extensions;
 global using MadWorldEU.Byakko.Storages;

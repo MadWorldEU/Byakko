@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using MadWorldEU.Byakko.Audits;
+using MadWorldEU.Byakko.Common;
 
 namespace MadWorldEU.Byakko.Services;
 
@@ -9,8 +10,8 @@ public sealed class AuditService(IHttpClientFactory httpClientFactory) : IAuditS
     private readonly HttpClient _httpClient = httpClientFactory.CreateClient(HttpClients.ApiAuthorized);
 
     /// <inheritdoc />
-    public async Task<GetAuditLogsResponse?> GetAuditLogsAsync(Guid entityId)
+    public async Task<ResultResponse<GetAuditLogsResponse>> GetAuditLogsAsync(Guid entityId)
     {
-        return await _httpClient.GetFromJsonAsync<GetAuditLogsResponse>($"/audits/{entityId}");
+        return await _httpClient.GetResultResponseFromJsonAsync<GetAuditLogsResponse>($"/audits/{entityId}");
     }
 }

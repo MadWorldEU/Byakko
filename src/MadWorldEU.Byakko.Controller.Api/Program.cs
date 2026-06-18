@@ -3,8 +3,8 @@ using MadWorldEU.Byakko.Endpoints.Audits;
 using MadWorldEU.Byakko.Endpoints.Development;
 using MadWorldEU.Byakko.Endpoints.HostServices;
 using MadWorldEU.Byakko.Endpoints.Storages;
-using MadWorldEU.Byakko.Extensions;
 using MadWorldEU.Byakko.HostedServices;
+using MadWorldEU.Byakko.Middlewares;
 using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -54,10 +54,7 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 
 app.UseStaticFiles();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-}
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.MapHealthChecks("/health")
     .DisableRateLimiting();
