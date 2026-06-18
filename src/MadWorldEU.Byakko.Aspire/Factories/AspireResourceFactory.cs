@@ -50,6 +50,7 @@ internal static class AspireResourceFactory
         return builder.AddKeycloak("keycloak", KeyCloakPort, keyCloakUsername, keyCloakPassword)
             .WithHttpsEndpoint(KeyCloakSecurePort)
             .WithRealmImport("./Configurations/KeyCloak/MadWorld-realm.json")
+            .WithBindMount("./Configurations/KeyCloak/themes", "/opt/keycloak/themes")
             .WithDataVolume();
     }
 }
