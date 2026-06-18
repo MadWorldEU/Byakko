@@ -74,6 +74,13 @@ internal static class DebugEndpoints
                     Claims = user.Claims.Select(c => new ClaimDto(c.Type, c.Value)).ToList()
                 };
             })
-            .RequireAuthorization();
+            .RequireAuthorization()
+            .WithName("GetAccount");
+
+        debugEndpoints.MapGet("throw-error", () =>
+        {
+            throw new InvalidOperationException("This exception was thrown intentionally for testing.");
+        })
+        .WithName("ThrowException");
     }
 }

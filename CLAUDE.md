@@ -226,11 +226,51 @@ See `.claude/rules/code-standard.md` for full standards. Key points:
 - **Global usings:** third-party group then `MadWorldEU.Byakko.*` group, each alphabetical
 - **Endpoint classes:** `internal static` with `internal static` extension on `WebApplication`; under `Endpoints/<Feature>/`
 - **HTTP clients:** `HttpClients.ApiAnonymous` / `HttpClients.ApiAuthorized` from `Controller.Blazor.Shared/HttpClients.cs`. `ApiAuthorized` has `Timeout = Timeout.InfiniteTimeSpan` — upload timeouts are governed by Traefik's `responseHeaderTimeout` (1800s), not the client.
-- **Shared services:** `IAssetService`/`AssetService`, `IStorageService`/`StorageService`, and `IAuditService`/`AuditService` live in `Controller.Blazor.Shared/Services/` and are registered in `WebAssemblyHostBuilderExtensions.AddByakkoServices()`.
+- **Shared services:** `IAssetService`/`AssetService`, `IStorageService`/`StorageService`, and `IAuditService`/`AuditService` live in `Controller.Blazor.Shared/Services/` and are registered in `WebAssemblyHostBuilderExtensions.AddByakkoServices()`. All methods that call the API return `ResultResponse<T>` (see below).
 - **Shared formatters:** `ByteFormatter.Format(long?)` in `Controller.Blazor.Shared/Formatters/ByteFormatter.cs` — formats byte counts to B/KB/MB/GB using `InvariantCulture` (always `.` as decimal separator).
 - **appsettings schemas:** each `appsettings.json` has a companion `appsettings-schema.json`; update schema when adding config keys
 - **EF Core constructor:** `private`, `[UsedImplicitly]`, XML `<summary>` saying "Required for EF Core"
 - **Errors:** `static readonly` fields on `{Domain}Errors` class; code format `"Domain.Reason"`
+
+### Blazor HTTP Response Pattern
+
+All Blazor service methods that call the API return `ResultResponse<T>` (`Controller.Blazor.Shared/Responses/ResultResponse.cs`, namespace `MadWorldEU.Byakko.Responses`). DELETE endpoints that return no body use `ResultResponse<EmptyResponse>`.
+
+**Types in `Core.Contracts/Common/` (namespace `MadWorldEU.Byakko.Common`):**
+
+| Type | Purpose |
+|---|---|
+| `FailureResponse` | Structured API error — `Code` (`Domain.Reason`), `StatusCode` (HTTP), `Description` (human-readable) |
+| `EmptyResponse` | Placeholder success body for endpoints that return no content (e.g. DELETE) |
+
+**`ResultResponse<T>` API:**
+- `IsSuccess` — `true` when `Failure == null`
+- `Response` — the success payload (`T?`)
+- `Failure` — the `FailureResponse` on error
+- Implicit operators from `T` and `FailureResponse` allow returning either directly
+
+**`HttpClientExtensions` (`Controller.Blazor.Shared/Responses/`, namespace `MadWorldEU.Byakko.Responses`):**
+
+| Method | HTTP verb | Notes |
+|---|---|---|
+| `GetResultResponseFromJsonAsync<TResponse>` | GET | Reads JSON body on success |
+| `PostResultResponseFromJsonAsync<TRequest, TResponse>` | POST | Serialises request as JSON |
+| `PutResultResponseFromJsonAsync<TResponse>` | PUT | Accepts raw `HttpContent` (e.g. `MultipartFormDataContent`) |
+| `DeleteResultResponseFromJsonAsync` | DELETE | Returns `ResultResponse<EmptyResponse>` |
+
+**Usage pattern in Razor pages:**
+```csharp
+var result = await SomeService.SomeMethodAsync();
+
+if (result.IsSuccess)
+{
+    _data = result.Response;
+}
+else
+{
+    _error = result.Failure?.Description ?? "An unexpected error occurred.";
+}
+```
 
 ## Helm / Kubernetes
 
