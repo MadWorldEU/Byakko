@@ -44,7 +44,7 @@ public sealed class UploadAssetContentUseCaseTests
         
         var result = await useCase.ExecuteAsync(
             Guid.NewGuid().ToString(), Stream.Null, 100,
-            OwnerId.ToString(), ipAddress, "test.txt", "text/plain");
+            OwnerId.ToString(), ipAddress, "test.txt", "text/plain", "MySecretPassword!");
 
         result.IsFailure.ShouldBeTrue();
         result.Error.ShouldBe(AssetErrors.NotFound);
@@ -62,7 +62,7 @@ public sealed class UploadAssetContentUseCaseTests
         
         var result = await useCase.ExecuteAsync(
             asset.Id.Value.ToString(), Stream.Null, 100,
-            OtherUserId.ToString(), ipAddress, "test.txt", "text/plain");
+            OtherUserId.ToString(), ipAddress, "test.txt", "text/plain", "MySecretPassword!");
 
         result.IsFailure.ShouldBeTrue();
         result.Error.ShouldBe(AssetErrors.Forbidden);
@@ -80,7 +80,7 @@ public sealed class UploadAssetContentUseCaseTests
         
         var result = await useCase.ExecuteAsync(
             asset.Id.Value.ToString(), Stream.Null, 100,
-            OwnerId.ToString(), ipAddress, "different.txt", "text/plain");
+            OwnerId.ToString(), ipAddress, "different.txt", "text/plain", "MySecretPassword!");
 
         result.IsFailure.ShouldBeTrue();
         result.Error.ShouldBe(AssetErrors.FileNameMismatch);
@@ -98,7 +98,7 @@ public sealed class UploadAssetContentUseCaseTests
         
         var result = await useCase.ExecuteAsync(
             asset.Id.Value.ToString(), Stream.Null, 100,
-            OwnerId.ToString(), ipAddress, "test.txt", "application/pdf");
+            OwnerId.ToString(), ipAddress, "test.txt", "application/pdf", "MySecretPassword!");
 
         result.IsFailure.ShouldBeTrue();
         result.Error.ShouldBe(AssetErrors.ContentTypeMismatch);
@@ -120,7 +120,7 @@ public sealed class UploadAssetContentUseCaseTests
         
         var result = await useCase.ExecuteAsync(
             asset.Id.Value.ToString(), Stream.Null, 100,
-            OwnerId.ToString(), ipAddress, "test.txt", "text/plain");
+            OwnerId.ToString(), ipAddress, "test.txt", "text/plain", "MySecretPassword!");
 
         result.IsFailure.ShouldBeTrue();
         result.Error.ShouldBe(AssetErrors.SizeAlreadySet);
@@ -141,7 +141,7 @@ public sealed class UploadAssetContentUseCaseTests
         
         var result = await useCase.ExecuteAsync(
             asset.Id.Value.ToString(), Stream.Null, 100,
-            OwnerId.ToString(), ipAddress, "test.txt", "text/plain");
+            OwnerId.ToString(), ipAddress, "test.txt", "text/plain", "MySecretPassword!");
 
         result.IsFailure.ShouldBeTrue();
         result.Error.ShouldBe(storageError);

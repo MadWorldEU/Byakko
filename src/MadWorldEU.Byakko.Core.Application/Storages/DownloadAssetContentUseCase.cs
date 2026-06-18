@@ -21,7 +21,7 @@ public sealed class DownloadAssetContentUseCase(IClock clock, IEncryptionService
         var encryptedContent = await contentStorage.DownloadAsync(asset.Value.GetPath());
         if (encryptedContent.IsFailure) return encryptedContent.Error;
 
-        var content = encryptionService.Decrypt(encryptedContent.Value);
+        var content = encryptionService.Decrypt(encryptedContent.Value, Password.Create("").Value);
         if (content.IsFailure) return content.Error;
         
         return new DownloadAssetContentResponse

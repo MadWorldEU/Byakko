@@ -13,7 +13,9 @@ public sealed class UploadAssetContentUseCase(
     IDomainEventsDispatcher domainEventsDispatcher,
     IOptions<AssetSettings> settings)
 {
-    public async Task<Result<UploadAssetContentResponse>> ExecuteAsync(string assetId, Stream content, long sizeInBytes, string userId, System.Net.IPAddress? ipAddress, string fileName, string contentType)
+    public async Task<Result<UploadAssetContentResponse>> ExecuteAsync(
+        string assetId, Stream content, long sizeInBytes, string userId, System.Net.IPAddress? ipAddress, 
+        string fileName, string contentType, string? password)
     {
         var id = Id.Create(assetId);
         if (id.IsFailure) return id.Error;
@@ -28,6 +30,8 @@ public sealed class UploadAssetContentUseCase(
         var ipAddressResult = IpAddress.Create(ipAddress);
         if (ipAddressResult.IsFailure) return ipAddressResult.Error;
 
+        var passwordResult = Password.Create(password);
+        
         var asset = await assetRepository.FindAsync(id.Value);
         if (asset.IsFailure) return asset.Error;
 
@@ -46,7 +50,7 @@ public sealed class UploadAssetContentUseCase(
             return AssetErrors.ContentTypeMismatch;
         }
 
-        var encryptedContent = encryptionService.Encrypt(content);
+        var encryptedContent = encryptionService.Encrypt(content, passwordResult.Value);
         
         var uploadResult = await contentStorage.UploadAsync(asset.Value.GetPath(), encryptedContent);
         if (uploadResult.IsFailure) return uploadResult.Error;
