@@ -1,3 +1,4 @@
+using MadWorldEU.Byakko.Storages;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Shouldly;
@@ -13,27 +14,54 @@ public sealed class EncryptionServiceTests
     /// Base64 encoding of the 32-byte AES-256 key: FZUaz@Cw+%M!Jl5VTn6}7l-=J)TcpVwh
     /// </summary>
     private readonly IOptions<EncryptionOptions> _settings = Options.Create(new EncryptionOptions { Key = "RlpVYXpAQ3crJU0hSmw1VlRuNn03bC09SilUY3BWd2g=" });
-
+    private readonly Password _emptyPassword = Password.Create(string.Empty).Value;
+    private readonly Password _normalPassword = Password.Create("MySecretPassword123!").Value;
+    private readonly Password _wrongPassword = Password.Create("WrongPassword!").Value;
+    
     [Test]
     public void Encrypt_WhenGivenValidString_ShouldBeDecryptableToOriginalString()
     {
         var encryptionService = new EncryptionService(_settings, NullLogger<EncryptionService>.Instance);
 
-        var encryptedString = encryptionService.Encrypt(CorrectDecryptedString);
-        var decryptedResult = encryptionService.Decrypt(encryptedString);
+        var encryptedString = encryptionService.Encrypt(CorrectDecryptedString, _emptyPassword);
+        var decryptedResult = encryptionService.Decrypt(encryptedString, _emptyPassword);
 
         decryptedResult.Value.ShouldBe(CorrectDecryptedString);
         decryptedResult.Value.ShouldNotBe(encryptedString);
+    }
+    
+    [Test]
+    public void Encrypt_WhenGivenValidStringAndValidPassword_ShouldBeDecryptableToOriginalString()
+    {
+        var encryptionService = new EncryptionService(_settings, NullLogger<EncryptionService>.Instance);
+
+        var encryptedString = encryptionService.Encrypt(CorrectDecryptedString, _normalPassword);
+        var decryptedResult = encryptionService.Decrypt(encryptedString, _normalPassword);
+
+        decryptedResult.Value.ShouldBe(CorrectDecryptedString);
+        decryptedResult.Value.ShouldNotBe(encryptedString);
+    }
+    
+    [Test]
+    public void Encrypt_WhenGivenValidStringAndWrongPassword_ShouldBeDecryptableToOriginalString()
+    {
+        var encryptionService = new EncryptionService(_settings, NullLogger<EncryptionService>.Instance);
+
+        var encryptedString = encryptionService.Encrypt(CorrectDecryptedString, _normalPassword);
+        var decryptedResult = encryptionService.Decrypt(encryptedString, _wrongPassword);
+
+        decryptedResult.IsFailure.ShouldBeTrue();
+        decryptedResult.Error.Code.ShouldBe("Encryption.DecryptionFailed");
     }
 
     [Test]
     public void Decrypt_WhenGivenEncryptedString_ShouldBeDecryptableToOriginalString()
     {
-        const string encryptedString = "QEaj5F11lbhEztxqkt0ssWdlKBsiVzRdF7PZezWdM+nFrRM4WZJwZ9DJZWIr21lIBtlF6qkEkmMRhVZ28iYyHP3hG+fdM4bd9fTRUTe+kPzJ+jdvIJCz/cQ2tYXSxFfcMiK/aNrR0jfqN62KeHuULNTzAzvfUSO40KNRruGExVPVWw3ADoWYGj7nfzXN3sP7nSR5xKA6GlWtT/0RtFU8mg==";
+        const string encryptedString = "5cEdaA45IaVJlXtekWaC4YMmTLnc6m878FjSTCYxXDkh0zIgq/NivfvtPZQ/c6wVGFZjvn9QxYHFECehPr6tcCbWkIUQOvYigjybTINcJ7ig/ewjuPoBr65P/zLDHVr6TbmMsDr7Xc5f4gPzvllVmSExVZLqgGsE5HLvkLkwK85lUFlIeMDvsvTaJ77UJ8dDGSyXphtXxRacOqGM3mdtDAk3BwuBw1s64AKQ9k6LCC0=";
 
         var encryptionService = new EncryptionService(_settings, NullLogger<EncryptionService>.Instance);
 
-        var decryptedResult = encryptionService.Decrypt(encryptedString);
+        var decryptedResult = encryptionService.Decrypt(encryptedString, _emptyPassword);
         decryptedResult.Value.ShouldBe(CorrectDecryptedString);
     }
 
@@ -43,7 +71,7 @@ public sealed class EncryptionServiceTests
         var encryptionService = new EncryptionService(_settings, NullLogger<EncryptionService>.Instance);
         using var tooShort = new MemoryStream([1, 2, 3]);
 
-        var result = encryptionService.Decrypt(tooShort);
+        var result = encryptionService.Decrypt(tooShort, _emptyPassword);
 
         result.IsFailure.ShouldBeTrue();
         result.Error.Code.ShouldBe("Encryption.DecryptionFailed");
@@ -55,7 +83,7 @@ public sealed class EncryptionServiceTests
         var encryptionService = new EncryptionService(_settings, NullLogger<EncryptionService>.Instance);
         using var corrupted = new MemoryStream(new byte[64]);
 
-        var result = encryptionService.Decrypt(corrupted);
+        var result = encryptionService.Decrypt(corrupted, _emptyPassword);
 
         result.IsFailure.ShouldBeTrue();
         result.Error.Code.ShouldBe("Encryption.DecryptionFailed");

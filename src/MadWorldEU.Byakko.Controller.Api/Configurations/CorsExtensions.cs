@@ -16,13 +16,15 @@ internal static class CorsExtensions
                 {
                     policy.WithOrigins(settings.AllowedOrigins)
                         .AllowAnyMethod()
-                        .AllowAnyHeader();
+                        .AllowAnyHeader()
+                        .WithExposedHeaders("Content-Disposition");
                 }
                 else
                 {
                     policy.AllowAnyOrigin()
                         .AllowAnyMethod()
-                        .AllowAnyHeader();
+                        .AllowAnyHeader()
+                        .WithExposedHeaders("Content-Disposition");
                 }
             });
         });

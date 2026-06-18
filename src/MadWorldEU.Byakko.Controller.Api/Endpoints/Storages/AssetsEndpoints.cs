@@ -77,14 +77,16 @@ internal static class AssetsEndpoints
             .WithName("GetAssetMetadata");
 
         assetsEndpoints.MapPut("/{id}/content",
-                async (string id, IFormFile file, ClaimsPrincipal user, HttpContext httpContext, UploadAssetContentUseCase useCase) =>
+                async (string id, IFormFile file, [FromForm] string? password, ClaimsPrincipal user, HttpContext httpContext, UploadAssetContentUseCase useCase) =>
                 {
                     var userId = user.GetUserId();
                     var ipAddress = httpContext.Connection.RemoteIpAddress;
 
                     await using var content = file.OpenReadStream();
-                    var result = await useCase.ExecuteAsync(id, content, file.Length, userId, ipAddress, file.FileName,
-                        file.ContentType);
+                    var result = await useCase.ExecuteAsync(
+                        id, content, file.Length, userId, ipAddress, 
+                        file.FileName, file.ContentType, password);
+                    
                     return result.Match(
                         onSuccess: Results.Ok,
                         onFailure: error => error.Code == AssetErrors.NotFound.Code
@@ -139,7 +141,7 @@ internal static class AssetsEndpoints
 
         assetsEndpoints.MapGet("/{id}/content", async (string id, DownloadAssetContentUseCase useCase) =>
             {
-                var result = await useCase.QueryAsync(id);
+                var result = await useCase.QueryAsync(id, string.Empty);
                 
                 return result.Match(
                     onSuccess: response => Results.File(response.Content, response.ContentType, response.FileName),
@@ -148,7 +150,21 @@ internal static class AssetsEndpoints
                         : error.ToBadRequest()
                 );
             })
-            .WithName("DownloadAssetContent")
+            .WithName("GetDownloadAssetContent")
+            .RequireRateLimiting(RateLimiterPolicies.Content);
+        
+        assetsEndpoints.MapPost("/{id}/content", async (string id, DownloadAssetContentRequest request, DownloadAssetContentUseCase useCase) =>
+            {
+                var result = await useCase.QueryAsync(id, request.Password);
+                
+                return result.Match(
+                    onSuccess: response => Results.File(response.Content, response.ContentType, response.FileName),
+                    onFailure: error => error.Code == AssetErrors.NotFound.Code
+                        ? error.ToNotFound()
+                        : error.ToBadRequest()
+                );
+            })
+            .WithName("PostDownloadAssetContent")
             .RequireRateLimiting(RateLimiterPolicies.Content);
     }
 }

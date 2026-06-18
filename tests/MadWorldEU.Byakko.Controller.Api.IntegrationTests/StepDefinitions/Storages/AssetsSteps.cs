@@ -152,6 +152,29 @@ public sealed class AssetsSteps(ScenarioContext scenarioContext)
         scenarioContext.Set(response, ScenarioContextKeys.LastResponse);
     }
 
+    [When("I upload content for the created asset with password {string}")]
+    public async Task WhenIUploadContentForTheCreatedAssetWithPassword(string password)
+    {
+        var client = scenarioContext.Get<HttpClient>();
+        var assetId = scenarioContext.Get<Guid>(AssetIdKey);
+        var fileContent = new ByteArrayContent("Hello, World!"u8.ToArray());
+        fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("text/plain");
+        var formData = new MultipartFormDataContent();
+        formData.Add(fileContent, "file", "secret-file.txt");
+        formData.Add(new StringContent(password), "password");
+        var response = await client.PutAsync($"/assets/{assetId}/content", formData);
+        scenarioContext.Set(response, ScenarioContextKeys.LastResponse);
+    }
+
+    [When("I download the content of the created asset with password {string}")]
+    public async Task WhenIDownloadTheContentOfTheCreatedAssetWithPassword(string password)
+    {
+        var client = scenarioContext.Get<HttpClient>();
+        var assetId = scenarioContext.Get<Guid>(AssetIdKey);
+        var response = await client.PostAsJsonAsync($"/assets/{assetId}/content", new DownloadAssetContentRequest { Password = password });
+        scenarioContext.Set(response, ScenarioContextKeys.LastResponse);
+    }
+
     [When("I request my upload limits")]
     public async Task WhenIRequestMyUploadLimits()
     {

@@ -35,7 +35,35 @@
             {
                 <div class="card border-0 bg-body-tertiary">
                 <div class="card-body p-4">
-                    <InputFile class="form-control mb-4" OnChange="OnFileSelected" disabled="@_isUploading" />
+                    <InputFile class="form-control mb-3" OnChange="OnFileSelected" disabled="@_isUploading" />
+
+                    <div class="mb-4">
+                        <button type="button" class="btn btn-link btn-sm text-secondary px-0 text-decoration-none" @onclick="ToggleAdvanced">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="me-1 mb-1" viewBox="0 0 16 16">
+                                @if (_showAdvanced)
+                                {
+                                    <path d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708z"/>
+                                }
+                                else
+                                {
+                                    <path d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                                }
+                            </svg>
+                            Advanced options
+                        </button>
+
+                        @if (_showAdvanced)
+                        {
+                            <div class="mt-2">
+                                <label class="form-label small text-secondary mb-1">Password (optional)</label>
+                                <input type="password"
+                                       class="form-control form-control-sm"
+                                       placeholder="Leave empty for no password"
+                                       @bind="_password"
+                                       disabled="@_isUploading" />
+                            </div>
+                        }
+                    </div>
 
                     @if (_isUploading)
                     {
@@ -84,6 +112,8 @@
     private int _uploadProgressPercent;
     private GetUserUploadLimitsResponse? _limits;
     private bool _linkCopied;
+    private bool _showAdvanced;
+    private string? _password;
 
     private long MaxUploadSizeInBytes => _limits?.MaxUploadSizeInBytes ?? AssetSettings.Value.MaxUploadSizeInBytes;
     private bool FileLimitReached => _limits is not null && _limits.ActiveFiles >= _limits.MaxFiles;
@@ -101,6 +131,8 @@
             _limits = result.Response;
         }
     }
+
+    private void ToggleAdvanced() => _showAdvanced = !_showAdvanced;
 
     private void OnFileSelected(InputFileChangeEventArgs e)
     {
@@ -149,7 +181,8 @@
                 createResponse.Id,
                 progressStream,
                 _selectedFile.Name,
-                _selectedFile.ContentType);
+                _selectedFile.ContentType,
+                _password);
 
             if (!uploadResult.IsSuccess)
             {

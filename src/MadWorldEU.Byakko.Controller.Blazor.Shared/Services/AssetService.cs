@@ -51,12 +51,13 @@ public sealed class AssetService : IAssetService
     }
 
     /// <inheritdoc />
-    public async Task<ResultResponse<UploadAssetContentResponse>> UploadAssetContentAsync(Guid id, Stream content, string fileName, string contentType)
+    public async Task<ResultResponse<UploadAssetContentResponse>> UploadAssetContentAsync(Guid id, Stream content, string fileName, string contentType, string? password)
     {
         using var form = new MultipartFormDataContent();
         using var streamContent = new StreamContent(content);
         streamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
         form.Add(streamContent, "file", fileName);
+        form.Add(new StringContent(password ?? string.Empty), "password");
 
         return await _httpClientAuthorized.PutResultResponseFromJsonAsync<UploadAssetContentResponse>($"/assets/{id}/content", form);
     }

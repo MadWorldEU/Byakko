@@ -22,7 +22,7 @@ public interface IAssetService
     Task<ResultResponse<GetAssetMetadataResponse>> GetAssetMetadataAsync(Guid id);
 
     /// <summary>Uploads binary content for an existing asset. Returns the asset ID on success, or a <see cref="FailureResponse"/> on failure.</summary>
-    Task<ResultResponse<UploadAssetContentResponse>> UploadAssetContentAsync(Guid id, Stream content, string fileName, string contentType);
+    Task<ResultResponse<UploadAssetContentResponse>> UploadAssetContentAsync(Guid id, Stream content, string fileName, string contentType, string? password);
 
     /// <summary>Deletes the content of an asset by ID. Returns a <see cref="FailureResponse"/> on failure.</summary>
     Task<ResultResponse<EmptyResponse>> DeleteAssetContentAsync(Guid id);

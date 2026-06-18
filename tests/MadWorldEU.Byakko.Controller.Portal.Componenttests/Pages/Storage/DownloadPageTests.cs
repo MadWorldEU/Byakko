@@ -4,7 +4,7 @@ namespace MadWorldEU.Byakko.Pages.Storage;
 public sealed class DownloadPageTests
 {
     [Test]
-    public void OnInitializedAsync_WhenAssetExists_ShouldShowFileMetadataAndDownloadLink()
+    public void OnInitializedAsync_WhenAssetExists_ShouldShowFileMetadataAndDownloadButton()
     {
         var assetId = Guid.NewGuid();
 
@@ -24,6 +24,7 @@ public sealed class DownloadPageTests
                 }));
 
         using var ctx = new BunitContext();
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         ctx.Services.AddHttpClient(HttpClients.ApiAnonymous, client =>
             client.BaseAddress = new Uri(server.Url!));
         ctx.Services.AddHttpClient(HttpClients.ApiAuthorized, client =>
@@ -39,8 +40,9 @@ public sealed class DownloadPageTests
         cut.Find(".fw-semibold.text-truncate").TextContent.ShouldBe("test-file.txt");
         cut.Find(".text-secondary.small").TextContent.ShouldBe("text/plain");
 
-        var downloadLink = cut.Find("a.btn-primary");
-        downloadLink.GetAttribute("href")!.ShouldContain($"/assets/{assetId}/content");
-        downloadLink.GetAttribute("download")!.ShouldBe("test-file.txt");
+        cut.Find("input[type='password']").ShouldNotBeNull();
+
+        var downloadButton = cut.Find("button.btn-primary");
+        downloadButton.HasAttribute("disabled").ShouldBeFalse();
     }
 }
