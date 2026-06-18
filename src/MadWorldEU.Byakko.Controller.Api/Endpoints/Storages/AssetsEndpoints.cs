@@ -141,7 +141,21 @@ internal static class AssetsEndpoints
 
         assetsEndpoints.MapGet("/{id}/content", async (string id, DownloadAssetContentUseCase useCase) =>
             {
-                var result = await useCase.QueryAsync(id);
+                var result = await useCase.QueryAsync(id, string.Empty);
+                
+                return result.Match(
+                    onSuccess: response => Results.File(response.Content, response.ContentType, response.FileName),
+                    onFailure: error => error.Code == AssetErrors.NotFound.Code
+                        ? error.ToNotFound()
+                        : error.ToBadRequest()
+                );
+            })
+            .WithName("DownloadAssetContent")
+            .RequireRateLimiting(RateLimiterPolicies.Content);
+        
+        assetsEndpoints.MapPost("/{id}/content", async (string id, DownloadAssetContentRequest request, DownloadAssetContentUseCase useCase) =>
+            {
+                var result = await useCase.QueryAsync(id, request.Password);
                 
                 return result.Match(
                     onSuccess: response => Results.File(response.Content, response.ContentType, response.FileName),
