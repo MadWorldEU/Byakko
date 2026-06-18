@@ -147,9 +147,17 @@
 
         try
         {
-            await AssetService.DeleteMyAssetContentAsync(id);
+            var result = await AssetService.DeleteMyAssetContentAsync(id);
             _confirmingDeleteId = null;
-            await LoadAsync();
+
+            if (result.IsSuccess)
+            {
+                await LoadAsync();
+            }
+            else
+            {
+                _errorMessage = result.Failure?.Description ?? "An unexpected error occurred.";
+            }
         }
         catch (Exception ex)
         {

@@ -7,12 +7,12 @@ public sealed class ResultResponse<TResponse>
     public TResponse? Response { get; set; }
     public FailureResponse? Failure { get; set; }
 
-    public ResultResponse(TResponse response)
+    private ResultResponse(TResponse response)
     {
         Response = response;
     }
     
-    public ResultResponse(FailureResponse failure)
+    private ResultResponse(FailureResponse failure)
     {
         Failure = failure;
     }

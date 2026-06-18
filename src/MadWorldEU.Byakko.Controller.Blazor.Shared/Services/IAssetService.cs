@@ -1,3 +1,4 @@
+using MadWorldEU.Byakko.Common;
 using MadWorldEU.Byakko.Storages;
 
 namespace MadWorldEU.Byakko.Services;
@@ -23,11 +24,11 @@ public interface IAssetService
     /// <summary>Uploads binary content for an existing asset. Returns the asset ID on success, or a <see cref="FailureResponse"/> on failure.</summary>
     Task<ResultResponse<UploadAssetContentResponse>> UploadAssetContentAsync(Guid id, Stream content, string fileName, string contentType);
 
-    /// <summary>Deletes the content of an asset by ID. Throws <see cref="HttpRequestException"/> on failure.</summary>
-    Task DeleteAssetContentAsync(Guid id);
+    /// <summary>Deletes the content of an asset by ID. Returns a <see cref="FailureResponse"/> on failure.</summary>
+    Task<ResultResponse<EmptyResponse>> DeleteAssetContentAsync(Guid id);
 
-    /// <summary>Deletes the content of the authenticated user's own asset by ID. Throws <see cref="HttpRequestException"/> on failure.</summary>
-    Task DeleteMyAssetContentAsync(Guid id);
+    /// <summary>Deletes the content of the authenticated user's own asset by ID. Returns a <see cref="FailureResponse"/> on failure.</summary>
+    Task<ResultResponse<EmptyResponse>> DeleteMyAssetContentAsync(Guid id);
 
     /// <summary>Returns the direct URL to download the binary content of an asset. The browser streams it natively — no in-memory buffering.</summary>
     string GetContentUrl(Guid id);

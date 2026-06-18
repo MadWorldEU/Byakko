@@ -6,6 +6,18 @@ namespace MadWorldEU.Byakko.Responses;
 
 public static class HttpClientExtensions
 {
+    public static async Task<ResultResponse<EmptyResponse>> DeleteResultResponseFromJsonAsync(this HttpClient httpClient, string requestUri)
+    {
+        var response = await httpClient.DeleteAsync(requestUri);
+
+        if (response.IsSuccessStatusCode)
+        {
+            return new EmptyResponse();
+        }
+
+        return (await response.Content.ReadFromJsonAsync<FailureResponse>())!;
+    }
+    
     public static async Task<ResultResponse<TResponse>> GetResultResponseFromJsonAsync<TResponse>(this HttpClient httpClient, string requestUri)
     {
         var response = await httpClient.GetAsync(requestUri);

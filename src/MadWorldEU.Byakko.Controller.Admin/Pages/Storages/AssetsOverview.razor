@@ -215,9 +215,17 @@ else if (_response is not null)
 
         try
         {
-            await AssetService.DeleteAssetContentAsync(id);
+            var result = await AssetService.DeleteAssetContentAsync(id);
             _confirmingDeleteId = null;
-            await LoadPageAsync();
+
+            if (result.IsSuccess)
+            {
+                await LoadPageAsync();
+            }
+            else
+            {
+                _error = result.Failure?.Description ?? "An unexpected error occurred.";
+            }
         }
         catch (Exception ex)
         {

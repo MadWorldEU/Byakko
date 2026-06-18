@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using MadWorldEU.Byakko.Common;
 using MadWorldEU.Byakko.Storages;
 
 namespace MadWorldEU.Byakko.Services;
@@ -61,17 +62,15 @@ public sealed class AssetService : IAssetService
     }
 
     /// <inheritdoc />
-    public async Task DeleteAssetContentAsync(Guid id)
+    public async Task<ResultResponse<EmptyResponse>> DeleteAssetContentAsync(Guid id)
     {
-        var response = await _httpClientAuthorized.DeleteAsync($"/assets/{id}/content");
-        response.EnsureSuccessStatusCode();
+        return await _httpClientAuthorized.DeleteResultResponseFromJsonAsync($"/assets/{id}/content");
     }
 
     /// <inheritdoc />
-    public async Task DeleteMyAssetContentAsync(Guid id)
+    public async Task<ResultResponse<EmptyResponse>> DeleteMyAssetContentAsync(Guid id)
     {
-        var response = await _httpClientAuthorized.DeleteAsync($"/assets/me/{id}/content");
-        response.EnsureSuccessStatusCode();
+        return await _httpClientAuthorized.DeleteResultResponseFromJsonAsync($"/assets/me/{id}/content");
     }
 
     /// <inheritdoc />
