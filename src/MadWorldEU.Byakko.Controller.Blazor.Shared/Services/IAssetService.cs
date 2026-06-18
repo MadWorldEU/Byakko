@@ -30,9 +30,6 @@ public interface IAssetService
     /// <summary>Deletes the content of the authenticated user's own asset by ID. Returns a <see cref="FailureResponse"/> on failure.</summary>
     Task<ResultResponse<EmptyResponse>> DeleteMyAssetContentAsync(Guid id);
 
-    /// <summary>Downloads the binary content of an asset via the POST endpoint, decrypting with the optional password.</summary>
-    Task<ResultResponse<DownloadedFileResponse>> DownloadAssetContentAsync(Guid id, string? password);
-
     /// <summary>Returns the direct URL to download the binary content of an asset. The browser streams it natively — no in-memory buffering.</summary>
     string GetContentUrl(Guid id);
 }

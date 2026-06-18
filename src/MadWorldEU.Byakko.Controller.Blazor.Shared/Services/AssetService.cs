@@ -75,23 +75,6 @@ public sealed class AssetService : IAssetService
     }
 
     /// <inheritdoc />
-    public async Task<ResultResponse<DownloadedFileResponse>> DownloadAssetContentAsync(Guid id, string? password)
-    {
-        var response = await _httpClientAnonymous.PostAsJsonAsync($"/assets/{id}/content", new DownloadAssetContentRequest { Password = password });
-
-        if (response.IsSuccessStatusCode)
-        {
-            var bytes = await response.Content.ReadAsByteArrayAsync();
-            var contentType = response.Content.Headers.ContentType?.MediaType ?? "application/octet-stream";
-            var contentDisposition = response.Content.Headers.ContentDisposition;
-            var fileName = contentDisposition?.FileNameStar ?? contentDisposition?.FileName ?? "download";
-            return new DownloadedFileResponse { Bytes = bytes, ContentType = contentType, FileName = fileName };
-        }
-
-        return (await response.Content.ReadFromJsonAsync<FailureResponse>())!;
-    }
-
-    /// <inheritdoc />
     public string GetContentUrl(Guid id)
     {
         var baseAddress = _httpClientAnonymous.BaseAddress?.ToString().TrimEnd('/') ?? string.Empty;

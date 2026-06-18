@@ -144,16 +144,11 @@
 
         try
         {
-            var result = await AssetService.DownloadAssetContentAsync(Guid.Parse(Id), string.IsNullOrEmpty(_password) ? null : _password);
-
-            if (result.IsSuccess)
+            var url = AssetService.GetContentUrl(Guid.Parse(Id));
+            var error = await Js.InvokeAsync<string?>("downloadFileWithPassword", url, string.IsNullOrEmpty(_password) ? null : _password);
+            if (error is not null)
             {
-                var file = result.Response!;
-                await Js.InvokeVoidAsync("downloadFile", new object[] { file.FileName, file.ContentType, file.Bytes });
-            }
-            else
-            {
-                _downloadError = result.Failure?.Description ?? "Download failed.";
+                _downloadError = error;
             }
         }
         finally
