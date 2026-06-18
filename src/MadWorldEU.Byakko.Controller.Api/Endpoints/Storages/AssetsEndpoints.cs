@@ -150,7 +150,7 @@ internal static class AssetsEndpoints
                         : error.ToBadRequest()
                 );
             })
-            .WithName("DownloadAssetContent")
+            .WithName("GetDownloadAssetContent")
             .RequireRateLimiting(RateLimiterPolicies.Content);
         
         assetsEndpoints.MapPost("/{id}/content", async (string id, DownloadAssetContentRequest request, DownloadAssetContentUseCase useCase) =>
@@ -164,7 +164,7 @@ internal static class AssetsEndpoints
                         : error.ToBadRequest()
                 );
             })
-            .WithName("DownloadAssetContent")
+            .WithName("PostDownloadAssetContent")
             .RequireRateLimiting(RateLimiterPolicies.Content);
     }
 }
