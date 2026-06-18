@@ -1,6 +1,7 @@
 @page "/storage/download/{Id}"
 @inject IAssetService AssetService
 @inject IJSRuntime Js
+@implements IAsyncDisposable
 
 <PageTitle>Byakko – Download</PageTitle>
 
@@ -70,6 +71,22 @@
                                        @bind="_password"
                                        disabled="@_isDownloading" />
                             </div>
+                            @if (_isDownloading)
+                            {
+                                <div class="progress mb-3">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated"
+                                         role="progressbar"
+                                         style="width: @(_downloadProgressPercent > 0 ? _downloadProgressPercent : 100)%"
+                                         aria-valuenow="@_downloadProgressPercent"
+                                         aria-valuemin="0"
+                                         aria-valuemax="100">
+                                        @if (_downloadProgressPercent > 0)
+                                        {
+                                            @($"{_downloadProgressPercent}%")
+                                        }
+                                    </div>
+                                </div>
+                            }
                             <button class="btn btn-primary fw-semibold" @onclick="DownloadAsync" disabled="@_isDownloading">
                                 @if (_isDownloading)
                                 {
@@ -97,12 +114,15 @@
 @code {
     [Parameter] public string Id { get; set; } = string.Empty;
 
+    private DotNetObjectReference<Download>? _dotNetRef;
+
     private GetAssetMetadataResponse? _metadata;
     private bool _isLoading = true;
     private string? _errorMessage;
     private string? _downloadError;
     private string? _password;
     private bool _isDownloading;
+    private int _downloadProgressPercent;
     private bool IsExpired => _metadata is not null && _metadata.ExpiresAt < DateTimeOffset.UtcNow;
 
     protected override async Task OnInitializedAsync()
@@ -137,15 +157,24 @@
         }
     }
 
+    [JSInvokable]
+    public void UpdateProgress(int percent)
+    {
+        _downloadProgressPercent = percent;
+        StateHasChanged();
+    }
+
     private async Task DownloadAsync()
     {
         _isDownloading = true;
         _downloadError = null;
+        _downloadProgressPercent = 0;
+        _dotNetRef ??= DotNetObjectReference.Create(this);
 
         try
         {
             var url = AssetService.GetContentUrl(Guid.Parse(Id));
-            var error = await Js.InvokeAsync<string?>("downloadFileWithPassword", url, string.IsNullOrEmpty(_password) ? null : _password);
+            var error = await Js.InvokeAsync<string?>("downloadFileWithPassword", url, string.IsNullOrEmpty(_password) ? null : _password, _dotNetRef);
             if (error is not null)
             {
                 _downloadError = error;
@@ -155,6 +184,12 @@
         {
             _isDownloading = false;
         }
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        _dotNetRef?.Dispose();
+        return ValueTask.CompletedTask;
     }
 
 }

@@ -4,7 +4,7 @@ window.initTooltips = function () {
     });
 };
 
-window.downloadFileWithPassword = async function (url, password) {
+window.downloadFileWithPassword = async function (url, password, dotNetRef) {
     try {
         const response = await fetch(url, {
             method: 'POST',
@@ -32,7 +32,29 @@ window.downloadFileWithPassword = async function (url, password) {
             }
         }
 
-        const blob = await response.blob();
+        const contentLength = parseInt(response.headers.get('Content-Length') ?? '0', 10);
+        const reader = response.body.getReader();
+        const chunks = [];
+        let received = 0;
+        let lastPercent = -1;
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            chunks.push(value);
+            received += value.length;
+            if (contentLength > 0) {
+                const percent = Math.min(99, Math.round((received / contentLength) * 100));
+                if (percent !== lastPercent) {
+                    lastPercent = percent;
+                    await dotNetRef.invokeMethodAsync('UpdateProgress', percent);
+                }
+            }
+        }
+
+        await dotNetRef.invokeMethodAsync('UpdateProgress', 100);
+
+        const blob = new Blob(chunks);
         const objectUrl = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = objectUrl;
