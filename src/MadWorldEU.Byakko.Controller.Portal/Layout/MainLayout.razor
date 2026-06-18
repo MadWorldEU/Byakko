@@ -21,9 +21,13 @@
                 </li>
                 <AuthorizeView>
                     <Authorized>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/storage/my-assets">My files</a>
-                        </li>
+                        <AuthorizeView Policy="@AuthorizationPolicies.User">
+                            <Authorized>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/storage/my-assets">My files</a>
+                                </li>
+                            </Authorized>
+                        </AuthorizeView>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle d-flex align-items-center gap-1" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">

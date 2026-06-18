@@ -24,7 +24,7 @@ internal static class AssetsEndpoints
                     onFailure: error => error.ToBadRequest()
                 );
             })
-            .RequireAuthorization()
+            .RequireAuthorization(AuthorizationPolicies.User)
             .WithName("GetUserUploadLimits");
 
         assetsEndpoints.MapGet("/", async (int page, Guid? assetId, Guid? userId, GetAssetsMetaDataUseCase useCase) =>
