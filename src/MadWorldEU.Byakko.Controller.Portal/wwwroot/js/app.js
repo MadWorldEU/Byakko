@@ -1,10 +1,10 @@
-window.initTooltips = function () {
+globalThis.initTooltips = function () {
     document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
         bootstrap.Tooltip.getOrCreateInstance(el);
     });
 };
 
-window.downloadFileWithPassword = async function (url, password, dotNetRef) {
+globalThis.downloadFileWithPassword = async function (url, password, dotNetRef) {
     try {
         const response = await fetch(url, {
             method: 'POST',
