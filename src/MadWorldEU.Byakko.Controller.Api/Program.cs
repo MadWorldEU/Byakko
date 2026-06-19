@@ -37,6 +37,7 @@ builder.Services.AddOpenTelemetry()
     .ConfigureResource(resource =>
     {
         resource.AddAttributes([new KeyValuePair<string, object>("log_source", "application")]);
+        resource.AddAttributes([new KeyValuePair<string, object>("service_name", "Api")]);
     })
     .WithTracing(tracing => tracing
         .AddAspNetCoreInstrumentation()
