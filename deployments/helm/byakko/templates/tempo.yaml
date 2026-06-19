@@ -16,6 +16,9 @@ data:
               protocols:
                 http:
                   endpoint: 0.0.0.0:4318
+        compactor:
+          compaction:
+            block_retention: 1440h
         storage:
           trace:
             backend: local
