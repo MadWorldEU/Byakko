@@ -34,6 +34,7 @@ public sealed class UploadPageTests
         ctx.Services.AddHttpClient(HttpClients.ApiAuthorized, client =>
             client.BaseAddress = new Uri(server.Url!));
         ctx.Services.AddScoped<IAssetService, AssetService>();
+        ctx.Services.AddScoped<GeneratePasswordUseCase>();
 
         var cut = ctx.Render<Upload>();
 
