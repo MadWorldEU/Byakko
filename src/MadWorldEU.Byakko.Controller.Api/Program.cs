@@ -6,6 +6,7 @@ using MadWorldEU.Byakko.Endpoints.Storages;
 using MadWorldEU.Byakko.HostedServices;
 using MadWorldEU.Byakko.Middlewares;
 using Microsoft.AspNetCore.HttpOverrides;
+using OpenTelemetry.Resources;
 
 var builder = WebApplication.CreateBuilder(args);
     
@@ -33,6 +34,10 @@ builder.AddDefaultAuthentication();
 builder.Services.AddApiRateLimiter(builder.Configuration);
 
 builder.Services.AddOpenTelemetry()
+    .ConfigureResource(resource =>
+    {
+        resource.AddAttributes([new KeyValuePair<string, object>("log_source", "application")]);
+    })
     .WithTracing(tracing => tracing
         .AddAspNetCoreInstrumentation()
         .AddHttpClientInstrumentation()
@@ -43,7 +48,11 @@ builder.Services.AddOpenTelemetry()
         .AddRuntimeInstrumentation()
         .AddOtlpExporter())
     .WithLogging(logging => logging
-        .AddOtlpExporter(), options => options.IncludeFormattedMessage = true);
+        .AddOtlpExporter(), options =>
+    {
+        options.IncludeFormattedMessage = true;
+        options.IncludeScopes = true;
+    });
 
 var app = builder.Build();
 

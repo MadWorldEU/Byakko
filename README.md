@@ -29,3 +29,6 @@ Full documentation is available at [https://madworldeu.github.io/Byakko/](https:
 ## Getting started
 
 See the [Install Guide](https://madworldeu.github.io/Byakko/developer-guides/InstallGuide) for instructions on requirements, running locally with Aspire, and running the tests.
+
+## License
+MIT © Oscar Veldman

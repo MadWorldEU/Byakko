@@ -1,6 +1,7 @@
 using MadWorldEU.Byakko.Application.Healths;
 using MadWorldEU.Byakko.Configurations;
 using MadWorldEU.Byakko.Extensions;
+using OpenTelemetry.Resources;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,10 @@ builder.Services.AddScoped<GetHealthServicesUseCase>();
 builder.Services.AddStatusRateLimiter(builder.Configuration);
 
 builder.Services.AddOpenTelemetry()
+    .ConfigureResource(resource =>
+    {
+        resource.AddAttributes([new KeyValuePair<string, object>("log_source", "application")]);
+    })
     .WithTracing(tracing => tracing
         .AddAspNetCoreInstrumentation()
         .AddHttpClientInstrumentation()
@@ -25,7 +30,11 @@ builder.Services.AddOpenTelemetry()
         .AddRuntimeInstrumentation()
         .AddOtlpExporter())
     .WithLogging(logging => logging
-        .AddOtlpExporter(), options => options.IncludeFormattedMessage = true);
+        .AddOtlpExporter(), options =>
+    {
+        options.IncludeFormattedMessage = true;
+        options.IncludeScopes = true;
+    });
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
