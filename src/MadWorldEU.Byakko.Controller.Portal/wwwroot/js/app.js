@@ -23,11 +23,11 @@ globalThis.downloadFileWithPassword = async function (url, password, dotNetRef) 
         const contentDisposition = response.headers.get('Content-Disposition');
         let fileName = 'download';
         if (contentDisposition) {
-            const rfc5987 = contentDisposition.match(/filename\*\s*=\s*UTF-8''([^;\r\n]*)/i);
+            const rfc5987 = /filename\*\s*=\s*UTF-8''([^;\r\n]*)/i.exec(contentDisposition);
             if (rfc5987) {
                 fileName = decodeURIComponent(rfc5987[1].trim());
             } else {
-                const plain = contentDisposition.match(/filename\s*=\s*"([^"]+)"|filename\s*=\s*([^;\r\n]+)/i);
+                const plain = /filename\s*=\s*"([^"]+)"|filename\s*=\s*([^;\r\n]+)/i.exec(contentDisposition);
                 if (plain) fileName = (plain[1] ?? plain[2]).trim();
             }
         }
@@ -61,7 +61,7 @@ globalThis.downloadFileWithPassword = async function (url, password, dotNetRef) 
         a.download = fileName;
         document.body.appendChild(a);
         a.click();
-        document.body.removeChild(a);
+        a.remove();
         URL.revokeObjectURL(objectUrl);
 
         return null;

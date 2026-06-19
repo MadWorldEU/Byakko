@@ -33,12 +33,6 @@ public static class WebAssemblyHostBuilderExtensions
         return builder;
     }
 
-    public static WebAssemblyHostBuilder AddByakkoApplication(this WebAssemblyHostBuilder builder)
-    {
-        builder.Services.AddScoped<GeneratePasswordUseCase>();
-        return builder;
-    }
-
     public static WebAssemblyHostBuilder AddByakkoServices(this WebAssemblyHostBuilder builder)
     {
         builder.Services.Configure<AssetSettings>(builder.Configuration.GetSection(AssetSettings.Key));
