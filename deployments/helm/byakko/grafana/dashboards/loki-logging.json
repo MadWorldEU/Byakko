@@ -109,7 +109,7 @@
                         "uid": "P8E80F9AEF21F6940"
                     },
                     "editorMode": "code",
-                    "expr": "sum(count_over_time({service_name=~\"$service\", k8s_pod_name=~\"$pod\"}[$__auto]))",
+                    "expr": "sum(count_over_time({service_name=~\"$service\", k8s_pod_name=~\"$pod\"} | log_source=~\"${source:pipe}|\" [$__auto]))",
                     "queryType": "range",
                     "refId": "A"
                 }
@@ -167,9 +167,11 @@
         "list": [
             {
                 "current": {
-                    "text": "All",
+                    "text": [
+                        "status"
+                    ],
                     "value": [
-                        "$__all"
+                        "status"
                     ]
                 },
                 "datasource": {
@@ -194,9 +196,7 @@
             {
                 "current": {
                     "text": "All",
-                    "value": [
-                        "$__all"
-                    ]
+                    "value": "$__all"
                 },
                 "datasource": {
                     "type": "loki",
@@ -219,27 +219,11 @@
             },
             {
                 "current": {
-                    "text": "",
-                    "value": ""
-                },
-                "name": "search",
-                "options": [
-                    {
-                        "selected": true,
-                        "text": "",
-                        "value": ""
-                    }
-                ],
-                "query": "",
-                "type": "textbox"
-            },
-            {
-                "current": {
                     "text": [
-                        "All"
+                        "k8s_pods"
                     ],
                     "value": [
-                        "$__all"
+                        "k8s_pods"
                     ]
                 },
                 "datasource": {
@@ -260,6 +244,22 @@
                 "refresh": 1,
                 "regex": "",
                 "type": "query"
+            },
+            {
+                "current": {
+                    "text": "",
+                    "value": ""
+                },
+                "name": "search",
+                "options": [
+                    {
+                        "selected": true,
+                        "text": "",
+                        "value": ""
+                    }
+                ],
+                "query": "",
+                "type": "textbox"
             }
         ]
     },
@@ -271,6 +271,6 @@
     "timezone": "browser",
     "title": "Byakko Logging",
     "uid": "dfpm8oft7c8aof",
-    "version": 15,
+    "version": 18,
     "weekStart": ""
 }
