@@ -187,6 +187,8 @@ Endpoint in `Controller.Api/Endpoints/Storages/GeneralStorageEndpoints.cs`:
 
 ## Admin UI
 
+**Logo/favicon:** `wwwroot/icons/logo.svg` — Bootstrap Icons `shield-shaded`, fill `#0d6efd`. Used in sidebar header (22×22) and mobile header (18×18) via `<img>`. Favicon wired in `wwwroot/index.html` as `<link rel="icon" type="image/svg+xml" href="/icons/logo.svg" />`.
+
 Blazor WebAssembly, Bootstrap 5 dark theme (`data-bs-theme="dark"`). Desktop-first with 240px sticky sidebar (`Layout/MainLayout.razor`). Nav sections: Overview, Management, Support, System. Auth via `<AuthorizeView Policy="@AuthorizationPolicies.Administrator">`. Sidebar footer shows username, edit-profile link (Keycloak account page via `OidcSettings.GetEditAccountUrl()`), and logout. Pages: `Pages/Home.razor` (`/dashboard` — two stat cards: Total Files and Storage Used, populated from `GET /storage/statistics` via `IStorageService`), `Pages/HostServices/ManualTriggers.razor`, `Pages/Storages/AssetsOverview.razor` (`/storages/assets` — paged asset table, 20/page, with previous/next pagination), `Pages/Audits/AuditLogs.razor` (`/audits/{EntityId:guid}` — all audit log entries for a single entity). The Management nav "Assets" link points to `/storages/assets`. `IAssetService` (shared) exposes `GetAssetsMetadataAsync(int page)` and `DeleteAssetContentAsync(Guid id)` for admin use; `IStorageService` (shared) exposes `GetStorageStatisticsAsync()` for the dashboard; `IAuditService` (shared) exposes `GetAuditLogsAsync(Guid entityId)` for the audit log page; `MadWorldEU.Byakko.Services`, `MadWorldEU.Byakko.Storages`, `MadWorldEU.Byakko.Audits`, `MadWorldEU.Byakko.Audits.Summaries`, and `MadWorldEU.Byakko.Formatters` are global usings in `_Imports.razor`.
 
 **AssetsOverview features:**
@@ -197,6 +199,8 @@ Blazor WebAssembly, Bootstrap 5 dark theme (`data-bs-theme="dark"`). Desktop-fir
 **AuditLogs page** (`Pages/Audits/AuditLogs.razor`, route `/audits/{EntityId:guid}`): Shows a table of audit log entries (Entity Type badge, Action badge, IP Address, User ID, Occurred At) for the given entity. Requires `Administrator` policy. Back link to `/storages/assets`.
 
 ## Portal UI
+
+**Logo/favicon:** `wwwroot/icons/logo.svg` — Bootstrap Icons `cloud-download`, fill `#0d6efd`. Used in navbar brand (28×28) via `<img>`. Favicon wired in `wwwroot/index.html` as `<link rel="icon" type="image/svg+xml" href="/icons/logo.svg" />`.
 
 Blazor WebAssembly, Bootstrap 5 dark theme. Sticky top navbar with auth dropdown (username, edit-profile link via `OidcSettings.GetEditAccountUrl()`, logout) and a "My files" link (visible only to users satisfying the `User` policy, via a nested `<AuthorizeView Policy="@AuthorizationPolicies.User">`). Pages: `Pages/Home.razor` (`/` — landing page with beta banner, hero section, feature cards, and how-it-works steps), `Pages/Storage/Upload.razor` (`/storage/upload`), `Pages/Storage/Download.razor` (shows expiry warning client-side; server enforces; see below), `Pages/Storage/MyAssets.razor` (`/storage/my-assets` — paged table of the authenticated user's own assets with status badges Active/Expired/Deleted, size, expiry, and download links; fetches from `GET /assets/me`), `Pages/UserAgreement.razor` (`/user-agreement` — static page with 9 sections covering acceptance, prohibited content, file retention, privacy, liability, changes, and contact). Max upload size from `IOptions<AssetSettings>` → `IBrowserFile.OpenReadStream(maxAllowedSize)`. Footer (`Layout/MainLayout.razor`) includes a "User Agreement" link to `/user-agreement`.
 
@@ -211,6 +215,8 @@ Blazor WebAssembly, Bootstrap 5 dark theme. Sticky top navbar with auth dropdown
 `IAssetService` (shared) additionally exposes `GetMyAssetsMetadataAsync(int page)` — calls `GET /assets/me?page={page}` with the authorized client.
 
 ## Status UI
+
+**Logo/favicon:** `wwwroot/icons/logo.svg` — Bootstrap Icons `activity` (pulse line), fill `#0d6efd`. Used in sidebar header (22×22) and mobile header (18×18) via `<img>`. Favicon wired in `Components/App.razor` as `<link rel="icon" type="image/svg+xml" href="/icons/logo.svg" />`.
 
 Blazor Server (static SSR), Bootstrap 5 dark theme (`data-bs-theme="dark"`). Public — no authentication. 240px sticky sidebar (`Layout/MainLayout.razor`) with `status-sidebar` / `status-nav-link` CSS classes (`wwwroot/app.css`). Single page: `Components/Pages/Home.razor` (`/`) — Bootstrap card grid showing health status for 6 services.
 
