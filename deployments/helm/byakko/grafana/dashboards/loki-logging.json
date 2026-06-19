@@ -109,7 +109,7 @@
                         "uid": "P8E80F9AEF21F6940"
                     },
                     "editorMode": "code",
-                    "expr": "sum(count_over_time({service_name=~\"$service\", k8s_pod_name=~\"$pod\"} | log_source=~\"${source:pipe}|\" [$__auto]))",
+                    "expr": "sum(count_over_time({service_name=~\"$service\", k8s_pod_name=~\"$pod\", log_source=~\"$source\"} |~ \"$search\"[$__auto]))",
                     "queryType": "range",
                     "refId": "A"
                 }
@@ -151,7 +151,7 @@
                         "uid": "P8E80F9AEF21F6940"
                     },
                     "editorMode": "code",
-                    "expr": "{service_name=~\"$service\", k8s_pod_name=~\"$pod\"} |~ \"$search\"",
+                    "expr": "{service_name=~\"$service\", k8s_pod_name=~\"$pod\", log_source=~\"$source\"} |~ \"$search\"",
                     "queryType": "range",
                     "refId": "A"
                 }
@@ -168,10 +168,10 @@
             {
                 "current": {
                     "text": [
-                        "status"
+                        "All"
                     ],
                     "value": [
-                        "status"
+                        "$__all"
                     ]
                 },
                 "datasource": {
@@ -220,10 +220,10 @@
             {
                 "current": {
                     "text": [
-                        "k8s_pods"
+                        "All"
                     ],
                     "value": [
-                        "k8s_pods"
+                        "$__all"
                     ]
                 },
                 "datasource": {
@@ -271,6 +271,6 @@
     "timezone": "browser",
     "title": "Byakko Logging",
     "uid": "dfpm8oft7c8aof",
-    "version": 18,
+    "version": 20,
     "weekStart": ""
 }
