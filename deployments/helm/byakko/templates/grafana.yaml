@@ -63,7 +63,7 @@ metadata:
     labels:
         app: {{ .Values.observability.grafana.name }}
 data:
-    {{- range $path, $bytes := .Files.Glob "dashboards/*.json" }}
+    {{- range $path, $bytes := .Files.Glob "grafana/dashboards/*.json" }}
     {{ base $path }}: |-
         {{ $.Files.Get $path | nindent 8 }}
     {{- end }}
