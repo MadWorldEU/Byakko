@@ -30,7 +30,11 @@ builder.Services.AddOpenTelemetry()
         .AddRuntimeInstrumentation()
         .AddOtlpExporter())
     .WithLogging(logging => logging
-        .AddOtlpExporter(), options => options.IncludeFormattedMessage = true);
+        .AddOtlpExporter(), options =>
+    {
+        options.IncludeFormattedMessage = true;
+        options.IncludeScopes = true;
+    });
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
