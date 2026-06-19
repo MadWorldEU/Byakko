@@ -116,6 +116,48 @@
             ],
             "title": "Timeline",
             "type": "timeseries"
+        },
+        {
+            "datasource": {
+                "type": "loki",
+                "uid": "P8E80F9AEF21F6940"
+            },
+            "fieldConfig": {
+                "defaults": {},
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 18,
+                "w": 24,
+                "x": 0,
+                "y": 3
+            },
+            "id": 2,
+            "options": {
+                "dedupStrategy": "none",
+                "enableLogDetails": true,
+                "prettifyLogMessage": false,
+                "showCommonLabels": false,
+                "showLabels": false,
+                "showTime": false,
+                "sortOrder": "Descending",
+                "wrapLogMessage": false
+            },
+            "pluginVersion": "11.4.0",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "loki",
+                        "uid": "P8E80F9AEF21F6940"
+                    },
+                    "editorMode": "code",
+                    "expr": "{service_name=~\"$service\", k8s_pod_name=~\"$pod\"} |~ \"$search\"",
+                    "queryType": "range",
+                    "refId": "A"
+                }
+            ],
+            "title": "Logs",
+            "type": "logs"
         }
     ],
     "preload": false,
@@ -126,10 +168,10 @@
             {
                 "current": {
                     "text": [
-                        "All"
+                        "api"
                     ],
                     "value": [
-                        "$__all"
+                        "api"
                     ]
                 },
                 "datasource": {
@@ -205,6 +247,6 @@
     "timezone": "browser",
     "title": "Byakko Logging",
     "uid": "dfpm8oft7c8aof",
-    "version": 12,
+    "version": 14,
     "weekStart": ""
 }
