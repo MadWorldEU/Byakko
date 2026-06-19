@@ -14,13 +14,16 @@ public sealed class UploadAssetContentUseCase(
     IOptions<AssetSettings> settings)
 {
     public async Task<Result<UploadAssetContentResponse>> ExecuteAsync(
-        string assetId, Stream content, long sizeInBytes, string userId, System.Net.IPAddress? ipAddress, 
-        string fileName, string contentType, string? password)
+        string assetId, 
+        FileRequest fileRequest,
+        string userId, 
+        System.Net.IPAddress? ipAddress, 
+        string? password)
     {
         var id = Id.Create(assetId);
         if (id.IsFailure) return id.Error;
 
-        var sizeResult = Size.Create(sizeInBytes);
+        var sizeResult = Size.Create(fileRequest.SizeInBytes);
         if (sizeResult.IsFailure) return sizeResult.Error;
         if (sizeResult.Value > settings.Value.MaxUploadSizeInBytes) return AssetErrors.FileTooLarge;
         
@@ -40,17 +43,17 @@ public sealed class UploadAssetContentUseCase(
             return AssetErrors.Forbidden;
         }
 
-        if (asset.Value.Name.Value != fileName)
+        if (asset.Value.Name.Value != fileRequest.FileName)
         {
             return AssetErrors.FileNameMismatch;
         }
 
-        if (!asset.Value.ContentType.Value.Equals(contentType, StringComparison.OrdinalIgnoreCase))
+        if (!asset.Value.ContentType.Value.Equals(fileRequest.ContentType, StringComparison.OrdinalIgnoreCase))
         {
             return AssetErrors.ContentTypeMismatch;
         }
 
-        var encryptedContent = encryptionService.Encrypt(content, passwordResult.Value);
+        var encryptedContent = encryptionService.Encrypt(fileRequest.Content, passwordResult.Value);
         
         var uploadResult = await contentStorage.UploadAsync(asset.Value.GetPath(), encryptedContent);
         if (uploadResult.IsFailure) return uploadResult.Error;
