@@ -32,7 +32,7 @@ window.downloadFileWithPassword = async function (url, password, dotNetRef) {
             }
         }
 
-        const contentLength = parseInt(response.headers.get('Content-Length') ?? '0', 10);
+        const contentLength = Number.parseInt(response.headers.get('Content-Length') ?? '0', 10);
         const reader = response.body.getReader();
         const chunks = [];
         let received = 0;
