@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using MadWorldEU.Byakko.Application;
 using MadWorldEU.Byakko.Configurations;
 using MadWorldEU.Byakko.Services;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
@@ -29,6 +30,12 @@ public static class WebAssemblyHostBuilderExtensions
             return handler;
         });
 
+        return builder;
+    }
+
+    public static WebAssemblyHostBuilder AddByakkoApplication(this WebAssemblyHostBuilder builder)
+    {
+        builder.Services.AddScoped<GeneratePasswordUseCase>();
         return builder;
     }
 

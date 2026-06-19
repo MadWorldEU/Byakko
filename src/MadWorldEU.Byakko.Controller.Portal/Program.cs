@@ -10,6 +10,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
 builder.AddByakkoApiHttpClients();
+builder.AddByakkoApplication();
 builder.AddByakkoAuthentication();
 builder.AddByakkoServices();
 
