@@ -167,11 +167,9 @@
         "list": [
             {
                 "current": {
-                    "text": [
-                        "api"
-                    ],
+                    "text": "All",
                     "value": [
-                        "api"
+                        "$__all"
                     ]
                 },
                 "datasource": {
@@ -195,9 +193,7 @@
             },
             {
                 "current": {
-                    "text": [
-                        "All"
-                    ],
+                    "text": "All",
                     "value": [
                         "$__all"
                     ]
@@ -236,17 +232,45 @@
                 ],
                 "query": "",
                 "type": "textbox"
+            },
+            {
+                "current": {
+                    "text": [
+                        "All"
+                    ],
+                    "value": [
+                        "$__all"
+                    ]
+                },
+                "datasource": {
+                    "type": "loki",
+                    "uid": "P8E80F9AEF21F6940"
+                },
+                "definition": "",
+                "includeAll": true,
+                "multi": true,
+                "name": "source",
+                "options": [],
+                "query": {
+                    "label": "log_source",
+                    "refId": "LokiVariableQueryEditor-VariableQuery",
+                    "stream": "",
+                    "type": 1
+                },
+                "refresh": 1,
+                "regex": "",
+                "type": "query"
             }
         ]
     },
     "time": {
-        "from": "now-3h",
+        "from": "now-6h",
         "to": "now"
     },
     "timepicker": {},
     "timezone": "browser",
     "title": "Byakko Logging",
     "uid": "dfpm8oft7c8aof",
-    "version": 14,
+    "version": 15,
     "weekStart": ""
 }
