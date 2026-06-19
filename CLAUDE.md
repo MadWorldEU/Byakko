@@ -301,6 +301,8 @@ All app image tags are controlled by a single top-level `appVersion` in `values.
 
 **Grafana dashboard provisioning:** Dashboards are stored as JSON files in `deployments/helm/byakko/grafana/dashboards/`. `grafana.yaml` reads them via `.Files.Glob "grafana/dashboards/*.json"` into the `grafana-dashboards` ConfigMap, mounts it at `/var/lib/grafana/dashboards`, and the provisioner (`updateIntervalSeconds: 30`) picks them up automatically on `helm upgrade` — no manual import needed. The Loki logging dashboard (`loki-logging.json`) uses `service_name` and `k8s_pod_name` stream labels and a `source` variable backed by `log_source` to distinguish log origins: `application` = OTLP logs from the API/Status apps, `k8s_pods` = raw pod stdout/stderr scraped by the DaemonSet. Datasource names in dashboard JSON must match the provisioned names exactly (`"Loki"`, `"Prometheus"`, `"Tempo"`) — template variable placeholders (`${DS_LOKI}`) are only resolved on manual UI import, not file provisioning. Stream selector matchers must use `.+` not `.*` to avoid Loki's empty-compatible value rejection.
 
+**Observability data retention (60 days):** All three stores are configured to auto-purge data older than 60 days. Loki: `limits_config.retention_period: 1440h` + `compactor.retention_enabled: true` in `loki.yaml`. Prometheus: `--storage.tsdb.retention.time=60d` CLI flag in `prometheus.yaml`. Tempo: `compactor.compaction.block_retention: 1440h` in `tempo.yaml`.
+
 TLS local: `mkcert byakko.dev "*.byakko.dev"` + `kubectl create secret tls`. TLS production: `clusterIssuer.enabled = true` + cert-manager HTTP-01. Remove AAAA records if no IPv6.
 
 ## Documentation & Diagrams
