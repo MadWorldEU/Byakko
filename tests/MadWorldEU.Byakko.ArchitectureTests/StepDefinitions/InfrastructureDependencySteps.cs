@@ -38,7 +38,7 @@ public sealed class InfrastructureDependencySteps : BaseArchitectureTests
         var sourceLayer = _layers[sourceLayerName];
         var targetLayer = _layers[targetLayerName];
 
-        IArchRule rule = Types().That().Are(sourceLayer).Should()
+        var rule = Types().That().Are(sourceLayer).Should()
             .NotDependOnAny(targetLayer);
 
         rule.HasNoViolations(Architecture).ShouldBeTrue(rule.Description);

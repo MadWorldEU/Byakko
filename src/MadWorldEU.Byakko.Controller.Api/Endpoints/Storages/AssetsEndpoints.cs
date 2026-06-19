@@ -83,9 +83,9 @@ internal static class AssetsEndpoints
                     var ipAddress = httpContext.Connection.RemoteIpAddress;
 
                     await using var content = file.OpenReadStream();
-                    var result = await useCase.ExecuteAsync(
-                        id, content, file.Length, userId, ipAddress, 
-                        file.FileName, file.ContentType, password);
+                    var fileRequest = new FileRequest(file.FileName, file.ContentType, file.Length, content);
+
+                    var result = await useCase.ExecuteAsync(id, fileRequest, userId, ipAddress, password);
                     
                     return result.Match(
                         onSuccess: Results.Ok,

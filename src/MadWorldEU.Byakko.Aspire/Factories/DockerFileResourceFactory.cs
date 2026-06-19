@@ -2,6 +2,8 @@ namespace MadWorldEU.Byakko.Factories;
 
 internal sealed class DockerFileResourceFactory(IDistributedApplicationBuilder builder) : IResourceFactory
 {
+    private const string RootFolderSourceCode = "../../";
+    
     private const int ApiPort = 5062;
     private const int AdminPort = 5042;
     private const int PortalPort = 5100;
@@ -9,21 +11,21 @@ internal sealed class DockerFileResourceFactory(IDistributedApplicationBuilder b
     
     public IResourceBuilder<IResource> CreateApiBuilder(IResourceBuilder<PostgresDatabaseResource> byakkoDb, IResourceBuilder<ILocalStackResource> localstack, IResourceBuilder<KeycloakResource> keycloak)
     {
-        return builder.AddDockerfile(nameof(Api), "../../", "src/MadWorldEU.Byakko.Controller.Api/Dockerfile")
+        return builder.AddDockerfile(nameof(Api), RootFolderSourceCode, "src/MadWorldEU.Byakko.Controller.Api/Dockerfile")
             .WithHttpEndpoint(targetPort: 8080, port: ApiPort)
             .BuildApi(byakkoDb, localstack, keycloak);
     }
 
     public IResourceBuilder<IResource> CreateAdminBuilder(IResourceBuilder<IResource> api)
     {
-        return builder.AddDockerfile(nameof(Admin), "../../", "src/MadWorldEU.Byakko.Controller.Admin/Dockerfile")
+        return builder.AddDockerfile(nameof(Admin), RootFolderSourceCode, "src/MadWorldEU.Byakko.Controller.Admin/Dockerfile")
             .WithHttpEndpoint(targetPort: 8080, port: AdminPort)
             .BuildAdmin(api);
     }
 
     public IResourceBuilder<IResource> CreatePortalBuilder(IResourceBuilder<IResource> api)
     {
-        return builder.AddDockerfile(nameof(Portal), "../../", "src/MadWorldEU.Byakko.Controller.Portal/Dockerfile")
+        return builder.AddDockerfile(nameof(Portal), RootFolderSourceCode, "src/MadWorldEU.Byakko.Controller.Portal/Dockerfile")
             .WithHttpEndpoint(targetPort: 8080, port: PortalPort)
             .BuildPortal(api);
     }
@@ -32,7 +34,7 @@ internal sealed class DockerFileResourceFactory(IDistributedApplicationBuilder b
         IResourceBuilder<ILocalStackResource> localstack,
         IResourceBuilder<KeycloakResource> keycloak)
     {
-        return builder.AddDockerfile(nameof(Status), "../../", "src/MadWorldEU.Byakko.Controller.Status/Dockerfile")
+        return builder.AddDockerfile(nameof(Status), RootFolderSourceCode, "src/MadWorldEU.Byakko.Controller.Status/Dockerfile")
             .WithHttpEndpoint(targetPort: 8080, port: StatusPort)
             .BuildStatus(byakkoDb, localstack, keycloak);
     }

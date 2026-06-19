@@ -6,7 +6,7 @@ namespace MadWorldEU.Byakko.Application;
 /// Generates a cryptographically secure random password containing at least one uppercase letter,
 /// one lowercase letter, one digit, and one special character, shuffled via Fisher-Yates.
 /// </summary>
-public sealed class GeneratePasswordUseCase
+public static class GeneratePasswordUseCase
 {
     private const string Uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private const string Lowercase = "abcdefghijklmnopqrstuvwxyz";
@@ -20,7 +20,7 @@ public sealed class GeneratePasswordUseCase
     /// <summary>
     /// Generates and returns a 20-character random password.
     /// </summary>
-    public string Execute()
+    public static string Execute()
     {
         var password = new char[Length];
 

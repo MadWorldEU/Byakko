@@ -59,7 +59,7 @@ app.MapStaticAssets();
 app.MapRazorComponents<MadWorldEU.Byakko.Components.App>()
     .AddInteractiveServerRenderMode();
 
-app.Run();
+await app.RunAsync();
 
 public sealed partial class Program
 {

@@ -45,7 +45,7 @@ public class KeyCloakClaimsPrincipalFactory : AccountClaimsPrincipalFactory<Remo
 
     }
 
-    private static IReadOnlyList<string> GetUserRoles(RemoteUserAccount account)
+    private static List<string> GetUserRoles(RemoteUserAccount account)
     {
         if (account.AdditionalProperties.TryGetValue("roles", out var rolesObj) && 
             rolesObj is JsonElement { ValueKind: JsonValueKind.Array } rolesElement)
