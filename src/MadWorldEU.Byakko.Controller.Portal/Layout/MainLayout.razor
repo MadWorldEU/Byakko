@@ -1,6 +1,8 @@
+@using MadWorldEU.Byakko.Localization
 @inherits LayoutComponentBase
 @inject NavigationManager Navigation
 @inject IOptions<OidcSettings> OidcSettings
+@inject IJSRuntime JsRuntime
 
 <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom border-body sticky-top">
     <div class="container">
@@ -23,6 +25,31 @@
                         </li>
                     </Authorized>
                 </AuthorizeView>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center gap-1" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Select language">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m7.5-6.923c-.67.204-1.335.82-1.887 1.855A8 8 0 0 0 5.145 4H7.5zM4.09 4a9.3 9.3 0 0 1 .64-1.539 7 7 0 0 1 .597-.933A7.03 7.03 0 0 0 2.255 4zm-.582 3.5c.03-.877.138-1.718.312-2.5H1.674a7 7 0 0 0-.656 2.5zM4.847 5a12.5 12.5 0 0 0-.338 2.5H7.5V5zM8.5 5v2.5h2.99a12.5 12.5 0 0 0-.337-2.5zM4.51 8.5a12.5 12.5 0 0 0 .337 2.5H7.5V8.5zm3.99 0V11h2.653c.187-.765.306-1.608.338-2.5zM5.145 12q.208.58.468 1.068c.552 1.035 1.218 1.65 1.887 1.855V12zm.182 2.472a7 7 0 0 1-.597-.933A9.3 9.3 0 0 1 4.09 12H2.255a7 7 0 0 0 3.072 2.472M3.82 11a13.7 13.7 0 0 1-.312-2.5h-2.49c.062.89.291 1.733.656 2.5zm6.853 3.472A7 7 0 0 0 13.745 12H11.91a9.3 9.3 0 0 1-.64 1.539 7 7 0 0 1-.597.933M8.5 12v2.923c.67-.204 1.335-.82 1.887-1.855q.26-.487.468-1.068zm3.51-.5a13.7 13.7 0 0 0 .312-2.5h2.49a7 7 0 0 1-.656 2.5zm.084-3.5a12.5 12.5 0 0 0-.337-2.5h2.154a7 7 0 0 1 .656 2.5zm-.964-3.5A9.3 9.3 0 0 0 10.49 4H8.5V2.077c.67.204 1.335.82 1.887 1.855q.26.487.468 1.068zm-.182-2.472a7 7 0 0 1 .597.933A9.3 9.3 0 0 1 11.91 4h1.835a7 7 0 0 0-3.072-2.472"/>
+                        </svg>
+                        @_currentLanguageLabel
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <button class="dropdown-item @(_currentCulture == "en" ? "active" : "")" @onclick="@(() => SetCultureAsync("en"))">
+                                English
+                            </button>
+                        </li>
+                        <li>
+                            <button class="dropdown-item @(_currentCulture == "nl-NL" ? "active" : "")" @onclick="@(() => SetCultureAsync("nl-NL"))">
+                                Nederlands
+                            </button>
+                        </li>
+                        <li>
+                            <button class="dropdown-item @(_currentCulture == "ja-JP" ? "active" : "")" @onclick="@(() => SetCultureAsync("ja-JP"))">
+                                日本語
+                            </button>
+                        </li>
+                    </ul>
+                </li>
                 <AuthorizeView>
                     <Authorized>
                         <li class="nav-item dropdown">
@@ -81,10 +108,22 @@
 
 @code {
     private string _profileUrl = string.Empty;
+    private string _currentCulture = "en";
+    private string _currentLanguageLabel = "EN";
 
     protected override void OnInitialized()
     {
         _profileUrl = OidcSettings.Value.GetEditAccountUrl();
+
+        var name = System.Globalization.CultureInfo.CurrentUICulture.Name;
+        _currentCulture = SupportedLanguages.Labels.ContainsKey(name) ? name : SupportedLanguages.DefaultLanguage;
+        _currentLanguageLabel = SupportedLanguages.Labels.GetValueOrDefault(_currentCulture, SupportedLanguages.DefaultUiLanguage);
+    }
+
+    private async Task SetCultureAsync(string culture)
+    {
+        await JsRuntime.InvokeVoidAsync("setCulture", culture);
+        Navigation.NavigateTo(Navigation.Uri, forceLoad: true);
     }
 
     private void BeginLogout()
