@@ -10,6 +10,7 @@
             <img src="/icons/logo.svg" width="28" height="28" alt="Byakko logo" />
             Byakko
         </a>
+        <span class="d-lg-none ms-auto me-2 fs-5">@_currentFlag</span>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -25,7 +26,7 @@
                         </li>
                     </Authorized>
                 </AuthorizeView>
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown d-none d-lg-block">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Select language">
                         @_currentFlag
                     </a>
@@ -46,6 +47,13 @@
                             </button>
                         </li>
                     </ul>
+                </li>
+                <li class="nav-item d-lg-none">
+                    <div class="d-flex gap-3 px-1 py-1">
+                        <button class="btn btn-link nav-link p-0 @(_currentCulture == "en" ? "active" : "")" @onclick="@(() => SetCultureAsync("en"))">🇬🇧 English</button>
+                        <button class="btn btn-link nav-link p-0 @(_currentCulture == "nl-NL" ? "active" : "")" @onclick="@(() => SetCultureAsync("nl-NL"))">🇳🇱 Nederlands</button>
+                        <button class="btn btn-link nav-link p-0 @(_currentCulture == "ja-JP" ? "active" : "")" @onclick="@(() => SetCultureAsync("ja-JP"))">🇯🇵 日本語</button>
+                    </div>
                 </li>
                 <AuthorizeView>
                     <Authorized>
@@ -106,7 +114,6 @@
 @code {
     private string _profileUrl = string.Empty;
     private string _currentCulture = "en";
-    private string _currentLanguageLabel = "EN";
     private string _currentFlag = "🇬🇧";
 
     protected override void OnInitialized()
@@ -115,7 +122,6 @@
 
         var name = System.Globalization.CultureInfo.CurrentUICulture.Name;
         _currentCulture = SupportedLanguages.Labels.ContainsKey(name) ? name : SupportedLanguages.DefaultLanguage;
-        _currentLanguageLabel = SupportedLanguages.Labels.GetValueOrDefault(_currentCulture, SupportedLanguages.DefaultUiLanguage);
         _currentFlag = SupportedLanguages.Flags.GetValueOrDefault(_currentCulture, "🇬🇧");
     }
 
