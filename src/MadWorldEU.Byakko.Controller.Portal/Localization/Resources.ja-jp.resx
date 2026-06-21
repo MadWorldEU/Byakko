@@ -14,4 +14,34 @@
     <data name="Start Sharing" xml:space="preserve">
         <value>共有を始める</value>
     </data>
+    <data name="Nav Home" xml:space="preserve">
+        <value>ホーム</value>
+    </data>
+    <data name="Nav My Files" xml:space="preserve">
+        <value>マイファイル</value>
+    </data>
+    <data name="Nav Edit Profile" xml:space="preserve">
+        <value>プロフィール編集</value>
+    </data>
+    <data name="Nav Logout" xml:space="preserve">
+        <value>ログアウト</value>
+    </data>
+    <data name="Nav Login" xml:space="preserve">
+        <value>ログイン</value>
+    </data>
+    <data name="Nav User Agreement" xml:space="preserve">
+        <value>利用規約</value>
+    </data>
+    <data name="Nav Tagline" xml:space="preserve">
+        <value>ファイルを共有し、瞬間を共有しよう。</value>
+    </data>
+    <data name="Upload Max File Size" xml:space="preserve">
+        <value>最大ファイルサイズ</value>
+    </data>
+    <data name="Upload Files Remaining" xml:space="preserve">
+        <value>残りファイル数</value>
+    </data>
+    <data name="Upload Files Remaining Count" xml:space="preserve">
+        <value>{1}件中{0}件</value>
+    </data>
 </root>

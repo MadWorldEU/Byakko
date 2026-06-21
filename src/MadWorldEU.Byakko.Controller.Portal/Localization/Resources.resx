@@ -21,4 +21,34 @@
     <data name="Start Sharing" xml:space="preserve">
         <value>Start Sharing</value>
     </data>
+    <data name="Nav Home" xml:space="preserve">
+        <value>Home</value>
+    </data>
+    <data name="Nav My Files" xml:space="preserve">
+        <value>My files</value>
+    </data>
+    <data name="Nav Edit Profile" xml:space="preserve">
+        <value>Edit profile</value>
+    </data>
+    <data name="Nav Logout" xml:space="preserve">
+        <value>Logout</value>
+    </data>
+    <data name="Nav Login" xml:space="preserve">
+        <value>Login</value>
+    </data>
+    <data name="Nav User Agreement" xml:space="preserve">
+        <value>User Agreement</value>
+    </data>
+    <data name="Nav Tagline" xml:space="preserve">
+        <value>Share files, share moments.</value>
+    </data>
+    <data name="Upload Max File Size" xml:space="preserve">
+        <value>Max file size</value>
+    </data>
+    <data name="Upload Files Remaining" xml:space="preserve">
+        <value>Files remaining</value>
+    </data>
+    <data name="Upload Files Remaining Count" xml:space="preserve">
+        <value>{0} of {1}</value>
+    </data>
 </root>

@@ -14,4 +14,34 @@
     <data name="Start Sharing" xml:space="preserve">
         <value>Beginnen met Delen</value>
     </data>
+    <data name="Nav Home" xml:space="preserve">
+        <value>Home</value>
+    </data>
+    <data name="Nav My Files" xml:space="preserve">
+        <value>Mijn Bestanden</value>
+    </data>
+    <data name="Nav Edit Profile" xml:space="preserve">
+        <value>Profiel Bewerken</value>
+    </data>
+    <data name="Nav Logout" xml:space="preserve">
+        <value>Uitloggen</value>
+    </data>
+    <data name="Nav Login" xml:space="preserve">
+        <value>Inloggen</value>
+    </data>
+    <data name="Nav User Agreement" xml:space="preserve">
+        <value>Gebruikersovereenkomst</value>
+    </data>
+    <data name="Nav Tagline" xml:space="preserve">
+        <value>Deel bestanden, deel momenten.</value>
+    </data>
+    <data name="Upload Max File Size" xml:space="preserve">
+        <value>Max bestandsgrootte</value>
+    </data>
+    <data name="Upload Files Remaining" xml:space="preserve">
+        <value>Bestanden resterend</value>
+    </data>
+    <data name="Upload Files Remaining Count" xml:space="preserve">
+        <value>{0} van {1}</value>
+    </data>
 </root>
