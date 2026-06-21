@@ -1,18 +1,19 @@
 @page "/Development/TestPage"
 @inject IHttpClientFactory HttpClientFactory
+@inject IStringLocalizer<SharedResources> Localizer
 @attribute [AllowAnonymous]
 
-<h1 class="mb-4">Test Page</h1>
+<h1 class="mb-4">@Localizer["TestPage Heading"]</h1>
 
 <div class="card" style="max-width: 400px;">
     <div class="card-body">
-        <h5 class="card-title">Ping</h5>
+        <h5 class="card-title">@Localizer["TestPage Ping Title"]</h5>
         <button class="btn btn-primary" @onclick="PingAsync" disabled="@_loading">
             @if (_loading)
             {
                 <span class="spinner-border spinner-border-sm me-1" role="status"></span>
             }
-            Send Ping
+            @Localizer["TestPage Ping Button"]
         </button>
         @if (_responsePing is not null)
         {
@@ -23,17 +24,17 @@
 
 <div class="card" style="max-width: 400px;">
     <div class="card-body">
-        <h5 class="card-title">Is authenticated in api?</h5>
+        <h5 class="card-title">@Localizer["TestPage Auth Title"]</h5>
         <button class="btn btn-primary" @onclick="IsAuthenticatedAsync" disabled="@(_loading || !_isAuthenticated)">
             @if (_loading)
             {
                 <span class="spinner-border spinner-border-sm me-1" role="status"></span>
             }
-            Check if user is authenticated in api
+            @Localizer["TestPage Auth Button"]
         </button>
         @if (!_isAuthenticated)
         {
-            <div class="alert alert-warning mt-3 mb-0">Login required</div>
+            <div class="alert alert-warning mt-3 mb-0">@Localizer["TestPage Login Required"]</div>
         }
         @if (_responseIsAuthenticated is not null)
         {
@@ -70,7 +71,7 @@
 
         _loading = false;
     }
-    
+
     private async Task IsAuthenticatedAsync()
     {
         _loading = true;

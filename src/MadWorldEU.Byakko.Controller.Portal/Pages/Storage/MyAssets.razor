@@ -2,12 +2,13 @@
 @attribute [Authorize(Policy = AuthorizationPolicies.User)]
 @inject IAssetService AssetService
 @inject IJSRuntime JsRuntime
+@inject IStringLocalizer<Resources> Localizer
 
-<PageTitle>Byakko – My Files</PageTitle>
+<PageTitle>@Localizer["Brand Name"] – @Localizer["MyAssets Page Title"]</PageTitle>
 
 <div class="container py-5">
-    <h2 class="fw-bold mb-1">My files</h2>
-    <p class="text-secondary mb-4">An overview of all files you have uploaded.</p>
+    <h2 class="fw-bold mb-1">@Localizer["MyAssets Heading"]</h2>
+    <p class="text-secondary mb-4">@Localizer["MyAssets Subtitle"]</p>
 
     <UploadLimitsAlert Limits="_limits" />
 
@@ -15,7 +16,7 @@
     {
         <div class="d-flex justify-content-center py-5">
             <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading…</span>
+                <span class="visually-hidden">@Localizer["MyAssets Loading"]</span>
             </div>
         </div>
     }
@@ -28,7 +29,7 @@
         @if (_response.Assets.Count == 0)
         {
             <div class="alert alert-info" role="alert">
-                You have not uploaded any files yet. <a href="/storage/upload" class="alert-link">Upload your first file.</a>
+                @Localizer["MyAssets Empty"] <a href="/storage/upload" class="alert-link">@Localizer["MyAssets Empty Upload Link"]</a>
             </div>
         }
         else
@@ -47,35 +48,35 @@
                                       title="@asset.Name">@asset.Name</span>
                                     @if (asset.IsDeleted)
                                     {
-                                        <span class="badge text-bg-secondary">Deleted</span>
+                                        <span class="badge text-bg-secondary">@Localizer["MyAssets Badge Deleted"]</span>
                                     }
                                     else if (asset.ExpiresAt < DateTimeOffset.UtcNow)
                                     {
-                                        <span class="badge text-bg-warning">Expired</span>
+                                        <span class="badge text-bg-warning">@Localizer["MyAssets Badge Expired"]</span>
                                     }
                                     else
                                     {
-                                        <span class="badge text-bg-success">Active</span>
+                                        <span class="badge text-bg-success">@Localizer["MyAssets Badge Active"]</span>
                                     }
                                 </div>
                                 <div class="text-secondary small">
-                                    @ByteFormatter.Format(asset.Size) &middot; Expires @asset.ExpiresAt.ToString("d MMM yyyy", System.Globalization.CultureInfo.InvariantCulture)
+                                    @ByteFormatter.Format(asset.Size) &middot; @Localizer["MyAssets Expires"] @asset.ExpiresAt.ToString("d MMM yyyy", System.Globalization.CultureInfo.InvariantCulture)
                                 </div>
                             </div>
                             @if (isActive && _confirmingDeleteId != asset.Id)
                             {
                                 <div class="d-flex gap-2 flex-shrink-0">
-                                    <a class="btn btn-outline-primary btn-sm" href="/storage/download/@asset.Id">Download</a>
-                                    <button class="btn btn-sm btn-outline-danger" @onclick="() => RequestDelete(asset.Id)">Delete</button>
+                                    <a class="btn btn-outline-primary btn-sm" href="/storage/download/@asset.Id">@Localizer["MyAssets Download"]</a>
+                                    <button class="btn btn-sm btn-outline-danger" @onclick="() => RequestDelete(asset.Id)">@Localizer["MyAssets Delete"]</button>
                                 </div>
                             }
                         </div>
                         @if (isActive && _confirmingDeleteId == asset.Id)
                         {
                             <div class="d-flex align-items-center gap-2 mt-2 flex-wrap">
-                                <span class="small text-warning">Delete content?</span>
-                                <button class="btn btn-sm btn-danger" @onclick="() => ConfirmDeleteAsync(asset.Id)" disabled="@_deleting">Yes</button>
-                                <button class="btn btn-sm btn-outline-secondary" @onclick="CancelDelete" disabled="@_deleting">No</button>
+                                <span class="small text-warning">@Localizer["MyAssets Delete Confirm"]</span>
+                                <button class="btn btn-sm btn-danger" @onclick="() => ConfirmDeleteAsync(asset.Id)" disabled="@_deleting">@Localizer["MyAssets Confirm Yes"]</button>
+                                <button class="btn btn-sm btn-outline-secondary" @onclick="CancelDelete" disabled="@_deleting">@Localizer["MyAssets Confirm No"]</button>
                             </div>
                         }
                     </div>
@@ -86,13 +87,13 @@
                 <button class="btn btn-outline-secondary btn-sm"
                         @onclick="PreviousPage"
                         disabled="@(_page <= 1)">
-                    Previous
+                    @Localizer["MyAssets Previous"]
                 </button>
-                <span class="text-secondary small">Page @_page</span>
+                <span class="text-secondary small">@string.Format(Localizer["MyAssets Page"], _page)</span>
                 <button class="btn btn-outline-secondary btn-sm"
                         @onclick="NextPage"
                         disabled="@(!_response.HasNextPage)">
-                    Next
+                    @Localizer["MyAssets Next"]
                 </button>
             </div>
         }

@@ -28,6 +28,7 @@ public sealed class UploadPageTests
                 .WithBodyAsJson(new UploadAssetContentResponse { Id = assetId }));
 
         using var ctx = new BunitContext();
+        ctx.Services.AddLocalization();
         ctx.Services.AddSingleton(Options.Create(new AssetSettings { MaxUploadSizeInBytes = 1073741824 }));
         ctx.Services.AddHttpClient(HttpClients.ApiAnonymous, client =>
             client.BaseAddress = new Uri(server.Url!));

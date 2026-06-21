@@ -1,15 +1,17 @@
+@inject IStringLocalizer<Resources> Localizer
+
 @if (Limits is not null)
 {
     var filesLeft = Limits.MaxFiles - Limits.ActiveFiles;
     <div class="alert @(filesLeft == 0 ? "alert-warning" : "alert-info") d-flex gap-4 mb-4 py-2 px-3" role="alert">
         <div>
-            <div class="text-secondary small">Max file size</div>
+            <div class="text-secondary small">@Localizer["Upload Max File Size"]</div>
             <div class="fw-semibold">@ByteFormatter.Format(Limits.MaxUploadSizeInBytes)</div>
         </div>
         <div class="vr"></div>
         <div>
-            <div class="text-secondary small">Files remaining</div>
-            <div class="fw-semibold @(filesLeft == 0 ? "text-warning" : "")">@filesLeft of @Limits.MaxFiles</div>
+            <div class="text-secondary small">@Localizer["Upload Files Remaining"]</div>
+            <div class="fw-semibold @(filesLeft == 0 ? "text-warning" : "")">@string.Format(Localizer["Upload Files Remaining Count"], filesLeft, Limits.MaxFiles)</div>
         </div>
     </div>
 }

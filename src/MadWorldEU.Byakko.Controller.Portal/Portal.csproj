@@ -2,6 +2,7 @@
 
     <PropertyGroup>
         <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
+        <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
     </PropertyGroup>
 
     <ItemGroup>
@@ -9,12 +10,32 @@
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" PrivateAssets="all"/>
         <PackageReference Include="Microsoft.Extensions.Http" />
+        <PackageReference Include="Microsoft.Extensions.Localization" />
         <PackageReference Include="Microsoft.Web.LibraryManager.Build" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\MadWorldEU.Byakko.Controller.Blazor.Shared\Blazor.Shared.csproj" />
       <ProjectReference Include="..\MadWorldEU.Byakko.Core.Contracts\Contracts.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="Portal.Componenttests" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Update="Localization\Resources.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Localization\Resources.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>Resources.resx</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>

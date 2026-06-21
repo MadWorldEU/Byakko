@@ -1,112 +1,99 @@
 @page "/user-agreement"
+@inject IStringLocalizer<Resources> Localizer
 
-<PageTitle>Byakko – User Agreement</PageTitle>
+<PageTitle>@Localizer["Brand Name"] – @Localizer["UA Page Title"]</PageTitle>
 
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-8">
-            <h1 class="fw-bold mb-1">User Agreement</h1>
-            <p class="text-secondary mb-5">Last updated: <time datetime="2026-06-16">June 16, 2026</time></p>
+            <h1 class="fw-bold mb-1">@Localizer["UA Heading"]</h1>
+            <p class="text-secondary mb-5">@Localizer["UA Last Updated"] <time datetime="2026-06-16">@Localizer["UA Last Updated Date"]</time></p>
 
             <section class="mb-5">
-                <h2 class="h4 fw-semibold mb-3">1. Introduction</h2>
+                <h2 class="h4 fw-semibold mb-3">@Localizer["UA S1 Title"]</h2>
                 <p class="text-secondary">
-                    Welcome to Byakko, a file-sharing service that lets you upload and share files quickly and securely.
-                    This User Agreement governs your use of the service. By creating an account or uploading files, you agree to the terms described in this document.
-                    Please read it carefully — it outlines your rights, your responsibilities, and how we handle your data.
+                    @string.Format(Localizer["UA S1 Text"], Localizer["Brand Name"])
                 </p>
             </section>
 
             <section class="mb-5">
-                <h2 class="h4 fw-semibold mb-3">2. Acceptance of Terms</h2>
+                <h2 class="h4 fw-semibold mb-3">@Localizer["UA S2 Title"]</h2>
                 <p class="text-secondary">
-                    By registering an account or uploading files you confirm that you have read, understood, and agree to be bound by this agreement.
-                    If you do not agree, you must not use the service. You must be at least 18 years old, or have permission from a parent or guardian, to use Byakko.
+                    @string.Format(Localizer["UA S2 Text"], Localizer["Brand Name"])
                 </p>
             </section>
 
             <section class="mb-5">
-                <h2 class="h4 fw-semibold mb-3">3. Use of the Service</h2>
+                <h2 class="h4 fw-semibold mb-3">@Localizer["UA S3 Title"]</h2>
                 <p class="text-secondary">
-                    You may use Byakko to upload and share files for personal, lawful purposes. You are responsible for ensuring that any files you upload are either
-                    your own or that you have the necessary rights to share them. You agree not to misuse the service in any way that could damage, overload, or impair
-                    its availability for other users.
+                    @string.Format(Localizer["UA S3 Text"], Localizer["Brand Name"])
                 </p>
             </section>
 
             <section class="mb-5">
-                <h2 class="h4 fw-semibold mb-3">4. Prohibited Content</h2>
+                <h2 class="h4 fw-semibold mb-3">@Localizer["UA S4 Title"]</h2>
                 <p class="text-secondary">
-                    You may not upload, share, or distribute any content that violates applicable law or is intended to harm any individual or group.
-                    This includes, but is not limited to:
+                    @Localizer["UA S4 Intro"]
                 </p>
                 <ul class="text-secondary">
-                    <li>Content that is illegal under local, national, or international law.</li>
-                    <li>Material that harasses, threatens, or incites violence against any person or group.</li>
-                    <li>Content that infringes on the intellectual property rights of others.</li>
-                    <li>Malware, viruses, or any software designed to damage or disrupt systems.</li>
-                    <li>Content that exploits or endangers minors in any way.</li>
+                    <li>@Localizer["UA S4 Item 1"]</li>
+                    <li>@Localizer["UA S4 Item 2"]</li>
+                    <li>@Localizer["UA S4 Item 3"]</li>
+                    <li>@Localizer["UA S4 Item 4"]</li>
+                    <li>@Localizer["UA S4 Item 5"]</li>
                 </ul>
                 <p class="text-secondary">
-                    We reserve the right to remove any content that violates these restrictions and to suspend or terminate accounts responsible for such uploads.
+                    @Localizer["UA S4 Outro"]
                 </p>
             </section>
 
             <section class="mb-5">
-                <h2 class="h4 fw-semibold mb-3">5. File Retention and Expiry</h2>
+                <h2 class="h4 fw-semibold mb-3">@Localizer["UA S5 Title"]</h2>
                 <p class="text-secondary">
-                    Uploaded files are retained for <strong>30 days</strong> from the date of upload. After this period, the file content is permanently deleted
-                    and can no longer be downloaded. The associated metadata (such as file name and upload date) is kept for up to <strong>365 days</strong>
-                    before it is also permanently removed.
+                    @((MarkupString)Localizer["UA S5 Text 1"].Value)
                 </p>
                 <p class="text-secondary">
-                    We do not guarantee the availability of files beyond the 30-day retention window. Make sure to download or share your files before they expire.
+                    @Localizer["UA S5 Text 2"]
                 </p>
             </section>
 
             <section class="mb-5">
-                <h2 class="h4 fw-semibold mb-3">6. Privacy</h2>
+                <h2 class="h4 fw-semibold mb-3">@Localizer["UA S6 Title"]</h2>
                 <p class="text-secondary">
-                    Your privacy matters to us. The content of your files and all associated metadata are kept strictly private and are never shared with third parties.
+                    @Localizer["UA S6 Intro"]
                 </p>
                 <ul class="text-secondary">
-                    <li>We do not sell, share, or transfer your data to advertising companies.</li>
-                    <li>Your files and metadata are never used to train AI models or shared with AI companies.</li>
-                    <li>File content is only accessible via the unique share link you choose to distribute.</li>
-                    <li>For security purposes, we log the IP address associated with file uploads and other account actions. This data is stored securely and is subject to the same privacy protections described above.</li>
+                    <li>@Localizer["UA S6 Item 1"]</li>
+                    <li>@Localizer["UA S6 Item 2"]</li>
+                    <li>@Localizer["UA S6 Item 3"]</li>
+                    <li>@Localizer["UA S6 Item 4"]</li>
                 </ul>
                 <p class="text-secondary">
-                    The only exception to the above is when we are legally required to act otherwise. If authorities present a valid court order,
-                    we will comply and provide the requested information to the extent required by law.
+                    @Localizer["UA S6 Outro"]
                 </p>
             </section>
 
             <section class="mb-5">
-                <h2 class="h4 fw-semibold mb-3">7. Limitation of Liability</h2>
+                <h2 class="h4 fw-semibold mb-3">@Localizer["UA S7 Title"]</h2>
                 <p class="text-secondary">
-                    Byakko is provided on an "as-is" basis without warranties of any kind. We do not guarantee uninterrupted availability of the service or the
-                    permanent retention of uploaded files. We are not liable for any loss of data, loss of files due to expiry or deletion, or any damages arising
-                    from the use or inability to use the service. You are solely responsible for any files you upload and share, and for ensuring that recipients
-                    use them appropriately.
+                    @string.Format(Localizer["UA S7 Text"], Localizer["Brand Name"])
                 </p>
             </section>
 
             <section class="mb-5">
-                <h2 class="h4 fw-semibold mb-3">8. Changes to This Agreement</h2>
+                <h2 class="h4 fw-semibold mb-3">@Localizer["UA S8 Title"]</h2>
                 <p class="text-secondary">
-                    We may update this agreement from time to time. Any changes take effect from the date they are published and apply only to files uploaded after that date —
-                    files already uploaded remain subject to the terms that were in place at the time of upload.
+                    @Localizer["UA S8 Text 1"]
                 </p>
                 <p class="text-secondary">
-                    When this agreement changes, you will be notified by email at the address associated with your account. We encourage you to review any updates carefully.
-                    Continued use of the service after notification constitutes acceptance of the revised terms.
+                    @Localizer["UA S8 Text 2"]
                 </p>
             </section>
 
             <section class="mb-5">
-                <h2 class="h4 fw-semibold mb-3">9. Contact</h2>
+                <h2 class="h4 fw-semibold mb-3">@Localizer["UA S9 Title"]</h2>
                 <p class="text-secondary">
-                    If you have any questions or concerns about this agreement, please contact us at:
+                    @Localizer["UA S9 Text Before"]
                     <a href="mailto:info@mad-world.eu">info@mad-world.eu</a>
                 </p>
             </section>

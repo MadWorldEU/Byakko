@@ -1,0 +1,374 @@
+<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="Brand Name" xml:space="preserve">
+        <value>白虎</value>
+    </data>
+    <data name="Start Sharing" xml:space="preserve">
+        <value>共有を始める</value>
+    </data>
+    <data name="Nav Home" xml:space="preserve">
+        <value>ホーム</value>
+    </data>
+    <data name="Nav My Files" xml:space="preserve">
+        <value>マイファイル</value>
+    </data>
+    <data name="Nav Edit Profile" xml:space="preserve">
+        <value>プロフィール編集</value>
+    </data>
+    <data name="Nav Logout" xml:space="preserve">
+        <value>ログアウト</value>
+    </data>
+    <data name="Nav Login" xml:space="preserve">
+        <value>ログイン</value>
+    </data>
+    <data name="Nav User Agreement" xml:space="preserve">
+        <value>利用規約</value>
+    </data>
+    <data name="Nav Tagline" xml:space="preserve">
+        <value>ファイルを共有し、瞬間を共有しよう。</value>
+    </data>
+    <data name="Upload Page Title" xml:space="preserve">
+        <value>ファイルをアップロード</value>
+    </data>
+    <data name="Upload Heading" xml:space="preserve">
+        <value>ファイルをアップロード</value>
+    </data>
+    <data name="Upload Subtitle" xml:space="preserve">
+        <value>ファイルを選んでください。共有リンクを生成します。</value>
+    </data>
+    <data name="Upload Success" xml:space="preserve">
+        <value>ファイルのアップロードが完了しました！</value>
+    </data>
+    <data name="Upload Copy Link" xml:space="preserve">
+        <value>リンクをコピー</value>
+    </data>
+    <data name="Upload Copied" xml:space="preserve">
+        <value>コピーしました！</value>
+    </data>
+    <data name="Upload Advanced Options" xml:space="preserve">
+        <value>詳細オプション</value>
+    </data>
+    <data name="Upload Password Label" xml:space="preserve">
+        <value>パスワード（任意）</value>
+    </data>
+    <data name="Upload Password Placeholder" xml:space="preserve">
+        <value>パスワードなしの場合は空のままにしてください</value>
+    </data>
+    <data name="Upload Show Password" xml:space="preserve">
+        <value>パスワードを表示</value>
+    </data>
+    <data name="Upload Hide Password" xml:space="preserve">
+        <value>パスワードを非表示</value>
+    </data>
+    <data name="Upload Generate" xml:space="preserve">
+        <value>生成</value>
+    </data>
+    <data name="Upload Uploading" xml:space="preserve">
+        <value>アップロード中…</value>
+    </data>
+    <data name="Upload Button" xml:space="preserve">
+        <value>アップロード</value>
+    </data>
+    <data name="UA Page Title" xml:space="preserve">
+        <value>利用規約</value>
+    </data>
+    <data name="UA Heading" xml:space="preserve">
+        <value>利用規約</value>
+    </data>
+    <data name="UA Last Updated" xml:space="preserve">
+        <value>最終更新：</value>
+    </data>
+    <data name="UA Last Updated Date" xml:space="preserve">
+        <value>2026年6月16日</value>
+    </data>
+    <data name="UA S1 Title" xml:space="preserve">
+        <value>1. はじめに</value>
+    </data>
+    <data name="UA S1 Text" xml:space="preserve">
+        <value>{0}へようこそ。ファイルを素早く安全にアップロードして共有できるサービスです。この利用規約はサービスの利用を規定します。アカウントを作成したりファイルをアップロードしたりすることで、この文書に記載された条件に同意したものとみなされます。権利、責任、データの取り扱い方法について説明していますので、注意深くお読みください。</value>
+    </data>
+    <data name="UA S2 Title" xml:space="preserve">
+        <value>2. 利用規約への同意</value>
+    </data>
+    <data name="UA S2 Text" xml:space="preserve">
+        <value>アカウントを登録またはファイルをアップロードすることで、本規約を読み、理解し、同意したことを確認します。同意しない場合は、サービスを利用してはなりません。{0}を利用するには、18歳以上であるか、保護者の許可が必要です。</value>
+    </data>
+    <data name="UA S3 Title" xml:space="preserve">
+        <value>3. サービスの利用</value>
+    </data>
+    <data name="UA S3 Text" xml:space="preserve">
+        <value>{0}は個人的な合法的目的のためにファイルをアップロードして共有するために利用できます。アップロードするファイルが自分のものであるか、共有する権利を有していることを確認する責任があります。他のユーザーの利用を損なう方法でサービスを悪用しないことに同意します。</value>
+    </data>
+    <data name="UA S4 Title" xml:space="preserve">
+        <value>4. 禁止コンテンツ</value>
+    </data>
+    <data name="UA S4 Intro" xml:space="preserve">
+        <value>適用法に違反する、または個人やグループを傷つけることを意図したコンテンツをアップロード、共有、または配布することはできません。これには以下が含まれますが、これに限りません：</value>
+    </data>
+    <data name="UA S4 Item 1" xml:space="preserve">
+        <value>地方、国内、または国際法の下で違法なコンテンツ。</value>
+    </data>
+    <data name="UA S4 Item 2" xml:space="preserve">
+        <value>個人またはグループを嫌がらせ、脅迫、または暴力に煽るような素材。</value>
+    </data>
+    <data name="UA S4 Item 3" xml:space="preserve">
+        <value>他者の知的財産権を侵害するコンテンツ。</value>
+    </data>
+    <data name="UA S4 Item 4" xml:space="preserve">
+        <value>システムを損傷または妨害するように設計されたマルウェア、ウイルス、またはソフトウェア。</value>
+    </data>
+    <data name="UA S4 Item 5" xml:space="preserve">
+        <value>いかなる方法でも未成年者を搾取または危険にさらすコンテンツ。</value>
+    </data>
+    <data name="UA S4 Outro" xml:space="preserve">
+        <value>これらの制限に違反するコンテンツを削除し、そのようなアップロードを行ったアカウントを停止または終了する権利を留保します。</value>
+    </data>
+    <data name="UA S5 Title" xml:space="preserve">
+        <value>5. ファイルの保持と有効期限</value>
+    </data>
+    <data name="UA S5 Text 1" xml:space="preserve">
+        <value>アップロードされたファイルはアップロード日から&lt;strong&gt;30日間&lt;/strong&gt;保持されます。この期間が過ぎると、ファイルの内容は完全に削除され、ダウンロードできなくなります。関連するメタデータ（ファイル名やアップロード日など）は最大&lt;strong&gt;365日間&lt;/strong&gt;保持された後、完全に削除されます。</value>
+    </data>
+    <data name="UA S5 Text 2" xml:space="preserve">
+        <value>30日間の保持期間を超えたファイルの可用性は保証しません。期限切れになる前にファイルをダウンロードまたは共有してください。</value>
+    </data>
+    <data name="UA S6 Title" xml:space="preserve">
+        <value>6. プライバシー</value>
+    </data>
+    <data name="UA S6 Intro" xml:space="preserve">
+        <value>プライバシーを大切にしています。ファイルの内容および関連するすべてのメタデータは厳密にプライベートに保たれ、第三者と共有されることはありません。</value>
+    </data>
+    <data name="UA S6 Item 1" xml:space="preserve">
+        <value>あなたのデータを広告会社に販売、共有、または転送することはありません。</value>
+    </data>
+    <data name="UA S6 Item 2" xml:space="preserve">
+        <value>ファイルとメタデータはAIモデルのトレーニングに使用されたり、AI企業と共有されることはありません。</value>
+    </data>
+    <data name="UA S6 Item 3" xml:space="preserve">
+        <value>ファイルの内容は、あなたが配布する一意の共有リンクからのみアクセス可能です。</value>
+    </data>
+    <data name="UA S6 Item 4" xml:space="preserve">
+        <value>セキュリティ上の目的で、ファイルのアップロードやその他のアカウント操作に関連するIPアドレスを記録します。このデータは安全に保存され、上記と同じプライバシー保護が適用されます。</value>
+    </data>
+    <data name="UA S6 Outro" xml:space="preserve">
+        <value>上記の唯一の例外は、法律により別の行動が義務付けられる場合です。当局が有効な裁判所命令を提示した場合、法律が求める範囲で要求された情報を提供します。</value>
+    </data>
+    <data name="UA S7 Title" xml:space="preserve">
+        <value>7. 責任の制限</value>
+    </data>
+    <data name="UA S7 Text" xml:space="preserve">
+        <value>{0}はいかなる保証もなく「現状のまま」提供されます。サービスの継続的な可用性やアップロードされたファイルの永続的な保持を保証しません。データの損失、有効期限切れや削除によるファイルの損失、またはサービスの利用もしくは利用不能から生じるいかなる損害についても責任を負いません。アップロードおよび共有するファイルに対してはあなた自身が責任を負い、受信者が適切に利用することを確認する責任があります。</value>
+    </data>
+    <data name="UA S8 Title" xml:space="preserve">
+        <value>8. 本規約の変更</value>
+    </data>
+    <data name="UA S8 Text 1" xml:space="preserve">
+        <value>本規約は随時更新される場合があります。変更は公開日から有効となり、その日以降にアップロードされたファイルにのみ適用されます — すでにアップロードされたファイルは、アップロード時に有効だった条件に従います。</value>
+    </data>
+    <data name="UA S8 Text 2" xml:space="preserve">
+        <value>本規約が変更された場合、アカウントに登録されているメールアドレスに通知が送られます。更新内容を注意深く確認することをお勧めします。通知後もサービスを継続して利用することで、改訂された条件への同意とみなされます。</value>
+    </data>
+    <data name="UA S9 Title" xml:space="preserve">
+        <value>9. お問い合わせ</value>
+    </data>
+    <data name="UA S9 Text Before" xml:space="preserve">
+        <value>本規約についてご質問やご不明な点がございましたら、以下のアドレスまでお問い合わせください：</value>
+    </data>
+    <data name="Home Page Title" xml:space="preserve">
+        <value>友達とファイルを共有</value>
+    </data>
+    <data name="Home Beta Message" xml:space="preserve">
+        <value>このサービスはまだベータ版です。新しいアカウントはファイルをアップロードする前に管理者の承認が必要です。</value>
+    </data>
+    <data name="Home Hero Eyebrow" xml:space="preserve">
+        <value>ファイル共有、再定義</value>
+    </data>
+    <data name="Home Hero Title 1" xml:space="preserve">
+        <value>大切な人と</value>
+    </data>
+    <data name="Home Hero Title 2" xml:space="preserve">
+        <value>ファイルを共有しよう</value>
+    </data>
+    <data name="Home Hero Lead" xml:space="preserve">
+        <value>一度アップロードして、どこでも共有。友人や家族にファイルを数秒で送信 — 相手のアカウント不要、手間なし、制限なし。</value>
+    </data>
+    <data name="Home See How It Works" xml:space="preserve">
+        <value>使い方を見る</value>
+    </data>
+    <data name="Home Stat Fast" xml:space="preserve">
+        <value>高速</value>
+    </data>
+    <data name="Home Stat Fast Sub" xml:space="preserve">
+        <value>即時アップロード</value>
+    </data>
+    <data name="Home Stat Secure" xml:space="preserve">
+        <value>安全</value>
+    </data>
+    <data name="Home Stat Secure Sub" xml:space="preserve">
+        <value>エンドツーエンド保護</value>
+    </data>
+    <data name="Home Stat Simple" xml:space="preserve">
+        <value>シンプル</value>
+    </data>
+    <data name="Home Stat Simple Sub" xml:space="preserve">
+        <value>手間なし</value>
+    </data>
+    <data name="Home Features Heading" xml:space="preserve">
+        <value>共有に必要なすべて</value>
+    </data>
+    <data name="Home Features Subtitle" xml:space="preserve">
+        <value>できるだけ手軽にファイルを友達に届けるために設計されています。</value>
+    </data>
+    <data name="Home Feature 1 Title" xml:space="preserve">
+        <value>超高速アップロード</value>
+    </data>
+    <data name="Home Feature 1 Text" xml:space="preserve">
+        <value>任意のファイルを入れると数秒でアップロード。写真、動画、ドキュメント — {0}はすべてを難なく処理します。</value>
+    </data>
+    <data name="Home Feature 2 Title" xml:space="preserve">
+        <value>リンク一つで共有</value>
+    </data>
+    <data name="Home Feature 2 Text" xml:space="preserve">
+        <value>ファイルがアップロードされた瞬間にユニークなリンクを取得。チャット、メール、メッセージで送れば — 友達はすぐにダウンロードできます。</value>
+    </data>
+    <data name="Home Feature 3 Title" xml:space="preserve">
+        <value>いつでもアクセス可能</value>
+    </data>
+    <data name="Home Feature 3 Text" xml:space="preserve">
+        <value>ファイルはクラウドに安全に保存され、友達が必要なときにいつでも利用可能 — アプリのインストールも登録も不要。</value>
+    </data>
+    <data name="Home How It Works Heading" xml:space="preserve">
+        <value>使い方</value>
+    </data>
+    <data name="Home How It Works Subtitle" xml:space="preserve">
+        <value>たった3つのステップ。</value>
+    </data>
+    <data name="Home Step 1 Title" xml:space="preserve">
+        <value>ファイルをアップロード</value>
+    </data>
+    <data name="Home Step 1 Text" xml:space="preserve">
+        <value>デバイスから任意のファイルを選んで、ワンクリックでアップロード。</value>
+    </data>
+    <data name="Home Step 2 Title" xml:space="preserve">
+        <value>共有リンクを取得</value>
+    </data>
+    <data name="Home Step 2 Text" xml:space="preserve">
+        <value>{0}が即座にあなただけのユニークな共有リンクを生成します。</value>
+    </data>
+    <data name="Home Step 3 Title" xml:space="preserve">
+        <value>友達に送る</value>
+    </data>
+    <data name="Home Step 3 Text" xml:space="preserve">
+        <value>リンクをどこにでも貼り付けるだけ — 友達はすぐにダウンロードできます。</value>
+    </data>
+    <data name="Home CTA Heading" xml:space="preserve">
+        <value>共有を始める準備はできていますか？</value>
+    </data>
+    <data name="Home CTA Text" xml:space="preserve">
+        <value>{0}を使って、大切な人とファイルを共有しましょう。</value>
+    </data>
+    <data name="Home CTA Button" xml:space="preserve">
+        <value>最初のファイルをアップロード</value>
+    </data>
+    <data name="Download Page Title" xml:space="preserve">
+        <value>ダウンロード</value>
+    </data>
+    <data name="Download Loading" xml:space="preserve">
+        <value>読み込み中…</value>
+    </data>
+    <data name="Download Expired On" xml:space="preserve">
+        <value>期限切れ：</value>
+    </data>
+    <data name="Download Expires On" xml:space="preserve">
+        <value>期限：</value>
+    </data>
+    <data name="Download Expired Message" xml:space="preserve">
+        <value>このファイルは期限切れのため、ダウンロードできません。</value>
+    </data>
+    <data name="Download Button" xml:space="preserve">
+        <value>ダウンロード</value>
+    </data>
+    <data name="Download Password Label" xml:space="preserve">
+        <value>パスワード（任意）</value>
+    </data>
+    <data name="Download Password Placeholder" xml:space="preserve">
+        <value>パスワードが設定されていない場合は空のままにしてください</value>
+    </data>
+    <data name="Download Downloading" xml:space="preserve">
+        <value>ダウンロード中…</value>
+    </data>
+    <data name="MyAssets Page Title" xml:space="preserve">
+        <value>マイファイル</value>
+    </data>
+    <data name="MyAssets Heading" xml:space="preserve">
+        <value>マイファイル</value>
+    </data>
+    <data name="MyAssets Subtitle" xml:space="preserve">
+        <value>アップロードしたファイルの一覧です。</value>
+    </data>
+    <data name="MyAssets Loading" xml:space="preserve">
+        <value>読み込み中…</value>
+    </data>
+    <data name="MyAssets Empty" xml:space="preserve">
+        <value>まだファイルをアップロードしていません。</value>
+    </data>
+    <data name="MyAssets Empty Upload Link" xml:space="preserve">
+        <value>最初のファイルをアップロードする。</value>
+    </data>
+    <data name="MyAssets Badge Deleted" xml:space="preserve">
+        <value>削除済み</value>
+    </data>
+    <data name="MyAssets Badge Expired" xml:space="preserve">
+        <value>期限切れ</value>
+    </data>
+    <data name="MyAssets Badge Active" xml:space="preserve">
+        <value>有効</value>
+    </data>
+    <data name="MyAssets Expires" xml:space="preserve">
+        <value>期限</value>
+    </data>
+    <data name="MyAssets Download" xml:space="preserve">
+        <value>ダウンロード</value>
+    </data>
+    <data name="MyAssets Delete" xml:space="preserve">
+        <value>削除</value>
+    </data>
+    <data name="MyAssets Delete Confirm" xml:space="preserve">
+        <value>コンテンツを削除しますか？</value>
+    </data>
+    <data name="MyAssets Confirm Yes" xml:space="preserve">
+        <value>はい</value>
+    </data>
+    <data name="MyAssets Confirm No" xml:space="preserve">
+        <value>いいえ</value>
+    </data>
+    <data name="MyAssets Previous" xml:space="preserve">
+        <value>前へ</value>
+    </data>
+    <data name="MyAssets Page" xml:space="preserve">
+        <value>{0}ページ</value>
+    </data>
+    <data name="MyAssets Next" xml:space="preserve">
+        <value>次へ</value>
+    </data>
+    <data name="Upload Max File Size" xml:space="preserve">
+        <value>最大ファイルサイズ</value>
+    </data>
+    <data name="Upload Files Remaining" xml:space="preserve">
+        <value>残りファイル数</value>
+    </data>
+    <data name="Upload Files Remaining Count" xml:space="preserve">
+        <value>{1}件中{0}件</value>
+    </data>
+</root>

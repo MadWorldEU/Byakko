@@ -1,28 +1,61 @@
+@using MadWorldEU.Byakko.Localization
 @inherits LayoutComponentBase
 @inject NavigationManager Navigation
 @inject IOptions<OidcSettings> OidcSettings
+@inject IJSRuntime JsRuntime
+@inject IStringLocalizer<Resources> Localizer
 
 <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom border-body sticky-top">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center gap-2 fw-bold fs-4" href="/">
-            <img src="/icons/logo.svg" width="28" height="28" alt="Byakko logo" />
-            Byakko
+            <img src="/icons/logo.svg" width="28" height="28" alt="@Localizer["Brand Name"] logo" />
+            @Localizer["Brand Name"]
         </a>
+        <span class="d-lg-none ms-auto me-2 fs-5">@_currentFlag</span>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="mainNav">
             <ul class="navbar-nav ms-auto gap-1 align-items-center">
                 <li class="nav-item">
-                    <a class="nav-link" href="/">Home</a>
+                    <a class="nav-link" href="/">@Localizer["Nav Home"]</a>
                 </li>
                 <AuthorizeView Policy="@AuthorizationPolicies.User">
                     <Authorized>
                         <li class="nav-item">
-                            <a class="nav-link" href="/storage/my-assets">My files</a>
+                            <a class="nav-link" href="/storage/my-assets">@Localizer["Nav My Files"]</a>
                         </li>
                     </Authorized>
                 </AuthorizeView>
+                <li class="nav-item dropdown d-none d-lg-block">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Select language">
+                        @_currentFlag
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <button class="dropdown-item @(_currentCulture == "en" ? "active" : "")" @onclick="@(() => SetCultureAsync("en"))">
+                                🇬🇧 English
+                            </button>
+                        </li>
+                        <li>
+                            <button class="dropdown-item @(_currentCulture == "nl-NL" ? "active" : "")" @onclick="@(() => SetCultureAsync("nl-NL"))">
+                                🇳🇱 Nederlands
+                            </button>
+                        </li>
+                        <li>
+                            <button class="dropdown-item @(_currentCulture == "ja-JP" ? "active" : "")" @onclick="@(() => SetCultureAsync("ja-JP"))">
+                                🇯🇵 日本語
+                            </button>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item d-lg-none">
+                    <div class="d-flex gap-3 px-1 py-1">
+                        <button class="btn btn-link nav-link p-0 @(_currentCulture == "en" ? "active" : "")" @onclick="@(() => SetCultureAsync("en"))">🇬🇧 English</button>
+                        <button class="btn btn-link nav-link p-0 @(_currentCulture == "nl-NL" ? "active" : "")" @onclick="@(() => SetCultureAsync("nl-NL"))">🇳🇱 Nederlands</button>
+                        <button class="btn btn-link nav-link p-0 @(_currentCulture == "ja-JP" ? "active" : "")" @onclick="@(() => SetCultureAsync("ja-JP"))">🇯🇵 日本語</button>
+                    </div>
+                </li>
                 <AuthorizeView>
                     <Authorized>
                         <li class="nav-item dropdown">
@@ -39,7 +72,7 @@
                                             <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m.256 7a4.5 4.5 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.971 10 8 10q.39 0 .74.025c.226-.341.496-.65.804-.918Q8.844 9.002 8 9c-5 0-6 3-6 4s1 1 1 1z"/>
                                             <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.354-5.854 1.5 1.5a.5.5 0 0 1-.708.708L13 11.707V14.5a.5.5 0 0 1-1 0v-2.793l-.646.647a.5.5 0 0 1-.708-.708l1.5-1.5a.5.5 0 0 1 .708 0"/>
                                         </svg>
-                                        Edit profile
+                                        @Localizer["Nav Edit Profile"]
                                     </a>
                                 </li>
                                 <li><hr class="dropdown-divider" /></li>
@@ -49,7 +82,7 @@
                                             <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
                                             <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
                                         </svg>
-                                        Logout
+                                        @Localizer["Nav Logout"]
                                     </button>
                                 </li>
                             </ul>
@@ -57,7 +90,7 @@
                     </Authorized>
                     <NotAuthorized>
                         <li class="nav-item">
-                            <a class="nav-link btn btn-outline-primary btn-sm px-3" href="authentication/login">Login</a>
+                            <a class="nav-link btn btn-outline-primary btn-sm px-3" href="authentication/login">@Localizer["Nav Login"]</a>
                         </li>
                     </NotAuthorized>
                 </AuthorizeView>
@@ -72,19 +105,31 @@
 
 <footer class="bg-body-tertiary border-top border-body py-4 mt-5">
     <div class="container text-center text-secondary">
-        <small>&copy; 2026 Byakko &mdash; Share files, share moments.</small>
+        <small>&copy; 2026 @Localizer["Brand Name"] &mdash; @Localizer["Nav Tagline"]</small>
         <div class="mt-1">
-            <small><a href="/user-agreement" class="text-secondary">User Agreement</a></small>
+            <small><a href="/user-agreement" class="text-secondary">@Localizer["Nav User Agreement"]</a></small>
         </div>
     </div>
 </footer>
 
 @code {
     private string _profileUrl = string.Empty;
+    private string _currentCulture = "en";
+    private string _currentFlag = "🇬🇧";
 
     protected override void OnInitialized()
     {
         _profileUrl = OidcSettings.Value.GetEditAccountUrl();
+
+        var name = System.Globalization.CultureInfo.CurrentUICulture.Name;
+        _currentCulture = SupportedLanguages.Labels.ContainsKey(name) ? name : SupportedLanguages.DefaultLanguage;
+        _currentFlag = SupportedLanguages.Flags.GetValueOrDefault(_currentCulture, "🇬🇧");
+    }
+
+    private async Task SetCultureAsync(string culture)
+    {
+        await JsRuntime.InvokeVoidAsync("setCulture", culture);
+        Navigation.NavigateTo(Navigation.Uri, forceLoad: true);
     }
 
     private void BeginLogout()

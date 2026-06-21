@@ -1,3 +1,15 @@
+globalThis.getCulture = function () {
+    return localStorage.getItem('byakko-culture') ?? '';
+};
+
+globalThis.setCulture = function (culture) {
+    localStorage.setItem('byakko-culture', culture);
+};
+
+globalThis.getBrowserLanguage = function () {
+    return navigator.language ?? navigator.languages?.[0] ?? '';
+};
+
 globalThis.initTooltips = function () {
     document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
         bootstrap.Tooltip.getOrCreateInstance(el);

@@ -1,6 +1,10 @@
+using System.Globalization;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.JSInterop;
 using MadWorldEU.Byakko;
+using MadWorldEU.Byakko.Localization;
 using MadWorldEU.Byakko.Startups;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -13,4 +17,20 @@ builder.AddByakkoApiHttpClients();
 builder.AddByakkoAuthentication();
 builder.AddByakkoServices();
 
-await builder.Build().RunAsync();
+builder.Services.PostConfigure<RemoteAuthenticationOptions<OidcProviderOptions>>(options =>
+{
+    options.ProviderOptions.AdditionalProviderParameters["ui_locales"] =
+        CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+});
+
+var host = builder.Build();
+
+var jsInterop = host.Services.GetRequiredService<IJSRuntime>();
+var savedCulture = await jsInterop.InvokeAsync<string>("getCulture");
+var browserLanguage = await jsInterop.InvokeAsync<string>("getBrowserLanguage");
+
+var culture = new CultureInfo(CultureResolver.Resolve(savedCulture, browserLanguage));
+CultureInfo.DefaultThreadCurrentCulture = culture;
+CultureInfo.DefaultThreadCurrentUICulture = culture;
+
+await host.RunAsync();
