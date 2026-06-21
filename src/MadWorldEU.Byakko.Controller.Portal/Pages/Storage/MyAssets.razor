@@ -2,8 +2,9 @@
 @attribute [Authorize(Policy = AuthorizationPolicies.User)]
 @inject IAssetService AssetService
 @inject IJSRuntime JsRuntime
+@inject IStringLocalizer<Resources> Localizer
 
-<PageTitle>Byakko – My Files</PageTitle>
+<PageTitle>@Localizer["Brand Name"] – My Files</PageTitle>
 
 <div class="container py-5">
     <h2 class="fw-bold mb-1">My files</h2>

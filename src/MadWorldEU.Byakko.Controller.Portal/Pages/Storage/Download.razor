@@ -1,9 +1,10 @@
 @page "/storage/download/{Id}"
 @inject IAssetService AssetService
 @inject IJSRuntime Js
+@inject IStringLocalizer<Resources> Localizer
 @implements IAsyncDisposable
 
-<PageTitle>Byakko – Download</PageTitle>
+<PageTitle>@Localizer["Brand Name"] – Download</PageTitle>
 
 <div class="container py-5">
     <div class="row justify-content-center">

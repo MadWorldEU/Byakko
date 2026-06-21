@@ -2,8 +2,9 @@
 @attribute [Authorize(Policy = AuthorizationPolicies.User)]
 @inject IAssetService AssetService
 @inject IOptions<AssetSettings> AssetSettings
+@inject IStringLocalizer<Resources> Localizer
 
-<PageTitle>Byakko – Upload a File</PageTitle>
+<PageTitle>@Localizer["Brand Name"] – Upload a File</PageTitle>
 
 <div class="container py-5">
     <div class="row justify-content-center">

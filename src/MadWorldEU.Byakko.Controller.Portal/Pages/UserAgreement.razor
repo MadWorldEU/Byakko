@@ -1,6 +1,7 @@
 @page "/user-agreement"
+@inject IStringLocalizer<Resources> Localizer
 
-<PageTitle>Byakko – User Agreement</PageTitle>
+<PageTitle>@Localizer["Brand Name"] – User Agreement</PageTitle>
 
 <div class="container py-5">
     <div class="row justify-content-center">
@@ -11,7 +12,7 @@
             <section class="mb-5">
                 <h2 class="h4 fw-semibold mb-3">1. Introduction</h2>
                 <p class="text-secondary">
-                    Welcome to Byakko, a file-sharing service that lets you upload and share files quickly and securely.
+                    Welcome to @Localizer["Brand Name"], a file-sharing service that lets you upload and share files quickly and securely.
                     This User Agreement governs your use of the service. By creating an account or uploading files, you agree to the terms described in this document.
                     Please read it carefully — it outlines your rights, your responsibilities, and how we handle your data.
                 </p>
@@ -21,14 +22,14 @@
                 <h2 class="h4 fw-semibold mb-3">2. Acceptance of Terms</h2>
                 <p class="text-secondary">
                     By registering an account or uploading files you confirm that you have read, understood, and agree to be bound by this agreement.
-                    If you do not agree, you must not use the service. You must be at least 18 years old, or have permission from a parent or guardian, to use Byakko.
+                    If you do not agree, you must not use the service. You must be at least 18 years old, or have permission from a parent or guardian, to use @Localizer["Brand Name"].
                 </p>
             </section>
 
             <section class="mb-5">
                 <h2 class="h4 fw-semibold mb-3">3. Use of the Service</h2>
                 <p class="text-secondary">
-                    You may use Byakko to upload and share files for personal, lawful purposes. You are responsible for ensuring that any files you upload are either
+                    You may use @Localizer["Brand Name"] to upload and share files for personal, lawful purposes. You are responsible for ensuring that any files you upload are either
                     your own or that you have the necessary rights to share them. You agree not to misuse the service in any way that could damage, overload, or impair
                     its availability for other users.
                 </p>
@@ -84,7 +85,7 @@
             <section class="mb-5">
                 <h2 class="h4 fw-semibold mb-3">7. Limitation of Liability</h2>
                 <p class="text-secondary">
-                    Byakko is provided on an "as-is" basis without warranties of any kind. We do not guarantee uninterrupted availability of the service or the
+                    @Localizer["Brand Name"] is provided on an "as-is" basis without warranties of any kind. We do not guarantee uninterrupted availability of the service or the
                     permanent retention of uploaded files. We are not liable for any loss of data, loss of files due to expiry or deletion, or any damages arising
                     from the use or inability to use the service. You are solely responsible for any files you upload and share, and for ensuring that recipients
                     use them appropriately.
