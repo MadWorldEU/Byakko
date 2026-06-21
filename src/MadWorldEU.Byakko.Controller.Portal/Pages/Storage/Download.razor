@@ -4,7 +4,7 @@
 @inject IStringLocalizer<Resources> Localizer
 @implements IAsyncDisposable
 
-<PageTitle>@Localizer["Brand Name"] – Download</PageTitle>
+<PageTitle>@Localizer["Brand Name"] – @Localizer["Download Page Title"]</PageTitle>
 
 <div class="container py-5">
     <div class="row justify-content-center">
@@ -14,7 +14,7 @@
             {
                 <div class="d-flex justify-content-center py-5">
                     <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading…</span>
+                        <span class="visually-hidden">@Localizer["Download Loading"]</span>
                     </div>
                 </div>
             }
@@ -37,11 +37,11 @@
                                 <div class="text-secondary small">@_metadata.ContentType</div>
                                 @if (IsExpired)
                                 {
-                                    <div class="text-danger small">Expired on @_metadata.ExpiresAt.ToString("d MMM yyyy", System.Globalization.CultureInfo.InvariantCulture)</div>
+                                    <div class="text-danger small">@Localizer["Download Expired On"] @_metadata.ExpiresAt.ToString("d MMM yyyy", System.Globalization.CultureInfo.InvariantCulture)</div>
                                 }
                                 else
                                 {
-                                    <div class="text-secondary small">Expires on @_metadata.ExpiresAt.ToString("d MMM yyyy", System.Globalization.CultureInfo.InvariantCulture)</div>
+                                    <div class="text-secondary small">@Localizer["Download Expires On"] @_metadata.ExpiresAt.ToString("d MMM yyyy", System.Globalization.CultureInfo.InvariantCulture)</div>
                                 }
                             </div>
                         </div>
@@ -52,23 +52,23 @@
                         @if (IsExpired)
                         {
                             <div class="alert alert-warning mb-0" role="alert">
-                                This file has expired and is no longer available for download.
+                                @Localizer["Download Expired Message"]
                             </div>
                             <button class="btn btn-primary fw-semibold" disabled>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-2 mb-1" viewBox="0 0 16 16">
                                     <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
                                     <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 1-.708.708z"/>
                                 </svg>
-                                Download
+                                @Localizer["Download Button"]
                             </button>
                         }
                         else
                         {
                             <div>
-                                <label class="form-label small text-secondary mb-1">Password (optional)</label>
+                                <label class="form-label small text-secondary mb-1">@Localizer["Download Password Label"]</label>
                                 <input type="password"
                                        class="form-control form-control-sm mb-3"
-                                       placeholder="Leave empty if no password was set"
+                                       placeholder="@Localizer["Download Password Placeholder"]"
                                        @bind="_password"
                                        disabled="@_isDownloading" />
                             </div>
@@ -92,7 +92,7 @@
                                 @if (_isDownloading)
                                 {
                                     <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                    <span>Downloading…</span>
+                                    <span>@Localizer["Download Downloading"]</span>
                                 }
                                 else
                                 {
@@ -100,7 +100,7 @@
                                         <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
                                         <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 1-.708.708z"/>
                                     </svg>
-                                    <span>Download</span>
+                                    <span>@Localizer["Download Button"]</span>
                                 }
                             </button>
                         }

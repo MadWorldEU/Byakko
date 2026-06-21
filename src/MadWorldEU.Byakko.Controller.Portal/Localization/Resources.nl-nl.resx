@@ -80,6 +80,33 @@
     <data name="Upload Button" xml:space="preserve">
         <value>Uploaden</value>
     </data>
+    <data name="Download Page Title" xml:space="preserve">
+        <value>Downloaden</value>
+    </data>
+    <data name="Download Loading" xml:space="preserve">
+        <value>Laden…</value>
+    </data>
+    <data name="Download Expired On" xml:space="preserve">
+        <value>Verlopen op</value>
+    </data>
+    <data name="Download Expires On" xml:space="preserve">
+        <value>Vervalt op</value>
+    </data>
+    <data name="Download Expired Message" xml:space="preserve">
+        <value>Dit bestand is verlopen en kan niet meer worden gedownload.</value>
+    </data>
+    <data name="Download Button" xml:space="preserve">
+        <value>Downloaden</value>
+    </data>
+    <data name="Download Password Label" xml:space="preserve">
+        <value>Wachtwoord (optioneel)</value>
+    </data>
+    <data name="Download Password Placeholder" xml:space="preserve">
+        <value>Leeg laten als er geen wachtwoord is ingesteld</value>
+    </data>
+    <data name="Download Downloading" xml:space="preserve">
+        <value>Downloaden…</value>
+    </data>
     <data name="MyAssets Page Title" xml:space="preserve">
         <value>Mijn Bestanden</value>
     </data>

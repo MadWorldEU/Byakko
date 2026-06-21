@@ -87,6 +87,33 @@
     <data name="Upload Button" xml:space="preserve">
         <value>Upload</value>
     </data>
+    <data name="Download Page Title" xml:space="preserve">
+        <value>Download</value>
+    </data>
+    <data name="Download Loading" xml:space="preserve">
+        <value>Loading…</value>
+    </data>
+    <data name="Download Expired On" xml:space="preserve">
+        <value>Expired on</value>
+    </data>
+    <data name="Download Expires On" xml:space="preserve">
+        <value>Expires on</value>
+    </data>
+    <data name="Download Expired Message" xml:space="preserve">
+        <value>This file has expired and is no longer available for download.</value>
+    </data>
+    <data name="Download Button" xml:space="preserve">
+        <value>Download</value>
+    </data>
+    <data name="Download Password Label" xml:space="preserve">
+        <value>Password (optional)</value>
+    </data>
+    <data name="Download Password Placeholder" xml:space="preserve">
+        <value>Leave empty if no password was set</value>
+    </data>
+    <data name="Download Downloading" xml:space="preserve">
+        <value>Downloading…</value>
+    </data>
     <data name="MyAssets Page Title" xml:space="preserve">
         <value>My Files</value>
     </data>
