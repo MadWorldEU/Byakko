@@ -38,6 +38,48 @@
     <data name="Nav Tagline" xml:space="preserve">
         <value>Deel bestanden, deel momenten.</value>
     </data>
+    <data name="Upload Page Title" xml:space="preserve">
+        <value>Bestand Uploaden</value>
+    </data>
+    <data name="Upload Heading" xml:space="preserve">
+        <value>Bestand uploaden</value>
+    </data>
+    <data name="Upload Subtitle" xml:space="preserve">
+        <value>Kies een bestand en we genereren een deelbare link voor je.</value>
+    </data>
+    <data name="Upload Success" xml:space="preserve">
+        <value>Bestand succesvol geüpload!</value>
+    </data>
+    <data name="Upload Copy Link" xml:space="preserve">
+        <value>Link kopiëren</value>
+    </data>
+    <data name="Upload Copied" xml:space="preserve">
+        <value>Gekopieerd!</value>
+    </data>
+    <data name="Upload Advanced Options" xml:space="preserve">
+        <value>Geavanceerde opties</value>
+    </data>
+    <data name="Upload Password Label" xml:space="preserve">
+        <value>Wachtwoord (optioneel)</value>
+    </data>
+    <data name="Upload Password Placeholder" xml:space="preserve">
+        <value>Leeg laten voor geen wachtwoord</value>
+    </data>
+    <data name="Upload Show Password" xml:space="preserve">
+        <value>Wachtwoord tonen</value>
+    </data>
+    <data name="Upload Hide Password" xml:space="preserve">
+        <value>Wachtwoord verbergen</value>
+    </data>
+    <data name="Upload Generate" xml:space="preserve">
+        <value>Genereren</value>
+    </data>
+    <data name="Upload Uploading" xml:space="preserve">
+        <value>Uploaden…</value>
+    </data>
+    <data name="Upload Button" xml:space="preserve">
+        <value>Uploaden</value>
+    </data>
     <data name="Upload Max File Size" xml:space="preserve">
         <value>Max bestandsgrootte</value>
     </data>

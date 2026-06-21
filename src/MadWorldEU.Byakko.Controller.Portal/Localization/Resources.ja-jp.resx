@@ -38,6 +38,48 @@
     <data name="Nav Tagline" xml:space="preserve">
         <value>ファイルを共有し、瞬間を共有しよう。</value>
     </data>
+    <data name="Upload Page Title" xml:space="preserve">
+        <value>ファイルをアップロード</value>
+    </data>
+    <data name="Upload Heading" xml:space="preserve">
+        <value>ファイルをアップロード</value>
+    </data>
+    <data name="Upload Subtitle" xml:space="preserve">
+        <value>ファイルを選んでください。共有リンクを生成します。</value>
+    </data>
+    <data name="Upload Success" xml:space="preserve">
+        <value>ファイルのアップロードが完了しました！</value>
+    </data>
+    <data name="Upload Copy Link" xml:space="preserve">
+        <value>リンクをコピー</value>
+    </data>
+    <data name="Upload Copied" xml:space="preserve">
+        <value>コピーしました！</value>
+    </data>
+    <data name="Upload Advanced Options" xml:space="preserve">
+        <value>詳細オプション</value>
+    </data>
+    <data name="Upload Password Label" xml:space="preserve">
+        <value>パスワード（任意）</value>
+    </data>
+    <data name="Upload Password Placeholder" xml:space="preserve">
+        <value>パスワードなしの場合は空のままにしてください</value>
+    </data>
+    <data name="Upload Show Password" xml:space="preserve">
+        <value>パスワードを表示</value>
+    </data>
+    <data name="Upload Hide Password" xml:space="preserve">
+        <value>パスワードを非表示</value>
+    </data>
+    <data name="Upload Generate" xml:space="preserve">
+        <value>生成</value>
+    </data>
+    <data name="Upload Uploading" xml:space="preserve">
+        <value>アップロード中…</value>
+    </data>
+    <data name="Upload Button" xml:space="preserve">
+        <value>アップロード</value>
+    </data>
     <data name="Upload Max File Size" xml:space="preserve">
         <value>最大ファイルサイズ</value>
     </data>
