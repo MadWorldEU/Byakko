@@ -87,6 +87,102 @@
     <data name="Upload Button" xml:space="preserve">
         <value>Upload</value>
     </data>
+    <data name="Home Page Title" xml:space="preserve">
+        <value>Share Files with Friends</value>
+    </data>
+    <data name="Home Beta Message" xml:space="preserve">
+        <value>This service is still in beta. New accounts require manual approval by an administrator before you can upload files.</value>
+    </data>
+    <data name="Home Hero Eyebrow" xml:space="preserve">
+        <value>File Sharing, Reimagined</value>
+    </data>
+    <data name="Home Hero Title 1" xml:space="preserve">
+        <value>Share files with</value>
+    </data>
+    <data name="Home Hero Title 2" xml:space="preserve">
+        <value>the people you love</value>
+    </data>
+    <data name="Home Hero Lead" xml:space="preserve">
+        <value>Upload once, share everywhere. Send files to friends and family in seconds — no account required on their end, no hassle, no limits.</value>
+    </data>
+    <data name="Home See How It Works" xml:space="preserve">
+        <value>See how it works</value>
+    </data>
+    <data name="Home Stat Fast" xml:space="preserve">
+        <value>Fast</value>
+    </data>
+    <data name="Home Stat Fast Sub" xml:space="preserve">
+        <value>Instant uploads</value>
+    </data>
+    <data name="Home Stat Secure" xml:space="preserve">
+        <value>Secure</value>
+    </data>
+    <data name="Home Stat Secure Sub" xml:space="preserve">
+        <value>End-to-end safe</value>
+    </data>
+    <data name="Home Stat Simple" xml:space="preserve">
+        <value>Simple</value>
+    </data>
+    <data name="Home Stat Simple Sub" xml:space="preserve">
+        <value>No friction</value>
+    </data>
+    <data name="Home Features Heading" xml:space="preserve">
+        <value>Everything you need to share</value>
+    </data>
+    <data name="Home Features Subtitle" xml:space="preserve">
+        <value>Designed to get files from you to your friends as effortlessly as possible.</value>
+    </data>
+    <data name="Home Feature 1 Title" xml:space="preserve">
+        <value>Lightning-fast uploads</value>
+    </data>
+    <data name="Home Feature 1 Text" xml:space="preserve">
+        <value>Drop in any file and it's uploaded in seconds. Photos, videos, documents — {0} handles them all without breaking a sweat.</value>
+    </data>
+    <data name="Home Feature 2 Title" xml:space="preserve">
+        <value>Share with one link</value>
+    </data>
+    <data name="Home Feature 2 Text" xml:space="preserve">
+        <value>Get a unique link the moment your file is uploaded. Send it over chat, email, or a text — your friends can download instantly.</value>
+    </data>
+    <data name="Home Feature 3 Title" xml:space="preserve">
+        <value>Always accessible</value>
+    </data>
+    <data name="Home Feature 3 Text" xml:space="preserve">
+        <value>Your files live in the cloud, safely stored and ready whenever your friends need them — no app installs, no sign-up barriers.</value>
+    </data>
+    <data name="Home How It Works Heading" xml:space="preserve">
+        <value>How it works</value>
+    </data>
+    <data name="Home How It Works Subtitle" xml:space="preserve">
+        <value>Three steps. That's all it takes.</value>
+    </data>
+    <data name="Home Step 1 Title" xml:space="preserve">
+        <value>Upload your file</value>
+    </data>
+    <data name="Home Step 1 Text" xml:space="preserve">
+        <value>Pick any file from your device and upload it with a single click.</value>
+    </data>
+    <data name="Home Step 2 Title" xml:space="preserve">
+        <value>Get your share link</value>
+    </data>
+    <data name="Home Step 2 Text" xml:space="preserve">
+        <value>{0} instantly generates a unique, shareable link just for you.</value>
+    </data>
+    <data name="Home Step 3 Title" xml:space="preserve">
+        <value>Send it to friends</value>
+    </data>
+    <data name="Home Step 3 Text" xml:space="preserve">
+        <value>Paste the link anywhere — your friends can download straight away.</value>
+    </data>
+    <data name="Home CTA Heading" xml:space="preserve">
+        <value>Ready to start sharing?</value>
+    </data>
+    <data name="Home CTA Text" xml:space="preserve">
+        <value>Join thousands of people who already use {0} to share files with the people who matter most.</value>
+    </data>
+    <data name="Home CTA Button" xml:space="preserve">
+        <value>Upload your first file</value>
+    </data>
     <data name="Download Page Title" xml:space="preserve">
         <value>Download</value>
     </data>

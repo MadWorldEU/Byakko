@@ -80,6 +80,102 @@
     <data name="Upload Button" xml:space="preserve">
         <value>Uploaden</value>
     </data>
+    <data name="Home Page Title" xml:space="preserve">
+        <value>Bestanden Delen met Vrienden</value>
+    </data>
+    <data name="Home Beta Message" xml:space="preserve">
+        <value>Deze dienst is nog in bèta. Nieuwe accounts vereisen handmatige goedkeuring door een beheerder voordat je bestanden kunt uploaden.</value>
+    </data>
+    <data name="Home Hero Eyebrow" xml:space="preserve">
+        <value>Bestanden Delen, Opnieuw Bedacht</value>
+    </data>
+    <data name="Home Hero Title 1" xml:space="preserve">
+        <value>Deel bestanden met</value>
+    </data>
+    <data name="Home Hero Title 2" xml:space="preserve">
+        <value>de mensen die je liefhebt</value>
+    </data>
+    <data name="Home Hero Lead" xml:space="preserve">
+        <value>Eén keer uploaden, overal delen. Stuur bestanden naar vrienden en familie in seconden — geen account vereist aan hun kant, geen gedoe, geen beperkingen.</value>
+    </data>
+    <data name="Home See How It Works" xml:space="preserve">
+        <value>Bekijk hoe het werkt</value>
+    </data>
+    <data name="Home Stat Fast" xml:space="preserve">
+        <value>Snel</value>
+    </data>
+    <data name="Home Stat Fast Sub" xml:space="preserve">
+        <value>Direct uploaden</value>
+    </data>
+    <data name="Home Stat Secure" xml:space="preserve">
+        <value>Veilig</value>
+    </data>
+    <data name="Home Stat Secure Sub" xml:space="preserve">
+        <value>End-to-end beveiligd</value>
+    </data>
+    <data name="Home Stat Simple" xml:space="preserve">
+        <value>Eenvoudig</value>
+    </data>
+    <data name="Home Stat Simple Sub" xml:space="preserve">
+        <value>Geen gedoe</value>
+    </data>
+    <data name="Home Features Heading" xml:space="preserve">
+        <value>Alles wat je nodig hebt om te delen</value>
+    </data>
+    <data name="Home Features Subtitle" xml:space="preserve">
+        <value>Ontworpen om bestanden zo moeiteloos mogelijk van jou naar je vrienden te brengen.</value>
+    </data>
+    <data name="Home Feature 1 Title" xml:space="preserve">
+        <value>Bliksemsnelle uploads</value>
+    </data>
+    <data name="Home Feature 1 Text" xml:space="preserve">
+        <value>Gooi elk bestand erin en het is in seconden geüpload. Foto's, video's, documenten — {0} verwerkt ze allemaal moeiteloos.</value>
+    </data>
+    <data name="Home Feature 2 Title" xml:space="preserve">
+        <value>Delen met één link</value>
+    </data>
+    <data name="Home Feature 2 Text" xml:space="preserve">
+        <value>Ontvang een unieke link zodra je bestand is geüpload. Stuur het via chat, e-mail of een berichtje — je vrienden kunnen meteen downloaden.</value>
+    </data>
+    <data name="Home Feature 3 Title" xml:space="preserve">
+        <value>Altijd bereikbaar</value>
+    </data>
+    <data name="Home Feature 3 Text" xml:space="preserve">
+        <value>Je bestanden leven in de cloud, veilig opgeslagen en beschikbaar wanneer je vrienden ze nodig hebben — geen app-installaties, geen aanmeldingsdrempels.</value>
+    </data>
+    <data name="Home How It Works Heading" xml:space="preserve">
+        <value>Hoe het werkt</value>
+    </data>
+    <data name="Home How It Works Subtitle" xml:space="preserve">
+        <value>Drie stappen. Meer niet.</value>
+    </data>
+    <data name="Home Step 1 Title" xml:space="preserve">
+        <value>Upload je bestand</value>
+    </data>
+    <data name="Home Step 1 Text" xml:space="preserve">
+        <value>Kies een bestand van je apparaat en upload het met één klik.</value>
+    </data>
+    <data name="Home Step 2 Title" xml:space="preserve">
+        <value>Ontvang je deellink</value>
+    </data>
+    <data name="Home Step 2 Text" xml:space="preserve">
+        <value>{0} genereert direct een unieke, deelbare link voor jou.</value>
+    </data>
+    <data name="Home Step 3 Title" xml:space="preserve">
+        <value>Stuur het naar vrienden</value>
+    </data>
+    <data name="Home Step 3 Text" xml:space="preserve">
+        <value>Plak de link overal — je vrienden kunnen meteen downloaden.</value>
+    </data>
+    <data name="Home CTA Heading" xml:space="preserve">
+        <value>Klaar om te beginnen met delen?</value>
+    </data>
+    <data name="Home CTA Text" xml:space="preserve">
+        <value>Sluit je aan bij duizenden mensen die {0} al gebruiken om bestanden te delen met de mensen die het meest belangrijk zijn.</value>
+    </data>
+    <data name="Home CTA Button" xml:space="preserve">
+        <value>Upload je eerste bestand</value>
+    </data>
     <data name="Download Page Title" xml:space="preserve">
         <value>Downloaden</value>
     </data>

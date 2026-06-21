@@ -80,6 +80,102 @@
     <data name="Upload Button" xml:space="preserve">
         <value>アップロード</value>
     </data>
+    <data name="Home Page Title" xml:space="preserve">
+        <value>友達とファイルを共有</value>
+    </data>
+    <data name="Home Beta Message" xml:space="preserve">
+        <value>このサービスはまだベータ版です。新しいアカウントはファイルをアップロードする前に管理者の承認が必要です。</value>
+    </data>
+    <data name="Home Hero Eyebrow" xml:space="preserve">
+        <value>ファイル共有、再定義</value>
+    </data>
+    <data name="Home Hero Title 1" xml:space="preserve">
+        <value>大切な人と</value>
+    </data>
+    <data name="Home Hero Title 2" xml:space="preserve">
+        <value>ファイルを共有しよう</value>
+    </data>
+    <data name="Home Hero Lead" xml:space="preserve">
+        <value>一度アップロードして、どこでも共有。友人や家族にファイルを数秒で送信 — 相手のアカウント不要、手間なし、制限なし。</value>
+    </data>
+    <data name="Home See How It Works" xml:space="preserve">
+        <value>使い方を見る</value>
+    </data>
+    <data name="Home Stat Fast" xml:space="preserve">
+        <value>高速</value>
+    </data>
+    <data name="Home Stat Fast Sub" xml:space="preserve">
+        <value>即時アップロード</value>
+    </data>
+    <data name="Home Stat Secure" xml:space="preserve">
+        <value>安全</value>
+    </data>
+    <data name="Home Stat Secure Sub" xml:space="preserve">
+        <value>エンドツーエンド保護</value>
+    </data>
+    <data name="Home Stat Simple" xml:space="preserve">
+        <value>シンプル</value>
+    </data>
+    <data name="Home Stat Simple Sub" xml:space="preserve">
+        <value>手間なし</value>
+    </data>
+    <data name="Home Features Heading" xml:space="preserve">
+        <value>共有に必要なすべて</value>
+    </data>
+    <data name="Home Features Subtitle" xml:space="preserve">
+        <value>できるだけ手軽にファイルを友達に届けるために設計されています。</value>
+    </data>
+    <data name="Home Feature 1 Title" xml:space="preserve">
+        <value>超高速アップロード</value>
+    </data>
+    <data name="Home Feature 1 Text" xml:space="preserve">
+        <value>任意のファイルを入れると数秒でアップロード。写真、動画、ドキュメント — {0}はすべてを難なく処理します。</value>
+    </data>
+    <data name="Home Feature 2 Title" xml:space="preserve">
+        <value>リンク一つで共有</value>
+    </data>
+    <data name="Home Feature 2 Text" xml:space="preserve">
+        <value>ファイルがアップロードされた瞬間にユニークなリンクを取得。チャット、メール、メッセージで送れば — 友達はすぐにダウンロードできます。</value>
+    </data>
+    <data name="Home Feature 3 Title" xml:space="preserve">
+        <value>いつでもアクセス可能</value>
+    </data>
+    <data name="Home Feature 3 Text" xml:space="preserve">
+        <value>ファイルはクラウドに安全に保存され、友達が必要なときにいつでも利用可能 — アプリのインストールも登録も不要。</value>
+    </data>
+    <data name="Home How It Works Heading" xml:space="preserve">
+        <value>使い方</value>
+    </data>
+    <data name="Home How It Works Subtitle" xml:space="preserve">
+        <value>たった3つのステップ。</value>
+    </data>
+    <data name="Home Step 1 Title" xml:space="preserve">
+        <value>ファイルをアップロード</value>
+    </data>
+    <data name="Home Step 1 Text" xml:space="preserve">
+        <value>デバイスから任意のファイルを選んで、ワンクリックでアップロード。</value>
+    </data>
+    <data name="Home Step 2 Title" xml:space="preserve">
+        <value>共有リンクを取得</value>
+    </data>
+    <data name="Home Step 2 Text" xml:space="preserve">
+        <value>{0}が即座にあなただけのユニークな共有リンクを生成します。</value>
+    </data>
+    <data name="Home Step 3 Title" xml:space="preserve">
+        <value>友達に送る</value>
+    </data>
+    <data name="Home Step 3 Text" xml:space="preserve">
+        <value>リンクをどこにでも貼り付けるだけ — 友達はすぐにダウンロードできます。</value>
+    </data>
+    <data name="Home CTA Heading" xml:space="preserve">
+        <value>共有を始める準備はできていますか？</value>
+    </data>
+    <data name="Home CTA Text" xml:space="preserve">
+        <value>すでに{0}を使って大切な人とファイルを共有している何千人もの仲間に加わりましょう。</value>
+    </data>
+    <data name="Home CTA Button" xml:space="preserve">
+        <value>最初のファイルをアップロード</value>
+    </data>
     <data name="Download Page Title" xml:space="preserve">
         <value>ダウンロード</value>
     </data>
