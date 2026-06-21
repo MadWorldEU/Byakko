@@ -112,6 +112,18 @@ To enable the Required Action in a fresh production realm:
 2. Find **Terms and Conditions** and toggle **Enabled** on.
 3. Toggle **Default Action** on so existing users are prompted on next login.
 
+#### Enable localization in production
+
+The Helm chart injects translated `termsText` for English, Dutch, and Japanese, but Keycloak will only use them once localization is enabled at the realm level:
+
+1. Go to **Realm Settings** → **Localization** tab.
+2. Toggle **Internationalization** on.
+3. Add `en`, `nl`, and `ja` under **Supported Locales**.
+4. Set **Default Locale** to `en`.
+5. Click **Save**.
+
+> 💡 In the developer environment this is configured automatically via `MadWorld-realm.json`. In production it must be done manually after first deploy.
+
 ### Configure Email
 
 Keycloak uses an SMTP server to send verification, password reset, and other system emails. To configure it:
