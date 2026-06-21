@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="Brand Name" xml:space="preserve">
+        <value>Byakko</value>
+    </data>
+    <data name="NotFound Page Title" xml:space="preserve">
+        <value>Not Found</value>
+    </data>
+    <data name="NotFound Heading" xml:space="preserve">
+        <value>Not Found</value>
+    </data>
+    <data name="NotFound Message" xml:space="preserve">
+        <value>Sorry, the content you are looking for does not exist.</value>
+    </data>
+    <data name="NotFound Go Home" xml:space="preserve">
+        <value>Go to Home</value>
+    </data>
+</root>
