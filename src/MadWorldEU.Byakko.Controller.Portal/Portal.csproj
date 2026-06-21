@@ -20,6 +20,10 @@
     </ItemGroup>
 
     <ItemGroup>
+        <InternalsVisibleTo Include="Portal.Componenttests" />
+    </ItemGroup>
+
+    <ItemGroup>
       <EmbeddedResource Update="Localization\Resources.resx">
         <Generator>ResXFileCodeGenerator</Generator>
         <LastGenOutput>Resources.Designer.cs</LastGenOutput>
