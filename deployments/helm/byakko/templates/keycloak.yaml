@@ -8,8 +8,15 @@ metadata:
 data:
     theme.properties: |
         parent=keycloak.v2
+        internationalizationEnabled=true
+        supportedLocales=en,nl,ja
+        defaultLocale=en
     messages_en.properties: |
         termsText=<p>Please read our <a href="https://{{ .Values.ingress.domain }}/user-agreement" target="_blank" rel="noopener noreferrer">User Agreement</a> before continuing.</p>
+    messages_nl.properties: |
+        termsText=<p>Lees onze <a href="https://{{ .Values.ingress.domain }}/user-agreement" target="_blank" rel="noopener noreferrer">Gebruikersovereenkomst</a> voor je doorgaat.</p>
+    messages_ja.properties: |
+        termsText=<p>続行する前に<a href="https://{{ .Values.ingress.domain }}/user-agreement" target="_blank" rel="noopener noreferrer">利用規約</a>をお読みください。</p>
 ---
 apiVersion: v1
 kind: Secret
@@ -146,6 +153,12 @@ spec:
                       - name: keycloak-theme-byakko
                         mountPath: /opt/keycloak/themes/byakko/login/messages/messages_en.properties
                         subPath: messages_en.properties
+                      - name: keycloak-theme-byakko
+                        mountPath: /opt/keycloak/themes/byakko/login/messages/messages_nl.properties
+                        subPath: messages_nl.properties
+                      - name: keycloak-theme-byakko
+                        mountPath: /opt/keycloak/themes/byakko/login/messages/messages_ja.properties
+                        subPath: messages_ja.properties
                   resources:
                       requests:
                           cpu: {{ .Values.keycloak.resources.requests.cpu }}

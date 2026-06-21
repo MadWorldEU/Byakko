@@ -1,5 +1,6 @@
 using System.Globalization;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.JSInterop;
 using MadWorldEU.Byakko;
@@ -15,6 +16,12 @@ builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.H
 builder.AddByakkoApiHttpClients();
 builder.AddByakkoAuthentication();
 builder.AddByakkoServices();
+
+builder.Services.PostConfigure<RemoteAuthenticationOptions<OidcProviderOptions>>(options =>
+{
+    options.ProviderOptions.AdditionalProviderParameters["ui_locales"] =
+        CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+});
 
 var host = builder.Build();
 
