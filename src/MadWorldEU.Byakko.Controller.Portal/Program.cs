@@ -21,17 +21,10 @@ var host = builder.Build();
 
 var jsInterop = host.Services.GetRequiredService<IJSRuntime>();
 var savedCulture = await jsInterop.InvokeAsync<string>("getCulture");
+var browserLanguage = await jsInterop.InvokeAsync<string>("getBrowserLanguage");
 
-if (!string.IsNullOrEmpty(savedCulture))
-{
-    if (!SupportedLanguages.Labels.Keys.Contains(savedCulture))
-    {
-        savedCulture = SupportedLanguages.DefaultLanguage;
-    };
-    
-    var cultureInfo = new CultureInfo(savedCulture);
-    CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
-    CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
-}
+var culture = new CultureInfo(CultureResolver.Resolve(savedCulture, browserLanguage));
+CultureInfo.DefaultThreadCurrentCulture = culture;
+CultureInfo.DefaultThreadCurrentUICulture = culture;
 
 await host.RunAsync();
