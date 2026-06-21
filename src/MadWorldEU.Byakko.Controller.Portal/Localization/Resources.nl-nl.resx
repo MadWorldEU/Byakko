@@ -80,6 +80,60 @@
     <data name="Upload Button" xml:space="preserve">
         <value>Uploaden</value>
     </data>
+    <data name="MyAssets Page Title" xml:space="preserve">
+        <value>Mijn Bestanden</value>
+    </data>
+    <data name="MyAssets Heading" xml:space="preserve">
+        <value>Mijn bestanden</value>
+    </data>
+    <data name="MyAssets Subtitle" xml:space="preserve">
+        <value>Een overzicht van alle bestanden die je hebt geüpload.</value>
+    </data>
+    <data name="MyAssets Loading" xml:space="preserve">
+        <value>Laden…</value>
+    </data>
+    <data name="MyAssets Empty" xml:space="preserve">
+        <value>Je hebt nog geen bestanden geüpload.</value>
+    </data>
+    <data name="MyAssets Empty Upload Link" xml:space="preserve">
+        <value>Upload je eerste bestand.</value>
+    </data>
+    <data name="MyAssets Badge Deleted" xml:space="preserve">
+        <value>Verwijderd</value>
+    </data>
+    <data name="MyAssets Badge Expired" xml:space="preserve">
+        <value>Verlopen</value>
+    </data>
+    <data name="MyAssets Badge Active" xml:space="preserve">
+        <value>Actief</value>
+    </data>
+    <data name="MyAssets Expires" xml:space="preserve">
+        <value>Vervalt</value>
+    </data>
+    <data name="MyAssets Download" xml:space="preserve">
+        <value>Downloaden</value>
+    </data>
+    <data name="MyAssets Delete" xml:space="preserve">
+        <value>Verwijderen</value>
+    </data>
+    <data name="MyAssets Delete Confirm" xml:space="preserve">
+        <value>Inhoud verwijderen?</value>
+    </data>
+    <data name="MyAssets Confirm Yes" xml:space="preserve">
+        <value>Ja</value>
+    </data>
+    <data name="MyAssets Confirm No" xml:space="preserve">
+        <value>Nee</value>
+    </data>
+    <data name="MyAssets Previous" xml:space="preserve">
+        <value>Vorige</value>
+    </data>
+    <data name="MyAssets Page" xml:space="preserve">
+        <value>Pagina {0}</value>
+    </data>
+    <data name="MyAssets Next" xml:space="preserve">
+        <value>Volgende</value>
+    </data>
     <data name="Upload Max File Size" xml:space="preserve">
         <value>Max bestandsgrootte</value>
     </data>
