@@ -24,7 +24,37 @@
     <data name="NotFound Message" xml:space="preserve">
         <value>Sorry, the content you are looking for does not exist.</value>
     </data>
-    <data name="NotFound Go Home" xml:space="preserve">
+    <data name="Go To Home" xml:space="preserve">
         <value>Go to Home</value>
+    </data>
+    <data name="TestPage Heading" xml:space="preserve">
+        <value>Test Page</value>
+    </data>
+    <data name="TestPage Ping Title" xml:space="preserve">
+        <value>Ping</value>
+    </data>
+    <data name="TestPage Ping Button" xml:space="preserve">
+        <value>Send Ping</value>
+    </data>
+    <data name="TestPage Auth Title" xml:space="preserve">
+        <value>Is authenticated in api?</value>
+    </data>
+    <data name="TestPage Auth Button" xml:space="preserve">
+        <value>Check if user is authenticated in api</value>
+    </data>
+    <data name="TestPage Login Required" xml:space="preserve">
+        <value>Login required</value>
+    </data>
+    <data name="AccessDenied Page Title" xml:space="preserve">
+        <value>Access Denied</value>
+    </data>
+    <data name="AccessDenied Heading" xml:space="preserve">
+        <value>Access Denied</value>
+    </data>
+    <data name="AccessDenied Message" xml:space="preserve">
+        <value>You do not have the required role to view this page.</value>
+    </data>
+    <data name="AccessDenied Detail" xml:space="preserve">
+        <value>Access to this service is limited and requires an administrator to assign your role manually. If you believe you should have access, please contact an administrator.</value>
     </data>
 </root>

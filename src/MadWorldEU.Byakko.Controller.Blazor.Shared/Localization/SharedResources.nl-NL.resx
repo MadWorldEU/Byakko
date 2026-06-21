@@ -24,7 +24,37 @@
     <data name="NotFound Message" xml:space="preserve">
         <value>Sorry, de inhoud die je zoekt bestaat niet.</value>
     </data>
-    <data name="NotFound Go Home" xml:space="preserve">
+    <data name="Go To Home" xml:space="preserve">
         <value>Naar Home</value>
+    </data>
+    <data name="TestPage Heading" xml:space="preserve">
+        <value>Testpagina</value>
+    </data>
+    <data name="TestPage Ping Title" xml:space="preserve">
+        <value>Ping</value>
+    </data>
+    <data name="TestPage Ping Button" xml:space="preserve">
+        <value>Ping Versturen</value>
+    </data>
+    <data name="TestPage Auth Title" xml:space="preserve">
+        <value>Geverifieerd in de api?</value>
+    </data>
+    <data name="TestPage Auth Button" xml:space="preserve">
+        <value>Controleer of gebruiker geverifieerd is in de api</value>
+    </data>
+    <data name="TestPage Login Required" xml:space="preserve">
+        <value>Inloggen vereist</value>
+    </data>
+    <data name="AccessDenied Page Title" xml:space="preserve">
+        <value>Toegang Geweigerd</value>
+    </data>
+    <data name="AccessDenied Heading" xml:space="preserve">
+        <value>Toegang Geweigerd</value>
+    </data>
+    <data name="AccessDenied Message" xml:space="preserve">
+        <value>Je hebt niet de vereiste rol om deze pagina te bekijken.</value>
+    </data>
+    <data name="AccessDenied Detail" xml:space="preserve">
+        <value>Toegang tot deze dienst is beperkt en vereist dat een beheerder je rol handmatig toewijst. Als je denkt dat je toegang zou moeten hebben, neem dan contact op met een beheerder.</value>
     </data>
 </root>
