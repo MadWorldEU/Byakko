@@ -171,7 +171,7 @@
         <value>共有を始める準備はできていますか？</value>
     </data>
     <data name="Home CTA Text" xml:space="preserve">
-        <value>すでに{0}を使って大切な人とファイルを共有している何千人もの仲間に加わりましょう。</value>
+        <value>{0}を使って、大切な人とファイルを共有しましょう。</value>
     </data>
     <data name="Home CTA Button" xml:space="preserve">
         <value>最初のファイルをアップロード</value>

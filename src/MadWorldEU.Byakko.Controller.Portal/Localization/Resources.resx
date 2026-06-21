@@ -178,7 +178,7 @@
         <value>Ready to start sharing?</value>
     </data>
     <data name="Home CTA Text" xml:space="preserve">
-        <value>Join thousands of people who already use {0} to share files with the people who matter most.</value>
+        <value>Start using {0} to share files with the people who matter most.</value>
     </data>
     <data name="Home CTA Button" xml:space="preserve">
         <value>Upload your first file</value>
