@@ -80,6 +80,111 @@
     <data name="Upload Button" xml:space="preserve">
         <value>Uploaden</value>
     </data>
+    <data name="UA Page Title" xml:space="preserve">
+        <value>Gebruikersovereenkomst</value>
+    </data>
+    <data name="UA Heading" xml:space="preserve">
+        <value>Gebruikersovereenkomst</value>
+    </data>
+    <data name="UA Last Updated" xml:space="preserve">
+        <value>Laatste update:</value>
+    </data>
+    <data name="UA Last Updated Date" xml:space="preserve">
+        <value>16 juni 2026</value>
+    </data>
+    <data name="UA S1 Title" xml:space="preserve">
+        <value>1. Introductie</value>
+    </data>
+    <data name="UA S1 Text" xml:space="preserve">
+        <value>Welkom bij {0}, een bestandsdeeldienst waarmee je bestanden snel en veilig kunt uploaden en delen. Deze Gebruikersovereenkomst regelt je gebruik van de dienst. Door een account aan te maken of bestanden te uploaden, ga je akkoord met de voorwaarden in dit document. Lees het zorgvuldig door — het beschrijft je rechten, je verantwoordelijkheden en hoe wij omgaan met je gegevens.</value>
+    </data>
+    <data name="UA S2 Title" xml:space="preserve">
+        <value>2. Acceptatie van de Voorwaarden</value>
+    </data>
+    <data name="UA S2 Text" xml:space="preserve">
+        <value>Door een account te registreren of bestanden te uploaden bevestig je dat je deze overeenkomst hebt gelezen, begrepen en ermee instemt. Als je niet akkoord gaat, mag je de dienst niet gebruiken. Je moet minimaal 18 jaar oud zijn, of toestemming hebben van een ouder of voogd, om {0} te gebruiken.</value>
+    </data>
+    <data name="UA S3 Title" xml:space="preserve">
+        <value>3. Gebruik van de Dienst</value>
+    </data>
+    <data name="UA S3 Text" xml:space="preserve">
+        <value>Je mag {0} gebruiken om bestanden te uploaden en te delen voor persoonlijke, legale doeleinden. Je bent zelf verantwoordelijk voor de bestanden die je uploadt en moet er zeker van zijn dat je de rechten hebt om ze te delen. Je stemt ermee in de dienst niet te misbruiken op een manier die de beschikbaarheid voor andere gebruikers kan schaden, overbelasten of verminderen.</value>
+    </data>
+    <data name="UA S4 Title" xml:space="preserve">
+        <value>4. Verboden Inhoud</value>
+    </data>
+    <data name="UA S4 Intro" xml:space="preserve">
+        <value>Je mag geen inhoud uploaden, delen of verspreiden die in strijd is met de wet of bedoeld is om personen of groepen te schaden. Dit omvat, maar is niet beperkt tot:</value>
+    </data>
+    <data name="UA S4 Item 1" xml:space="preserve">
+        <value>Inhoud die illegaal is onder lokaal, nationaal of internationaal recht.</value>
+    </data>
+    <data name="UA S4 Item 2" xml:space="preserve">
+        <value>Materiaal dat personen of groepen lastigvalt, bedreigt of aanzet tot geweld.</value>
+    </data>
+    <data name="UA S4 Item 3" xml:space="preserve">
+        <value>Inhoud die inbreuk maakt op de intellectuele eigendomsrechten van anderen.</value>
+    </data>
+    <data name="UA S4 Item 4" xml:space="preserve">
+        <value>Malware, virussen of software die systemen kan beschadigen of verstoren.</value>
+    </data>
+    <data name="UA S4 Item 5" xml:space="preserve">
+        <value>Inhoud die minderjarigen op enigerlei wijze uitbuit of in gevaar brengt.</value>
+    </data>
+    <data name="UA S4 Outro" xml:space="preserve">
+        <value>Wij behouden ons het recht voor om inhoud die in strijd is met deze beperkingen te verwijderen en accounts die verantwoordelijk zijn voor dergelijke uploads te schorsen of te beëindigen.</value>
+    </data>
+    <data name="UA S5 Title" xml:space="preserve">
+        <value>5. Bestandsbewaring en Vervaldatum</value>
+    </data>
+    <data name="UA S5 Text 1" xml:space="preserve">
+        <value>Geüploade bestanden worden bewaard voor &lt;strong&gt;30 dagen&lt;/strong&gt; vanaf de uploaddatum. Na deze periode wordt de bestandsinhoud definitief verwijderd en kan niet meer worden gedownload. De bijbehorende metadata (zoals bestandsnaam en uploaddatum) wordt bewaard tot &lt;strong&gt;365 dagen&lt;/strong&gt; voordat ook dit definitief wordt verwijderd.</value>
+    </data>
+    <data name="UA S5 Text 2" xml:space="preserve">
+        <value>Wij garanderen niet de beschikbaarheid van bestanden na de bewaarperiode van 30 dagen. Zorg ervoor dat je bestanden downloadt of deelt voordat ze verlopen.</value>
+    </data>
+    <data name="UA S6 Title" xml:space="preserve">
+        <value>6. Privacy</value>
+    </data>
+    <data name="UA S6 Intro" xml:space="preserve">
+        <value>Je privacy is belangrijk voor ons. De inhoud van je bestanden en alle bijbehorende metadata worden strikt privé gehouden en nooit gedeeld met derden.</value>
+    </data>
+    <data name="UA S6 Item 1" xml:space="preserve">
+        <value>Wij verkopen, delen of dragen je gegevens niet over aan advertentiebedrijven.</value>
+    </data>
+    <data name="UA S6 Item 2" xml:space="preserve">
+        <value>Je bestanden en metadata worden nooit gebruikt om AI-modellen te trainen of gedeeld met AI-bedrijven.</value>
+    </data>
+    <data name="UA S6 Item 3" xml:space="preserve">
+        <value>Bestandsinhoud is alleen toegankelijk via de unieke deellink die jij kiest te verspreiden.</value>
+    </data>
+    <data name="UA S6 Item 4" xml:space="preserve">
+        <value>Voor beveiligingsdoeleinden registreren wij het IP-adres dat is gekoppeld aan bestandsuploads en andere accountacties. Deze gegevens worden veilig opgeslagen en zijn onderworpen aan dezelfde privacybescherming als hierboven beschreven.</value>
+    </data>
+    <data name="UA S6 Outro" xml:space="preserve">
+        <value>De enige uitzondering hierop is wanneer wij wettelijk verplicht zijn anders te handelen. Als autoriteiten een geldig gerechtelijk bevel overleggen, zullen wij hieraan voldoen en de gevraagde informatie verstrekken voor zover wettelijk vereist.</value>
+    </data>
+    <data name="UA S7 Title" xml:space="preserve">
+        <value>7. Beperking van Aansprakelijkheid</value>
+    </data>
+    <data name="UA S7 Text" xml:space="preserve">
+        <value>{0} wordt geleverd op een "as-is"-basis zonder enige garantie. Wij garanderen niet de ononderbroken beschikbaarheid van de dienst of de permanente bewaring van geüploade bestanden. Wij zijn niet aansprakelijk voor verlies van gegevens, verlies van bestanden door vervaldatum of verwijdering, of enige schade die voortvloeit uit het gebruik of het niet kunnen gebruiken van de dienst. Jij bent als enige verantwoordelijk voor de bestanden die je uploadt en deelt, en voor het waarborgen dat ontvangers ze op de juiste wijze gebruiken.</value>
+    </data>
+    <data name="UA S8 Title" xml:space="preserve">
+        <value>8. Wijzigingen in deze Overeenkomst</value>
+    </data>
+    <data name="UA S8 Text 1" xml:space="preserve">
+        <value>Wij kunnen deze overeenkomst van tijd tot tijd bijwerken. Wijzigingen worden van kracht vanaf de datum van publicatie en gelden alleen voor bestanden die na die datum worden geüpload — bestanden die al geüpload zijn, blijven onderworpen aan de voorwaarden die van kracht waren op het moment van upload.</value>
+    </data>
+    <data name="UA S8 Text 2" xml:space="preserve">
+        <value>Wanneer deze overeenkomst wijzigt, ontvang je een e-mailmelding op het adres dat is gekoppeld aan je account. Wij raden je aan alle updates zorgvuldig door te lezen. Voortgezet gebruik van de dienst na kennisgeving geldt als acceptatie van de herziene voorwaarden.</value>
+    </data>
+    <data name="UA S9 Title" xml:space="preserve">
+        <value>9. Contact</value>
+    </data>
+    <data name="UA S9 Text Before" xml:space="preserve">
+        <value>Als je vragen of zorgen hebt over deze overeenkomst, neem dan contact met ons op via:</value>
+    </data>
     <data name="Home Page Title" xml:space="preserve">
         <value>Bestanden Delen met Vrienden</value>
     </data>

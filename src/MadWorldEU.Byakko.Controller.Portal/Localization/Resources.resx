@@ -87,6 +87,111 @@
     <data name="Upload Button" xml:space="preserve">
         <value>Upload</value>
     </data>
+    <data name="UA Page Title" xml:space="preserve">
+        <value>User Agreement</value>
+    </data>
+    <data name="UA Heading" xml:space="preserve">
+        <value>User Agreement</value>
+    </data>
+    <data name="UA Last Updated" xml:space="preserve">
+        <value>Last updated:</value>
+    </data>
+    <data name="UA Last Updated Date" xml:space="preserve">
+        <value>June 16, 2026</value>
+    </data>
+    <data name="UA S1 Title" xml:space="preserve">
+        <value>1. Introduction</value>
+    </data>
+    <data name="UA S1 Text" xml:space="preserve">
+        <value>Welcome to {0}, a file-sharing service that lets you upload and share files quickly and securely. This User Agreement governs your use of the service. By creating an account or uploading files, you agree to the terms described in this document. Please read it carefully — it outlines your rights, your responsibilities, and how we handle your data.</value>
+    </data>
+    <data name="UA S2 Title" xml:space="preserve">
+        <value>2. Acceptance of Terms</value>
+    </data>
+    <data name="UA S2 Text" xml:space="preserve">
+        <value>By registering an account or uploading files you confirm that you have read, understood, and agree to be bound by this agreement. If you do not agree, you must not use the service. You must be at least 18 years old, or have permission from a parent or guardian, to use {0}.</value>
+    </data>
+    <data name="UA S3 Title" xml:space="preserve">
+        <value>3. Use of the Service</value>
+    </data>
+    <data name="UA S3 Text" xml:space="preserve">
+        <value>You may use {0} to upload and share files for personal, lawful purposes. You are responsible for ensuring that any files you upload are either your own or that you have the necessary rights to share them. You agree not to misuse the service in any way that could damage, overload, or impair its availability for other users.</value>
+    </data>
+    <data name="UA S4 Title" xml:space="preserve">
+        <value>4. Prohibited Content</value>
+    </data>
+    <data name="UA S4 Intro" xml:space="preserve">
+        <value>You may not upload, share, or distribute any content that violates applicable law or is intended to harm any individual or group. This includes, but is not limited to:</value>
+    </data>
+    <data name="UA S4 Item 1" xml:space="preserve">
+        <value>Content that is illegal under local, national, or international law.</value>
+    </data>
+    <data name="UA S4 Item 2" xml:space="preserve">
+        <value>Material that harasses, threatens, or incites violence against any person or group.</value>
+    </data>
+    <data name="UA S4 Item 3" xml:space="preserve">
+        <value>Content that infringes on the intellectual property rights of others.</value>
+    </data>
+    <data name="UA S4 Item 4" xml:space="preserve">
+        <value>Malware, viruses, or any software designed to damage or disrupt systems.</value>
+    </data>
+    <data name="UA S4 Item 5" xml:space="preserve">
+        <value>Content that exploits or endangers minors in any way.</value>
+    </data>
+    <data name="UA S4 Outro" xml:space="preserve">
+        <value>We reserve the right to remove any content that violates these restrictions and to suspend or terminate accounts responsible for such uploads.</value>
+    </data>
+    <data name="UA S5 Title" xml:space="preserve">
+        <value>5. File Retention and Expiry</value>
+    </data>
+    <data name="UA S5 Text 1" xml:space="preserve">
+        <value>Uploaded files are retained for &lt;strong&gt;30 days&lt;/strong&gt; from the date of upload. After this period, the file content is permanently deleted and can no longer be downloaded. The associated metadata (such as file name and upload date) is kept for up to &lt;strong&gt;365 days&lt;/strong&gt; before it is also permanently removed.</value>
+    </data>
+    <data name="UA S5 Text 2" xml:space="preserve">
+        <value>We do not guarantee the availability of files beyond the 30-day retention window. Make sure to download or share your files before they expire.</value>
+    </data>
+    <data name="UA S6 Title" xml:space="preserve">
+        <value>6. Privacy</value>
+    </data>
+    <data name="UA S6 Intro" xml:space="preserve">
+        <value>Your privacy matters to us. The content of your files and all associated metadata are kept strictly private and are never shared with third parties.</value>
+    </data>
+    <data name="UA S6 Item 1" xml:space="preserve">
+        <value>We do not sell, share, or transfer your data to advertising companies.</value>
+    </data>
+    <data name="UA S6 Item 2" xml:space="preserve">
+        <value>Your files and metadata are never used to train AI models or shared with AI companies.</value>
+    </data>
+    <data name="UA S6 Item 3" xml:space="preserve">
+        <value>File content is only accessible via the unique share link you choose to distribute.</value>
+    </data>
+    <data name="UA S6 Item 4" xml:space="preserve">
+        <value>For security purposes, we log the IP address associated with file uploads and other account actions. This data is stored securely and is subject to the same privacy protections described above.</value>
+    </data>
+    <data name="UA S6 Outro" xml:space="preserve">
+        <value>The only exception to the above is when we are legally required to act otherwise. If authorities present a valid court order, we will comply and provide the requested information to the extent required by law.</value>
+    </data>
+    <data name="UA S7 Title" xml:space="preserve">
+        <value>7. Limitation of Liability</value>
+    </data>
+    <data name="UA S7 Text" xml:space="preserve">
+        <value>{0} is provided on an "as-is" basis without warranties of any kind. We do not guarantee uninterrupted availability of the service or the permanent retention of uploaded files. We are not liable for any loss of data, loss of files due to expiry or deletion, or any damages arising from the use or inability to use the service. You are solely responsible for any files you upload and share, and for ensuring that recipients use them appropriately.</value>
+    </data>
+    <data name="UA S8 Title" xml:space="preserve">
+        <value>8. Changes to This Agreement</value>
+    </data>
+    <data name="UA S8 Text 1" xml:space="preserve">
+        <value>We may update this agreement from time to time. Any changes take effect from the date they are published and apply only to files uploaded after that date — files already uploaded remain subject to the terms that were in place at the time of upload.</value>
+    </data>
+    <data name="UA S8 Text 2" xml:space="preserve">
+        <value>When this agreement changes, you will be notified by email at the address associated with your account. We encourage you to review any updates carefully. Continued use of the service after notification constitutes acceptance of the revised terms.</value>
+    </data>
+    <data name="UA S9 Title" xml:space="preserve">
+        <value>9. Contact</value>
+    </data>
+    <data name="UA S9 Text Before" xml:space="preserve">
+        <value>If you have any questions or concerns about this agreement, please contact us at:</value>
+    </data>
     <data name="Home Page Title" xml:space="preserve">
         <value>Share Files with Friends</value>
     </data>

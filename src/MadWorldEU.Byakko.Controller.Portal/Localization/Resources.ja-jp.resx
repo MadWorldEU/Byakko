@@ -80,6 +80,111 @@
     <data name="Upload Button" xml:space="preserve">
         <value>アップロード</value>
     </data>
+    <data name="UA Page Title" xml:space="preserve">
+        <value>利用規約</value>
+    </data>
+    <data name="UA Heading" xml:space="preserve">
+        <value>利用規約</value>
+    </data>
+    <data name="UA Last Updated" xml:space="preserve">
+        <value>最終更新：</value>
+    </data>
+    <data name="UA Last Updated Date" xml:space="preserve">
+        <value>2026年6月16日</value>
+    </data>
+    <data name="UA S1 Title" xml:space="preserve">
+        <value>1. はじめに</value>
+    </data>
+    <data name="UA S1 Text" xml:space="preserve">
+        <value>{0}へようこそ。ファイルを素早く安全にアップロードして共有できるサービスです。この利用規約はサービスの利用を規定します。アカウントを作成したりファイルをアップロードしたりすることで、この文書に記載された条件に同意したものとみなされます。権利、責任、データの取り扱い方法について説明していますので、注意深くお読みください。</value>
+    </data>
+    <data name="UA S2 Title" xml:space="preserve">
+        <value>2. 利用規約への同意</value>
+    </data>
+    <data name="UA S2 Text" xml:space="preserve">
+        <value>アカウントを登録またはファイルをアップロードすることで、本規約を読み、理解し、同意したことを確認します。同意しない場合は、サービスを利用してはなりません。{0}を利用するには、18歳以上であるか、保護者の許可が必要です。</value>
+    </data>
+    <data name="UA S3 Title" xml:space="preserve">
+        <value>3. サービスの利用</value>
+    </data>
+    <data name="UA S3 Text" xml:space="preserve">
+        <value>{0}は個人的な合法的目的のためにファイルをアップロードして共有するために利用できます。アップロードするファイルが自分のものであるか、共有する権利を有していることを確認する責任があります。他のユーザーの利用を損なう方法でサービスを悪用しないことに同意します。</value>
+    </data>
+    <data name="UA S4 Title" xml:space="preserve">
+        <value>4. 禁止コンテンツ</value>
+    </data>
+    <data name="UA S4 Intro" xml:space="preserve">
+        <value>適用法に違反する、または個人やグループを傷つけることを意図したコンテンツをアップロード、共有、または配布することはできません。これには以下が含まれますが、これに限りません：</value>
+    </data>
+    <data name="UA S4 Item 1" xml:space="preserve">
+        <value>地方、国内、または国際法の下で違法なコンテンツ。</value>
+    </data>
+    <data name="UA S4 Item 2" xml:space="preserve">
+        <value>個人またはグループを嫌がらせ、脅迫、または暴力に煽るような素材。</value>
+    </data>
+    <data name="UA S4 Item 3" xml:space="preserve">
+        <value>他者の知的財産権を侵害するコンテンツ。</value>
+    </data>
+    <data name="UA S4 Item 4" xml:space="preserve">
+        <value>システムを損傷または妨害するように設計されたマルウェア、ウイルス、またはソフトウェア。</value>
+    </data>
+    <data name="UA S4 Item 5" xml:space="preserve">
+        <value>いかなる方法でも未成年者を搾取または危険にさらすコンテンツ。</value>
+    </data>
+    <data name="UA S4 Outro" xml:space="preserve">
+        <value>これらの制限に違反するコンテンツを削除し、そのようなアップロードを行ったアカウントを停止または終了する権利を留保します。</value>
+    </data>
+    <data name="UA S5 Title" xml:space="preserve">
+        <value>5. ファイルの保持と有効期限</value>
+    </data>
+    <data name="UA S5 Text 1" xml:space="preserve">
+        <value>アップロードされたファイルはアップロード日から&lt;strong&gt;30日間&lt;/strong&gt;保持されます。この期間が過ぎると、ファイルの内容は完全に削除され、ダウンロードできなくなります。関連するメタデータ（ファイル名やアップロード日など）は最大&lt;strong&gt;365日間&lt;/strong&gt;保持された後、完全に削除されます。</value>
+    </data>
+    <data name="UA S5 Text 2" xml:space="preserve">
+        <value>30日間の保持期間を超えたファイルの可用性は保証しません。期限切れになる前にファイルをダウンロードまたは共有してください。</value>
+    </data>
+    <data name="UA S6 Title" xml:space="preserve">
+        <value>6. プライバシー</value>
+    </data>
+    <data name="UA S6 Intro" xml:space="preserve">
+        <value>プライバシーを大切にしています。ファイルの内容および関連するすべてのメタデータは厳密にプライベートに保たれ、第三者と共有されることはありません。</value>
+    </data>
+    <data name="UA S6 Item 1" xml:space="preserve">
+        <value>あなたのデータを広告会社に販売、共有、または転送することはありません。</value>
+    </data>
+    <data name="UA S6 Item 2" xml:space="preserve">
+        <value>ファイルとメタデータはAIモデルのトレーニングに使用されたり、AI企業と共有されることはありません。</value>
+    </data>
+    <data name="UA S6 Item 3" xml:space="preserve">
+        <value>ファイルの内容は、あなたが配布する一意の共有リンクからのみアクセス可能です。</value>
+    </data>
+    <data name="UA S6 Item 4" xml:space="preserve">
+        <value>セキュリティ上の目的で、ファイルのアップロードやその他のアカウント操作に関連するIPアドレスを記録します。このデータは安全に保存され、上記と同じプライバシー保護が適用されます。</value>
+    </data>
+    <data name="UA S6 Outro" xml:space="preserve">
+        <value>上記の唯一の例外は、法律により別の行動が義務付けられる場合です。当局が有効な裁判所命令を提示した場合、法律が求める範囲で要求された情報を提供します。</value>
+    </data>
+    <data name="UA S7 Title" xml:space="preserve">
+        <value>7. 責任の制限</value>
+    </data>
+    <data name="UA S7 Text" xml:space="preserve">
+        <value>{0}はいかなる保証もなく「現状のまま」提供されます。サービスの継続的な可用性やアップロードされたファイルの永続的な保持を保証しません。データの損失、有効期限切れや削除によるファイルの損失、またはサービスの利用もしくは利用不能から生じるいかなる損害についても責任を負いません。アップロードおよび共有するファイルに対してはあなた自身が責任を負い、受信者が適切に利用することを確認する責任があります。</value>
+    </data>
+    <data name="UA S8 Title" xml:space="preserve">
+        <value>8. 本規約の変更</value>
+    </data>
+    <data name="UA S8 Text 1" xml:space="preserve">
+        <value>本規約は随時更新される場合があります。変更は公開日から有効となり、その日以降にアップロードされたファイルにのみ適用されます — すでにアップロードされたファイルは、アップロード時に有効だった条件に従います。</value>
+    </data>
+    <data name="UA S8 Text 2" xml:space="preserve">
+        <value>本規約が変更された場合、アカウントに登録されているメールアドレスに通知が送られます。更新内容を注意深く確認することをお勧めします。通知後もサービスを継続して利用することで、改訂された条件への同意とみなされます。</value>
+    </data>
+    <data name="UA S9 Title" xml:space="preserve">
+        <value>9. お問い合わせ</value>
+    </data>
+    <data name="UA S9 Text Before" xml:space="preserve">
+        <value>本規約についてご質問やご不明な点がございましたら、以下のアドレスまでお問い合わせください：</value>
+    </data>
     <data name="Home Page Title" xml:space="preserve">
         <value>友達とファイルを共有</value>
     </data>
