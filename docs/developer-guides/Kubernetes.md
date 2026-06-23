@@ -324,7 +324,7 @@ By default any user with a valid Keycloak account can authenticate to Headlamp. 
 4. Go to **Clients** → **headlamp-client** → **Advanced** tab → **Authentication flow overrides** → set **Browser Flow** to `administrator-only-browser` → **Save**.
 
 After this, non-Administrator users receive "You don't have access to this application" from Keycloak before reaching Headlamp.
-
+    
 ### Before a server shutdown
 
 Gracefully drain the cluster before shutting down to avoid data corruption and incomplete requests.

@@ -118,6 +118,7 @@ pgadmin:
     servicePort: 80
     email: "admin@example.com"
     password: "changeme"
+    keycloakClientSecret: "changeme"
     resources:
         requests:
             cpu: 250m

@@ -88,6 +88,22 @@ After this, non-Administrator users receive "You don't have access to this appli
 
 > 💡 The `roles` claim must already be mapped to the flat `roles` token claim (see [Set the Token Claim Name to `roles`](#set-the-token-claim-name-to-roles)) — Grafana's role attribute path `contains(roles[*], 'Administrator') && 'Admin' || ''` depends on it.
 
+### Add pgAdmin Client
+
+pgAdmin authenticates against Keycloak using a confidential OAuth2 client named `pgadmin-client`. Only users with the `Administrator` role can sign in — non-admins are rejected at the Keycloak level before reaching pgAdmin.
+
+1. Go to **Clients** in the Keycloak Admin UI and click **Create client**.
+2. Set **Client ID** to `pgadmin-client` and click **Next**.
+3. Enable **Client authentication** (this makes it a confidential client) and click **Next**.
+4. Set **Valid redirect URIs** to `https://database.<domain>/oauth2/authorize`.
+5. Click **Save**.
+6. Open the **Credentials** tab and copy the **Client secret** — use it as the `PGADMIN_KEYCLOAK_CLIENT_SECRET` environment secret in the deployment pipeline.
+7. Go to **Clients** → **pgadmin-client** → **Advanced** tab → **Authentication flow overrides** → set **Browser Flow** to `administrator-only-browser` → **Save**.
+
+After this, non-Administrator users receive "You don't have access to this application" from Keycloak before reaching pgAdmin.
+
+> 💡 The `administrator-only-browser` flow must be created first — see **Restrict Headlamp login to Administrators only** under [Step 6 — Connect Headlamp with Keycloak](Kubernetes.md#step-6--connect-headlamp-with-keycloak-optional) in the Kubernetes guide for the step-by-step flow setup. The same flow is reused here.
+
 ### Enable Login Settings
 
 1. Go to **Realm settings** in the Keycloak Admin UI.

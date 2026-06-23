@@ -60,6 +60,7 @@ Go to **Settings → Environments → vps-production → Add secret** and add th
 | `KEYCLOAK_ADMIN_PASSWORD`        | Keycloak admin password                                                                  |
 | `KEYCLOAK_POSTGRES_PASSWORD`     | Keycloak dedicated PostgreSQL password                                                   |
 | `PGADMIN_PASSWORD`               | pgAdmin password                                                                         |
+| `PGADMIN_KEYCLOAK_CLIENT_SECRET` | Keycloak OAuth client secret for pgAdmin (`pgadmin-client`)                              |
 | `GRAFANA_ADMIN_PASSWORD`         | Grafana admin password                                                                   |
 | `GRAFANA_KEYCLOAK_CLIENT_SECRET` | Keycloak OAuth client secret for Grafana (`grafana-client`)                              |
 | `OVHCLOUD_ENDPOINT`              | OVHCloud S3 endpoint URL                                                                 |
