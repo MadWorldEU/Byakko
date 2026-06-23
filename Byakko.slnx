@@ -58,7 +58,6 @@
     <File Path=".github\workflows\deploy-production.yml" />
     <File Path=".github\workflows\docker-build-push.yml" />
     <File Path=".github\workflows\generate-docs.yml" />
-    <File Path=".github\workflows\publish-static-site.yml" />
     <File Path=".github\workflows\sonarcloud.yml" />
   </Folder>
   <Folder Name="/packages/">

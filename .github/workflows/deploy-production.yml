@@ -34,6 +34,7 @@ jobs:
                     --set keycloak.postgres.password="dry-run" \
                     --set pgadmin.password="dry-run" \
                     --set observability.grafana.adminPassword="dry-run" \
+                    --set observability.grafana.keycloakClientSecret="dry-run" \
                     --set storage.ovhCloud.endpoint="https://dry-run.example.com" \
                     --set storage.ovhCloud.accessKey="dry-run" \
                     --set storage.ovhCloud.secretKey="dry-run" \
@@ -69,6 +70,7 @@ jobs:
                   KEYCLOAK_POSTGRES_PASSWORD: ${{ secrets.KEYCLOAK_POSTGRES_PASSWORD }}
                   PGADMIN_PASSWORD: ${{ secrets.PGADMIN_PASSWORD }}
                   GRAFANA_ADMIN_PASSWORD: ${{ secrets.GRAFANA_ADMIN_PASSWORD }}
+                  GRAFANA_KEYCLOAK_CLIENT_SECRET: ${{ secrets.GRAFANA_KEYCLOAK_CLIENT_SECRET }}
                   OVHCLOUD_ENDPOINT: ${{ secrets.OVHCLOUD_ENDPOINT }}
                   OVHCLOUD_ACCESS_KEY: ${{ secrets.OVHCLOUD_ACCESS_KEY }}
                   OVHCLOUD_SECRET_KEY: ${{ secrets.OVHCLOUD_SECRET_KEY }}
@@ -86,6 +88,7 @@ jobs:
                     --set keycloak.postgres.password="$KEYCLOAK_POSTGRES_PASSWORD" \
                     --set pgadmin.password="$PGADMIN_PASSWORD" \
                     --set observability.grafana.adminPassword="$GRAFANA_ADMIN_PASSWORD" \
+                    --set observability.grafana.keycloakClientSecret="$GRAFANA_KEYCLOAK_CLIENT_SECRET" \
                     --set storage.ovhCloud.endpoint="$OVHCLOUD_ENDPOINT" \
                     --set storage.ovhCloud.accessKey="$OVHCLOUD_ACCESS_KEY" \
                     --set storage.ovhCloud.secretKey="$OVHCLOUD_SECRET_KEY" \

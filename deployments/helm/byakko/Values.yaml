@@ -209,6 +209,7 @@ observability:
         servicePort: 80
         adminUser: "admin"
         adminPassword: "changeme"
+        keycloakClientSecret: "changeme"
         resources:
             requests:
                 cpu: 100m
