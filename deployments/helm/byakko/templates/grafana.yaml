@@ -115,7 +115,7 @@ spec:
                       - name: GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP
                         value: "true"
                       - name: GF_AUTH_GENERIC_OAUTH_CLIENT_ID
-                        value: "grafana-client-test"
+                        value: "grafana-client"
                       - name: GF_AUTH_GENERIC_OAUTH_SCOPES
                         value: "openid email profile roles"
                       - name: GF_AUTH_GENERIC_OAUTH_AUTH_URL
