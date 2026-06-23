@@ -9,6 +9,40 @@ type: Opaque
 stringData:
     PGADMIN_DEFAULT_EMAIL: {{ .Values.pgadmin.email }}
     PGADMIN_DEFAULT_PASSWORD: {{ .Values.pgadmin.password }}
+    PGADMIN_KEYCLOAK_CLIENT_SECRET: {{ .Values.pgadmin.keycloakClientSecret }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: {{ .Values.pgadmin.name }}-oauth
+    namespace: {{ .Values.namespace }}
+    labels:
+        app: {{ .Values.pgadmin.name }}
+data:
+    config_local.py: |
+        import os
+
+        AUTHENTICATION_SOURCES = ['oauth2']
+        OAUTH2_AUTO_CREATE_USER = True
+
+        OAUTH2_CONFIG = [
+            {
+                'OAUTH2_NAME': 'Keycloak',
+                'OAUTH2_DISPLAY_NAME': 'Sign in with Keycloak',
+                'OAUTH2_CLIENT_ID': 'pgadmin-client',
+                'OAUTH2_CLIENT_SECRET': os.environ.get('PGADMIN_KEYCLOAK_CLIENT_SECRET', ''),
+                'OAUTH2_SERVER_METADATA_URL': 'https://authentication.{{ .Values.ingress.domain }}/realms/MadWorld/.well-known/openid-configuration',
+                'OAUTH2_TOKEN_URL': 'https://authentication.{{ .Values.ingress.domain }}/realms/MadWorld/protocol/openid-connect/token',
+                'OAUTH2_AUTHORIZATION_URL': 'https://authentication.{{ .Values.ingress.domain }}/realms/MadWorld/protocol/openid-connect/auth',
+                'OAUTH2_USERINFO_ENDPOINT': 'https://authentication.{{ .Values.ingress.domain }}realms/MadWorld/protocol/openid-connect/userinfo',
+                'OAUTH2_API_BASE_URL': 'https://authentication.{{ .Values.ingress.domain }}/realms/MadWorld/protocol/openid-connect/',
+                'OAUTH2_SCOPE': 'openid email profile',
+                'OAUTH2_USERNAME_CLAIM': 'email',
+                'OAUTH2_ICON': '',
+                'OAUTH2_BUTTON_COLOR': '#fd9000',
+                'OAUTH2_SSL_CERT_VERIFICATION': True
+            }
+        ]
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -28,7 +62,8 @@ data:
               "Port": {{ .Values.postgres.containerPort }},
               "MaintenanceDB": "{{ .Values.postgres.database }}",
               "Username": "{{ .Values.postgres.username }}",
-              "SSLMode": "prefer"
+              "SSLMode": "prefer",
+              "Shared": true
             },
             "2": {
               "Name": "Authentication PostgreSQL",
@@ -37,7 +72,8 @@ data:
               "Port": {{ .Values.keycloak.postgres.containerPort }},
               "MaintenanceDB": "{{ .Values.keycloak.postgres.database }}",
               "Username": "{{ .Values.keycloak.postgres.username }}",
-              "SSLMode": "prefer"
+              "SSLMode": "prefer",
+              "Shared": true
             }
           }
         }
@@ -87,6 +123,10 @@ spec:
                         mountPath: /pgadmin4/servers.json
                         subPath: servers.json
                         readOnly: true
+                      - name: oauth-config
+                        mountPath: /pgadmin4/config_local.py
+                        subPath: config_local.py
+                        readOnly: true
                   livenessProbe:
                       httpGet:
                           path: /misc/ping
@@ -103,6 +143,9 @@ spec:
                 - name: servers-config
                   configMap:
                       name: {{ .Values.pgadmin.name }}-servers
+                - name: oauth-config
+                  configMap:
+                      name: {{ .Values.pgadmin.name }}-oauth
 ---
 apiVersion: v1
 kind: Service

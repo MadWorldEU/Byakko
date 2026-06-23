@@ -10,6 +10,9 @@ observability:
     grafana:
         keycloakClientSecret: "changme"
     
+pgadmin:
+    keycloakClientSecret: "changeme"
+
 api:
     encryption:
         key: "5E0YFcbU1M1f93S7OB673VYgN2qbslLEKXhwQA+sx44="
