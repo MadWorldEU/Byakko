@@ -8,7 +8,7 @@ localstack:
 observability:
     enabled: true
     grafana:
-        keycloakClientSecret: "ZKY84EUr9kMvKcoHT4LMQdpigSK6CxXc"
+        keycloakClientSecret: "changme"
     
 api:
     encryption:
