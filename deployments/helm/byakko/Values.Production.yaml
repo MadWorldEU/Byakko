@@ -39,6 +39,7 @@ observability:
         storageSize: 20Gi
     grafana:
         adminPassword: "changeme"
+        keycloakClientSecret: "changeme"
 
 api:
     encryption:
