@@ -309,7 +309,7 @@ By default any user with a valid Keycloak account can authenticate to Headlamp. 
 
 1. Go to **Authentication** → **Flows** → find **browser** → **Action** → **Duplicate** → name it `headlamp-browser`.
 
-2. In the new `headlamp-browser` flow, locate the **Forms** sub-flow (the one containing **Username Password Form**). Inside **Forms**, click **Add sub-flow** → name it `Administrator check`, type **Conditional**.
+2. In the new `administrator-only-browser` flow, locate the **Forms** sub-flow (the one containing **Username Password Form**). Inside **Forms**, click **Add sub-flow** → name it `Administrator check`, type **Conditional**.
 
 3. Inside the **Administrator check** sub-flow, add two steps:
    - **Add condition** → **Condition - User Role** → set to **Required** → click the gear icon:
@@ -321,7 +321,7 @@ By default any user with a valid Keycloak account can authenticate to Headlamp. 
 
    > ⚠️ The Administrator check sub-flow must be placed **inside the Forms sub-flow, after Username Password Form** — not at the top of the flow. If placed before credentials are collected, Keycloak has no user context to evaluate the role and will immediately deny everyone with "Invalid username or password".
 
-4. Go to **Clients** → **headlamp-client** → **Advanced** tab → **Authentication flow overrides** → set **Browser Flow** to `headlamp-browser` → **Save**.
+4. Go to **Clients** → **headlamp-client** → **Advanced** tab → **Authentication flow overrides** → set **Browser Flow** to `administrator-only-browser` → **Save**.
 
 After this, non-Administrator users receive "You don't have access to this application" from Keycloak before reaching Headlamp.
 
