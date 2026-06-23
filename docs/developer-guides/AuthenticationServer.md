@@ -70,6 +70,19 @@ By default Keycloak maps realm roles under `realm_access.roles`. Change it to a 
 2. Open the **Role mapping** tab.
 3. Click **Assign role**, select `Administrator` or `User`, and confirm.
 
+### Add Grafana Client
+
+Grafana authenticates against Keycloak using a confidential OAuth2 client named `grafana-client`. Only users with the `Administrator` role can sign in — non-admins are rejected by the strict role attribute check.
+
+1. Go to **Clients** in the Keycloak Admin UI and click **Create client**.
+2. Set **Client ID** to `grafana-client` and click **Next**.
+3. Enable **Client authentication** (this makes it a confidential client) and click **Next**.
+4. Set **Valid redirect URIs** to `https://grafana.<domain>/login/generic_oauth`.
+5. Click **Save**.
+6. Open the **Credentials** tab and copy the **Client secret** — use it as the `GRAFANA_KEYCLOAK_CLIENT_SECRET` environment secret in the deployment pipeline.
+
+> 💡 The `roles` claim must already be mapped to the flat `roles` token claim (see [Set the Token Claim Name to `roles`](#set-the-token-claim-name-to-roles)) — Grafana's role attribute path `contains(roles[*], 'Administrator') && 'Admin' || ''` depends on it.
+
 ### Enable Login Settings
 
 1. Go to **Realm settings** in the Keycloak Admin UI.

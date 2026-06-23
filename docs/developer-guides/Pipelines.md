@@ -51,21 +51,22 @@ The deployment pipeline uses a GitHub environment named `vps-production` to gate
 
 Go to **Settings → Environments → vps-production → Add secret** and add the following secrets:
 
-| Secret                       | Purpose                                                                                  |
-|------------------------------|------------------------------------------------------------------------------------------|
-| `KUBECONFIG`                 | kubeconfig file for the production cluster                                               |
-| `CLUSTER_ISSUER_EMAIL`       | Email address for Let's Encrypt certificates                                             |
-| `SECURITY_TXT_CONTACT`       | Contact URI for security.txt (e.g. `mailto:security@example.com`)                        |
-| `POSTGRES_PASSWORD`          | Application PostgreSQL password                                                          |
-| `KEYCLOAK_ADMIN_PASSWORD`    | Keycloak admin password                                                                  |
-| `KEYCLOAK_POSTGRES_PASSWORD` | Keycloak dedicated PostgreSQL password                                                   |
-| `PGADMIN_PASSWORD`           | pgAdmin password                                                                         |
-| `GRAFANA_ADMIN_PASSWORD`     | Grafana admin password                                                                   |
-| `OVHCLOUD_ENDPOINT`          | OVHCloud S3 endpoint URL                                                                 |
-| `OVHCLOUD_ACCESS_KEY`        | OVHCloud S3 access key                                                                   |
-| `OVHCLOUD_SECRET_KEY`        | OVHCloud S3 secret key                                                                   |
-| `OVHCLOUD_REGION`            | OVHCloud region (e.g. `de`)                                                              |
-| `ENCRYPTION_KEY`             | Base64-encoded 32-byte AES-256 encryption key (generate with `openssl rand -base64 32`)  |
+| Secret                           | Purpose                                                                                  |
+|----------------------------------|------------------------------------------------------------------------------------------|
+| `KUBECONFIG`                     | kubeconfig file for the production cluster                                               |
+| `CLUSTER_ISSUER_EMAIL`           | Email address for Let's Encrypt certificates                                             |
+| `SECURITY_TXT_CONTACT`           | Contact URI for security.txt (e.g. `mailto:security@example.com`)                        |
+| `POSTGRES_PASSWORD`              | Application PostgreSQL password                                                          |
+| `KEYCLOAK_ADMIN_PASSWORD`        | Keycloak admin password                                                                  |
+| `KEYCLOAK_POSTGRES_PASSWORD`     | Keycloak dedicated PostgreSQL password                                                   |
+| `PGADMIN_PASSWORD`               | pgAdmin password                                                                         |
+| `GRAFANA_ADMIN_PASSWORD`         | Grafana admin password                                                                   |
+| `GRAFANA_KEYCLOAK_CLIENT_SECRET` | Keycloak OAuth client secret for Grafana (`grafana-client`)                              |
+| `OVHCLOUD_ENDPOINT`              | OVHCloud S3 endpoint URL                                                                 |
+| `OVHCLOUD_ACCESS_KEY`            | OVHCloud S3 access key                                                                   |
+| `OVHCLOUD_SECRET_KEY`            | OVHCloud S3 secret key                                                                   |
+| `OVHCLOUD_REGION`                | OVHCloud region (e.g. `de`)                                                              |
+| `ENCRYPTION_KEY`                 | Base64-encoded 32-byte AES-256 encryption key (generate with `openssl rand -base64 32`)  |
 
 #### KUBECONFIG
 
