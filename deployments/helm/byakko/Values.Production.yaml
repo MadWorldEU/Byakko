@@ -28,6 +28,7 @@ keycloak:
 
 pgadmin:
     password: "changeme"
+    keycloakClientSecret: "changeme"
 
 observability:
     enabled: true
