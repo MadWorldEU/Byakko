@@ -8,6 +8,7 @@ global using WireMock.Server;
 
 global using MadWorldEU.Byakko;
 global using MadWorldEU.Byakko.Audits;
+global using MadWorldEU.Byakko.Localization;
 global using MadWorldEU.Byakko.Audits.Summaries;
 global using MadWorldEU.Byakko.Services;
 global using MadWorldEU.Byakko.Storages;

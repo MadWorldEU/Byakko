@@ -88,6 +88,9 @@ public sealed class AuditLogsTests
 
     private static void RegisterServices(BunitContext ctx, string serverUrl)
     {
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+        ctx.Services.AddLocalization();
+        ctx.Services.AddScoped<IErrorTranslator, ErrorTranslator>();
         ctx.Services.AddHttpClient(HttpClients.ApiAnonymous, client =>
             client.BaseAddress = new Uri(serverUrl));
         ctx.Services.AddHttpClient(HttpClients.ApiAuthorized, client =>
