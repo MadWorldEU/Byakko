@@ -1,6 +1,6 @@
 using System.Security.Claims;
-using MadWorldEU.Byakko.Application;
 using MadWorldEU.Byakko.Configurations;
+using MadWorldEU.Byakko.Localization;
 using MadWorldEU.Byakko.Services;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -36,6 +36,8 @@ public static class WebAssemblyHostBuilderExtensions
     public static WebAssemblyHostBuilder AddByakkoServices(this WebAssemblyHostBuilder builder)
     {
         builder.Services.AddLocalization();
+        builder.Services.AddScoped<IErrorTranslator, ErrorTranslator>();
+        
         builder.Services.Configure<AssetSettings>(builder.Configuration.GetSection(AssetSettings.Key));
         builder.Services.Configure<OidcSettings>(builder.Configuration.GetSection(OidcSettings.Key));
         builder.Services.AddScoped<IAuditService, AuditService>();
