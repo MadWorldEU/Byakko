@@ -1,6 +1,8 @@
 @page "/host-services/manual-triggers"
 @attribute [Authorize(Policy = AuthorizationPolicies.Administrator)]
 @inject IHttpClientFactory HttpClientFactory
+@inject IErrorTranslator ErrorTranslator
+@inject ILogger<ManualTriggers> Logger
 
 <PageTitle>Manual Triggers – Byakko Admin</PageTitle>
 
@@ -86,7 +88,8 @@
         catch (Exception ex)
         {
             _contentSuccess = false;
-            _contentResult = $"Request failed: {ex.Message}";
+            Logger.LogError(ex, ex.Message);
+            _contentResult = ErrorTranslator.Translate(BlazorErrors.TriggerFailed.Code, BlazorErrors.TriggerFailed.Description);
         }
         finally
         {
@@ -111,7 +114,8 @@
         catch (Exception ex)
         {
             _metadataSuccess = false;
-            _metadataResult = $"Request failed: {ex.Message}";
+            Logger.LogError(ex, ex.Message);
+            _metadataResult = ErrorTranslator.Translate(BlazorErrors.TriggerFailed.Code, BlazorErrors.TriggerFailed.Description);
         }
         finally
         {

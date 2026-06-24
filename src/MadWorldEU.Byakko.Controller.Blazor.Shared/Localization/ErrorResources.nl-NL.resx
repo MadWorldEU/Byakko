@@ -1,0 +1,149 @@
+<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="Asset.NotFound" xml:space="preserve">
+        <value>Het bestand kon niet worden gevonden.</value>
+    </data>
+    <data name="Asset.SaveFailed" xml:space="preserve">
+        <value>Er is iets misgegaan bij het opslaan van het bestand. Probeer het opnieuw.</value>
+    </data>
+    <data name="Asset.QueryFailed" xml:space="preserve">
+        <value>Er is iets misgegaan bij het ophalen van het bestand. Probeer het opnieuw.</value>
+    </data>
+    <data name="Asset.UpdateFailed" xml:space="preserve">
+        <value>Er is iets misgegaan bij het bijwerken van het bestand. Probeer het opnieuw.</value>
+    </data>
+    <data name="Asset.Forbidden" xml:space="preserve">
+        <value>U heeft geen toestemming om dit bestand te wijzigen.</value>
+    </data>
+    <data name="Asset.FileNameMismatch" xml:space="preserve">
+        <value>De bestandsnaam komt niet overeen met onze gegevens.</value>
+    </data>
+    <data name="Asset.ContentTypeMismatch" xml:space="preserve">
+        <value>Het bestandstype komt niet overeen met onze gegevens.</value>
+    </data>
+    <data name="Asset.DeleteFailed" xml:space="preserve">
+        <value>Er is iets misgegaan bij het verwijderen van het bestand. Probeer het opnieuw.</value>
+    </data>
+    <data name="Asset.AlreadyDeleted" xml:space="preserve">
+        <value>Dit bestand is al verwijderd.</value>
+    </data>
+    <data name="Asset.SizeAlreadySet" xml:space="preserve">
+        <value>De bestandsgrootte is al vastgelegd.</value>
+    </data>
+    <data name="Asset.Expired" xml:space="preserve">
+        <value>Dit bestand is verlopen en kan niet meer worden gedownload.</value>
+    </data>
+    <data name="Asset.MaxFilesReached" xml:space="preserve">
+        <value>U heeft het maximale aantal actieve bestanden bereikt.</value>
+    </data>
+    <data name="Asset.FileTooLarge" xml:space="preserve">
+        <value>Het bestand dat u probeert te uploaden is te groot.</value>
+    </data>
+    <data name="Audit.InvalidIpAddress" xml:space="preserve">
+        <value>Er is iets misgegaan met uw verzoek. Probeer het opnieuw.</value>
+    </data>
+    <data name="Audit.SaveFailed" xml:space="preserve">
+        <value>Er is iets misgegaan bij het vastleggen van de activiteit. Probeer het opnieuw.</value>
+    </data>
+    <data name="Audit.QueryFailed" xml:space="preserve">
+        <value>Er is iets misgegaan bij het ophalen van het activiteitenlog. Probeer het opnieuw.</value>
+    </data>
+    <data name="ContentType.Empty" xml:space="preserve">
+        <value>Het bestandstype ontbreekt.</value>
+    </data>
+    <data name="ContentType.TooLong" xml:space="preserve">
+        <value>Het bestandstype is te lang.</value>
+    </data>
+    <data name="ContentType.Invalid" xml:space="preserve">
+        <value>Het bestandstype wordt niet ondersteund.</value>
+    </data>
+    <data name="AssetPath.PathEmpty" xml:space="preserve">
+        <value>Het bestandspad mag niet leeg zijn.</value>
+    </data>
+    <data name="AssetPath.PathTooLong" xml:space="preserve">
+        <value>Het bestandspad is te lang.</value>
+    </data>
+    <data name="AssetPath.KeyEmpty" xml:space="preserve">
+        <value>De bestandssleutel mag niet leeg zijn.</value>
+    </data>
+    <data name="AssetPath.KeyTooLong" xml:space="preserve">
+        <value>De bestandssleutel is te lang.</value>
+    </data>
+    <data name="Size.Negative" xml:space="preserve">
+        <value>De bestandsgrootte mag niet negatief zijn.</value>
+    </data>
+    <data name="ValidityPeriod.MustBePositive" xml:space="preserve">
+        <value>De geldigheidsperiode moet minimaal één dag zijn.</value>
+    </data>
+    <data name="UserId.Empty" xml:space="preserve">
+        <value>Log in om door te gaan.</value>
+    </data>
+    <data name="UserId.Invalid" xml:space="preserve">
+        <value>Uw sessie lijkt ongeldig te zijn. Log opnieuw in.</value>
+    </data>
+    <data name="Name.Empty" xml:space="preserve">
+        <value>Geef een bestandsnaam op.</value>
+    </data>
+    <data name="Name.TooLong" xml:space="preserve">
+        <value>De bestandsnaam is te lang.</value>
+    </data>
+    <data name="Id.Empty" xml:space="preserve">
+        <value>Een vereiste identificatie ontbreekt.</value>
+    </data>
+    <data name="Id.Invalid" xml:space="preserve">
+        <value>De opgegeven identificatie is niet geldig.</value>
+    </data>
+    <data name="PageSize.Invalid" xml:space="preserve">
+        <value>De gevraagde paginagrootte is niet geldig.</value>
+    </data>
+    <data name="Page.Invalid" xml:space="preserve">
+        <value>Het gevraagde paginanummer is niet geldig.</value>
+    </data>
+    <data name="ContentStorage.UploadFailed" xml:space="preserve">
+        <value>Er is iets misgegaan bij het uploaden van het bestand. Probeer het opnieuw.</value>
+    </data>
+    <data name="ContentStorage.DownloadFailed" xml:space="preserve">
+        <value>Er is iets misgegaan bij het downloaden van het bestand. Probeer het opnieuw.</value>
+    </data>
+    <data name="ContentStorage.DeleteFailed" xml:space="preserve">
+        <value>Er is iets misgegaan bij het verwijderen van het bestand uit de opslag. Probeer het opnieuw.</value>
+    </data>
+    <data name="Encryption.DecryptionFailed" xml:space="preserve">
+        <value>Het wachtwoord is onjuist. Probeer het opnieuw.</value>
+    </data>
+    <data name="File.LoadFailed" xml:space="preserve">
+        <value>Het bestand kon niet worden geladen. Probeer het opnieuw.</value>
+    </data>
+    <data name="Blazor.File.LoadFailed" xml:space="preserve">
+        <value>Het bestand kon niet worden geladen. Probeer het opnieuw.</value>
+    </data>
+    <data name="Blazor.Files.LoadFailed" xml:space="preserve">
+        <value>De bestanden konden niet worden geladen. Probeer het opnieuw.</value>
+    </data>
+    <data name="Blazor.AuditLogs.LoadFailed" xml:space="preserve">
+        <value>De auditlogboeken konden niet worden geladen. Probeer het opnieuw.</value>
+    </data>
+    <data name="Blazor.Trigger.Failed" xml:space="preserve">
+        <value>Het verzoek kon niet worden verwerkt. Probeer het opnieuw.</value>
+    </data>
+    <data name="Blazor.File.DeleteFailed" xml:space="preserve">
+        <value>Er is iets misgegaan bij het verwijderen van het bestand. Probeer het opnieuw.</value>
+    </data>
+    <data name="Blazor.File.UploadFailed" xml:space="preserve">
+        <value>Er is iets misgegaan bij het uploaden van het bestand. Probeer het opnieuw.</value>
+    </data>
+    <data name="Blazor.File.InvalidId" xml:space="preserve">
+        <value>De bestandslink is niet geldig. Controleer de link en probeer het opnieuw.</value>
+    </data>
+</root>

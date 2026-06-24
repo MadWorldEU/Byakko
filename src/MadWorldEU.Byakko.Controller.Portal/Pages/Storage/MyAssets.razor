@@ -2,7 +2,9 @@
 @attribute [Authorize(Policy = AuthorizationPolicies.User)]
 @inject IAssetService AssetService
 @inject IJSRuntime JsRuntime
+@inject ILogger<MyAssets> Logger
 @inject IStringLocalizer<Resources> Localizer
+@inject IErrorTranslator ErrorTranslator
 
 <PageTitle>@Localizer["Brand Name"] – @Localizer["MyAssets Page Title"]</PageTitle>
 
@@ -157,12 +159,14 @@
             }
             else
             {
-                _errorMessage = result.Failure?.Description ?? "An unexpected error occurred.";
+                _errorMessage = ErrorTranslator.Translate(result.Failure!);
             }
         }
         catch (Exception ex)
         {
-            _errorMessage = $"Failed to delete file: {ex.Message}";
+            Logger.LogError(ex, ex.Message);
+            _errorMessage = ErrorTranslator.Translate(BlazorErrors.FileDeleteFailed.Code, BlazorErrors.FileDeleteFailed.Description);
+
             _confirmingDeleteId = null;
         }
         finally
@@ -194,12 +198,13 @@
             }
             else
             {
-                _errorMessage = assetsResult.Failure?.Description ?? "An unexpected error occurred.";
+                _errorMessage = ErrorTranslator.Translate(assetsResult.Failure!);
             }
         }
         catch (Exception ex)
         {
-            _errorMessage = $"Could not load files: {ex.Message}";
+            Logger.LogError(ex, ex.Message);
+            _errorMessage = ErrorTranslator.Translate(BlazorErrors.FilesLoadFailed.Code, BlazorErrors.FilesLoadFailed.Description);
         }
         finally
         {

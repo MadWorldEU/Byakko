@@ -7,6 +7,7 @@ public sealed class MyAssetsPageTests
     {
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         ctx.Services.AddLocalization();
+        ctx.Services.AddScoped<IErrorTranslator, ErrorTranslator>();
         ctx.Services.AddHttpClient(HttpClients.ApiAnonymous, client => client.BaseAddress = new Uri(serverUrl));
         ctx.Services.AddHttpClient(HttpClients.ApiAuthorized, client => client.BaseAddress = new Uri(serverUrl));
         ctx.Services.AddScoped<IAssetService, AssetService>();

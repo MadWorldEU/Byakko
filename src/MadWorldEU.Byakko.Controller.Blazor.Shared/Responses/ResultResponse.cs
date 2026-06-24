@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using MadWorldEU.Byakko.Common;
 
 namespace MadWorldEU.Byakko.Responses;

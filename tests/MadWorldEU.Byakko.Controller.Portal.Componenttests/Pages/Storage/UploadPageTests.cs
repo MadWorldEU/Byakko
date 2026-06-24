@@ -29,6 +29,7 @@ public sealed class UploadPageTests
 
         using var ctx = new BunitContext();
         ctx.Services.AddLocalization();
+        ctx.Services.AddScoped<IErrorTranslator, ErrorTranslator>();
         ctx.Services.AddSingleton(Options.Create(new AssetSettings { MaxUploadSizeInBytes = 1073741824 }));
         ctx.Services.AddHttpClient(HttpClients.ApiAnonymous, client =>
             client.BaseAddress = new Uri(server.Url!));

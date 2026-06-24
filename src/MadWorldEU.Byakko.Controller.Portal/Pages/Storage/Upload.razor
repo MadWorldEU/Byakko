@@ -3,6 +3,7 @@
 @inject IAssetService AssetService
 @inject IOptions<AssetSettings> AssetSettings
 @inject IStringLocalizer<Resources> Localizer
+@inject IErrorTranslator ErrorTranslator
 
 <PageTitle>@Localizer["Brand Name"] – @Localizer["Upload Page Title"]</PageTitle>
 
@@ -124,7 +125,8 @@
 
 @code {
     [Inject] private NavigationManager Navigation { get; set; } = null!;
-    [Inject] private IJSRuntime Js { get; set; } = null!;
+    [Inject] private IJSRuntime JsRuntime { get; set; } = null!;
+    [Inject] private ILogger<Upload> Logger { get; set; } = null!;
 
     private IBrowserFile? _selectedFile;
     private Guid? _uploadedId;
@@ -192,7 +194,7 @@
 
             if (!createResult.IsSuccess)
             {
-                _errorMessage = createResult.Failure?.Description ?? "Failed to create asset record.";
+                _errorMessage = ErrorTranslator.Translate(createResult.Failure!);
                 return;
             }
 
@@ -214,7 +216,7 @@
 
             if (!uploadResult.IsSuccess)
             {
-                _errorMessage = uploadResult.Failure?.Description ?? "File content upload failed.";
+                _errorMessage = ErrorTranslator.Translate(uploadResult.Failure!);
                 return;
             }
 
@@ -227,7 +229,8 @@
         }
         catch (Exception ex)
         {
-            _errorMessage = $"Upload failed: {ex.Message}";
+            Logger.LogError(ex, ex.Message);
+            _errorMessage = ErrorTranslator.Translate(BlazorErrors.FileUploadFailed.Code, BlazorErrors.FileUploadFailed.Description);
         }
         finally
         {
@@ -237,7 +240,7 @@
 
     private async Task CopyLink()
     {
-        await Js.InvokeVoidAsync("navigator.clipboard.writeText", ShareLink);
+        await JsRuntime.InvokeVoidAsync("navigator.clipboard.writeText", ShareLink);
         _linkCopied = true;
         StateHasChanged();
         await Task.Delay(2000);
