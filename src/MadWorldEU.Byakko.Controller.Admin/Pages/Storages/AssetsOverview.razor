@@ -21,9 +21,9 @@
         </div>
     </div>
 }
-else if (_error is not null)
+else if (_errorMessage is not null)
 {
-    <div class="alert alert-danger" role="alert">@_error</div>
+    <div class="alert alert-danger" role="alert">@_errorMessage</div>
 }
 else if (_response is not null)
 {
@@ -119,7 +119,7 @@ else if (_response is not null)
 
 @code {
     private bool _loading = true;
-    private string? _error;
+    private string? _errorMessage;
     private GetAssetsMetadataResponse? _response;
     private int _currentPage = 1;
     private Guid? _confirmingDeleteId;
@@ -141,7 +141,7 @@ else if (_response is not null)
     private async Task LoadPageAsync()
     {
         _loading = true;
-        _error = null;
+        _errorMessage = null;
 
         try
         {
@@ -153,13 +153,13 @@ else if (_response is not null)
             }
             else
             {
-                _error = ErrorTranslator.Translate(result.Failure!);
+                _errorMessage = ErrorTranslator.Translate(result.Failure!);
             }
         }
         catch (Exception ex)
         {
             await JsRuntime.InvokeVoidAsync("console.error", ex.ToString());
-            _error = ErrorTranslator.Translate(BlazorErrors.FilesLoadFailed.Code, BlazorErrors.FilesLoadFailed.Description);
+            _errorMessage = ErrorTranslator.Translate(BlazorErrors.FilesLoadFailed.Code, BlazorErrors.FilesLoadFailed.Description);
         }
         finally
         {
@@ -213,7 +213,7 @@ else if (_response is not null)
     private async Task ConfirmDeleteAsync(Guid id)
     {
         _deleting = true;
-        _error = null;
+        _errorMessage = null;
 
         try
         {
@@ -226,13 +226,13 @@ else if (_response is not null)
             }
             else
             {
-                _error = ErrorTranslator.Translate(result.Failure!);
+                _errorMessage = ErrorTranslator.Translate(result.Failure!);
             }
         }
         catch (Exception ex)
         {
             await JsRuntime.InvokeVoidAsync("console.error", ex.ToString());
-            _error = ErrorTranslator.Translate(BlazorErrors.FileDeleteFailed.Code, BlazorErrors.FileDeleteFailed.Description);
+            _errorMessage = ErrorTranslator.Translate(BlazorErrors.FileDeleteFailed.Code, BlazorErrors.FileDeleteFailed.Description);
         }
         finally
         {
