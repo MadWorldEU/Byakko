@@ -2,7 +2,7 @@
 @attribute [Authorize(Policy = AuthorizationPolicies.Administrator)]
 @inject IHttpClientFactory HttpClientFactory
 @inject IErrorTranslator ErrorTranslator
-@inject IJSRuntime Js
+@inject IJSRuntime JsRuntime
 
 <PageTitle>Manual Triggers – Byakko Admin</PageTitle>
 
@@ -88,7 +88,7 @@
         catch (Exception ex)
         {
             _contentSuccess = false;
-            await Js.InvokeVoidAsync("console.error", ex.ToString());
+            await JsRuntime.InvokeVoidAsync("console.error", ex.ToString());
             _contentResult = ErrorTranslator.Translate(BlazorErrors.TriggerFailed.Code, BlazorErrors.TriggerFailed.Description);
         }
         finally
@@ -114,7 +114,7 @@
         catch (Exception ex)
         {
             _metadataSuccess = false;
-            await Js.InvokeVoidAsync("console.error", ex.ToString());
+            await JsRuntime.InvokeVoidAsync("console.error", ex.ToString());
             _metadataResult = ErrorTranslator.Translate(BlazorErrors.TriggerFailed.Code, BlazorErrors.TriggerFailed.Description);
         }
         finally

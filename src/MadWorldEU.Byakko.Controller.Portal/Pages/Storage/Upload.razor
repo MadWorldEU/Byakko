@@ -125,7 +125,7 @@
 
 @code {
     [Inject] private NavigationManager Navigation { get; set; } = null!;
-    [Inject] private IJSRuntime Js { get; set; } = null!;
+    [Inject] private IJSRuntime JsRuntime { get; set; } = null!;
 
     private IBrowserFile? _selectedFile;
     private Guid? _uploadedId;
@@ -228,7 +228,7 @@
         }
         catch (Exception ex)
         {
-            await Js.InvokeVoidAsync("console.error", ex.ToString());
+            await JsRuntime.InvokeVoidAsync("console.error", ex.ToString());
             _errorMessage = ErrorTranslator.Translate(BlazorErrors.FileUploadFailed.Code, BlazorErrors.FileUploadFailed.Description);
         }
         finally
@@ -239,7 +239,7 @@
 
     private async Task CopyLink()
     {
-        await Js.InvokeVoidAsync("navigator.clipboard.writeText", ShareLink);
+        await JsRuntime.InvokeVoidAsync("navigator.clipboard.writeText", ShareLink);
         _linkCopied = true;
         StateHasChanged();
         await Task.Delay(2000);

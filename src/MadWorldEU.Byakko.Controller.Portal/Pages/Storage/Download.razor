@@ -1,6 +1,6 @@
 @page "/storage/download/{Id}"
 @inject IAssetService AssetService
-@inject IJSRuntime Js
+@inject IJSRuntime JsRuntime
 @inject IStringLocalizer<Resources> Localizer
 @inject IErrorTranslator ErrorTranslator
 @implements IAsyncDisposable
@@ -151,7 +151,7 @@
         }
         catch (Exception ex)
         {
-            await Js.InvokeVoidAsync("console.error", ex.ToString());
+            await JsRuntime.InvokeVoidAsync("console.error", ex.ToString());
             _errorMessage = ErrorTranslator.Translate(BlazorErrors.FileLoadFailed.Code, BlazorErrors.FileLoadFailed.Description);
         }
         finally
@@ -177,7 +177,7 @@
         try
         {
             var url = AssetService.GetContentUrl(Guid.Parse(Id));
-            var errorCode = await Js.InvokeAsync<string?>("downloadFileWithPassword", url, string.IsNullOrEmpty(_password) ? null : _password, _dotNetRef);
+            var errorCode = await JsRuntime.InvokeAsync<string?>("downloadFileWithPassword", url, string.IsNullOrEmpty(_password) ? null : _password, _dotNetRef);
             if (errorCode is not null)
             {
                 _downloadError = ErrorTranslator.Translate(errorCode, "Download failed. Unexpected error happened.");
