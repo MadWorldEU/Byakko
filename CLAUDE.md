@@ -294,7 +294,39 @@ if (result.IsSuccess)
 }
 else
 {
-    _error = result.Failure?.Description ?? "An unexpected error occurred.";
+    _errorMessage = ErrorTranslator.Translate(result.Failure!);
+}
+```
+
+### Error Translation
+
+**`IErrorTranslator` / `ErrorTranslator`** (`Controller.Blazor.Shared/Localization/`, namespace `MadWorldEU.Byakko.Localization`): Translates an error code to a localized user-facing message. Registered in `AddByakkoServices()`.
+
+| Method | Notes |
+|---|---|
+| `Translate(FailureResponse)` | Looks up `response.Code` in `ErrorResources`; falls back to `response.Description` |
+| `Translate(string code, string defaultDescription)` | Looks up `code`; falls back to `defaultDescription` |
+
+**`ErrorResources`** (`Controller.Blazor.Shared/Localization/ErrorResources.resx` + `.nl-nl.resx` + `.ja-jp.resx`): Localized strings keyed by error code (e.g. `"Asset.NotFound"`). Contains translations for all domain error codes and all `BlazorErrors` codes. Add a new entry to all three files whenever a new error code is introduced.
+
+**`BlazorErrors`** (`Controller.Blazor.Shared/Configurations/BlazorErrors.cs`, namespace `MadWorldEU.Byakko.Configurations`): Client-side errors not tied to an API `FailureResponse`. Each entry is a `BlazorError` with a `Code` and fallback `Description`.
+
+| Field | Code | When to use |
+|---|---|---|
+| `FileLoadFailed` | `Blazor.File.LoadFailed` | `catch` block when loading a single file fails |
+| `FilesLoadFailed` | `Blazor.Files.LoadFailed` | `catch` block when loading a list of files fails |
+| `FileDeleteFailed` | `Blazor.File.DeleteFailed` | `catch` block when deleting a file fails |
+| `FileUploadFailed` | `Blazor.File.UploadFailed` | `catch` block when uploading a file fails |
+| `FileInvalidId` | `Blazor.File.InvalidId` | Invalid or unparseable asset ID in the URL |
+| `AuditLogsLoadFailed` | `Blazor.AuditLogs.LoadFailed` | `catch` block when loading audit logs fails |
+| `TriggerFailed` | `Blazor.Trigger.Failed` | `catch` block when a manual trigger request fails |
+
+**Error handling pattern in `catch` blocks** — always log the real exception to the browser console, show only the localized generic message to the user, and use `_errorMessage` (not `_error`) as the variable name:
+```csharp
+catch (Exception ex)
+{
+    await JsRuntime.InvokeVoidAsync("console.error", ex.ToString());
+    _errorMessage = ErrorTranslator.Translate(BlazorErrors.FileLoadFailed.Code, BlazorErrors.FileLoadFailed.Description);
 }
 ```
 

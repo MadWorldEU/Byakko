@@ -17,12 +17,12 @@ internal sealed class ErrorTranslator(IStringLocalizer<ErrorResources> localizer
     /// <inheritdoc/>
     public string Translate(string code, string defaultDescription)
     {
-        var key = localizer[code];
-        if (key.ResourceNotFound)
+        var localizedString = localizer[code];
+        if (localizedString.ResourceNotFound)
         {
             return defaultDescription;
         }
 
-        return localizer.GetString(code);
+        return localizedString;
     }
 }
