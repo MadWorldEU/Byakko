@@ -125,4 +125,25 @@
     <data name="File.LoadFailed" xml:space="preserve">
         <value>Het bestand kon niet worden geladen. Probeer het opnieuw.</value>
     </data>
+    <data name="Blazor.File.LoadFailed" xml:space="preserve">
+        <value>Het bestand kon niet worden geladen. Probeer het opnieuw.</value>
+    </data>
+    <data name="Blazor.Files.LoadFailed" xml:space="preserve">
+        <value>De bestanden konden niet worden geladen. Probeer het opnieuw.</value>
+    </data>
+    <data name="Blazor.AuditLogs.LoadFailed" xml:space="preserve">
+        <value>De auditlogboeken konden niet worden geladen. Probeer het opnieuw.</value>
+    </data>
+    <data name="Blazor.Trigger.Failed" xml:space="preserve">
+        <value>Het verzoek kon niet worden verwerkt. Probeer het opnieuw.</value>
+    </data>
+    <data name="Blazor.File.DeleteFailed" xml:space="preserve">
+        <value>Er is iets misgegaan bij het verwijderen van het bestand. Probeer het opnieuw.</value>
+    </data>
+    <data name="Blazor.File.UploadFailed" xml:space="preserve">
+        <value>Er is iets misgegaan bij het uploaden van het bestand. Probeer het opnieuw.</value>
+    </data>
+    <data name="Blazor.File.InvalidId" xml:space="preserve">
+        <value>De bestandslink is niet geldig. Controleer de link en probeer het opnieuw.</value>
+    </data>
 </root>

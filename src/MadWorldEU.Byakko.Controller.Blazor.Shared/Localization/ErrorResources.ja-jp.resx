@@ -125,4 +125,25 @@
     <data name="File.LoadFailed" xml:space="preserve">
         <value>ファイルを読み込めませんでした。もう一度お試しください。</value>
     </data>
+    <data name="Blazor.File.LoadFailed" xml:space="preserve">
+        <value>ファイルを読み込めませんでした。もう一度お試しください。</value>
+    </data>
+    <data name="Blazor.Files.LoadFailed" xml:space="preserve">
+        <value>ファイルを読み込めませんでした。もう一度お試しください。</value>
+    </data>
+    <data name="Blazor.AuditLogs.LoadFailed" xml:space="preserve">
+        <value>監査ログを読み込めませんでした。もう一度お試しください。</value>
+    </data>
+    <data name="Blazor.Trigger.Failed" xml:space="preserve">
+        <value>リクエストを処理できませんでした。もう一度お試しください。</value>
+    </data>
+    <data name="Blazor.File.DeleteFailed" xml:space="preserve">
+        <value>ファイルの削除中にエラーが発生しました。もう一度お試しください。</value>
+    </data>
+    <data name="Blazor.File.UploadFailed" xml:space="preserve">
+        <value>ファイルのアップロード中にエラーが発生しました。もう一度お試しください。</value>
+    </data>
+    <data name="Blazor.File.InvalidId" xml:space="preserve">
+        <value>ファイルのリンクが無効です。リンクを確認してもう一度お試しください。</value>
+    </data>
 </root>

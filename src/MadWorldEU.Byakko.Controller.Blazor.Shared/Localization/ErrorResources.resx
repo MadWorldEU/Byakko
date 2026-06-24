@@ -132,4 +132,25 @@
     <data name="File.LoadFailed" xml:space="preserve">
         <value>The file could not be loaded. Please try again.</value>
     </data>
+    <data name="Blazor.File.LoadFailed" xml:space="preserve">
+        <value>The file could not be loaded. Please try again.</value>
+    </data>
+    <data name="Blazor.Files.LoadFailed" xml:space="preserve">
+        <value>The files could not be loaded. Please try again.</value>
+    </data>
+    <data name="Blazor.AuditLogs.LoadFailed" xml:space="preserve">
+        <value>The audit logs could not be loaded. Please try again.</value>
+    </data>
+    <data name="Blazor.Trigger.Failed" xml:space="preserve">
+        <value>The request could not be processed. Please try again.</value>
+    </data>
+    <data name="Blazor.File.DeleteFailed" xml:space="preserve">
+        <value>Something went wrong while deleting the file. Please try again.</value>
+    </data>
+    <data name="Blazor.File.UploadFailed" xml:space="preserve">
+        <value>Something went wrong while uploading the file. Please try again.</value>
+    </data>
+    <data name="Blazor.File.InvalidId" xml:space="preserve">
+        <value>The file link is not valid. Please check the link and try again.</value>
+    </data>
 </root>
