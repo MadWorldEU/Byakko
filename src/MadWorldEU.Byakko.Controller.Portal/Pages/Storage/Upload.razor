@@ -3,6 +3,7 @@
 @inject IAssetService AssetService
 @inject IOptions<AssetSettings> AssetSettings
 @inject IStringLocalizer<Resources> Localizer
+@inject IErrorTranslator ErrorTranslator
 
 <PageTitle>@Localizer["Brand Name"] – @Localizer["Upload Page Title"]</PageTitle>
 
@@ -192,7 +193,7 @@
 
             if (!createResult.IsSuccess)
             {
-                _errorMessage = createResult.Failure?.Description ?? "Failed to create asset record.";
+                _errorMessage = ErrorTranslator.Translate(createResult.Failure!);
                 return;
             }
 
@@ -214,7 +215,7 @@
 
             if (!uploadResult.IsSuccess)
             {
-                _errorMessage = uploadResult.Failure?.Description ?? "File content upload failed.";
+                _errorMessage = ErrorTranslator.Translate(uploadResult.Failure!);
                 return;
             }
 

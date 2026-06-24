@@ -1,6 +1,7 @@
 @page "/audits/{EntityId:guid}"
 @attribute [Authorize(Policy = AuthorizationPolicies.Administrator)]
 @inject IAuditService AuditService
+@inject IErrorTranslator ErrorTranslator
 
 <PageTitle>Audit Logs – Byakko Admin</PageTitle>
 
@@ -80,7 +81,7 @@ else if (_response is not null)
             }
             else
             {
-                _error = result.Failure?.Description ?? "An unexpected error occurred.";
+                _error = ErrorTranslator.Translate(result.Failure!);
             }
         }
         catch (Exception ex)

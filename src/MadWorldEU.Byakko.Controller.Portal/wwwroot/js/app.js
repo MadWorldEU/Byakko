@@ -26,10 +26,7 @@ globalThis.downloadFileWithPassword = async function (url, password, dotNetRef) 
 
         if (!response.ok) {
             const error = await response.json();
-            if (error.code === 'Encryption.DecryptionFailed') {
-                return 'The password is incorrect.';
-            }
-            return error.description ?? 'Download failed.';
+            return error.code ?? 'Download failed.';
         }
 
         const contentDisposition = response.headers.get('Content-Disposition');

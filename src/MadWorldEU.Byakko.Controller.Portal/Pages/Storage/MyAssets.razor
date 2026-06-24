@@ -3,6 +3,7 @@
 @inject IAssetService AssetService
 @inject IJSRuntime JsRuntime
 @inject IStringLocalizer<Resources> Localizer
+@inject IErrorTranslator ErrorTranslator
 
 <PageTitle>@Localizer["Brand Name"] – @Localizer["MyAssets Page Title"]</PageTitle>
 
@@ -157,7 +158,7 @@
             }
             else
             {
-                _errorMessage = result.Failure?.Description ?? "An unexpected error occurred.";
+                _errorMessage = ErrorTranslator.Translate(result.Failure!);
             }
         }
         catch (Exception ex)
@@ -194,7 +195,7 @@
             }
             else
             {
-                _errorMessage = assetsResult.Failure?.Description ?? "An unexpected error occurred.";
+                _errorMessage = ErrorTranslator.Translate(assetsResult.Failure!);
             }
         }
         catch (Exception ex)

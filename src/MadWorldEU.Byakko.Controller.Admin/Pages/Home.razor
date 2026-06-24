@@ -1,6 +1,7 @@
 @page "/dashboard"
 @attribute [Authorize(Policy = AuthorizationPolicies.Administrator)]
 @inject IStorageService StorageService
+@inject IErrorTranslator ErrorTranslator
 
 <PageTitle>Dashboard – Byakko Admin</PageTitle>
 
@@ -68,7 +69,7 @@
         }
         else
         {
-            _error = result.Failure?.Description ?? "An unexpected error occurred.";
+            _error = ErrorTranslator.Translate(result.Failure!);
         }
     }
 }

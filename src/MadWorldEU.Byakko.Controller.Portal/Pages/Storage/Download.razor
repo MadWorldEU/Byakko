@@ -2,6 +2,7 @@
 @inject IAssetService AssetService
 @inject IJSRuntime Js
 @inject IStringLocalizer<Resources> Localizer
+@inject IErrorTranslator ErrorTranslator
 @implements IAsyncDisposable
 
 <PageTitle>@Localizer["Brand Name"] – @Localizer["Download Page Title"]</PageTitle>
@@ -145,7 +146,7 @@
             }
             else
             {
-                _errorMessage = result.Failure?.Description ?? "Could not load file.";
+                _errorMessage = ErrorTranslator.Translate(result.Failure!);
             }
         }
         catch (Exception ex)
@@ -175,10 +176,10 @@
         try
         {
             var url = AssetService.GetContentUrl(Guid.Parse(Id));
-            var error = await Js.InvokeAsync<string?>("downloadFileWithPassword", url, string.IsNullOrEmpty(_password) ? null : _password, _dotNetRef);
-            if (error is not null)
+            var errorCode = await Js.InvokeAsync<string?>("downloadFileWithPassword", url, string.IsNullOrEmpty(_password) ? null : _password, _dotNetRef);
+            if (errorCode is not null)
             {
-                _downloadError = error;
+                _downloadError = ErrorTranslator.Translate(errorCode, "Download failed. Unexpected error happened.");
             }
         }
         finally
