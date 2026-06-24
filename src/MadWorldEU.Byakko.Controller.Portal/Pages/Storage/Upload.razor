@@ -126,6 +126,7 @@
 @code {
     [Inject] private NavigationManager Navigation { get; set; } = null!;
     [Inject] private IJSRuntime JsRuntime { get; set; } = null!;
+    [Inject] private ILogger<Upload> Logger { get; set; } = null!;
 
     private IBrowserFile? _selectedFile;
     private Guid? _uploadedId;
@@ -228,7 +229,7 @@
         }
         catch (Exception ex)
         {
-            await JsRuntime.InvokeVoidAsync("console.error", ex.ToString());
+            Logger.LogError(ex, ex.Message);
             _errorMessage = ErrorTranslator.Translate(BlazorErrors.FileUploadFailed.Code, BlazorErrors.FileUploadFailed.Description);
         }
         finally

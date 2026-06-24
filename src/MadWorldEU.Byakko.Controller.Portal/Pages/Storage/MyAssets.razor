@@ -2,6 +2,7 @@
 @attribute [Authorize(Policy = AuthorizationPolicies.User)]
 @inject IAssetService AssetService
 @inject IJSRuntime JsRuntime
+@inject ILogger<MyAssets> Logger
 @inject IStringLocalizer<Resources> Localizer
 @inject IErrorTranslator ErrorTranslator
 
@@ -163,7 +164,7 @@
         }
         catch (Exception ex)
         {
-            await JsRuntime.InvokeVoidAsync("console.error", ex.ToString());
+            Logger.LogError(ex, ex.Message);
             _errorMessage = ErrorTranslator.Translate(BlazorErrors.FileDeleteFailed.Code, BlazorErrors.FileDeleteFailed.Description);
 
             _confirmingDeleteId = null;
@@ -202,7 +203,7 @@
         }
         catch (Exception ex)
         {
-            await JsRuntime.InvokeVoidAsync("console.error", ex.ToString());
+            Logger.LogError(ex, ex.Message);
             _errorMessage = ErrorTranslator.Translate(BlazorErrors.FilesLoadFailed.Code, BlazorErrors.FilesLoadFailed.Description);
         }
         finally

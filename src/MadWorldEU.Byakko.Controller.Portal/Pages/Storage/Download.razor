@@ -1,6 +1,7 @@
 @page "/storage/download/{Id}"
 @inject IAssetService AssetService
 @inject IJSRuntime JsRuntime
+@inject ILogger<Download> Logger
 @inject IStringLocalizer<Resources> Localizer
 @inject IErrorTranslator ErrorTranslator
 @implements IAsyncDisposable
@@ -151,7 +152,7 @@
         }
         catch (Exception ex)
         {
-            await JsRuntime.InvokeVoidAsync("console.error", ex.ToString());
+            Logger.LogError(ex, ex.Message);
             _errorMessage = ErrorTranslator.Translate(BlazorErrors.FileLoadFailed.Code, BlazorErrors.FileLoadFailed.Description);
         }
         finally
