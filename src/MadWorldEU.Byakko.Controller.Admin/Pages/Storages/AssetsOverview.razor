@@ -158,7 +158,8 @@ else if (_response is not null)
         }
         catch (Exception ex)
         {
-            _error = $"Failed to load assets: {ex.Message}";
+            await JsRuntime.InvokeVoidAsync("console.error", ex.ToString());
+            _error = ErrorTranslator.Translate(BlazorErrors.FilesLoadFailed.Code, BlazorErrors.FilesLoadFailed.Description);
         }
         finally
         {
@@ -230,8 +231,8 @@ else if (_response is not null)
         }
         catch (Exception ex)
         {
-            _error = $"Failed to delete asset content: {ex.Message}";
-            _confirmingDeleteId = null;
+            await JsRuntime.InvokeVoidAsync("console.error", ex.ToString());
+            _error = ErrorTranslator.Translate(BlazorErrors.FileDeleteFailed.Code, BlazorErrors.FileDeleteFailed.Description);
         }
         finally
         {

@@ -2,6 +2,7 @@
 @attribute [Authorize(Policy = AuthorizationPolicies.Administrator)]
 @inject IAuditService AuditService
 @inject IErrorTranslator ErrorTranslator
+@inject IJSRuntime Js
 
 <PageTitle>Audit Logs – Byakko Admin</PageTitle>
 
@@ -86,7 +87,8 @@ else if (_response is not null)
         }
         catch (Exception ex)
         {
-            _error = $"Failed to load audit logs: {ex.Message}";
+            await Js.InvokeVoidAsync("console.error", ex.ToString());
+            _error = ErrorTranslator.Translate(BlazorErrors.AuditLogsLoadFailed.Code, BlazorErrors.AuditLogsLoadFailed.Description);
         }
         finally
         {
