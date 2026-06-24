@@ -1,0 +1,125 @@
+<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="Asset.NotFound" xml:space="preserve">
+        <value>ファイルが見つかりませんでした。</value>
+    </data>
+    <data name="Asset.SaveFailed" xml:space="preserve">
+        <value>ファイルの保存中にエラーが発生しました。もう一度お試しください。</value>
+    </data>
+    <data name="Asset.QueryFailed" xml:space="preserve">
+        <value>ファイルの取得中にエラーが発生しました。もう一度お試しください。</value>
+    </data>
+    <data name="Asset.UpdateFailed" xml:space="preserve">
+        <value>ファイルの更新中にエラーが発生しました。もう一度お試しください。</value>
+    </data>
+    <data name="Asset.Forbidden" xml:space="preserve">
+        <value>このファイルを変更する権限がありません。</value>
+    </data>
+    <data name="Asset.FileNameMismatch" xml:space="preserve">
+        <value>ファイル名が記録と一致しません。</value>
+    </data>
+    <data name="Asset.ContentTypeMismatch" xml:space="preserve">
+        <value>ファイルの種類が記録と一致しません。</value>
+    </data>
+    <data name="Asset.DeleteFailed" xml:space="preserve">
+        <value>ファイルの削除中にエラーが発生しました。もう一度お試しください。</value>
+    </data>
+    <data name="Asset.AlreadyDeleted" xml:space="preserve">
+        <value>このファイルはすでに削除されています。</value>
+    </data>
+    <data name="Asset.SizeAlreadySet" xml:space="preserve">
+        <value>ファイルサイズはすでに記録されています。</value>
+    </data>
+    <data name="Asset.Expired" xml:space="preserve">
+        <value>このファイルは期限切れのため、ダウンロードできません。</value>
+    </data>
+    <data name="Asset.MaxFilesReached" xml:space="preserve">
+        <value>アクティブなファイルの最大数に達しました。</value>
+    </data>
+    <data name="Asset.FileTooLarge" xml:space="preserve">
+        <value>アップロードしようとしているファイルが大きすぎます。</value>
+    </data>
+    <data name="Audit.InvalidIpAddress" xml:space="preserve">
+        <value>リクエストの処理中にエラーが発生しました。もう一度お試しください。</value>
+    </data>
+    <data name="Audit.SaveFailed" xml:space="preserve">
+        <value>アクティビティの記録中にエラーが発生しました。もう一度お試しください。</value>
+    </data>
+    <data name="Audit.QueryFailed" xml:space="preserve">
+        <value>アクティビティログの取得中にエラーが発生しました。もう一度お試しください。</value>
+    </data>
+    <data name="ContentType.Empty" xml:space="preserve">
+        <value>ファイルの種類が指定されていません。</value>
+    </data>
+    <data name="ContentType.TooLong" xml:space="preserve">
+        <value>ファイルの種類が長すぎます。</value>
+    </data>
+    <data name="ContentType.Invalid" xml:space="preserve">
+        <value>このファイルの種類はサポートされていません。</value>
+    </data>
+    <data name="AssetPath.PathEmpty" xml:space="preserve">
+        <value>ファイルパスを入力してください。</value>
+    </data>
+    <data name="AssetPath.PathTooLong" xml:space="preserve">
+        <value>ファイルパスが長すぎます。</value>
+    </data>
+    <data name="AssetPath.KeyEmpty" xml:space="preserve">
+        <value>ファイルキーを入力してください。</value>
+    </data>
+    <data name="AssetPath.KeyTooLong" xml:space="preserve">
+        <value>ファイルキーが長すぎます。</value>
+    </data>
+    <data name="Size.Negative" xml:space="preserve">
+        <value>ファイルサイズは負の値にできません。</value>
+    </data>
+    <data name="ValidityPeriod.MustBePositive" xml:space="preserve">
+        <value>有効期間は少なくとも1日以上である必要があります。</value>
+    </data>
+    <data name="UserId.Empty" xml:space="preserve">
+        <value>続行するにはログインしてください。</value>
+    </data>
+    <data name="UserId.Invalid" xml:space="preserve">
+        <value>セッションが無効なようです。再度ログインしてください。</value>
+    </data>
+    <data name="Name.Empty" xml:space="preserve">
+        <value>ファイル名を入力してください。</value>
+    </data>
+    <data name="Name.TooLong" xml:space="preserve">
+        <value>ファイル名が長すぎます。</value>
+    </data>
+    <data name="Id.Empty" xml:space="preserve">
+        <value>必要な識別子がありません。</value>
+    </data>
+    <data name="Id.Invalid" xml:space="preserve">
+        <value>指定された識別子は有効ではありません。</value>
+    </data>
+    <data name="PageSize.Invalid" xml:space="preserve">
+        <value>指定されたページサイズは無効です。</value>
+    </data>
+    <data name="Page.Invalid" xml:space="preserve">
+        <value>指定されたページ番号は無効です。</value>
+    </data>
+    <data name="ContentStorage.UploadFailed" xml:space="preserve">
+        <value>ファイルのアップロード中にエラーが発生しました。もう一度お試しください。</value>
+    </data>
+    <data name="ContentStorage.DownloadFailed" xml:space="preserve">
+        <value>ファイルのダウンロード中にエラーが発生しました。もう一度お試しください。</value>
+    </data>
+    <data name="ContentStorage.DeleteFailed" xml:space="preserve">
+        <value>ストレージからのファイル削除中にエラーが発生しました。もう一度お試しください。</value>
+    </data>
+    <data name="Encryption.DecryptionFailed" xml:space="preserve">
+        <value>パスワードが正しくありません。もう一度お試しください。</value>
+    </data>
+</root>
