@@ -122,4 +122,7 @@
     <data name="Encryption.DecryptionFailed" xml:space="preserve">
         <value>Het wachtwoord is onjuist. Probeer het opnieuw.</value>
     </data>
+    <data name="File.LoadFailed" xml:space="preserve">
+        <value>Het bestand kon niet worden geladen. Probeer het opnieuw.</value>
+    </data>
 </root>

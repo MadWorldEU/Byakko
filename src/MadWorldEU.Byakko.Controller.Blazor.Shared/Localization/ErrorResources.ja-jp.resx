@@ -122,4 +122,7 @@
     <data name="Encryption.DecryptionFailed" xml:space="preserve">
         <value>パスワードが正しくありません。もう一度お試しください。</value>
     </data>
+    <data name="File.LoadFailed" xml:space="preserve">
+        <value>ファイルを読み込めませんでした。もう一度お試しください。</value>
+    </data>
 </root>

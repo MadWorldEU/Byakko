@@ -131,7 +131,7 @@
     {
         if (!Guid.TryParse(Id, out var guid))
         {
-            _errorMessage = "Invalid asset ID.";
+            _errorMessage = ErrorTranslator.Translate(BlazorErrors.FileInvalidId.Code, BlazorErrors.FileInvalidId.Description);
             _isLoading = false;
             return;
         }
@@ -151,7 +151,8 @@
         }
         catch (Exception ex)
         {
-            _errorMessage = $"Could not load file: {ex.Message}";
+            await Js.InvokeVoidAsync("console.error", ex.ToString());
+            _errorMessage = ErrorTranslator.Translate(BlazorErrors.FileLoadFailed.Code, BlazorErrors.FileLoadFailed.Description);
         }
         finally
         {

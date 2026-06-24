@@ -228,7 +228,8 @@
         }
         catch (Exception ex)
         {
-            _errorMessage = $"Upload failed: {ex.Message}";
+            await Js.InvokeVoidAsync("console.error", ex.ToString());
+            _errorMessage = ErrorTranslator.Translate(BlazorErrors.FileUploadFailed.Code, BlazorErrors.FileUploadFailed.Description);
         }
         finally
         {

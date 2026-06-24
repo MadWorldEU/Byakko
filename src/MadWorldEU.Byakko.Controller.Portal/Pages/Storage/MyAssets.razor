@@ -163,7 +163,9 @@
         }
         catch (Exception ex)
         {
-            _errorMessage = $"Failed to delete file: {ex.Message}";
+            await JsRuntime.InvokeVoidAsync("console.error", ex.ToString());
+            _errorMessage = ErrorTranslator.Translate(BlazorErrors.FileDeleteFailed.Code, BlazorErrors.FileDeleteFailed.Description);
+
             _confirmingDeleteId = null;
         }
         finally
@@ -200,7 +202,8 @@
         }
         catch (Exception ex)
         {
-            _errorMessage = $"Could not load files: {ex.Message}";
+            await JsRuntime.InvokeVoidAsync("console.error", ex.ToString());
+            _errorMessage = ErrorTranslator.Translate(BlazorErrors.FilesLoadFailed.Code, BlazorErrors.FilesLoadFailed.Description);
         }
         finally
         {
