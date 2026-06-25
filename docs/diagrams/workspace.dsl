@@ -11,6 +11,10 @@ workspace "Byakko" "A file sharing platform for uploading, managing, and retriev
                 technology "Asp.Net Core"
                 url "https://api.mad-world.eu"
             }
+            status = container "Status" {
+                technology "Asp.Net Core"
+                url "https://status.mad-world.eu"
+            }
             admin = container "Admin" {
                 technology "Blazor WASM"
                 url "https://admin.mad-world.eu"
@@ -32,14 +36,20 @@ workspace "Byakko" "A file sharing platform for uploading, managing, and retriev
         ovhcloud = softwareSystem "OvhCloud" {
             description "Cloud Service"
         }
+        proton = softwareSystem "Proton" {
+            description "Mail Service"
+        }
 
         user -> system.portal "Uses"
         administrator -> system.admin "Uses"
         system.portal -> system.api "Uses"
         system.admin -> system.api "Uses"
+        system.status -> system.api "Health check"
         system.api -> system.keycloak "Authorize"
         system.api -> system.db "Reads from and writes to"
         system.api -> ovhcloud "Downloads from and uploads to"
+        system.api -> proton "Sends mail"
+        system.keycloak -> proton "Sends mail"
     }
 
     views {
