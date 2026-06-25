@@ -16,6 +16,7 @@ public sealed class GetAssetMetadataUseCase(IAssetRepository assetRepository)
             Id = asset.Value.Id.Value,
             Name = asset.Value.Name.Value,
             ContentType = asset.Value.ContentType.Value,
+            Size = asset.Value.Size.Value,
             CreatedAt = asset.Value.CreatedAt.ToDateTimeOffset(),
             UpdatedAt = asset.Value.UpdatedAt.ToDateTimeOffset(),
             ExpiresAt = asset.Value.ExpiresAt.ToDateTimeOffset()

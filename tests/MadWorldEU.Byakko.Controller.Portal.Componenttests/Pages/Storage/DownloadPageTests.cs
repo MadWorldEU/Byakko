@@ -18,6 +18,7 @@ public sealed class DownloadPageTests
                     Id = assetId,
                     Name = "test-file.txt",
                     ContentType = "text/plain",
+                    Size = 10,
                     CreatedAt = DateTimeOffset.Parse("2026-06-22T12:00:00Z"),
                     UpdatedAt = DateTimeOffset.Parse("2026-06-22T12:00:00Z"),
                     ExpiresAt = DateTimeOffset.Parse("2026-07-22T12:00:00Z")
@@ -40,7 +41,7 @@ public sealed class DownloadPageTests
             TimeSpan.FromSeconds(5));
 
         cut.Find(".fw-semibold.text-truncate").TextContent.ShouldBe("test-file.txt");
-        cut.Find(".text-secondary.small").TextContent.ShouldBe("text/plain");
+        cut.Find(".text-secondary.small").TextContent.ShouldBe("text/plain · 10 B");
 
         cut.Find("input[type='password']").ShouldNotBeNull();
 

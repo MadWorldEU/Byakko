@@ -69,7 +69,14 @@ internal sealed class ContentStorage(IAmazonS3 s3Client, IOptions<StorageOptions
                 VersionId = metadata.VersionId
             });
 
-            logger.LogInformation("Object deleted from bucket '{BucketName}' with key '{Key}'.", _bucketName, filePath.Key);
+            logger.LogInformation("Object deleted from bucket '{BucketName}' with key '{Key}'.", _bucketName,
+                filePath.Key);
+            return Result.Success();
+        }
+        catch (AmazonS3Exception exception) when (exception.ErrorCode == "NotFound")
+        {
+            logger.LogWarning("Object not found in bucket '{BucketName}' with key '{Key}'. It may have already been deleted.", _bucketName,
+                filePath.Key);
             return Result.Success();
         }
         catch (AmazonS3Exception exception)
