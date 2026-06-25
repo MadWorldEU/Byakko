@@ -21,6 +21,7 @@ builder.Services.AddDefaultCors(builder.Configuration);
 builder.Services.AddHealthChecks();
 builder.Services.AddBuildingBlocks();
 builder.Services.AddApplication(builder.Configuration);
+builder.Services.AddMail(builder.Configuration);
 builder.Services.AddObjectStorage(builder.Configuration);
 builder.Services.AddPostgresql(builder.Configuration);
 builder.Services.AddSecurity(builder.Configuration);

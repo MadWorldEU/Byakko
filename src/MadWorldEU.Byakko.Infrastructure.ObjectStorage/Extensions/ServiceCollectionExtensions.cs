@@ -1,5 +1,3 @@
-using MadWorldEU.Byakko.Connections;
-
 namespace MadWorldEU.Byakko.Extensions;
 
 /// <summary>Registers object storage infrastructure services with the dependency injection container.</summary>

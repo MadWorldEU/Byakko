@@ -7,11 +7,15 @@ internal sealed class DockerContainerResourceFactory(IDistributedApplicationBuil
     private const int PortalPort = 5100;
     private const int StatusPort = 5063;
     
-    public IResourceBuilder<IResource> CreateApiBuilder(IResourceBuilder<PostgresDatabaseResource> byakkoDb, IResourceBuilder<ILocalStackResource> localstack, IResourceBuilder<KeycloakResource> keycloak)
+    public IResourceBuilder<IResource> CreateApiBuilder(
+        IResourceBuilder<PostgresDatabaseResource> byakkoDb, 
+        IResourceBuilder<ILocalStackResource> localstack, 
+        IResourceBuilder<KeycloakResource> keycloak,
+        IResourceBuilder<MailPitContainerResource> mailPit)
     {
         return builder.AddContainer(nameof(Api), DockerImages.ByakkoApiImage)
             .WithHttpEndpoint(targetPort: 8080, port: ApiPort)
-            .BuildApi(byakkoDb, localstack, keycloak);
+            .BuildApi(byakkoDb, localstack, keycloak, mailPit);
     }
 
     public IResourceBuilder<IResource> CreateAdminBuilder(IResourceBuilder<IResource> api)

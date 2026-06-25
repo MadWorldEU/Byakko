@@ -8,6 +8,7 @@ A curated list of websites and resources used in or relevant to this project.
 - [Aspire](https://aspire.dev/) — .NET Aspire documentation and resources
 - [Blazor](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor) — .NET web framework for building interactive UI with C#
 - [LibMan](https://learn.microsoft.com/en-us/aspnet/core/client-side/libman/?view=aspnetcore-10.0) — Lightweight client-side library acquisition tool for ASP.NET Core
+- [MailKit](https://github.com/jstedfast/MailKit) — Cross-platform .NET SMTP/IMAP/POP3 client library used for sending mail
 - [NodaTime](https://nodatime.org/) — Date and time library for .NET with explicit timezone handling
 - [Npgsql](https://www.npgsql.org/) — .NET data provider for PostgreSQL
 - [bUnit](https://bunit.dev/) — Testing library for Blazor components

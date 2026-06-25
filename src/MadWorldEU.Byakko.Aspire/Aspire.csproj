@@ -12,6 +12,7 @@
         <PackageReference Include="Aspire.Hosting.Keycloak" />
         <PackageReference Include="Aspire.Hosting.PostgreSQL" />
         <PackageReference Include="AWSSDK.S3" />
+        <PackageReference Include="CommunityToolkit.Aspire.Hosting.MailPit" />
         <PackageReference Include="LocalStack.Aspire.Hosting" />
         <PackageReference Include="MessagePack" />
     </ItemGroup>
