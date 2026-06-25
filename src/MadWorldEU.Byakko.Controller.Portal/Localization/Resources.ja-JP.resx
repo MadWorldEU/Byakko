@@ -413,4 +413,13 @@
     <data name="Nav Contact" xml:space="preserve">
         <value>お問い合わせ</value>
     </data>
+    <data name="Contact Email Required" xml:space="preserve">
+        <value>メールアドレスは必須です。</value>
+    </data>
+    <data name="Contact Email Invalid" xml:space="preserve">
+        <value>有効なメールアドレスを入力してください。</value>
+    </data>
+    <data name="Contact Message Required" xml:space="preserve">
+        <value>メッセージは必須です。</value>
+    </data>
 </root>

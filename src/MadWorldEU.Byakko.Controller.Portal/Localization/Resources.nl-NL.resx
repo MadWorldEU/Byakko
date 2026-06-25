@@ -413,4 +413,13 @@
     <data name="Nav Contact" xml:space="preserve">
         <value>Contact</value>
     </data>
+    <data name="Contact Email Required" xml:space="preserve">
+        <value>E-mailadres is verplicht.</value>
+    </data>
+    <data name="Contact Email Invalid" xml:space="preserve">
+        <value>Voer een geldig e-mailadres in.</value>
+    </data>
+    <data name="Contact Message Required" xml:space="preserve">
+        <value>Bericht is verplicht.</value>
+    </data>
 </root>

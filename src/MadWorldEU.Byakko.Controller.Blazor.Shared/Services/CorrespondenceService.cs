@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using MadWorldEU.Byakko.Common;
+using MadWorldEU.Byakko.Configurations;
 using MadWorldEU.Byakko.Correspondences;
 
 namespace MadWorldEU.Byakko.Services;
@@ -27,8 +28,8 @@ public sealed class CorrespondenceService(IHttpClientFactory httpClientFactory) 
             return new FailureResponse
             {
                 StatusCode = (int)response.StatusCode,
-                Code = "Blazor.Correspondence.TooManyRequests",
-                Description = "Too many requests"
+                Code = BlazorErrors.CorrespondenceTooManyRequests.Code,
+                Description = BlazorErrors.CorrespondenceTooManyRequests.Description
             };
         }
 

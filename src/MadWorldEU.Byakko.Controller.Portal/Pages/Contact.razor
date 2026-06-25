@@ -28,18 +28,26 @@
                         <div>
                             <label class="form-label small text-secondary mb-1">@Localizer["Contact Email Label"]</label>
                             <input type="email"
-                                   class="form-control"
+                                   class="form-control @(_emailError is not null ? "is-invalid" : "")"
                                    placeholder="@Localizer["Contact Email Placeholder"]"
                                    @bind="_email"
                                    disabled="@_isSending" />
+                            @if (_emailError is not null)
+                            {
+                                <div class="invalid-feedback">@_emailError</div>
+                            }
                         </div>
                         <div>
                             <label class="form-label small text-secondary mb-1">@Localizer["Contact Message Label"]</label>
-                            <textarea class="form-control"
+                            <textarea class="form-control @(_messageError is not null ? "is-invalid" : "")"
                                       rows="5"
                                       placeholder="@Localizer["Contact Message Placeholder"]"
                                       @bind="_message"
                                       disabled="@_isSending"></textarea>
+                            @if (_messageError is not null)
+                            {
+                                <div class="invalid-feedback">@_messageError</div>
+                            }
                         </div>
                         <button class="btn btn-primary fw-semibold" @onclick="SendAsync" disabled="@_isSending">
                             @if (_isSending)
@@ -62,8 +70,14 @@
 @code {
     [CascadingParameter] private Task<AuthenticationState>? AuthenticationState { get; set; }
 
+    private static readonly Regex EmailRegex = new(
+        @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
+        RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
+
     private string _email = string.Empty;
     private string _message = string.Empty;
+    private string? _emailError;
+    private string? _messageError;
     private bool _isSending;
     private bool _isSuccess;
     private string? _errorMessage;
@@ -76,8 +90,21 @@
             ?? string.Empty;
     }
 
+    private bool Validate()
+    {
+        _emailError = string.IsNullOrWhiteSpace(_email)
+            ? Localizer["Contact Email Required"].Value
+            : !EmailRegex.IsMatch(_email)
+                ? Localizer["Contact Email Invalid"].Value
+                : null;
+        _messageError = string.IsNullOrWhiteSpace(_message) ? Localizer["Contact Message Required"].Value : null;
+        return _emailError is null && _messageError is null;
+    }
+
     private async Task SendAsync()
     {
+        if (!Validate()) return;
+
         _isSending = true;
         _errorMessage = null;
 
