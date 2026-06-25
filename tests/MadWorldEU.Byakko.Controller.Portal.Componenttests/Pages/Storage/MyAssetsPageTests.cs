@@ -117,6 +117,7 @@ public sealed class MyAssetsPageTests
         cut.WaitForState(() => cut.FindAll(".list-group-item").Any(), TimeSpan.FromSeconds(5));
 
         cut.Find("button.btn-outline-danger").Click();
+        cut.WaitForState(() => cut.FindAll("button.btn-danger").Any(), TimeSpan.FromSeconds(5));
 
         cut.FindAll("button.btn-danger").ShouldNotBeEmpty();
         cut.FindAll(".text-warning").ShouldNotBeEmpty();
