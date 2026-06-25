@@ -235,6 +235,19 @@ api:
     assets:
         validityPeriodInDays: 30
         maxUploadSizeInBytes: "1073741824"
+    mail:
+        mode: "Smtp"
+        host: "changeme"
+        port: 587
+        enableSsl: true
+        username: "changeme"
+        token: "changeme"
+        administratorFrom:
+            name: "Byakko"
+            address: "noreply@byakko.dev"
+        administratorTo:
+            name: "Administrator"
+            address: "admin@byakko.dev"
     observability:
         otlpEndpoint: "http://localhost:4040"
     resources:
