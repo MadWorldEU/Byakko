@@ -153,4 +153,7 @@
     <data name="Blazor.File.InvalidId" xml:space="preserve">
         <value>The file link is not valid. Please check the link and try again.</value>
     </data>
+    <data name="Blazor.Feedback.SendFailed" xml:space="preserve">
+        <value>Something went wrong while sending your message. Please try again.</value>
+    </data>
 </root>

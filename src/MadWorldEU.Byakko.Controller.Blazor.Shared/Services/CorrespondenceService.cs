@@ -8,7 +8,7 @@ namespace MadWorldEU.Byakko.Services;
 public sealed class CorrespondenceService(IHttpClientFactory httpClientFactory) : ICorrespondenceService
 {
     private readonly HttpClient _httpClientAnonymous = httpClientFactory.CreateClient(HttpClients.ApiAnonymous);
-    private readonly HttpClient _httpClientAuthorized = httpClientFactory.CreateClient(HttpClients.ApiAnonymous);
+    private readonly HttpClient _httpClientAuthorized = httpClientFactory.CreateClient(HttpClients.ApiAuthorized);
 
     /// <inheritdoc />
     public async Task<ResultResponse<EmptyResponse>> SendFeedbackAsync(SendFeedbackRequest request, bool isAuthenticated)

@@ -1,0 +1,110 @@
+@page "/contact"
+@inject ICorrespondenceService CorrespondenceService
+@inject ILogger<Contact> Logger
+@inject IStringLocalizer<Resources> Localizer
+@inject IErrorTranslator ErrorTranslator
+
+<PageTitle>@Localizer["Brand Name"] – @Localizer["Contact Page Title"]</PageTitle>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <h2 class="fw-bold mb-1">@Localizer["Contact Heading"]</h2>
+            <p class="text-secondary mb-4">@Localizer["Contact Subtitle"]</p>
+
+            @if (_isSuccess)
+            {
+                <div class="alert alert-success" role="alert">@Localizer["Contact Success"]</div>
+            }
+            else
+            {
+                @if (_errorMessage is not null)
+                {
+                    <div class="alert alert-danger" role="alert">@_errorMessage</div>
+                }
+
+                <div class="card border-0 bg-body-tertiary">
+                    <div class="card-body p-4 d-flex flex-column gap-3">
+                        <div>
+                            <label class="form-label small text-secondary mb-1">@Localizer["Contact Email Label"]</label>
+                            <input type="email"
+                                   class="form-control"
+                                   placeholder="@Localizer["Contact Email Placeholder"]"
+                                   @bind="_email"
+                                   disabled="@_isSending" />
+                        </div>
+                        <div>
+                            <label class="form-label small text-secondary mb-1">@Localizer["Contact Message Label"]</label>
+                            <textarea class="form-control"
+                                      rows="5"
+                                      placeholder="@Localizer["Contact Message Placeholder"]"
+                                      @bind="_message"
+                                      disabled="@_isSending"></textarea>
+                        </div>
+                        <button class="btn btn-primary fw-semibold" @onclick="SendAsync" disabled="@_isSending">
+                            @if (_isSending)
+                            {
+                                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                <span>@Localizer["Contact Sending"]</span>
+                            }
+                            else
+                            {
+                                <span>@Localizer["Contact Submit"]</span>
+                            }
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter] private Task<AuthenticationState>? AuthenticationState { get; set; }
+
+    private string _email = string.Empty;
+    private string _message = string.Empty;
+    private bool _isSending;
+    private bool _isSuccess;
+    private string? _errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationState!;
+        _email = authState.User.FindFirst(ClaimTypes.Email)?.Value
+            ?? authState.User.FindFirst("email")?.Value
+            ?? string.Empty;
+    }
+
+    private async Task SendAsync()
+    {
+        _isSending = true;
+        _errorMessage = null;
+
+        try
+        {
+            var authState = await AuthenticationState!;
+            var isAuthenticated = authState.User.Identity?.IsAuthenticated ?? false;
+            var request = new SendFeedbackRequest { Email = _email, Message = _message };
+            var result = await CorrespondenceService.SendFeedbackAsync(request, isAuthenticated);
+
+            if (result.IsSuccess)
+            {
+                _isSuccess = true;
+            }
+            else
+            {
+                _errorMessage = ErrorTranslator.Translate(result.Failure!);
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, ex.Message);
+            _errorMessage = ErrorTranslator.Translate(BlazorErrors.FeedbackSendFailed.Code, BlazorErrors.FeedbackSendFailed.Description);
+        }
+        finally
+        {
+            _isSending = false;
+        }
+    }
+}

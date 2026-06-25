@@ -20,6 +20,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/">@Localizer["Nav Home"]</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/contact">@Localizer["Nav Contact"]</a>
+                </li>
                 <AuthorizeView Policy="@AuthorizationPolicies.User">
                     <Authorized>
                         <li class="nav-item">
@@ -107,7 +110,11 @@
     <div class="container text-center text-secondary">
         <small>&copy; 2026 @Localizer["Brand Name"] &mdash; @Localizer["Nav Tagline"]</small>
         <div class="mt-1">
-            <small><a href="/user-agreement" class="text-secondary">@Localizer["Nav User Agreement"]</a></small>
+            <small>
+                <a href="/user-agreement" class="text-secondary">@Localizer["Nav User Agreement"]</a>
+                &nbsp;&middot;&nbsp;
+                <a href="/contact" class="text-secondary">@Localizer["Nav Contact"]</a>
+            </small>
         </div>
     </div>
 </footer>
