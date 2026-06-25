@@ -18,6 +18,7 @@ public sealed class DownloadPageTests
                     Id = assetId,
                     Name = "test-file.txt",
                     ContentType = "text/plain",
+                    Size = 10,
                     CreatedAt = DateTimeOffset.Parse("2026-06-22T12:00:00Z"),
                     UpdatedAt = DateTimeOffset.Parse("2026-06-22T12:00:00Z"),
                     ExpiresAt = DateTimeOffset.Parse("2026-07-22T12:00:00Z")
