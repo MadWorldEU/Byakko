@@ -41,7 +41,7 @@ public sealed class DownloadPageTests
             TimeSpan.FromSeconds(5));
 
         cut.Find(".fw-semibold.text-truncate").TextContent.ShouldBe("test-file.txt");
-        cut.Find(".text-secondary.small").TextContent.ShouldBe("text/plain");
+        cut.Find(".text-secondary.small").TextContent.ShouldBe("text/plain · 10 B");
 
         cut.Find("input[type='password']").ShouldNotBeNull();
 
