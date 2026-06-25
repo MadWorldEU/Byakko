@@ -8,6 +8,7 @@ internal sealed class RateLimiterSettings
     public bool Enabled { get; init; } = true;
     public PolicySettings General { get; init; } = new();
     public PolicySettings Content { get; init; } = new();
+    public PolicySettings PublicPost { get; init; } = new();
 
     /// <summary>Settings for a single fixed-window rate limiting policy.</summary>
     internal sealed class PolicySettings

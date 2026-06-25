@@ -20,6 +20,7 @@ internal static class CorrespondenceEndpoints
                     onFailure: error => error.ToBadRequest()
                 );
             })
-            .WithName("SendFeedback");
+            .WithName("SendFeedback")
+            .RequireRateLimiting(RateLimiterPolicies.PublicPost);
     }
 }
