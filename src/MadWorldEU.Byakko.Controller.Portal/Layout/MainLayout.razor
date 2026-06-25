@@ -1,4 +1,3 @@
-@using MadWorldEU.Byakko.Localization
 @inherits LayoutComponentBase
 @inject NavigationManager Navigation
 @inject IOptions<OidcSettings> OidcSettings
@@ -19,9 +18,6 @@
             <ul class="navbar-nav ms-auto gap-1 align-items-center">
                 <li class="nav-item">
                     <a class="nav-link" href="/">@Localizer["Nav Home"]</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/contact">@Localizer["Nav Contact"]</a>
                 </li>
                 <AuthorizeView Policy="@AuthorizationPolicies.User">
                     <Authorized>
@@ -97,6 +93,9 @@
                         </li>
                     </NotAuthorized>
                 </AuthorizeView>
+                <li class="nav-item">
+                    <a class="nav-link" href="/contact">@Localizer["Nav Contact"]</a>
+                </li>
             </ul>
         </div>
     </div>
