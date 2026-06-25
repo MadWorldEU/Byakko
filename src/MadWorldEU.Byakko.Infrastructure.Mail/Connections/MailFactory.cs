@@ -10,7 +10,7 @@ public static class MailFactory
         return options.Mode switch
         {
             "Smtp" => options,
-            "OvhCloud" => options.OverrideByMailPit(configuration),
+            "MailPit" => options.OverrideByMailPit(configuration),
             _ => throw new InvalidOperationException($"Unknown mail mode: {options.Mode}")
         };
     }
