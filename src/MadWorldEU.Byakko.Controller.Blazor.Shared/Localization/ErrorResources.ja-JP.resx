@@ -149,4 +149,7 @@
     <data name="Blazor.Feedback.SendFailed" xml:space="preserve">
         <value>メッセージの送信中にエラーが発生しました。もう一度お試しください。</value>
     </data>
+    <data name="Blazor.Correspondence.TooManyRequests" xml:space="preserve">
+        <value>最近すでにフィードバックを送信しています。しばらく待ってから再度お試しください。</value>
+    </data>
 </root>

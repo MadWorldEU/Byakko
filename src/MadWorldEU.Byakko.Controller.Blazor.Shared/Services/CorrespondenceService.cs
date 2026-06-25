@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http.Json;
 using MadWorldEU.Byakko.Common;
 using MadWorldEU.Byakko.Correspondences;
@@ -19,6 +20,16 @@ public sealed class CorrespondenceService(IHttpClientFactory httpClientFactory) 
         if (response.IsSuccessStatusCode)
         {
             return new EmptyResponse();
+        }
+
+        if (response.StatusCode == HttpStatusCode.TooManyRequests)
+        {
+            return new FailureResponse
+            {
+                StatusCode = (int)response.StatusCode,
+                Code = "Blazor.Correspondence.TooManyRequests",
+                Description = "Too many requests"
+            };
         }
 
         return (await response.Content.ReadFromJsonAsync<FailureResponse>())!;
