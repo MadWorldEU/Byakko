@@ -9,7 +9,7 @@ public sealed class MailService(IOptions<MailOptions> options) : ICorrespondence
     private readonly MailOptions _options = options.Value;
     
     /// <summary>Sends a plain-text email to the configured administrator address.</summary>
-    public Result SendToAdministrator(string title, string message)
+    public async Task<Result> SendToAdministratorAsync(string title, string message)
     {
         var mimeMessage = new MimeMessage();
         mimeMessage.From.Add(new MailboxAddress(_options.AdministratorFrom.Name, _options.AdministratorFrom.Address));
@@ -23,15 +23,15 @@ public sealed class MailService(IOptions<MailOptions> options) : ICorrespondence
 
         using (var client = new SmtpClient())
         {
-            client.Connect(_options.Host, _options.Port, _options.EnableSsl);
+            await client.ConnectAsync(_options.Host, _options.Port, _options.EnableSsl);
 
             if (_options.HasAuthentication)
             {
-                client.Authenticate(_options.Username, _options.Token);
+                await client.AuthenticateAsync(_options.Username, _options.Token);
             }
 
-            client.Send(mimeMessage);
-            client.Disconnect(true);
+            await client.SendAsync(mimeMessage);
+            await client.DisconnectAsync(true);
         }
 
         return Result.Success();

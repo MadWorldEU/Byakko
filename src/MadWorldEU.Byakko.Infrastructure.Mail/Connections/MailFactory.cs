@@ -17,8 +17,9 @@ public static class MailFactory
 
     private static MailOptions OverrideByMailPit(this MailOptions options, IConfiguration configuration)
     {
-        options.Host = configuration.GetValue<string>("MailPit:Host")!;
-        options.Port = configuration.GetValue<int>("MailPit:Port");
+        options.Host = configuration.GetValue<string>("MAILPIT_HOST")!;
+        options.Port = configuration.GetValue<int>("MAILPIT_PORT");
+        options.EnableSsl = false;
         
         return options;
     }

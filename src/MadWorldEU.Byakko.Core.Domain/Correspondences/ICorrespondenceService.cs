@@ -2,5 +2,5 @@ namespace MadWorldEU.Byakko.Correspondences;
 
 public interface ICorrespondenceService
 {
-    Result SendToAdministrator(string title, string message);
+    Task<Result> SendToAdministratorAsync(string title, string message);
 }

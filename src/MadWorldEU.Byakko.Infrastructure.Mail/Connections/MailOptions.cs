@@ -8,11 +8,11 @@ public sealed class MailOptions
     /// <summary>Mail provider mode (e.g. <c>Mailpit</c>, <c>Smtp</c>).</summary>
     public string Mode { get; init; } = string.Empty;
     /// <summary>SMTP server hostname.</summary>
-    public string Host { get; set; } = string.Empty;
+    public string Host { get; internal set; } = string.Empty;
     /// <summary>SMTP server port.</summary>
-    public int Port { get; set; }
+    public int Port { get; internal set; }
     /// <summary>Whether to use SSL/TLS when connecting to the SMTP server.</summary>
-    public bool EnableSsl { get; init; }
+    public bool EnableSsl { get; internal set; }
     /// <summary>SMTP authentication username.</summary>
     public string Username { get; init; } = string.Empty;
     /// <summary>SMTP authentication token or password.</summary>
