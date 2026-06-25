@@ -303,6 +303,9 @@
     <data name="Download Expired Message" xml:space="preserve">
         <value>This file has expired and is no longer available for download.</value>
     </data>
+    <data name="Download No Content Message" xml:space="preserve">
+        <value>This file has no content and is not available for download.</value>
+    </data>
     <data name="Download Button" xml:space="preserve">
         <value>Download</value>
     </data>

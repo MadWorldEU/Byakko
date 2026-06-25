@@ -296,6 +296,9 @@
     <data name="Download Expired Message" xml:space="preserve">
         <value>このファイルは期限切れのため、ダウンロードできません。</value>
     </data>
+    <data name="Download No Content Message" xml:space="preserve">
+        <value>このファイルにはコンテンツがなく、ダウンロードできません。</value>
+    </data>
     <data name="Download Button" xml:space="preserve">
         <value>ダウンロード</value>
     </data>
