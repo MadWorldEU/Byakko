@@ -62,6 +62,7 @@ A curated list of websites and resources used in or relevant to this project.
 - [DocFX](https://dotnet.github.io/docfx/) — Static documentation site generator for .NET projects
 - [GitHub Actions](https://github.com/features/actions) — CI/CD automation platform
 - [JetBrains Rider](https://www.jetbrains.com/rider/) — Cross-platform .NET IDE
+- [Mailpit](https://mailpit.axllent.org/) — Local SMTP server and web UI for capturing and inspecting emails during development
 - [mkcert](https://github.com/FiloSottile/mkcert) — Tool for creating locally-trusted TLS certificates for development
 - [NuGet](https://www.nuget.org/) — .NET package manager
 - [SonarCloud](https://sonarcloud.io/) — Cloud-based static code analysis for code quality and security (free for public repositories)
