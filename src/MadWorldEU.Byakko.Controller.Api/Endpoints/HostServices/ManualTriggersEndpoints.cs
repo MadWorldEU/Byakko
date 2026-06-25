@@ -7,7 +7,7 @@ internal static class ManualTriggersEndpoints
     internal static void AddManualTriggersEndpoints(this WebApplication app)
     {
         var manualTriggersEndpoint = app.MapGroup("/host-services/manual-triggers")
-            .WithTags("Assets")
+            .WithTags("HostServices")
             .RequireAuthorization(AuthorizationPolicies.Administrator);
 
         manualTriggersEndpoint.MapPost("/clean-up/assets-content", async (DeleteAllExpiredContentOfAssetsUseCase useCase) =>
