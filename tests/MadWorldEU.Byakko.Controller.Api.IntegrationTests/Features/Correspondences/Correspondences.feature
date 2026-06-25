@@ -1,4 +1,4 @@
-Feature: Send Feedback Endpoint
+Feature: Correspondences Endpoints
 
 Scenario: Send feedback as an authenticated user
     Given I am authenticated as a user

@@ -1,8 +1,8 @@
 namespace MadWorldEU.Byakko.StepDefinitions.Correspondences;
 
 [Binding]
-[Scope(Feature = "Send Feedback Endpoint")]
-public sealed class SendFeedbackSteps(ScenarioContext scenarioContext)
+[Scope(Feature = "Correspondences Endpoints")]
+public sealed class CorrespondencesSteps(ScenarioContext scenarioContext)
 {
     [When("I send feedback with email {string} and message {string}")]
     public async Task WhenISendFeedbackWithEmailAndMessage(string email, string message)
