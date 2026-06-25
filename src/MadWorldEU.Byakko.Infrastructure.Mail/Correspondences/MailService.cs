@@ -24,8 +24,11 @@ public sealed class MailService(IOptions<MailOptions> options) : ICorrespondence
         using (var client = new SmtpClient())
         {
             client.Connect(_options.Host, _options.Port, _options.EnableSsl);
-            
-            client.Authenticate(_options.Username, _options.Token);
+
+            if (_options.HasAuthentication)
+            {
+                client.Authenticate(_options.Username, _options.Token);
+            }
 
             client.Send(mimeMessage);
             client.Disconnect(true);
