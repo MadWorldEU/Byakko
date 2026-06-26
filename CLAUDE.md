@@ -27,6 +27,8 @@ docker build -f src/MadWorldEU.Byakko.Controller.Status/Dockerfile .
 
 Portal/Admin are nginx:alpine on port 8080 (non-root `nginx` user). Status is aspnet:10.0 (Blazor Server). Shared nginx config: `Controller.Blazor.Shared/DockerConfigs/nginx.conf`. CI builds multi-arch images to GHCR on `main`; production deploys on `v*` tags. See `docs/developer-guides/Pipelines.md`.
 
+**Portal Docker entrypoint:** `Controller.Portal/Docker/docker-entrypoint.sh` runs `envsubst '${OG_IMAGE_URL}'` on `index.html` at container startup to inject the `og:image` URL, then starts nginx. The Helm chart sets `OG_IMAGE_URL` to `https://fileshare.{{ .Values.ingress.domain }}/images/byakko-header.png` via the deployment env var. The `index.html` placeholder is `${OG_IMAGE_URL}` — only that variable is substituted, leaving all other content untouched.
+
 ## Testing
 
 See `.claude/rules/testing.md` for full conventions. Test projects:
@@ -214,6 +216,8 @@ Blazor WebAssembly, Bootstrap 5 dark theme (`data-bs-theme="dark"`). Desktop-fir
 ## Portal UI
 
 **Logo/favicon:** `wwwroot/icons/logo.svg` — Bootstrap Icons `cloud-download`, fill `#0d6efd`. Used in navbar brand (28×28) via `<img>`. Favicon wired in `wwwroot/index.html` as `<link rel="icon" type="image/svg+xml" href="/icons/logo.svg" />`.
+
+**Open Graph:** `wwwroot/index.html` includes `og:title`, `og:description`, `og:type`, `og:image` (1200×630). The `og:image` value is the placeholder `${OG_IMAGE_URL}` — substituted at container startup by `Docker/docker-entrypoint.sh` via `envsubst`. The image file must be present at `wwwroot/images/byakko-header.png`.
 
 Blazor WebAssembly, Bootstrap 5 dark theme. Sticky top navbar with auth dropdown (username, edit-profile link via `OidcSettings.GetEditAccountUrl()`, logout), a "My files" link (visible only to users satisfying the `User` policy, via a nested `<AuthorizeView Policy="@AuthorizationPolicies.User">`), and a "Contact" link (public). Pages: `Pages/Home.razor` (`/` — landing page with beta banner, hero section, feature cards, and how-it-works steps), `Pages/Storage/Upload.razor` (`/storage/upload`), `Pages/Storage/Download.razor` (shows expiry warning client-side; server enforces; see below), `Pages/Storage/MyAssets.razor` (`/storage/my-assets` — paged table of the authenticated user's own assets with status badges Active/Expired/Deleted, size, expiry, and download links; fetches from `GET /assets/me`), `Pages/Contact.razor` (`/contact` — see below), `Pages/UserAgreement.razor` (`/user-agreement` — static page with 9 sections covering acceptance, prohibited content, file retention, privacy, liability, changes, and contact). Max upload size from `IOptions<AssetSettings>` → `IBrowserFile.OpenReadStream(maxAllowedSize)`. Footer (`Layout/MainLayout.razor`) includes "User Agreement" and "Contact" links.
 

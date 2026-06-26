@@ -22,16 +22,19 @@ internal sealed class DockerFileResourceFactory(IDistributedApplicationBuilder b
 
     public IResourceBuilder<IResource> CreateAdminBuilder(IResourceBuilder<IResource> api)
     {
-        return builder.AddDockerfile(nameof(Admin), RootFolderSourceCode, "src/MadWorldEU.Byakko.Controller.Admin/Dockerfile")
+        return builder.AddDockerfile(nameof(Admin), RootFolderSourceCode,
+                "src/MadWorldEU.Byakko.Controller.Admin/Dockerfile")
             .WithHttpEndpoint(targetPort: 8080, port: AdminPort)
             .BuildAdmin(api);
     }
 
     public IResourceBuilder<IResource> CreatePortalBuilder(IResourceBuilder<IResource> api)
     {
-        return builder.AddDockerfile(nameof(Portal), RootFolderSourceCode, "src/MadWorldEU.Byakko.Controller.Portal/Dockerfile")
+        return builder.AddDockerfile(nameof(Portal), RootFolderSourceCode,
+                "src/MadWorldEU.Byakko.Controller.Portal/Dockerfile")
             .WithHttpEndpoint(targetPort: 8080, port: PortalPort)
-            .BuildPortal(api);
+            .BuildPortal(api)
+            .BuildDockerPortal(PortalPort);
     }
 
     public IResourceBuilder<IResource> CreateStatusBuilder(IResourceBuilder<PostgresDatabaseResource> byakkoDb, 
