@@ -1,4 +1,5 @@
 using MadWorldEU.Byakko.Audits;
+using MadWorldEU.Byakko.Correspondences;
 using MadWorldEU.Byakko.DomainDrivenDevelopment;
 using Microsoft.Extensions.Configuration;
 
@@ -11,6 +12,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddAssets(configuration);
         services.AddAudits();
+        services.AddCorrespondences();
         
         return services;
     }
@@ -40,5 +42,10 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IDomainEventHandler<AssetContentUploadedEvent>, AuditAssetsHandler>();
 
         services.AddScoped<GetAuditLogsUseCase>();
+    }
+    
+    private static void AddCorrespondences(this IServiceCollection services)
+    {
+        services.AddScoped<SendFeedbackUseCase>();
     }
 }

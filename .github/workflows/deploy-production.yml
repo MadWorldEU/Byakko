@@ -40,7 +40,12 @@ jobs:
                     --set storage.ovhCloud.accessKey="dry-run" \
                     --set storage.ovhCloud.secretKey="dry-run" \
                     --set storage.ovhCloud.region="dry-run" \
-                    --set api.encryption.key="dry-run" > /dev/null
+                    --set api.encryption.key="dry-run" \
+                    --set api.mail.host="dry-run" \
+                    --set api.mail.username="dry-run" \
+                    --set api.mail.token="dry-run" \
+                    --set api.mail.administratorFrom.address="dry-run@example.com" \
+                    --set api.mail.administratorTo.address="dry-run@example.com" > /dev/null
 
     deployment:
         if: github.event_name == 'push'
@@ -78,6 +83,11 @@ jobs:
                   OVHCLOUD_SECRET_KEY: ${{ secrets.OVHCLOUD_SECRET_KEY }}
                   OVHCLOUD_REGION: ${{ secrets.OVHCLOUD_REGION }}
                   ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY }}
+                  MAIL_HOST: ${{ secrets.MAIL_HOST }}
+                  MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+                  MAIL_TOKEN: ${{ secrets.MAIL_TOKEN }}
+                  MAIL_ADMINISTRATOR_FROM_ADDRESS: ${{ secrets.MAIL_ADMINISTRATOR_FROM_ADDRESS }}
+                  MAIL_ADMINISTRATOR_TO_ADDRESS: ${{ secrets.MAIL_ADMINISTRATOR_TO_ADDRESS }}
               run: |
                   helm upgrade --install byakko deployments/helm/byakko \
                     --values deployments/helm/byakko/Values.yaml \
@@ -97,5 +107,10 @@ jobs:
                     --set storage.ovhCloud.secretKey="$OVHCLOUD_SECRET_KEY" \
                     --set storage.ovhCloud.region="$OVHCLOUD_REGION" \
                     --set api.encryption.key="$ENCRYPTION_KEY" \
+                    --set api.mail.host="$MAIL_HOST" \
+                    --set api.mail.username="$MAIL_USERNAME" \
+                    --set api.mail.token="$MAIL_TOKEN" \
+                    --set api.mail.administratorFrom.address="$MAIL_ADMINISTRATOR_FROM_ADDRESS" \
+                    --set api.mail.administratorTo.address="$MAIL_ADMINISTRATOR_TO_ADDRESS" \
                     --wait \
                     --timeout 5m

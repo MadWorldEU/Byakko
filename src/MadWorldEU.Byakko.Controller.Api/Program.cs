@@ -1,5 +1,6 @@
 using MadWorldEU.Byakko.Configurations;
 using MadWorldEU.Byakko.Endpoints.Audits;
+using MadWorldEU.Byakko.Endpoints.Correspondences;
 using MadWorldEU.Byakko.Endpoints.Development;
 using MadWorldEU.Byakko.Endpoints.HostServices;
 using MadWorldEU.Byakko.Endpoints.Storages;
@@ -21,6 +22,7 @@ builder.Services.AddDefaultCors(builder.Configuration);
 builder.Services.AddHealthChecks();
 builder.Services.AddBuildingBlocks();
 builder.Services.AddApplication(builder.Configuration);
+builder.Services.AddMail(builder.Configuration);
 builder.Services.AddObjectStorage(builder.Configuration);
 builder.Services.AddPostgresql(builder.Configuration);
 builder.Services.AddSecurity(builder.Configuration);
@@ -83,6 +85,7 @@ if (app.Configuration.GetValue("RateLimiting:Enabled", true))
 
 app.AddAuditEndpoints();
 app.AddAssetsEndpoints();
+app.AddCorrespondenceEndpoints();
 app.AddGeneralStorageEndpoints();
 app.AddManualTriggersEndpoints();
 app.AddTestsEndpoints();

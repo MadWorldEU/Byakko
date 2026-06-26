@@ -7,6 +7,8 @@ public sealed class ApiHooks(ScenarioContext scenarioContext)
 {
     private static PostgreSqlContainer _postgres = null!;
     private static LocalStackContainer _localstack = null!;
+    private static IContainer _mailpit = null!;
+    private static string _mailpitApiUrl = null!;
     private static WebApplicationFactory<Program>? _factory;
     private static HttpClient? _client;
     private static HttpClient? _authenticatedClient;
@@ -22,6 +24,17 @@ public sealed class ApiHooks(ScenarioContext scenarioContext)
             .Build();
         await _localstack.StartAsync();
 
+        _mailpit = new ContainerBuilder(DockerImages.Mailpit)
+            .WithPortBinding(1025, true)
+            .WithPortBinding(8025, true)
+            .WithWaitStrategy(Wait.ForUnixContainer()
+                .UntilHttpRequestIsSucceeded(r => r.ForPort(8025).ForPath("/api/v1/messages")))
+            .Build();
+        await _mailpit.StartAsync();
+
+        var mailpitSmtpPort = _mailpit.GetMappedPublicPort(1025);
+        _mailpitApiUrl = $"http://{_mailpit.Hostname}:{_mailpit.GetMappedPublicPort(8025)}";
+
         _factory = new WebApplicationFactory<Program>()
             .WithWebHostBuilder(host =>
             {
@@ -33,7 +46,9 @@ public sealed class ApiHooks(ScenarioContext scenarioContext)
                         ["ConnectionStrings:localstack"] = _localstack.GetConnectionString(),
                         ["RateLimiting:Enabled"] = "false",
                         ["Authentication:ValidateUser"] = "false",
-                        ["Assets:MaxFilesEachUser"] = "1000"
+                        ["Assets:MaxFilesEachUser"] = "1000",
+                        ["MAILPIT_HOST"] = _mailpit.Hostname,
+                        ["MAILPIT_PORT"] = mailpitSmtpPort.ToString()
                     });
                 });
             });
@@ -59,13 +74,18 @@ public sealed class ApiHooks(ScenarioContext scenarioContext)
         await (_factory?.DisposeAsync() ?? ValueTask.CompletedTask);
         await _postgres.DisposeAsync();
         await _localstack.DisposeAsync();
+        await _mailpit.DisposeAsync();
     }
 
     [BeforeScenario]
-    public void BeforeScenario()
+    public async Task BeforeScenario()
     {
+        using var httpClient = new HttpClient();
+        await httpClient.DeleteAsync($"{_mailpitApiUrl}/api/v1/messages");
+
         scenarioContext.Set(_client!);
         scenarioContext.Set(_authenticatedClient!, ScenarioContextKeys.AuthenticatedClient);
         scenarioContext.Set(_factory!.Services, ScenarioContextKeys.ServiceProvider);
+        scenarioContext.Set(_mailpitApiUrl, ScenarioContextKeys.MailpitApiUrl);
     }
 }

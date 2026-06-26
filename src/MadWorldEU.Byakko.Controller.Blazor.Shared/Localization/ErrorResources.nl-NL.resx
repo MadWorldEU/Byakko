@@ -146,4 +146,10 @@
     <data name="Blazor.File.InvalidId" xml:space="preserve">
         <value>De bestandslink is niet geldig. Controleer de link en probeer het opnieuw.</value>
     </data>
+    <data name="Blazor.Feedback.SendFailed" xml:space="preserve">
+        <value>Er is iets misgegaan bij het verzenden van uw bericht. Probeer het opnieuw.</value>
+    </data>
+    <data name="Blazor.Correspondence.TooManyRequests" xml:space="preserve">
+        <value>U heeft onlangs al feedback verzonden. Wacht even voordat u een nieuw bericht stuurt.</value>
+    </data>
 </root>

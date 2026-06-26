@@ -37,6 +37,17 @@ internal static class RateLimiterExtensions
                         QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
                         QueueLimit = 0
                     }));
+
+            options.AddPolicy(RateLimiterPolicies.PublicPost, context =>
+                RateLimitPartition.GetFixedWindowLimiter(
+                    partitionKey: GetPartitionKey(context),
+                    factory: _ => new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = settings.PublicPost.PermitLimit,
+                        Window = TimeSpan.FromSeconds((double)settings.PublicPost.WindowInSeconds),
+                        QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                        QueueLimit = 0
+                    }));
         });
 
         return services;

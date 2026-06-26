@@ -4,4 +4,5 @@ namespace MadWorldEU.Byakko.Configurations;
 internal static class RateLimiterPolicies
 {
     internal const string Content = "content";
+    internal const string PublicPost = "public-post";
 }

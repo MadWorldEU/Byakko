@@ -374,4 +374,52 @@
     <data name="Upload Files Remaining Count" xml:space="preserve">
         <value>{1}件中{0}件</value>
     </data>
+    <data name="Contact Page Title" xml:space="preserve">
+        <value>お問い合わせ</value>
+    </data>
+    <data name="Contact Heading" xml:space="preserve">
+        <value>お問い合わせ</value>
+    </data>
+    <data name="Contact Subtitle" xml:space="preserve">
+        <value>ご質問やフィードバックがありましたら、メッセージをお送りください。</value>
+    </data>
+    <data name="Contact Email Label" xml:space="preserve">
+        <value>メールアドレス</value>
+    </data>
+    <data name="Contact Email Placeholder" xml:space="preserve">
+        <value>you@example.com</value>
+    </data>
+    <data name="Contact Message Label" xml:space="preserve">
+        <value>メッセージ</value>
+    </data>
+    <data name="Contact Message Placeholder" xml:space="preserve">
+        <value>メッセージを入力してください…</value>
+    </data>
+    <data name="Contact Submit" xml:space="preserve">
+        <value>送信する</value>
+    </data>
+    <data name="Contact Sending" xml:space="preserve">
+        <value>送信中…</value>
+    </data>
+    <data name="Contact Success" xml:space="preserve">
+        <value>メッセージが送信されました。近日中にご連絡いたします。</value>
+    </data>
+    <data name="Contact Login Required" xml:space="preserve">
+        <value>メッセージを送信するにはログインが必要です。</value>
+    </data>
+    <data name="Contact Login Link" xml:space="preserve">
+        <value>ログイン</value>
+    </data>
+    <data name="Nav Contact" xml:space="preserve">
+        <value>お問い合わせ</value>
+    </data>
+    <data name="Contact Email Required" xml:space="preserve">
+        <value>メールアドレスは必須です。</value>
+    </data>
+    <data name="Contact Email Invalid" xml:space="preserve">
+        <value>有効なメールアドレスを入力してください。</value>
+    </data>
+    <data name="Contact Message Required" xml:space="preserve">
+        <value>メッセージは必須です。</value>
+    </data>
 </root>

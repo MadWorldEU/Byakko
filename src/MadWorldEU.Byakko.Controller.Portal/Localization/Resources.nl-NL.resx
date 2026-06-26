@@ -374,4 +374,52 @@
     <data name="Upload Files Remaining Count" xml:space="preserve">
         <value>{0} van {1}</value>
     </data>
+    <data name="Contact Page Title" xml:space="preserve">
+        <value>Contact</value>
+    </data>
+    <data name="Contact Heading" xml:space="preserve">
+        <value>Neem Contact Op</value>
+    </data>
+    <data name="Contact Subtitle" xml:space="preserve">
+        <value>Heeft u een vraag of feedback? Stuur ons een bericht en we nemen contact met u op.</value>
+    </data>
+    <data name="Contact Email Label" xml:space="preserve">
+        <value>Uw e-mailadres</value>
+    </data>
+    <data name="Contact Email Placeholder" xml:space="preserve">
+        <value>u@voorbeeld.nl</value>
+    </data>
+    <data name="Contact Message Label" xml:space="preserve">
+        <value>Bericht</value>
+    </data>
+    <data name="Contact Message Placeholder" xml:space="preserve">
+        <value>Schrijf hier uw bericht…</value>
+    </data>
+    <data name="Contact Submit" xml:space="preserve">
+        <value>Bericht Versturen</value>
+    </data>
+    <data name="Contact Sending" xml:space="preserve">
+        <value>Verzenden…</value>
+    </data>
+    <data name="Contact Success" xml:space="preserve">
+        <value>Uw bericht is verzonden. We nemen spoedig contact met u op.</value>
+    </data>
+    <data name="Contact Login Required" xml:space="preserve">
+        <value>U moet ingelogd zijn om een bericht te sturen.</value>
+    </data>
+    <data name="Contact Login Link" xml:space="preserve">
+        <value>Inloggen</value>
+    </data>
+    <data name="Nav Contact" xml:space="preserve">
+        <value>Contact</value>
+    </data>
+    <data name="Contact Email Required" xml:space="preserve">
+        <value>E-mailadres is verplicht.</value>
+    </data>
+    <data name="Contact Email Invalid" xml:space="preserve">
+        <value>Voer een geldig e-mailadres in.</value>
+    </data>
+    <data name="Contact Message Required" xml:space="preserve">
+        <value>Bericht is verplicht.</value>
+    </data>
 </root>

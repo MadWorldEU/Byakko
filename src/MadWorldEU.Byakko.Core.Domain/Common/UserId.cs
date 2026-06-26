@@ -27,6 +27,16 @@ public sealed class UserId : ValueObject
             return UserIdErrors.Empty;
         }
 
+        return CreateOrEmpty(id);
+    }
+
+    public static Result<UserId> CreateOrEmpty(string? id)
+    {
+        if (string.IsNullOrWhiteSpace(id))
+        {
+            return Empty;
+        }
+        
         if (!Guid.TryParse(id, out var guid))
         {
             return UserIdErrors.Invalid;

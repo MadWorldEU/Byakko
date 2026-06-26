@@ -95,6 +95,26 @@ spec:
                         value: "https://fileshare.{{ .Values.ingress.domain }}"
                       - name: Cors__AllowedOrigins__4
                         value: "https://admin.{{ .Values.ingress.domain }}"
+                      - name: Mail__Mode
+                        value: {{ .Values.api.mail.mode | quote }}
+                      - name: Mail__Host
+                        value: {{ .Values.api.mail.host | quote }}
+                      - name: Mail__Port
+                        value: {{ .Values.api.mail.port | quote }}
+                      - name: Mail__TlsEnabled
+                        value: {{ .Values.api.mail.tlsEnabled | quote }}
+                      - name: Mail__Username
+                        value: {{ .Values.api.mail.username | quote }}
+                      - name: Mail__Token
+                        value: {{ .Values.api.mail.token | quote }}
+                      - name: Mail__AdministratorFrom__Name
+                        value: {{ .Values.api.mail.administratorFrom.name | quote }}
+                      - name: Mail__AdministratorFrom__Address
+                        value: {{ .Values.api.mail.administratorFrom.address | quote }}
+                      - name: Mail__AdministratorTo__Name
+                        value: {{ .Values.api.mail.administratorTo.name | quote }}
+                      - name: Mail__AdministratorTo__Address
+                        value: {{ .Values.api.mail.administratorTo.address | quote }}
                   volumeMounts:
                       - name: security-txt
                         mountPath: /app/wwwroot/.well-known/security.txt

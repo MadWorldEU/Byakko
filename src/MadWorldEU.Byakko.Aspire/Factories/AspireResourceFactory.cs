@@ -53,4 +53,9 @@ internal static class AspireResourceFactory
             .WithBindMount("./Configurations/KeyCloak/themes", "/opt/keycloak/themes")
             .WithDataVolume();
     }
+
+    internal static IResourceBuilder<MailPitContainerResource> BuildMailPit(this IDistributedApplicationBuilder builder)
+    {
+        return builder.AddMailPit("mailpit");
+    }
 }
