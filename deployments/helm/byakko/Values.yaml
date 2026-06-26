@@ -239,7 +239,7 @@ api:
         mode: "Smtp"
         host: "changeme"
         port: 587
-        enableSsl: true
+        tlsEnabled: true
         username: "changeme"
         token: "changeme"
         administratorFrom:

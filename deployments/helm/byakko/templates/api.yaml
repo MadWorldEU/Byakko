@@ -101,8 +101,8 @@ spec:
                         value: {{ .Values.api.mail.host | quote }}
                       - name: Mail__Port
                         value: {{ .Values.api.mail.port | quote }}
-                      - name: Mail__EnableSsl
-                        value: {{ .Values.api.mail.enableSsl | quote }}
+                      - name: Mail__TlsEnabled
+                        value: {{ .Values.api.mail.tlsEnabled | quote }}
                       - name: Mail__Username
                         value: {{ .Values.api.mail.username | quote }}
                       - name: Mail__Token
