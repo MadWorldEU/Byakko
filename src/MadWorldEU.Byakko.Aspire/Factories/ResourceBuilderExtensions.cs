@@ -38,6 +38,13 @@ internal static class ResourceBuilderExtensions
             .WithHttpHealthCheck("/health.txt");
     }
     
+    internal static IResourceBuilder<TResource> BuildDockerPortal<TResource>(this IResourceBuilder<TResource> portalBuilder, int portalPort)
+        where TResource : IResource, IResourceWithWaitSupport, IResourceWithEnvironment, IResourceWithEndpoints
+    {
+        return portalBuilder            
+            .WithEnvironment("OG_IMAGE_URL", "http://localhost:"  + portalPort + "/images/byakko-header.png");
+    }
+    
     internal static IResourceBuilder<TResource> BuildStatus<TResource>(this IResourceBuilder<TResource> statusBuilder, 
         IResourceBuilder<PostgresDatabaseResource> byakkoDb, 
         IResourceBuilder<ILocalStackResource> localstack, 

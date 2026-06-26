@@ -29,7 +29,8 @@ internal sealed class DockerContainerResourceFactory(IDistributedApplicationBuil
     {
         return builder.AddContainer(nameof(Portal), DockerImages.ByakkoPortalImage)
             .WithHttpEndpoint(targetPort: 8080, port: PortalPort)
-            .BuildPortal(api);
+            .BuildPortal(api)
+            .BuildDockerPortal(PortalPort);       
     }
 
     public IResourceBuilder<IResource> CreateStatusBuilder(IResourceBuilder<PostgresDatabaseResource> byakkoDb, 

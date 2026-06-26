@@ -51,6 +51,9 @@ spec:
                 - name: {{ .Values.portal.name }}
                   image: "{{ .Values.portal.image.repository }}:{{ .Values.appVersion }}"
                   imagePullPolicy: {{ .Values.imagePullPolicy }}
+                  env:
+                      - name: OG_IMAGE_URL
+                        value: "https://fileshare.{{ .Values.ingress.domain }}/images/byakko-header.png"
                   ports:
                       - containerPort: {{ .Values.portal.port }}
                   resources:
