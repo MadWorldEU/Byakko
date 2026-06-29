@@ -12,4 +12,4 @@ The project dependency diagram shows how the layers of the Byakko solution relat
 - **Controller.Admin / Controller.Portal** — Blazor WebAssembly frontends. Depend on Blazor.Shared and Contracts; must not depend on Domain, Application, or Infrastructure.
 - **Controller.Status** — Blazor Server status dashboard. Depends on Application, Domain, and Infrastructure (Postgresql, ObjectStorage) for health checks.
 
-<img src="images/ProjectDependencies.png" alt="Project Dependencies" style="max-height: 800px;" />
+<img src="images/ProjectDependencies.png" alt="Project Dependencies" style="max-height: 200px;" />
