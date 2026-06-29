@@ -8,5 +8,6 @@ The container diagram shows the internal structure of the Byakko platform.
 - **Keycloak** — Identity and access management server. Provides JWT-based authentication for the Api, Portal, and Admin.
 - **Database Schema** — PostgreSQL database. Stores asset metadata and application state.
 - **OVHCloud** — S3-compatible object storage. Stores the AES-256 encrypted binary content of uploaded assets. In local development this is replaced by a Localstack instance via LocalStack.
+- **Proton Mail** — external SMTP mail provider. The Api delivers feedback submissions via `Infrastructure.Mail` (MailKit) to the administrator's inbox. In local development this is replaced by a Mailpit instance.
 
 ![Containers](images/Containers.svg)
