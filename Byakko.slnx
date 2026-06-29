@@ -30,7 +30,7 @@
   </Folder>
   <Folder Name="/docs/diagrams/">
     <File Path="docs\diagrams\Containers.md" />
-    <File Path="docs\diagrams\ProjectDepencies.md" />
+    <File Path="docs\diagrams\ProjectDependencies.md" />
     <File Path="docs\diagrams\SystemContext.md" />
     <File Path="docs\diagrams\toc.yml" />
     <File Path="docs\diagrams\workspace.dsl" />
@@ -38,7 +38,7 @@
   </Folder>
   <Folder Name="/docs/diagrams/images/">
     <File Path="docs\diagrams\images\Containers.svg" />
-    <File Path="docs\diagrams\images\ProjectDepencies.png" />
+    <File Path="docs\diagrams\images\ProjectDependencies.png" />
     <File Path="docs\diagrams\images\SystemContext.svg" />
   </Folder>
   <Folder Name="/docs/user-guides/">
