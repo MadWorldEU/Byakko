@@ -45,15 +45,16 @@ observability:
 api:
     encryption:
         key: "changeme"
-    mail:
-        host: "changeme"
-        username: "changeme"
-        token: "changeme"
-        administratorFrom:
-            address: "changeme"
-        administratorTo:
-            address: "changeme"
-        
+
+mail:
+    host: "changeme"
+    username: "changeme"
+    token: "changeme"
+    administratorFrom:
+        address: "changeme"
+    administratorTo:
+        address: "changeme"
+
 storage:
     mode: "OvhCloud"
     ovhCloud:

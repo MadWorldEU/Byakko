@@ -96,25 +96,25 @@ spec:
                       - name: Cors__AllowedOrigins__4
                         value: "https://admin.{{ .Values.ingress.domain }}"
                       - name: Mail__Mode
-                        value: {{ .Values.api.mail.mode | quote }}
+                        value: {{ .Values.mail.mode | quote }}
                       - name: Mail__Host
-                        value: {{ .Values.api.mail.host | quote }}
+                        value: {{ .Values.mail.host | quote }}
                       - name: Mail__Port
-                        value: {{ .Values.api.mail.port | quote }}
+                        value: {{ .Values.mail.port | quote }}
                       - name: Mail__TlsEnabled
-                        value: {{ .Values.api.mail.tlsEnabled | quote }}
+                        value: {{ .Values.mail.tlsEnabled | quote }}
                       - name: Mail__Username
-                        value: {{ .Values.api.mail.username | quote }}
+                        value: {{ .Values.mail.username | quote }}
                       - name: Mail__Token
-                        value: {{ .Values.api.mail.token | quote }}
+                        value: {{ .Values.mail.token | quote }}
                       - name: Mail__AdministratorFrom__Name
-                        value: {{ .Values.api.mail.administratorFrom.name | quote }}
+                        value: {{ .Values.mail.administratorFrom.name | quote }}
                       - name: Mail__AdministratorFrom__Address
-                        value: {{ .Values.api.mail.administratorFrom.address | quote }}
+                        value: {{ .Values.mail.administratorFrom.address | quote }}
                       - name: Mail__AdministratorTo__Name
-                        value: {{ .Values.api.mail.administratorTo.name | quote }}
+                        value: {{ .Values.mail.administratorTo.name | quote }}
                       - name: Mail__AdministratorTo__Address
-                        value: {{ .Values.api.mail.administratorTo.address | quote }}
+                        value: {{ .Values.mail.administratorTo.address | quote }}
                   volumeMounts:
                       - name: security-txt
                         mountPath: /app/wwwroot/.well-known/security.txt
