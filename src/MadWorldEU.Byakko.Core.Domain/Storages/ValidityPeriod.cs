@@ -10,6 +10,16 @@ public sealed class ValidityPeriod : ValueObject
         Days = days;
     }
 
+    public static Result<ValidityPeriod> Create(int days, int maxDays)
+    {
+        if (days >= maxDays)
+        {
+            return ValidityPeriodErrors.ExceedsMaximum;
+        }
+        
+        return Create(days);
+    }
+    
     public static Result<ValidityPeriod> Create(int days)
     {
         if (days <= 0)

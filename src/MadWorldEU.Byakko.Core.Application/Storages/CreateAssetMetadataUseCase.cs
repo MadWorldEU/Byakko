@@ -27,16 +27,15 @@ public sealed class CreateAssetMetadataUseCase(
         var ipAddressResult = IpAddress.Create(ipAddress);
         if (ipAddressResult.IsFailure) return ipAddressResult.Error;
 
-        var sizeResult = Size.Create(request.Size);
+        var sizeResult = Size.Create(request.Size, settings.Value.MaxUploadSizeInBytes);
         if (sizeResult.IsFailure) return sizeResult.Error;
-        if (sizeResult.Value > settings.Value.MaxUploadSizeInBytes) return AssetErrors.FileTooLarge;
-
+        
+        var validityPeriodResult = ValidityPeriod.Create(request.ExpiresInDays, settings.Value.ValidityPeriodInDays);
+        if (validityPeriodResult.IsFailure) return validityPeriodResult.Error;
+        
         var countActiveAssetsResult = await repository.GetCountOfActiveAssetsAsync(userIdResult.Value);
         if (countActiveAssetsResult.IsFailure) return countActiveAssetsResult.Error;
         if (countActiveAssetsResult.Value >= settings.Value.MaxFilesEachUser) return AssetErrors.MaxFilesReached;
-
-        var validityPeriodResult = ValidityPeriod.Create(settings.Value.ValidityPeriodInDays);
-        if (validityPeriodResult.IsFailure) return validityPeriodResult.Error;
 
         var assetResult = Asset.Create(clock, guidGenerator, nameResult.Value, contentTypeResult.Value, userIdResult.Value, validityPeriodResult.Value);
         if (assetResult.IsFailure) return assetResult.Error;
