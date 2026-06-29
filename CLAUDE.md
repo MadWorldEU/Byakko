@@ -16,18 +16,9 @@ API: `http://localhost:5062` / `https://localhost:7286`. OpenAPI at `/openapi/v1
 
 ## Docker
 
-Build all three from the **repository root**:
+Build from the **repository root** with `-f src/MadWorldEU.Byakko.Controller.<Name>/Dockerfile .` (Api, Portal, Admin, Status). Portal/Admin are nginx:alpine on port 8080 (non-root `nginx` user). Status is aspnet:10.0 (Blazor Server). Shared nginx config: `Controller.Blazor.Shared/DockerConfigs/nginx.conf`. CI builds multi-arch images to GHCR on `main`; production deploys on `v*` tags.
 
-```bash
-docker build -f src/MadWorldEU.Byakko.Controller.Api/Dockerfile .
-docker build -f src/MadWorldEU.Byakko.Controller.Portal/Dockerfile .
-docker build -f src/MadWorldEU.Byakko.Controller.Admin/Dockerfile .
-docker build -f src/MadWorldEU.Byakko.Controller.Status/Dockerfile .
-```
-
-Portal/Admin are nginx:alpine on port 8080 (non-root `nginx` user). Status is aspnet:10.0 (Blazor Server). Shared nginx config: `Controller.Blazor.Shared/DockerConfigs/nginx.conf`. CI builds multi-arch images to GHCR on `main`; production deploys on `v*` tags. See `docs/developer-guides/Pipelines.md`.
-
-**Portal Docker entrypoint:** `Controller.Portal/Docker/docker-entrypoint.sh` runs `envsubst '${OG_IMAGE_URL}'` on `index.html` at container startup to inject the `og:image` URL, then starts nginx. The Helm chart sets `OG_IMAGE_URL` to `https://fileshare.{{ .Values.ingress.domain }}/images/byakko-header.png` via the deployment env var. The `index.html` placeholder is `${OG_IMAGE_URL}` — only that variable is substituted, leaving all other content untouched.
+**Portal Docker entrypoint:** `Controller.Portal/Docker/docker-entrypoint.sh` runs `envsubst '${OG_IMAGE_URL}'` on `index.html` at startup — only that variable is substituted, leaving all other `${}` content untouched.
 
 ## Testing
 
@@ -39,30 +30,30 @@ See `.claude/rules/testing.md` for full conventions. Test projects:
 | `Controller.Status.IntegrationTests` | Reqnroll + TUnit + WireMock.Net | BDD integration tests for the Status dashboard |
 | `Core.Application.Unittests` | TUnit + NSubstitute + Shouldly | Use case error paths |
 | `Core.Domain.Unittests` | TUnit + NSubstitute + Shouldly | Domain entity error paths |
-| `Controller.Blazor.Shared.Unittests` | TUnit + Shouldly | Shared Blazor use case logic (e.g. `GeneratePasswordUseCase`) |
+| `Controller.Blazor.Shared.Unittests` | TUnit + Shouldly | Shared Blazor use case logic |
 | `Controller.Portal.Componenttests` | bUnit + WireMock.Net + TUnit | Portal Blazor components |
 | `Controller.Admin.Componenttests` | bUnit + WireMock.Net + TUnit | Admin Blazor components |
 | `ArchitectureTests` | ArchUnitNET + Reqnroll + TUnit | Layer dependency rules |
 
 Key test notes:
 - API integration tests use real PostgreSQL + LocalStack Testcontainers — no mocks. `Authentication:ValidateUser = false` for self-signed tokens.
-- Status integration tests use real PostgreSQL + LocalStack + Mailpit Testcontainers; WireMock.Net stubs the 4 HTTP health endpoints (API, Portal, Admin, Authentication) returning `200 Healthy`. No auth (Status is public). `MAILPIT_HOST`/`MAILPIT_PORT` are injected via in-memory config so `AddMail` connects to the test container. The `the service X should have status Y` step uses a regex proximity check on the prerendered HTML.
-- Application unit tests cover error paths only (happy paths via integration tests). Use `Result.Failure<T>(error)` not `Result<T>.Failure(error)`.
+- Status integration tests use real PostgreSQL + LocalStack + Mailpit Testcontainers; WireMock.Net stubs the 4 HTTP health endpoints returning `200 Healthy`. `MAILPIT_HOST`/`MAILPIT_PORT` injected via in-memory config.
+- Application unit tests cover error paths only. Use `Result.Failure<T>(error)` not `Result<T>.Failure(error)`.
 - Domain unit tests use a `BuildAsset()` helper for constructing valid aggregates.
-- Component tests: use `BunitContext` (not obsolete `TestContext`), `ctx.Render<T>()`, `cut.WaitForState()`, CSS selectors. Set `ctx.JSInterop.Mode = JSRuntimeMode.Loose` for JS interop components. For async button flows, wait on a DOM change after completion (not the spinner). Use `.TextContent.Trim()` for `<td>` with child elements; `:not(.other-class)` to disambiguate shared classes. Pass params via `ctx.Render<T>(p => p.Add(x => x.Prop, value))`. `IStringLocalizer<T>` components require `ctx.Services.AddLocalization()` in test setup.
-- Architecture tests: BDD feature files + `BaseArchitectureTests` (loads all assemblies via marker interfaces); step definitions scoped per feature with `[Scope(Feature = "...")]`; assertions via `rule.HasNoViolations(Architecture).ShouldBeTrue(rule.Description)`. Every assembly under test must have a marker interface (e.g. `IPostgresqlMarker`, `IMailMarker`) in its root namespace.
+- Component tests: use `BunitContext` (not obsolete `TestContext`), `ctx.Render<T>()`, `cut.WaitForState()`, CSS selectors. `ctx.JSInterop.Mode = JSRuntimeMode.Loose` for JS interop. `.TextContent.Trim()` for `<td>` with child elements. `IStringLocalizer<T>` requires `ctx.Services.AddLocalization()`.
+- Architecture tests: BDD feature files + `BaseArchitectureTests`; every assembly needs a marker interface (e.g. `IPostgresqlMarker`) in its root namespace.
 
 ## Architecture
 
 Clean Architecture. Dependencies flow inward: Controller → Application → Domain ← Infrastructure.
 
-**Enforced dependency rules** (verified by `ArchitectureTests`):
-- **BuildingBlocks** — must not depend on any other layer.
+**Enforced dependency rules:**
+- **BuildingBlocks** — no dependencies on other layers.
 - **Domain** — must not depend on Application, Contracts, Infrastructure, or Controllers.
 - **Contracts** — must not depend on Application, Infrastructure, or Controllers.
-- **Application** — must not depend on any Infrastructure layer (Postgresql, ObjectStorage, Security, Mail) or Controllers.
-- **Infrastructure** (Postgresql, ObjectStorage, Security, Mail) — must not depend on Controllers.
-- **Blazor projects** (Admin, Portal, Blazor.Shared) — must not depend on Domain, Application, any Infrastructure layer (Postgresql, ObjectStorage, Security, Mail), or Controller.Api; may only depend on Contracts and Blazor.Shared.
+- **Application** — must not depend on any Infrastructure layer or Controllers.
+- **Infrastructure** — must not depend on Controllers.
+- **Blazor projects** (Admin, Portal, Blazor.Shared) — may only depend on Contracts and Blazor.Shared.
 
 | Layer | Project | Role |
 |---|---|---|
@@ -83,36 +74,21 @@ Clean Architecture. Dependencies flow inward: Controller → Application → Dom
 
 ### DDD Building Blocks
 
-`MadWorldEU.Byakko.Core.BuildingBlocks/DomainDrivenDevelopment/`, namespace `MadWorldEU.Byakko.DomainDrivenDevelopment`:
+`Core.BuildingBlocks/DomainDrivenDevelopment/`, namespace `MadWorldEU.Byakko.DomainDrivenDevelopment`. Register via `services.AddBuildingBlocks()`. Call `IDomainEventsDispatcher.DispatchAsync(aggregate)` after a use case completes.
 
 | Type | Usage |
 |---|---|
-| `AggregateRoot<TId>` | Root aggregate; exposes `RaiseDomainEvent` / `ClearDomainEvents` |
-| `Entity<TId>` | Entity with identity; equality by `Id` |
-| `ValueObject` | Immutable concept; structural equality via `GetEqualityComponents()` |
-| `IDomainEvent` | Marker interface for domain events |
-| `IDomainEventHandler<T>` | Handle a specific domain event type; implement per handler class |
-| `IDomainEventsDispatcher` / `DomainEventsDispatcher` | Dispatches domain events raised on aggregates to all registered handlers; resolves `IDomainEventHandler<T>` from DI via `IServiceProvider.GetServices()` using a cached `HandlerWrapper` pattern |
-| `IGuidGenerator` / `GuidGenerator` | Abstracts `Guid.NewGuid()`; inject into use cases |
-
-Register via `services.AddBuildingBlocks()`. After a use case completes its work, call `IDomainEventsDispatcher.DispatchAsync(aggregate)` to fire all queued domain events.
+| `AggregateRoot<TId>` | Root aggregate; `RaiseDomainEvent` / `ClearDomainEvents` |
+| `Entity<TId>` | Identity equality by `Id` |
+| `ValueObject` | Immutable; structural equality via `GetEqualityComponents()` |
+| `IDomainEvent` | Marker interface |
+| `IDomainEventHandler<T>` | One class per event type |
+| `IDomainEventsDispatcher` | Resolves handlers from DI; cached `HandlerWrapper` pattern |
+| `IGuidGenerator` | Abstracts `Guid.NewGuid()`; inject into use cases |
 
 ### Functional Patterns
 
-`MadWorldEU.Byakko.Core.BuildingBlocks/Functional/`, namespace `MadWorldEU.Byakko.Functional`:
-
-| Type | Usage |
-|---|---|
-| `Error` | `Error.Create("Domain.Reason", "description")` |
-| `Result` | `Result.Success()` / `Result.Failure(error)` |
-| `Result<T>` | Value implicitly converts to success; access via `.Value` |
-
-```csharp
-var response = result.Match(
-    onSuccess: asset => new AssetResponse(asset.Id),
-    onFailure: error => throw new NotFoundException(error.Description)
-);
-```
+`Core.BuildingBlocks/Functional/`, namespace `MadWorldEU.Byakko.Functional`. `Error.Create("Domain.Reason", "description")`. `Result.Success()` / `Result.Failure(error)`. `Result<T>` value implicitly converts to success. Use `result.Match(onSuccess, onFailure)`.
 
 ## Assets API
 
@@ -120,264 +96,155 @@ Endpoints in `Controller.Api/Endpoints/Storages/AssetsEndpoints.cs`:
 
 | Method | Route | Use case | Notes |
 |---|---|---|---|
-| `GET` | `/assets` | `GetAssetsMetaDataUseCase` | Paged (20/page); requires `Administrator` policy; query param `page` |
-| `POST` | `/assets` | `CreateAssetMetadataUseCase` | Creates record; `ExpiresInDays` from request validated against `Assets:ValidityPeriodInDays` (max) |
+| `GET` | `/assets` | `GetAssetsMetaDataUseCase` | Paged (20/page); `Administrator` policy; query param `page` |
+| `POST` | `/assets` | `CreateAssetMetadataUseCase` | `ExpiresInDays` validated against `Assets:ValidityPeriodInDays` (max) |
 | `GET` | `/assets/{id}` | `GetAssetMetadataUseCase` | 404 when not found; returns metadata even for deleted assets |
 | `PUT` | `/assets/{id}/content` | `UploadAssetContentUseCase` | 404 not found, 403 not owner |
-| `DELETE` | `/assets/{id}/content` | `DeleteContentOfAssetUseCase` | Requires `Administrator` policy; 404 not found, 409 already deleted |
+| `DELETE` | `/assets/{id}/content` | `DeleteContentOfAssetUseCase` | `Administrator` policy; 404 not found, 409 already deleted |
 | `GET` | `/assets/{id}/content` | `DownloadAssetContentUseCase` | 404 not found, 400 expired; no password support |
-| `POST` | `/assets/{id}/content` | `DownloadAssetContentUseCase` | Same errors; accepts `DownloadAssetContentRequest` JSON body with optional `Password`; `Encryption.DecryptionFailed` → 400 on wrong password |
+| `POST` | `/assets/{id}/content` | `DownloadAssetContentUseCase` | Accepts `DownloadAssetContentRequest` with optional `Password`; `Encryption.DecryptionFailed` → 400 |
 
-Content encrypted AES-256 before upload; salt (16 bytes) + IV prepended to ciphertext. When a password is supplied, the AES key is derived via PBKDF2 (600 000 iterations, SHA-256) from `serverKey + password` with a per-file random salt stored alongside the ciphertext. Files without a password use the server key directly. Error mapping: check `error.Code` against `AssetErrors` and `EncryptionErrors`, fall back to `400`. CORS exposes `Content-Disposition` via `WithExposedHeaders` so the JS download function can read the filename.
+Content encrypted AES-256; salt (16 bytes) + IV prepended to ciphertext. Password: AES key derived via PBKDF2 (600 000 iterations, SHA-256) from `serverKey + password`. CORS exposes `Content-Disposition` via `WithExposedHeaders`.
 
 **Asset lifecycle:**
-- `ExpiresAt` — `CreatedAt + ValidityPeriodInDays`. `IsExpired(clock)` gates downloads.
-- `DeletedAt` — set by `asset.Delete(clock)`. `IsDeleted` = `DeletedAt.HasValue`.
-- `Delete(clock)` → `AssetErrors.AlreadyDeleted` if already deleted. Also sets `ExpiresAt = now` if it was still in the future.
+- `ExpiresAt` = `CreatedAt + ValidityPeriodInDays`. `IsExpired(clock)` gates downloads.
+- `Delete(clock)` → `AssetErrors.AlreadyDeleted` if already deleted; sets `ExpiresAt = now` if still in future.
 - `UpdateSize(clock, size)` → `AssetErrors.SizeAlreadySet` if `Size.Value > 0`.
-- `ValidityPeriod` value object: `Create(days)` → `ValidityPeriodErrors.MustBePositive` if `days <= 0`; `Create(days, maxDays)` → `ValidityPeriodErrors.ExceedsMaximum` if `days >= maxDays`. `CreateAssetRequest.ExpiresInDays` is the caller-supplied value; `Assets:ValidityPeriodInDays` is the server-side ceiling.
-- `Size` value object: `Create(sizeInBytes)` → `SizeErrors.Negative` if `sizeInBytes < 0`; `Create(sizeInBytes, maxSizeInBytes)` → `AssetErrors.FileTooLarge` if exceeds max.
+- `ValidityPeriod.Create(days, maxDays)` → `ValidityPeriodErrors.ExceedsMaximum` if `days >= maxDays`.
+- `Size.Create(sizeInBytes, maxSizeInBytes)` → `AssetErrors.FileTooLarge` if exceeds max.
 
 **Manual cleanup triggers** (`ManualTriggersEndpoints.cs`, requires auth):
 - `POST /host-services/manual-triggers/clean-up/assets-content` → `DeleteAllExpiredContentOfAssetsUseCase`
-- `POST /host-services/manual-triggers/clean-up/assets-metadata` → `DeleteAllExpiredMetaDataAssetsUseCase` — also bulk-deletes all audit logs whose `EntityId` matches the deleted assets (fetches IDs first, then `ExecuteDeleteAsync` on `AuditLogs`, then on `Assets`)
+- `POST /host-services/manual-triggers/clean-up/assets-metadata` → also bulk-deletes matching audit logs
 
 ## Correspondences API
 
-Endpoint in `Controller.Api/Endpoints/Correspondences/CorrespondenceEndpoints.cs`:
-
-| Method | Route | Use case | Notes |
-|---|---|---|---|
-| `POST` | `/correspondences/feedback` | `SendFeedbackUseCase` | Public (no auth); rate-limited by `PublicPost` policy (1 req/60s per IP); validates email and message |
-
-`SendFeedbackRequest` (in `Core.Contracts/Correspondences/`) carries `Email` and `Message`. `SendFeedbackUseCase` validates `Email` via the `Email` value object, derives `UserId` if authenticated (falls back to `"Anonymous"` for unauthenticated callers), builds a plain-text body, and delegates to `ICorrespondenceService.SendToAdministratorAsync`. The `Email` value object (`Core.Domain/Common/Email.cs`) uses a two-step regex check: empty → `EmailErrors.Empty`; no valid format → `EmailErrors.Invalid`.
+`POST /correspondences/feedback` → `SendFeedbackUseCase`. Public; rate-limited `PublicPost` (1 req/60s per IP). `SendFeedbackRequest` carries `Email` + `Message`. `Email` value object: empty → `EmailErrors.Empty`; invalid format → `EmailErrors.Invalid`.
 
 ## Audits API
 
-Endpoint in `Controller.Api/Endpoints/Audits/AuditEndpoints.cs`:
+`GET /audits/{entityId}` → `GetAuditLogsUseCase`. `Administrator` policy. Returns `GetAuditLogsResponse` with `IReadOnlyList<AuditLogResponse>` (Id, EntityType, Action, IpAddress, OccurredAt, OccurredByUserId).
 
-| Method | Route | Use case | Notes |
-|---|---|---|---|
-| `GET` | `/audits/{entityId}` | `GetAuditLogsUseCase` | Requires `Administrator` policy; returns `GetAuditLogsResponse` |
+**Audit log domain** (`Core.Domain/Audits/`): `AuditLog` entity with `Id`, `EntityId`, `EntityType`, `Action`, `IpAddress`, `OccurredAt` (`Instant`), `OccurredBy`. `IpAddress.Create(null/empty)` → `AuditErrors.InvalidIpAddress`. Audit log deletion for expired assets is handled in `AssetRepository.DeleteExpiredAssets`, not via `IAuditRepository`.
 
-`GetAuditLogsResponse` (in `Core.Contracts/Audits/`) has `IReadOnlyList<AuditLogResponse> Logs`. Each `AuditLogResponse` (in `Core.Contracts/Audits/Summaries/`) carries: `Guid Id`, `string EntityType`, `string Action`, `string IpAddress`, `DateTimeOffset OccurredAt`, `Guid OccurredByUserId`.
-
-**Audit log domain** (`Core.Domain/Audits/`):
-- `AuditLog` entity — `Id`, `EntityId`, `EntityType` (`AuditEntityType` enum), `Action` (`AuditAction` enum), `IpAddress` value object, `OccurredAt` (`Instant`), `OccurredBy` (`Id`). Created via `AuditLog.Create(...)`.
-- `IpAddress` value object — wraps `string Value`; two `Create` overloads: `Create(string)` and `Create(System.Net.IPAddress?)`.  Returns `AuditErrors.InvalidIpAddress` when null/empty.
-- `AuditAction` enum — actions recorded on entities (e.g. `Created`, `Uploaded`).
-- `AuditEntityType` enum — types of domain entities that can be audited.
-- `AuditErrors` — `InvalidIpAddress`, `SaveFailed`, `QueryFailed`.
-- `IAuditRepository` — `AddAsync(AuditLog)` and `GetAsync(Id entityId)`; PostgreSQL implementation in `Infrastructure.Postgresql/Audits/AuditRepository.cs`. Audit log deletion for expired assets is handled directly in `AssetRepository.DeleteExpiredAssets`, not through `IAuditRepository`.
-
-**AuditAssetsHandler** (`Core.Application/Audits/AuditAssetsHandler.cs`) — `IDomainEventHandler<AssetMetaDataCreatedEvent>` and `IDomainEventHandler<AssetContentUploadedEvent>`; writes an `AuditLog` entry per event. Audit creation failure is non-fatal: logs a warning via `ILogger` and returns without throwing.
+**AuditAssetsHandler** handles `AssetMetaDataCreatedEvent` and `AssetContentUploadedEvent`; audit creation failure is non-fatal (logs warning, does not throw).
 
 ## Storage Statistics API
 
-Endpoint in `Controller.Api/Endpoints/Storages/GeneralStorageEndpoints.cs`:
-
-| Method | Route | Use case | Notes |
-|---|---|---|---|
-| `GET` | `/storage/statistics` | `GetStorageStatisticsUseCase` | Requires `Administrator` policy; returns `GetStorageStatisticsResponse` |
-
-`GetStorageStatisticsResponse` (in `Core.Contracts`) has `TotalFiles` (`int`) and `TotalBytes` (`long`) — counts and sums only non-deleted assets. `GetTotalSavedSizeAsync` uses `EF.Property<long>` + `Select` to work around EF Core's inability to translate `.Value` on a value-object property in `SumAsync`.
+`GET /storage/statistics` → `GetStorageStatisticsUseCase`. `Administrator` policy. Returns `TotalFiles` (`int`) + `TotalBytes` (`long`) for non-deleted assets. Uses `EF.Property<long>` + `Select` to work around EF Core's inability to translate `.Value` on a value-object in `SumAsync`.
 
 ## Key Infrastructure
 
-- **Database:** PostgreSQL via `ByakkoContext`. Connection string key: `byakko-db`. Auto-migrate: `Database:AutoMigrate` (default `false`; `true` in Development). Migrations in `Infrastructure.Postgresql/Migrations/`. See `docs/Database.md`.
-- **Object storage:** `IAmazonS3` registered by `AddObjectStorage`. Connection string key: `localstack`. Settings: `Storage:Mode` (`LocalStack`/`OvhCloud`), `BucketName`, `AutoCreateBucket`. `DeleteAsync` uses `GetObjectMetadataAsync` + `DeleteObjectAsync` with `VersionId` (required for OVHCloud versioning).
-- **Encryption:** AES-256-CBC via `AddSecurity`. Config key: `Encryption:Key` (base64 32-byte; `openssl rand -base64 32`). Random IV per call, prepended to ciphertext. `EncryptionService.Decrypt` returns `Result<T>`; catches `CryptographicException` / `EndOfStreamException` → `EncryptionErrors.DecryptionFailed`.
-- **Aspire:** Provisions Postgres, LocalStack, Keycloak. `RunMode` in `appsettings.json`: `Project` / `DockerFile` / `ContainerImage`. See `docs/Aspire.md`.
-- **CORS:** `Cors:AllowedOrigins` array; empty = allow any. Registered by `AddDefaultCors()`.
-- **Security headers:** API via `SecurityHeadersMiddleware`. Portal/Admin via nginx config. Traefik via `middlewares.yaml`. `X-Frame-Options` intentionally omitted from Traefik (Keycloak needs frameability for OIDC).
-- **Rate limiting:** `AddApiRateLimiter()`. Global 100 req/min; `content` policy 20 req/min for upload/download; `public-post` policy 1 req/60s per IP for unauthenticated POST endpoints (e.g. feedback). Toggle: `RateLimiting:Enabled`. Disabled in Development and tests. Policy names in `RateLimiterPolicies`; apply with `.RequireRateLimiting(RateLimiterPolicies.PublicPost)`.
-- **Mail:** SMTP via `Infrastructure.Mail`. Registered by `AddMail(configuration)`. Config section `Mail:` — `Mode` (`Smtp` / `MailPit`), `Host`, `Port`, `EnableSsl`, `Username`, `Token`, `AdministratorFrom` / `AdministratorTo` (each with `Name` and `Address`). `MailFactory.Create` resolves options lazily (via `IOptions<MailOptions>` singleton factory) so test overrides applied by `WebApplicationFactory.ConfigureAppConfiguration` are always visible. In `MailPit` mode, `Host` and `Port` are overridden from `MAILPIT_HOST` / `MAILPIT_PORT` env vars. `HasAuthentication` computed property skips `Authenticate` when `Username` is empty (Mailpit accepts unauthenticated connections). Integration tests start a Mailpit Testcontainer and verify emails via `GET /api/v1/messages`.
-- **Auth:** JWT Bearer via Keycloak (`Authentication:Authority`). Blazor OIDC via `AddOidcAuthentication`; config in `wwwroot/appsettings.json` under `Oidc`. Bearer attached via `AuthorizationMessageHandler` on `HttpClients.ApiAuthorized`. Blazor OIDC settings bound via `IOptions<OidcSettings>` (shared); `OidcSettings.GetEditAccountUrl()` returns the Keycloak account page URL. `Controller.Blazor.Shared/Pages/AccessDenied.razor` (`/access-denied`) — shown when a user lacks the required role; explains that access requires manual admin approval.
-- **Keycloak theme:** A custom `byakko` login theme (`parent=keycloak.v2`) overrides the `termsText` message key in three languages: `messages_en.properties`, `messages_nl.properties`, and `messages_ja.properties`. `theme.properties` sets `internationalizationEnabled=true`, `supportedLocales=en,nl,ja`, `defaultLocale=en`. In Aspire the theme folder is bind-mounted from `Configurations/KeyCloak/themes/`; in Helm it is injected via the `keycloak-theme-byakko` ConfigMap (with volume mounts for all three `.properties` files). The realm JSON (`MadWorld-realm.json`) has `"internationalizationEnabled": true` so Keycloak respects the `ui_locales` OIDC parameter sent by the Portal. The Portal sets `ui_locales` via `builder.Services.PostConfigure<RemoteAuthenticationOptions<OidcProviderOptions>>` using `CultureInfo.CurrentUICulture.TwoLetterISOLanguageName`. The `TERMS_AND_CONDITIONS` required action is enabled with `defaultAction: true` so every user must accept on first login. See `docs/developer-guides/AuthenticationServer.md` for setup steps.
-- **Asset settings:** `Assets:ValidityPeriodInDays` (default `30`), `Assets:MaxUploadSizeInBytes` (default `1073741824`). **Must be quoted string** in Helm values to prevent YAML integer coercion.
-- **Scheduled cleanup:** Two `BackgroundService`s in `HostedServices/`, triggered daily at `Cleanup:TriggerHourUtc` (default `2`).
-- **Observability:** OTLP via `OTEL_EXPORTER_OTLP_ENDPOINT`. Both API and Status export to Tempo/Prometheus/Loki → Grafana. Both set `log_source: "application"` and `service_name` OTel attributes as Loki stream labels. Two collectors: (1) **`otel-collector` Deployment** — receives OTLP from API/Status (ports 4317/4318), forwards logs → Loki, traces → Tempo, metrics → Prometheus; (2) **`otel-collector-logs` DaemonSet** — scrapes pod stdout/stderr from `/var/log/pods/`, stamps `log_source: k8s_pods`, forwards → Loki.
-- **IP address forwarding:** API reads `X-Forwarded-For` via `UseForwardedHeaders`. Integration tests set `X-Forwarded-For: 171.129.229.213` as a default header on both anonymous and authenticated `HttpClient`s so `HttpContext.Connection.RemoteIpAddress` is populated for audit logging.
-- **OpenAPI server URL:** `OpenApi:ServerUrl` overridden by `ServerUrlDocumentTransformer` (Scalar "Try It Out").
-- **Debug endpoints:** `/debug/*` — Development only. **Test endpoint:** `GET /tests/ping` — always registered.
+- **Database:** PostgreSQL via `ByakkoContext`. Connection string: `byakko-db`. Auto-migrate: `Database:AutoMigrate` (default `false`; `true` in Development). See `docs/Database.md`.
+- **Object storage:** `IAmazonS3` via `AddObjectStorage`. Connection string: `localstack`. `Storage:Mode` (`LocalStack`/`OvhCloud`). `DeleteAsync` requires `VersionId` (OVHCloud versioning).
+- **Encryption:** AES-256-CBC via `AddSecurity`. Config: `Encryption:Key` (base64 32-byte). `EncryptionService.Decrypt` catches `CryptographicException`/`EndOfStreamException` → `EncryptionErrors.DecryptionFailed`.
+- **Aspire:** Provisions Postgres, LocalStack, Keycloak. `RunMode`: `Project`/`DockerFile`/`ContainerImage`. See `docs/Aspire.md`.
+- **CORS:** `Cors:AllowedOrigins` array; empty = allow any. `AddDefaultCors()`.
+- **Security headers:** API via `SecurityHeadersMiddleware`. Portal/Admin via nginx. Traefik via `middlewares.yaml`. `X-Frame-Options` omitted from Traefik (Keycloak needs frameability for OIDC).
+- **Rate limiting:** `AddApiRateLimiter()`. Global 100 req/min; `content` 20 req/min; `public-post` 1 req/60s per IP. Toggle: `RateLimiting:Enabled`. Disabled in Development and tests.
+- **Mail:** `AddMail(configuration)`. Config `Mail:` — `Mode` (`Smtp`/`MailPit`), `Host`, `Port`, `EnableSsl`, `Username`, `Token`, `AdministratorFrom`/`AdministratorTo`. `MailPit` mode overrides `Host`/`Port` from `MAILPIT_HOST`/`MAILPIT_PORT` env vars. `HasAuthentication` skips `Authenticate` when `Username` is empty. `MailFactory.Create` resolves lazily so test config overrides are always visible.
+- **Auth:** JWT Bearer via Keycloak (`Authentication:Authority`). Blazor OIDC via `AddOidcAuthentication`; config under `Oidc` in `wwwroot/appsettings.json`. `OidcSettings.GetEditAccountUrl()` returns the Keycloak account page URL.
+- **Keycloak theme:** Custom `byakko` theme (`parent=keycloak.v2`) overrides `termsText` in `en`/`nl`/`ja`. Aspire: bind-mounted from `Configurations/KeyCloak/themes/`; Helm: `keycloak-theme-byakko` ConfigMap. `TERMS_AND_CONDITIONS` required action with `defaultAction: true`.
+- **Asset settings:** `Assets:ValidityPeriodInDays` (default `30`), `Assets:MaxUploadSizeInBytes` (default `1073741824`). **Must be quoted string** in Helm values.
+- **Scheduled cleanup:** Two `BackgroundService`s in `HostedServices/`, daily at `Cleanup:TriggerHourUtc` (default `2`).
+- **Observability:** OTLP via `OTEL_EXPORTER_OTLP_ENDPOINT` → Tempo/Prometheus/Loki → Grafana. Two collectors: `otel-collector` Deployment (OTLP from API/Status) + `otel-collector-logs` DaemonSet (pod stdout/stderr scraping).
+- **IP forwarding:** `UseForwardedHeaders`. Integration tests set `X-Forwarded-For: 171.129.229.213` on all clients.
+- **OpenAPI:** `OpenApi:ServerUrl` overridden by `ServerUrlDocumentTransformer`. Debug: `/debug/*` (Development only). Test: `GET /tests/ping`.
 
 ## Admin UI
 
-**Logo/favicon:** `wwwroot/icons/logo.svg` — Bootstrap Icons `shield-shaded`, fill `#0d6efd`. Used in sidebar header (22×22) and mobile header (18×18) via `<img>`. Favicon wired in `wwwroot/index.html` as `<link rel="icon" type="image/svg+xml" href="/icons/logo.svg" />`.
+Blazor WebAssembly, Bootstrap 5 dark theme. 240px sticky sidebar. Auth via `<AuthorizeView Policy="@AuthorizationPolicies.Administrator">`. Logo: `shield-shaded` SVG, fill `#0d6efd`.
 
-Blazor WebAssembly, Bootstrap 5 dark theme (`data-bs-theme="dark"`). Desktop-first with 240px sticky sidebar (`Layout/MainLayout.razor`). Nav sections: Overview, Management, Support, System. Auth via `<AuthorizeView Policy="@AuthorizationPolicies.Administrator">`. Sidebar footer shows username, edit-profile link (Keycloak account page via `OidcSettings.GetEditAccountUrl()`), and logout. Pages: `Pages/Home.razor` (`/dashboard` — two stat cards: Total Files and Storage Used, populated from `GET /storage/statistics` via `IStorageService`), `Pages/HostServices/ManualTriggers.razor`, `Pages/Storages/AssetsOverview.razor` (`/storages/assets` — paged asset table, 20/page, with previous/next pagination), `Pages/Audits/AuditLogs.razor` (`/audits/{EntityId:guid}` — all audit log entries for a single entity). The Management nav "Assets" link points to `/storages/assets`. `IAssetService` (shared) exposes `GetAssetsMetadataAsync(int page)` and `DeleteAssetContentAsync(Guid id)` for admin use; `IStorageService` (shared) exposes `GetStorageStatisticsAsync()` for the dashboard; `IAuditService` (shared) exposes `GetAuditLogsAsync(Guid entityId)` for the audit log page; `MadWorldEU.Byakko.Services`, `MadWorldEU.Byakko.Storages`, `MadWorldEU.Byakko.Audits`, `MadWorldEU.Byakko.Audits.Summaries`, and `MadWorldEU.Byakko.Formatters` are global usings in `_Imports.razor`.
+| Page | Route | Notes |
+|---|---|---|
+| `Pages/Home.razor` | `/dashboard` | Stat cards (Total Files, Storage Used) via `IStorageService` |
+| `Pages/Storages/AssetsOverview.razor` | `/storages/assets` | Paged (20/page); info tooltip (size + last updated); Logs button; Delete with inline confirm |
+| `Pages/Audits/AuditLogs.razor` | `/audits/{EntityId:guid}` | All audit entries for one entity; back link to `/storages/assets` |
+| `Pages/HostServices/ManualTriggers.razor` | — | Manual cleanup triggers |
 
-**AssetsOverview features:**
-- Each row has an info icon (Bootstrap Icons info-circle SVG) next to the filename; hovering shows a Bootstrap tooltip (`data-bs-html="true"`) with file size and last updated date on separate lines. Tooltip initialization via `initTooltips()` in `wwwroot/js/app.js` (loaded in `index.html`), called from `OnAfterRenderAsync`.
-- Each asset row has a **Logs** button (links to `/audits/{id}`). Each non-deleted asset row also has a **Delete** button; clicking it shows an inline confirm prompt ("Delete content? Yes / No") in the same row. The **Logs** button is hidden while the confirm prompt is visible. Confirming calls `DeleteAssetContentAsync` and reloads the page.
-- `AssetMetadataResponse` (in `Core.Contracts`) includes `IsDeleted` and `Size` (bytes as `long`) in addition to the base fields.
-
-**AuditLogs page** (`Pages/Audits/AuditLogs.razor`, route `/audits/{EntityId:guid}`): Shows a table of audit log entries (Entity Type badge, Action badge, IP Address, User ID, Occurred At) for the given entity. Requires `Administrator` policy. Back link to `/storages/assets`.
+Shared services: `IAssetService` (`GetAssetsMetadataAsync`, `DeleteAssetContentAsync`), `IStorageService` (`GetStorageStatisticsAsync`), `IAuditService` (`GetAuditLogsAsync`). Global usings in `_Imports.razor`: `MadWorldEU.Byakko.Services`, `.Storages`, `.Audits`, `.Audits.Summaries`, `.Formatters`.
 
 ## Portal UI
 
-**Logo/favicon:** `wwwroot/icons/logo.svg` — Bootstrap Icons `cloud-download`, fill `#0d6efd`. Used in navbar brand (28×28) via `<img>`. Favicon wired in `wwwroot/index.html` as `<link rel="icon" type="image/svg+xml" href="/icons/logo.svg" />`.
+Blazor WebAssembly, Bootstrap 5 dark theme. Sticky top navbar. Logo: `cloud-download` SVG, fill `#0d6efd`. Supports English (`en`), Dutch (`nl-NL`), Japanese (`ja-JP`).
 
-**Open Graph:** `wwwroot/index.html` includes `og:title`, `og:description`, `og:type`, `og:image` (1200×630). The `og:image` value is the placeholder `${OG_IMAGE_URL}` — substituted at container startup by `Docker/docker-entrypoint.sh` via `envsubst`. The image file must be present at `wwwroot/images/byakko-header.png`.
+| Page | Route | Notes |
+|---|---|---|
+| `Pages/Home.razor` | `/` | Landing page with beta banner, hero, feature cards |
+| `Pages/Storage/Upload.razor` | `/storage/upload` | File + advanced options (expiry picker, password with Generate button) |
+| `Pages/Storage/Download.razor` | `/storage/download/{Id}` | Three states: expired/no content/ready; streaming progress bar; `IAsyncDisposable` |
+| `Pages/Storage/MyAssets.razor` | `/storage/my-assets` | Paged own-assets table (status badges, size, expiry); `GET /assets/me` |
+| `Pages/Contact.razor` | `/contact` | Public; email pre-filled from auth claim |
+| `Pages/UserAgreement.razor` | `/user-agreement` | Static legal page |
 
-Blazor WebAssembly, Bootstrap 5 dark theme. Sticky top navbar with auth dropdown (username, edit-profile link via `OidcSettings.GetEditAccountUrl()`, logout), a "My files" link (visible only to users satisfying the `User` policy, via a nested `<AuthorizeView Policy="@AuthorizationPolicies.User">`), and a "Contact" link (public). Pages: `Pages/Home.razor` (`/` — landing page with beta banner, hero section, feature cards, and how-it-works steps), `Pages/Storage/Upload.razor` (`/storage/upload`), `Pages/Storage/Download.razor` (shows expiry warning client-side; server enforces; see below), `Pages/Storage/MyAssets.razor` (`/storage/my-assets` — paged table of the authenticated user's own assets with status badges Active/Expired/Deleted, size, expiry, and download links; fetches from `GET /assets/me`), `Pages/Contact.razor` (`/contact` — see below), `Pages/UserAgreement.razor` (`/user-agreement` — static page with 9 sections covering acceptance, prohibited content, file retention, privacy, liability, changes, and contact). Max upload size from `IOptions<AssetSettings>` → `IBrowserFile.OpenReadStream(maxAllowedSize)`. Footer (`Layout/MainLayout.razor`) includes "User Agreement" and "Contact" links.
+**Upload:** date picker defaults to today + `MaxValidityPeriodInDays`. Generate calls `GeneratePasswordUseCase.Execute()`. Sends `POST /assets` then `PUT /assets/{id}/content` (multipart). Password sent as `null` when empty.
 
-**Upload page** (`Pages/Storage/Upload.razor`, route `/storage/upload`): File picker + optional "Advanced options" section (collapsed by default) containing an expiry date picker and a password input with a show/hide toggle and a **Generate** button. The date picker defaults to today + `Assets:MaxValidityPeriodInDays`, min = tomorrow, max = today + `MaxValidityPeriodInDays`; the computed `ExpiresInDays` is passed in `CreateAssetRequest`. `MaxValidityPeriodInDays` is a Blazor client `AssetSettings` property (default 30) bound from `appsettings.json` and injected via the Helm ConfigMap. Clicking Generate calls `GeneratePasswordUseCase.Execute()` (injected; registered as scoped in `AddByakkoServices`) and fills the input, automatically switching it to visible. On upload, calls `POST /assets` to create metadata then `PUT /assets/{id}/content` (multipart form) with the file and an optional `password` field. Password is sent as `null` when the field is left empty. `MadWorldEU.Byakko.Application` is a global using in `_Imports.razor` so `GeneratePasswordUseCase` is available without an explicit `@using`.
+**Download:** JS `downloadFileWithPassword(url, password, dotNetRef)` streams response chunk-by-chunk, calls `UpdateProgress`, triggers blob download. `Encryption.DecryptionFailed` → wrong password message.
 
-**Download page** (`Pages/Storage/Download.razor`, route `/storage/download/{Id}`): Loads asset metadata on init. Three mutually exclusive states: (1) expired — amber warning + disabled button; (2) no content (`Size == 0`) — red danger alert + disabled button; (3) ready — optional password input and download button. Download calls `window.downloadFileWithPassword(url, password, dotNetRef)` in `wwwroot/js/app.js` — streams the response chunk-by-chunk, calling `dotNetRef.invokeMethodAsync('UpdateProgress', percent)` to update a progress bar, then triggers a blob download via a temporary `<a download>`. On error: `Encryption.DecryptionFailed` → wrong password message; otherwise shows `description`. Implements `IAsyncDisposable`.
+**Localization:** `BlazorWebAssemblyLoadAllGlobalizationData=true`. `Localization/Resources.resx` + `.nl-NL.resx` + `.ja-JP.resx`. `CultureResolver` reads localStorage, falls back to `navigator.language` (neutral-code matching), then `en`. `setCulture`/`getCulture` in `wwwroot/js/app.js`. Shared pages use `IStringLocalizer<SharedResources>` from `Blazor.Shared`. `AddLocalization()` in `AddByakkoServices()`.
 
-**Contact page** (`Pages/Contact.razor`, route `/contact`): Public (no auth required). Shows an email field (pre-filled from the `ClaimTypes.Email` / `"email"` claim when authenticated) and a message textarea. Client-side validation: email required + regex format check; message required — Bootstrap `is-invalid` / `invalid-feedback` pattern. On submit calls `ICorrespondenceService.SendFeedbackAsync(request, isAuthenticated)`. On success shows a `alert-success` and hides the form. On error shows `alert-danger` with the translated error message. Uses `Logger.LogError` in the `catch` block.
-
-**Beta banner:** A full-width amber `alert-warning` strip sits above the hero section on `Pages/Home.razor`, informing visitors that the service is in beta and new accounts require manual admin approval.
-
-**Portal components** (`Components/`): `UploadLimitsAlert.razor` — reusable alert showing max file size and files remaining (amber when limit reached); used in `Upload.razor` and `MyAssets.razor`. Takes a `GetUserUploadLimitsResponse?` parameter. Namespace `MadWorldEU.Byakko.Components` is a global using in `_Imports.razor`.
-
-`IAssetService` (shared) additionally exposes `GetMyAssetsMetadataAsync(int page)` — calls `GET /assets/me?page={page}` with the authorized client.
-
-**Localization:** The Portal supports English (`en`), Dutch (`nl-NL`), and Japanese (`ja-JP`). Key pieces:
-
-- `BlazorWebAssemblyLoadAllGlobalizationData=true` in `Portal.csproj` — required for runtime culture switching.
-- `Localization/Resources.resx` (default/English), `Resources.nl-NL.resx`, `Resources.ja-JP.resx` — all user-visible strings. All pages inject `@inject IStringLocalizer<Resources> Localizer` and use `@Localizer["Key"]`.
-- `Localization/SupportedLanguages.cs` — static class listing the three supported culture codes with their display labels (`EN`/`NL`/`JA`) and flag emojis (🇬🇧/🇳🇱/🇯🇵). Used by `CultureResolver` and `MainLayout`.
-- `Localization/CultureResolver.cs` — resolves the active culture from a saved localStorage preference; falls back to the browser language (`navigator.language`) with neutral-code matching (`nl-BE` → `nl-NL`); falls back to `en` if no match.
-- `Program.cs` — after `host.Build()`, reads `getCulture` and `getBrowserLanguage` via JS interop, resolves the culture via `CultureResolver.Resolve`, and sets `CultureInfo.DefaultThreadCurrentCulture/UICulture` before `RunAsync()`.
-- `wwwroot/js/app.js` — `getCulture()` / `setCulture(culture)` read/write `byakko-culture` in localStorage; `getBrowserLanguage()` returns `navigator.language`.
-- `Layout/MainLayout.razor` — navbar language switcher: a flag dropdown on desktop; on mobile the current flag is always visible next to the hamburger, and the expanded menu shows all three flags inline. Selecting a language calls `setCulture` and reloads with `forceLoad: true`.
-- Shared pages (`NotFound.razor`, `AccessDenied.razor`, `TestPage.razor` in `Controller.Blazor.Shared`) use `IStringLocalizer<SharedResources>` backed by `Localization/SharedResources.resx` / `SharedResources.nl-NL.resx` / `SharedResources.ja-JP.resx` in `Blazor.Shared`. Admin always uses English because it never sets the culture. `AddLocalization()` is registered in `AddByakkoServices()` (shared startup extension), so it applies to both Portal and Admin.
+**Components:** `UploadLimitsAlert.razor` — max file size + files remaining alert; used in `Upload.razor` and `MyAssets.razor`.
 
 ## Status UI
 
-**Logo/favicon:** `wwwroot/icons/logo.svg` — Bootstrap Icons `activity` (pulse line), fill `#0d6efd`. Used in sidebar header (22×22) and mobile header (18×18) via `<img>`. Favicon wired in `Components/App.razor` as `<link rel="icon" type="image/svg+xml" href="/icons/logo.svg" />`.
-
-Blazor Server (static SSR), Bootstrap 5 dark theme (`data-bs-theme="dark"`). Public — no authentication. 240px sticky sidebar (`Layout/MainLayout.razor`) with `status-sidebar` / `status-nav-link` CSS classes (`wwwroot/app.css`). Single page: `Components/Pages/Home.razor` (`/`) — Bootstrap card grid showing health status for 6 services.
-
-Health checks wired via `GetHealthServicesUseCase` (`Application/Healths/`) — runs all 6 checks in parallel with a 2-second timeout each:
-- **API, Portal, Admin, Authentication** — HTTP GET to configurable URLs (`HealthChecks:*` config keys); 200 = Healthy, non-200 = Unhealthy, body `"Degraded"` = Degraded, empty URL = Unknown.
-- **Database** — `ByakkoContext.Database.CanConnectAsync()`.
-- **Object Storage** — `IAmazonS3.ListBucketsAsync()` with `CancellationTokenSource` timeout.
-
-Config: `HealthChecks:Api/Admin/Portal/Authentication` URLs; `ConnectionStrings:byakko-db`; `ConnectionStrings:localstack`; `Storage:*` (same keys as API). Liveness/readiness probe at `/health`.
+Blazor Server (static SSR), Bootstrap 5 dark theme. Public, no auth. Logo: `activity` SVG, fill `#0d6efd`. Single page (`/`) — Bootstrap card grid for 6 services via `GetHealthServicesUseCase` (parallel, 2s timeout). API/Portal/Admin/Authentication: HTTP GET (200=Healthy, `"Degraded"`=Degraded). Database: `CanConnectAsync()`. Object Storage: `ListBucketsAsync()`. Probe at `/health`.
 
 ## Project Conventions
 
 See `.claude/rules/code-standard.md` for full standards. Key points:
 
 - **Framework:** .NET 10.0, `TreatWarningsAsErrors = true`
-- **Namespace:** root `MadWorldEU.Byakko`; after root, mirror folder structure; never include project name
+- **Namespace:** root `MadWorldEU.Byakko`; mirror folder structure; never include project name
 - **Access:** most restrictive possible; classes `sealed` by default
 - **Central Package Management:** versions only in `Directory.Packages.props`
 - **NodaTime:** always; `Instant` for UTC; inject `IClock`
 - **`var`:** preferred everywhere
 - **Global usings:** third-party group then `MadWorldEU.Byakko.*` group, each alphabetical
 - **Endpoint classes:** `internal static` with `internal static` extension on `WebApplication`; under `Endpoints/<Feature>/`
-- **HTTP clients:** `HttpClients.ApiAnonymous` / `HttpClients.ApiAuthorized` from `Controller.Blazor.Shared/HttpClients.cs`. `ApiAuthorized` has `Timeout = Timeout.InfiniteTimeSpan` — upload timeouts are governed by Traefik's `responseHeaderTimeout` (1800s), not the client.
-- **Shared services:** `IAssetService`/`AssetService`, `IStorageService`/`StorageService`, `IAuditService`/`AuditService`, and `ICorrespondenceService`/`CorrespondenceService` live in `Controller.Blazor.Shared/Services/` and are registered in `WebAssemblyHostBuilderExtensions.AddByakkoServices()`. All methods that call the API return `ResultResponse<T>` (see below). `ICorrespondenceService.SendFeedbackAsync(request, isAuthenticated)` selects `ApiAuthorized` or `ApiAnonymous` client based on the `isAuthenticated` flag; handles `429 TooManyRequests` by returning a `FailureResponse` with `BlazorErrors.CorrespondenceTooManyRequests`.
-- **Shared formatters:** `ByteFormatter.Format(long?)` in `Controller.Blazor.Shared/Formatters/ByteFormatter.cs` — formats byte counts to B/KB/MB/GB using `InvariantCulture` (always `.` as decimal separator).
-- **appsettings schemas:** each `appsettings.json` has a companion `appsettings-schema.json`; update schema when adding config keys
-- **EF Core constructor:** `private`, `[UsedImplicitly]`, XML `<summary>` saying "Required for EF Core"
-- **Errors:** `static readonly` fields on `{Domain}Errors` class; code format `"Domain.Reason"`
+- **HTTP clients:** `HttpClients.ApiAnonymous` / `HttpClients.ApiAuthorized`. `ApiAuthorized` has `Timeout = Timeout.InfiniteTimeSpan` — upload timeouts governed by Traefik's `responseHeaderTimeout` (1800s).
+- **Shared services:** `IAssetService`, `IStorageService`, `IAuditService`, `ICorrespondenceService` in `Controller.Blazor.Shared/Services/`, registered in `AddByakkoServices()`. All return `ResultResponse<T>`. `SendFeedbackAsync(request, isAuthenticated)` handles `429` → `BlazorErrors.CorrespondenceTooManyRequests`.
+- **Shared formatters:** `ByteFormatter.Format(long?)` — B/KB/MB/GB using `InvariantCulture`.
+- **appsettings schemas:** companion `appsettings-schema.json`; update when adding config keys
+- **EF Core constructor:** `private`, `[UsedImplicitly]`, XML `<summary>` "Required for EF Core"
+- **Errors:** `static readonly` fields on `{Domain}Errors`; code format `"Domain.Reason"`
 
 ### Blazor HTTP Response Pattern
 
-All Blazor service methods that call the API return `ResultResponse<T>` (`Controller.Blazor.Shared/Responses/ResultResponse.cs`, namespace `MadWorldEU.Byakko.Responses`). DELETE endpoints that return no body use `ResultResponse<EmptyResponse>`.
-
-**Types in `Core.Contracts/Common/` (namespace `MadWorldEU.Byakko.Common`):**
-
-| Type | Purpose |
-|---|---|
-| `FailureResponse` | Structured API error — `Code` (`Domain.Reason`), `StatusCode` (HTTP), `Description` (human-readable) |
-| `EmptyResponse` | Placeholder success body for endpoints that return no content (e.g. DELETE) |
-
-**`ResultResponse<T>` API:**
-- `IsSuccess` — `true` when `Failure == null`
-- `Response` — the success payload (`T?`)
-- `Failure` — the `FailureResponse` on error
-- Implicit operators from `T` and `FailureResponse` allow returning either directly
-
-**`HttpClientExtensions` (`Controller.Blazor.Shared/Responses/`, namespace `MadWorldEU.Byakko.Responses`):**
-
-| Method | HTTP verb | Notes |
-|---|---|---|
-| `GetResultResponseFromJsonAsync<TResponse>` | GET | Reads JSON body on success |
-| `PostResultResponseFromJsonAsync<TRequest, TResponse>` | POST | Serialises request as JSON |
-| `PutResultResponseFromJsonAsync<TResponse>` | PUT | Accepts raw `HttpContent` (e.g. `MultipartFormDataContent`) |
-| `DeleteResultResponseFromJsonAsync` | DELETE | Returns `ResultResponse<EmptyResponse>` |
-
-**Usage pattern in Razor pages:**
-```csharp
-var result = await SomeService.SomeMethodAsync();
-
-if (result.IsSuccess)
-{
-    _data = result.Response;
-}
-else
-{
-    _errorMessage = ErrorTranslator.Translate(result.Failure!);
-}
-```
+All Blazor service methods return `ResultResponse<T>` (`Controller.Blazor.Shared/Responses/`). `IsSuccess` / `Response` / `Failure` (`FailureResponse`: `Code`, `StatusCode`, `Description`). `EmptyResponse` for DELETE endpoints. `HttpClientExtensions`: `GetResultResponseFromJsonAsync`, `PostResultResponseFromJsonAsync`, `PutResultResponseFromJsonAsync` (raw `HttpContent`), `DeleteResultResponseFromJsonAsync`.
 
 ### Error Translation
 
-**`IErrorTranslator` / `ErrorTranslator`** (`Controller.Blazor.Shared/Localization/`, namespace `MadWorldEU.Byakko.Localization`): Translates an error code to a localized user-facing message. Registered in `AddByakkoServices()`.
+`IErrorTranslator.Translate(FailureResponse)` / `Translate(code, defaultDescription)` — looks up `ErrorResources.resx` (+ `.nl-nl.resx`, `.ja-jp.resx`), falls back to `Description`. Add entries to all three `.resx` files when introducing a new error code.
 
-| Method | Notes |
-|---|---|
-| `Translate(FailureResponse)` | Looks up `response.Code` in `ErrorResources`; falls back to `response.Description` |
-| `Translate(string code, string defaultDescription)` | Looks up `code`; falls back to `defaultDescription` |
+**BlazorErrors** (`Controller.Blazor.Shared/Configurations/BlazorErrors.cs`): `FileLoadFailed`, `FilesLoadFailed`, `FileDeleteFailed`, `FileUploadFailed`, `FileInvalidId`, `AuditLogsLoadFailed`, `TriggerFailed`, `FeedbackSendFailed`, `CorrespondenceTooManyRequests`.
 
-**`ErrorResources`** (`Controller.Blazor.Shared/Localization/ErrorResources.resx` + `.nl-nl.resx` + `.ja-jp.resx`): Localized strings keyed by error code (e.g. `"Asset.NotFound"`). Contains translations for all domain error codes and all `BlazorErrors` codes. Add a new entry to all three files whenever a new error code is introduced.
-
-**`BlazorErrors`** (`Controller.Blazor.Shared/Configurations/BlazorErrors.cs`, namespace `MadWorldEU.Byakko.Configurations`): Client-side errors not tied to an API `FailureResponse`. Each entry is a `BlazorError` with a `Code` and fallback `Description`.
-
-| Field | Code | When to use |
-|---|---|---|
-| `FileLoadFailed` | `Blazor.File.LoadFailed` | `catch` block when loading a single file fails |
-| `FilesLoadFailed` | `Blazor.Files.LoadFailed` | `catch` block when loading a list of files fails |
-| `FileDeleteFailed` | `Blazor.File.DeleteFailed` | `catch` block when deleting a file fails |
-| `FileUploadFailed` | `Blazor.File.UploadFailed` | `catch` block when uploading a file fails |
-| `FileInvalidId` | `Blazor.File.InvalidId` | Invalid or unparseable asset ID in the URL |
-| `AuditLogsLoadFailed` | `Blazor.AuditLogs.LoadFailed` | `catch` block when loading audit logs fails |
-| `TriggerFailed` | `Blazor.Trigger.Failed` | `catch` block when a manual trigger request fails |
-| `FeedbackSendFailed` | `Blazor.Feedback.SendFailed` | `catch` block when sending feedback fails |
-| `CorrespondenceTooManyRequests` | `Blazor.Correspondence.TooManyRequests` | 429 response from the feedback endpoint |
-
-**Error handling pattern in `catch` blocks** — always log the real exception to the browser console, show only the localized generic message to the user, and use `_errorMessage` (not `_error`) as the variable name:
-```csharp
-catch (Exception ex)
-{
-    await JsRuntime.InvokeVoidAsync("console.error", ex.ToString());
-    _errorMessage = ErrorTranslator.Translate(BlazorErrors.FileLoadFailed.Code, BlazorErrors.FileLoadFailed.Description);
-}
-```
+**Error handling in `catch` blocks:** log exception via `console.error`, show localized message via `ErrorTranslator`, use `_errorMessage` variable name.
 
 ## Helm / Kubernetes
 
-Chart in `deployments/helm/byakko/`. See `docs/developer-guides/Kubernetes.md` for setup.
+Chart in `deployments/helm/byakko/`. See `docs/developer-guides/Kubernetes.md`.
 
-Key templates: `api.yaml`, `portal.yaml`, `admin.yaml`, `status.yaml`, `database.yaml`, `keycloak.yaml`, `keycloak-database.yaml`, `pgadmin.yaml`, `localstack.yaml` (guarded by `localstack.enabled`), observability stack (`otel-collector`, `prometheus`, `tempo`, `loki`, `grafana` — guarded by `observability.enabled`), `headlamp.yaml` (guarded by `headlamp.enabled`), `ingress.yaml`, `middlewares.yaml`.
+Subdomains: `byakko.dev`/`www.`/`fileshare.` → Portal; `api.` → API; `admin.` → Admin; `status.` → Status; `database.` → pgAdmin; `authentication.` → Keycloak; `grafana.` → Grafana; `kubernetes.` → Headlamp (`headlamp.enabled`).
 
-Subdomains: `byakko.dev`/`www.`/`fileshare.` → Portal; `api.` → API; `admin.` → Admin; `status.` → Status; `database.` → pgAdmin; `authentication.` → Keycloak; `grafana.` → Grafana; `kubernetes.` → Headlamp (guarded by `headlamp.enabled`).
+All image tags via top-level `appVersion` in `values.yaml`. Storage config (`Storage:Mode`, `BucketName`, `OvhCloud.*`) shared by `api.yaml` and `status.yaml`.
 
-**Headlamp**: `headlamp.yaml` creates an `ExternalName` Service in the byakko namespace pointing to `my-headlamp.kube-system.svc.cluster.local` (Headlamp must be pre-installed in `kube-system` via its own Helm chart). The ingress routes `kubernetes.<domain>` to this service via a dedicated `byakko-ingress-headlamp` — intentionally separate from `byakko-ingress` to avoid the `security-headers` middleware (COOP/COEP headers break the OIDC redirect flow). OIDC login via Keycloak requires: (1) a `headlamp-client` in Keycloak, (2) Headlamp upgraded with OIDC args, (3) the microk8s kube-apiserver configured with `--oidc-issuer-url`, `--oidc-client-id`, `--oidc-username-claim=email`, and `--oidc-groups-claim=groups` in `/var/snap/microk8s/<version>/args/kube-apiserver`, and (4) a `ClusterRoleBinding` mapping the user's Keycloak email to a Kubernetes role. See `docs/developer-guides/Kubernetes.md` Step 6 for the full setup.
+**Headlamp:** `ExternalName` Service → `my-headlamp.kube-system.svc.cluster.local`. Separate `byakko-ingress-headlamp` (no `security-headers` middleware — COOP/COEP break OIDC redirect). Requires `headlamp-client` in Keycloak + microk8s kube-apiserver OIDC args. See Kubernetes.md Step 6.
 
-All app image tags are controlled by a single top-level `appVersion` in `values.yaml` (set via `--set appVersion` in the pipeline). Storage config (`Storage:Mode`, `BucketName`, `OvhCloud.*`) lives under the top-level `storage:` key, shared by both `api.yaml` and `status.yaml`.
+**Grafana Keycloak auth:** Generic OAuth in `grafana.yaml`. Role mapping: `contains(roles, 'Administrator') && 'Admin' || ''`. **Critical:** realm roles mapper must have **Add to ID token** enabled — Grafana falls back to ID token only. Client secret: `GRAFANA_KEYCLOAK_CLIENT_SECRET`.
 
-**Grafana Keycloak authentication:** Generic OAuth via env vars in `grafana.yaml`. `GF_SERVER_ROOT_URL` must be set for correct `redirect_uri`. Role mapping: `contains(roles, 'Administrator') && 'Admin' || ''` with `roleAttributeStrict=true`. **Critical:** realm roles mapper must have **Add to ID token** enabled — Grafana falls back to ID token only (Keycloak rejects the access token due to `iss` mismatch). Client secret injected via `GRAFANA_KEYCLOAK_CLIENT_SECRET`. See `docs/developer-guides/AuthenticationServer.md`.
+**pgAdmin Keycloak auth:** `config_local.py` ConfigMap. `AUTHENTICATION_SOURCES = ['oauth2']`. Restricted via `administrator-only-browser` Keycloak flow. Client secret: `PGADMIN_KEYCLOAK_CLIENT_SECRET`.
 
-**pgAdmin Keycloak authentication:** OAuth2 via `config_local.py` mounted from `pgadmin-oauth` ConfigMap. `AUTHENTICATION_SOURCES = ['oauth2']` disables built-in login. `OAUTH2_SERVER_METADATA_URL` must point to Keycloak's `/.well-known/openid-configuration`. Access restricted to `Administrator` role via `administrator-only-browser` Keycloak flow. Client secret injected via `PGADMIN_KEYCLOAK_CLIENT_SECRET`. Both PostgreSQL servers pre-configured via `servers.json` (`"Shared": true`); users must still enter their own DB credentials on first connect. See `docs/developer-guides/AuthenticationServer.md`.
+**Grafana dashboards:** JSON files in `grafana/dashboards/` auto-loaded via `.Files.Glob`. Datasource names must match exactly (`"Loki"`, `"Prometheus"`, `"Tempo"`). Stream matchers: `.+` not `.*`.
 
-**Grafana dashboard provisioning:** JSON files in `deployments/helm/byakko/grafana/dashboards/` are loaded into the `grafana-dashboards` ConfigMap via `.Files.Glob` and picked up automatically on `helm upgrade`. Datasource names must match exactly (`"Loki"`, `"Prometheus"`, `"Tempo"`) — `${DS_LOKI}` placeholders only work on manual UI import. Stream matchers must use `.+` not `.*` (Loki rejects empty-compatible values).
+**Observability retention (60 days):** Loki: `retention_period: 1440h` + `retention_enabled: true`. Prometheus: `--storage.tsdb.retention.time=60d`. Tempo: `block_retention: 1440h`.
 
-**Observability data retention (60 days):** All three stores are configured to auto-purge data older than 60 days. Loki: `limits_config.retention_period: 1440h` + `compactor.retention_enabled: true` in `loki.yaml`. Prometheus: `--storage.tsdb.retention.time=60d` CLI flag in `prometheus.yaml`. Tempo: `compactor.compaction.block_retention: 1440h` in `tempo.yaml`.
-
-TLS local: `mkcert byakko.dev "*.byakko.dev"` + `kubectl create secret tls`. TLS production: `clusterIssuer.enabled = true` + cert-manager HTTP-01. Remove AAAA records if no IPv6.
+TLS local: `mkcert byakko.dev "*.byakko.dev"`. TLS production: `clusterIssuer.enabled = true` + cert-manager HTTP-01.
 
 ## Documentation & Diagrams
 
 DocFX site at `https://madworldeu.github.io/Byakko`. Preview: `docfx docs/docfx.json --serve`.
 
-C4 diagrams in `docs/diagrams/workspace.dsl` (Structurizr DSL). Edit locally:
+C4 diagrams in `docs/diagrams/workspace.dsl` (Structurizr DSL):
 ```bash
 docker run -it --rm -p 8080:8080 -v ./:/usr/local/structurizr structurizr/structurizr local
 ```
