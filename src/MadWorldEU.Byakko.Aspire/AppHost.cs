@@ -14,6 +14,6 @@ var resourceFactory = ResourceFactoryBuilder.Create(builder, runMode);
 var api = resourceFactory.CreateApiBuilder(byakkoDb, localStack, keycloak, mailPit);
 resourceFactory.CreateAdminBuilder(api);
 resourceFactory.CreatePortalBuilder(api);
-resourceFactory.CreateStatusBuilder(byakkoDb, localStack, keycloak);
+resourceFactory.CreateStatusBuilder(byakkoDb, localStack, keycloak, mailPit);
 
 await builder.Build().RunAsync();

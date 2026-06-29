@@ -39,10 +39,11 @@ internal sealed class DockerFileResourceFactory(IDistributedApplicationBuilder b
 
     public IResourceBuilder<IResource> CreateStatusBuilder(IResourceBuilder<PostgresDatabaseResource> byakkoDb, 
         IResourceBuilder<ILocalStackResource> localstack,
-        IResourceBuilder<KeycloakResource> keycloak)
+        IResourceBuilder<KeycloakResource> keycloak,
+        IResourceBuilder<MailPitContainerResource> mailPit)
     {
         return builder.AddDockerfile(nameof(Status), RootFolderSourceCode, "src/MadWorldEU.Byakko.Controller.Status/Dockerfile")
             .WithHttpEndpoint(targetPort: 8080, port: StatusPort)
-            .BuildStatus(byakkoDb, localstack, keycloak);
+            .BuildStatus(byakkoDb, localstack, keycloak, mailPit);
     }
 }

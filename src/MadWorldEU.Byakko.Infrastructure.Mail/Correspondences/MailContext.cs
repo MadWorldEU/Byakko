@@ -12,16 +12,7 @@ public sealed class MailContext(IOptions<MailOptions> options, ILogger<MailServi
     {
         try
         {
-            using var client = new SmtpClient();
-            client.CheckCertificateRevocation = false;
-
-            var secureSocketOptions = GetSecureSocketOptions();
-            await client.ConnectAsync(_options.Host, _options.Port, secureSocketOptions);
-            logger.LogInformation("Connected to SMTP server {Host}:{Port}.", _options.Host, _options.Port);
-            
-            await client.DisconnectAsync(true);
-            logger.LogInformation("Disconnected from SMTP server {Host}:{Port}.", _options.Host, _options.Port);
-
+            await WithSmtpClientAsync(_ => Task.CompletedTask);
             return true;
         }
         catch (Exception ex)
@@ -29,31 +20,24 @@ public sealed class MailContext(IOptions<MailOptions> options, ILogger<MailServi
             logger.LogError(ex, "Failed to connect to SMTP server.");
             return false;
         }
-    } 
-    
+    }
+
     public async Task<Result> TrySendMessageAsync(MimeMessage mimeMessage)
     {
         try
         {
-            using var client = new SmtpClient();
-            client.CheckCertificateRevocation = false;
-
-            var secureSocketOptions = GetSecureSocketOptions();
-            await client.ConnectAsync(_options.Host, _options.Port, secureSocketOptions);
-            logger.LogInformation("Connected to SMTP server {Host}:{Port}.", _options.Host, _options.Port);
-
-            if (_options.HasAuthentication)
+            await WithSmtpClientAsync(async client =>
             {
-                await client.AuthenticateAsync(_options.Username, _options.Token);
-                logger.LogInformation("Authenticated with SMTP server as {Username}.", _options.Username);
-            }
+                if (_options.HasAuthentication)
+                {
+                    await client.AuthenticateAsync(_options.Username, _options.Token);
+                    logger.LogInformation("Authenticated with SMTP server as {Username}.", _options.Username);
+                }
 
-            await client.SendAsync(mimeMessage);
-            logger.LogInformation("Email sent successfully to {Recipient}.", mimeMessage.To);
-            
-            await client.DisconnectAsync(true);
-            logger.LogInformation("Disconnected from SMTP server {Host}:{Port}.", _options.Host, _options.Port);
-            
+                await client.SendAsync(mimeMessage);
+                logger.LogInformation("Email sent successfully to {Recipient}.", mimeMessage.To);
+            });
+
             return Result.Success();
         }
         catch (Exception ex)
@@ -63,8 +47,28 @@ public sealed class MailContext(IOptions<MailOptions> options, ILogger<MailServi
         }
     }
 
-    private SecureSocketOptions GetSecureSocketOptions() => 
-        _options.TlsEnabled 
-            ? SecureSocketOptions.StartTls 
+    private async Task WithSmtpClientAsync(Func<SmtpClient, Task> action)
+    {
+        using var client = new SmtpClient();
+        client.CheckCertificateRevocation = false;
+
+        var secureSocketOptions = GetSecureSocketOptions();
+        await client.ConnectAsync(_options.Host, _options.Port, secureSocketOptions);
+        logger.LogInformation("Connected to SMTP server {Host}:{Port}.", _options.Host, _options.Port);
+
+        try
+        {
+            await action(client);
+        }
+        finally
+        {
+            await client.DisconnectAsync(true);
+            logger.LogInformation("Disconnected from SMTP server {Host}:{Port}.", _options.Host, _options.Port);
+        }
+    }
+
+    private SecureSocketOptions GetSecureSocketOptions() =>
+        _options.TlsEnabled
+            ? SecureSocketOptions.StartTls
             : SecureSocketOptions.None;
 }

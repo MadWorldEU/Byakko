@@ -1,5 +1,6 @@
 using Amazon.S3;
 using MadWorldEU.Byakko.Configurations;
+using MadWorldEU.Byakko.Correspondences;
 using MadWorldEU.Byakko.Healths;
 using Microsoft.Extensions.Options;
 
@@ -9,7 +10,8 @@ namespace MadWorldEU.Byakko.Application.Healths;
 /// Returns health status for all tracked services.
 /// </summary>
 internal sealed class GetHealthServicesUseCase(
-    ByakkoContext context,
+    ByakkoContext byakkoContext,
+    MailContext mailContext,
     IAmazonS3 s3Client,
     IHttpClientFactory httpClientFactory,
     IOptions<HealthCheckSettings> settings,
@@ -24,6 +26,7 @@ internal sealed class GetHealthServicesUseCase(
         var portalTask = CheckServiceAsync("Portal", settings.Value.Portal);
         var adminTask = CheckServiceAsync("Admin", settings.Value.Admin);
         var databaseTask = CheckDatabaseAsync("Database");
+        var mailTask = CheckMailAsync("Mail");
         var objectStorageTask = CheckObjectStorageAsync("Object Storage");
         var authTask = CheckServiceAsync("Authentication", settings.Value.Authentication);
 
@@ -35,6 +38,7 @@ internal sealed class GetHealthServicesUseCase(
             await portalTask,
             await adminTask,
             await databaseTask,
+            await mailTask,
             await objectStorageTask,
             await authTask,
         ];
@@ -44,7 +48,7 @@ internal sealed class GetHealthServicesUseCase(
     {
         try
         {
-            var canConnect = await context.Database.CanConnectAsync();
+            var canConnect = await byakkoContext.Database.CanConnectAsync();
 
             if (canConnect)
             {
@@ -54,6 +58,25 @@ internal sealed class GetHealthServicesUseCase(
         catch (Exception exception)
         {
             logger.LogError(exception, "Database connection check failed");
+        }
+        
+        return new ServiceInfo(name, ServiceStatus.Unhealthy);
+    }
+    
+    private async Task<ServiceInfo> CheckMailAsync(string name)
+    {
+        try
+        {
+            var canConnect = await mailContext.CanConnectAsync();
+
+            if (canConnect)
+            {
+                return new ServiceInfo(name, ServiceStatus.Healthy);
+            }
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Mail connection check failed");
         }
         
         return new ServiceInfo(name, ServiceStatus.Unhealthy);

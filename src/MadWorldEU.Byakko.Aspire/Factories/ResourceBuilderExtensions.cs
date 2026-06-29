@@ -48,13 +48,15 @@ internal static class ResourceBuilderExtensions
     internal static IResourceBuilder<TResource> BuildStatus<TResource>(this IResourceBuilder<TResource> statusBuilder, 
         IResourceBuilder<PostgresDatabaseResource> byakkoDb, 
         IResourceBuilder<ILocalStackResource> localstack, 
-        IResourceBuilder<KeycloakResource> keycloak)
+        IResourceBuilder<KeycloakResource> keycloak,
+        IResourceBuilder<MailPitContainerResource> mailPit)
         where TResource : IResource, IResourceWithWaitSupport, IResourceWithEnvironment, IResourceWithEndpoints
     {
         return statusBuilder
             .WithReference(byakkoDb)
             .WithReference(localstack)
             .WithReference(keycloak)
+            .WithReference(mailPit)           
             .WithHttpHealthCheck("/health");
     }
 }
