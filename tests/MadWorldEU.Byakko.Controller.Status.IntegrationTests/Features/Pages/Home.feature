@@ -20,5 +20,6 @@ Scenario Outline: Each service block shows healthy status
         | Portal         |
         | Admin          |
         | Database       |
+        | Mail           |
         | Object Storage |
         | Authentication |

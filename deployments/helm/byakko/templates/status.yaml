@@ -76,6 +76,26 @@ spec:
                         value: {{ .Values.storage.ovhCloud.secretKey | quote }}
                       - name: Storage__OvhCloud__Region
                         value: {{ .Values.storage.ovhCloud.region | quote }}
+                      - name: Mail__Mode
+                        value: {{ .Values.mail.mode | quote }}
+                      - name: Mail__Host
+                        value: {{ .Values.mail.host | quote }}
+                      - name: Mail__Port
+                        value: {{ .Values.mail.port | quote }}
+                      - name: Mail__TlsEnabled
+                        value: {{ .Values.mail.tlsEnabled | quote }}
+                      - name: Mail__Username
+                        value: {{ .Values.mail.username | quote }}
+                      - name: Mail__Token
+                        value: {{ .Values.mail.token | quote }}
+                      - name: Mail__AdministratorFrom__Name
+                        value: {{ .Values.mail.administratorFrom.name | quote }}
+                      - name: Mail__AdministratorFrom__Address
+                        value: {{ .Values.mail.administratorFrom.address | quote }}
+                      - name: Mail__AdministratorTo__Name
+                        value: {{ .Values.mail.administratorTo.name | quote }}
+                      - name: Mail__AdministratorTo__Address
+                        value: {{ .Values.mail.administratorTo.address | quote }}
                   volumeMounts:
                       - name: security-txt
                         mountPath: /app/wwwroot/.well-known/security.txt
