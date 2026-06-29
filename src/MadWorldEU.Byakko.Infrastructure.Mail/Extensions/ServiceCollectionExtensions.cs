@@ -13,6 +13,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IOptions<MailOptions>>(sp =>
             Options.Create(MailFactory.Create(sp.GetRequiredService<IConfiguration>())));
         
+        services.AddScoped<MailContext>();
         services.AddScoped<ICorrespondenceService, MailService>();
         
         return services;
