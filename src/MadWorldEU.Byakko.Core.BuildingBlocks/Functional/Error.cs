@@ -1,7 +1,7 @@
 namespace MadWorldEU.Byakko.Functional;
 
 /// <summary>Represents a named error with a human-readable description.</summary>
-public sealed class Error
+public sealed class Error : ValueObject
 {
     public static readonly Error None = new(string.Empty, string.Empty);
 
@@ -15,4 +15,9 @@ public sealed class Error
     }
 
     public static Error Create(string code, string description) => new(code, description);
+    protected override IEnumerable<object?> GetEqualityComponents()
+    {
+        yield return Code;
+        yield return Description;
+    }
 }
