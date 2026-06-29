@@ -306,6 +306,7 @@ portal:
         clientId: "portal-client"
     assets:
         maxUploadSizeInBytes: "1073741824"
+        maxValidityPeriodInDays: 30
     image:
         repository: "ghcr.io/madworldeu/byakko-portal"
     resources:

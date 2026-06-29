@@ -50,7 +50,7 @@ Key test notes:
 - Application unit tests cover error paths only (happy paths via integration tests). Use `Result.Failure<T>(error)` not `Result<T>.Failure(error)`.
 - Domain unit tests use a `BuildAsset()` helper for constructing valid aggregates.
 - Component tests: use `BunitContext` (not obsolete `TestContext`), `ctx.Render<T>()`, `cut.WaitForState()`, CSS selectors. Set `ctx.JSInterop.Mode = JSRuntimeMode.Loose` for JS interop components. For async button flows, wait on a DOM change after completion (not the spinner). Use `.TextContent.Trim()` for `<td>` with child elements; `:not(.other-class)` to disambiguate shared classes. Pass params via `ctx.Render<T>(p => p.Add(x => x.Prop, value))`. `IStringLocalizer<T>` components require `ctx.Services.AddLocalization()` in test setup.
-- Architecture tests: BDD feature files + `BaseArchitectureTests` (loads all assemblies via marker interfaces); step definitions scoped per feature with `[Scope(Feature = "...")]`; assertions via `rule.HasNoViolations(Architecture).ShouldBeTrue(rule.Description)`. Every assembly under test must have a marker interface (e.g. `IPostgresqlMarker`) in its root namespace.
+- Architecture tests: BDD feature files + `BaseArchitectureTests` (loads all assemblies via marker interfaces); step definitions scoped per feature with `[Scope(Feature = "...")]`; assertions via `rule.HasNoViolations(Architecture).ShouldBeTrue(rule.Description)`. Every assembly under test must have a marker interface (e.g. `IPostgresqlMarker`, `IMailMarker`) in its root namespace.
 
 ## Architecture
 
@@ -60,9 +60,9 @@ Clean Architecture. Dependencies flow inward: Controller → Application → Dom
 - **BuildingBlocks** — must not depend on any other layer.
 - **Domain** — must not depend on Application, Contracts, Infrastructure, or Controllers.
 - **Contracts** — must not depend on Application, Infrastructure, or Controllers.
-- **Application** — must not depend on any Infrastructure layer (Postgresql, ObjectStorage, Security) or Controllers.
-- **Infrastructure** (Postgresql, ObjectStorage, Security) — must not depend on Controllers.
-- **Blazor projects** (Admin, Portal, Blazor.Shared) — must not depend on Domain, Application, any Infrastructure layer, or Controller.Api; may only depend on Contracts and Blazor.Shared.
+- **Application** — must not depend on any Infrastructure layer (Postgresql, ObjectStorage, Security, Mail) or Controllers.
+- **Infrastructure** (Postgresql, ObjectStorage, Security, Mail) — must not depend on Controllers.
+- **Blazor projects** (Admin, Portal, Blazor.Shared) — must not depend on Domain, Application, any Infrastructure layer (Postgresql, ObjectStorage, Security, Mail), or Controller.Api; may only depend on Contracts and Blazor.Shared.
 
 | Layer | Project | Role |
 |---|---|---|
@@ -121,7 +121,7 @@ Endpoints in `Controller.Api/Endpoints/Storages/AssetsEndpoints.cs`:
 | Method | Route | Use case | Notes |
 |---|---|---|---|
 | `GET` | `/assets` | `GetAssetsMetaDataUseCase` | Paged (20/page); requires `Administrator` policy; query param `page` |
-| `POST` | `/assets` | `CreateAssetMetadataUseCase` | Creates record; validity from `Assets:ValidityPeriodInDays` |
+| `POST` | `/assets` | `CreateAssetMetadataUseCase` | Creates record; `ExpiresInDays` from request validated against `Assets:ValidityPeriodInDays` (max) |
 | `GET` | `/assets/{id}` | `GetAssetMetadataUseCase` | 404 when not found; returns metadata even for deleted assets |
 | `PUT` | `/assets/{id}/content` | `UploadAssetContentUseCase` | 404 not found, 403 not owner |
 | `DELETE` | `/assets/{id}/content` | `DeleteContentOfAssetUseCase` | Requires `Administrator` policy; 404 not found, 409 already deleted |
@@ -135,7 +135,8 @@ Content encrypted AES-256 before upload; salt (16 bytes) + IV prepended to ciphe
 - `DeletedAt` — set by `asset.Delete(clock)`. `IsDeleted` = `DeletedAt.HasValue`.
 - `Delete(clock)` → `AssetErrors.AlreadyDeleted` if already deleted. Also sets `ExpiresAt = now` if it was still in the future.
 - `UpdateSize(clock, size)` → `AssetErrors.SizeAlreadySet` if `Size.Value > 0`.
-- `ValidityPeriod` value object enforces `Days > 0`.
+- `ValidityPeriod` value object: `Create(days)` → `ValidityPeriodErrors.MustBePositive` if `days <= 0`; `Create(days, maxDays)` → `ValidityPeriodErrors.ExceedsMaximum` if `days >= maxDays`. `CreateAssetRequest.ExpiresInDays` is the caller-supplied value; `Assets:ValidityPeriodInDays` is the server-side ceiling.
+- `Size` value object: `Create(sizeInBytes)` → `SizeErrors.Negative` if `sizeInBytes < 0`; `Create(sizeInBytes, maxSizeInBytes)` → `AssetErrors.FileTooLarge` if exceeds max.
 
 **Manual cleanup triggers** (`ManualTriggersEndpoints.cs`, requires auth):
 - `POST /host-services/manual-triggers/clean-up/assets-content` → `DeleteAllExpiredContentOfAssetsUseCase`
@@ -221,7 +222,7 @@ Blazor WebAssembly, Bootstrap 5 dark theme (`data-bs-theme="dark"`). Desktop-fir
 
 Blazor WebAssembly, Bootstrap 5 dark theme. Sticky top navbar with auth dropdown (username, edit-profile link via `OidcSettings.GetEditAccountUrl()`, logout), a "My files" link (visible only to users satisfying the `User` policy, via a nested `<AuthorizeView Policy="@AuthorizationPolicies.User">`), and a "Contact" link (public). Pages: `Pages/Home.razor` (`/` — landing page with beta banner, hero section, feature cards, and how-it-works steps), `Pages/Storage/Upload.razor` (`/storage/upload`), `Pages/Storage/Download.razor` (shows expiry warning client-side; server enforces; see below), `Pages/Storage/MyAssets.razor` (`/storage/my-assets` — paged table of the authenticated user's own assets with status badges Active/Expired/Deleted, size, expiry, and download links; fetches from `GET /assets/me`), `Pages/Contact.razor` (`/contact` — see below), `Pages/UserAgreement.razor` (`/user-agreement` — static page with 9 sections covering acceptance, prohibited content, file retention, privacy, liability, changes, and contact). Max upload size from `IOptions<AssetSettings>` → `IBrowserFile.OpenReadStream(maxAllowedSize)`. Footer (`Layout/MainLayout.razor`) includes "User Agreement" and "Contact" links.
 
-**Upload page** (`Pages/Storage/Upload.razor`, route `/storage/upload`): File picker + optional "Advanced options" section (collapsed by default) containing a password input with a show/hide toggle and a **Generate** button. Clicking Generate calls `GeneratePasswordUseCase.Execute()` (injected; registered as scoped in `AddByakkoServices`) and fills the input, automatically switching it to visible. On upload, calls `POST /assets` to create metadata then `PUT /assets/{id}/content` (multipart form) with the file and an optional `password` field. Password is sent as `null` when the field is left empty. `MadWorldEU.Byakko.Application` is a global using in `_Imports.razor` so `GeneratePasswordUseCase` is available without an explicit `@using`.
+**Upload page** (`Pages/Storage/Upload.razor`, route `/storage/upload`): File picker + optional "Advanced options" section (collapsed by default) containing an expiry date picker and a password input with a show/hide toggle and a **Generate** button. The date picker defaults to today + `Assets:MaxValidityPeriodInDays`, min = tomorrow, max = today + `MaxValidityPeriodInDays`; the computed `ExpiresInDays` is passed in `CreateAssetRequest`. `MaxValidityPeriodInDays` is a Blazor client `AssetSettings` property (default 30) bound from `appsettings.json` and injected via the Helm ConfigMap. Clicking Generate calls `GeneratePasswordUseCase.Execute()` (injected; registered as scoped in `AddByakkoServices`) and fills the input, automatically switching it to visible. On upload, calls `POST /assets` to create metadata then `PUT /assets/{id}/content` (multipart form) with the file and an optional `password` field. Password is sent as `null` when the field is left empty. `MadWorldEU.Byakko.Application` is a global using in `_Imports.razor` so `GeneratePasswordUseCase` is available without an explicit `@using`.
 
 **Download page** (`Pages/Storage/Download.razor`, route `/storage/download/{Id}`): Loads asset metadata on init. Three mutually exclusive states: (1) expired — amber warning + disabled button; (2) no content (`Size == 0`) — red danger alert + disabled button; (3) ready — optional password input and download button. Download calls `window.downloadFileWithPassword(url, password, dotNetRef)` in `wwwroot/js/app.js` — streams the response chunk-by-chunk, calling `dotNetRef.invokeMethodAsync('UpdateProgress', percent)` to update a progress bar, then triggers a blob download via a temporary `<a download>`. On error: `Encryption.DecryptionFailed` → wrong password message; otherwise shows `description`. Implements `IAsyncDisposable`.
 

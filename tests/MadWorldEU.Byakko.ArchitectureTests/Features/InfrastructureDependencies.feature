@@ -22,3 +22,12 @@ Scenario: Security should not depend on Controllers
     Given the architecture is loaded
     Then the Security layer should not depend on the Api layer
     Then the Security layer should not depend on the Status layer
+
+Scenario: Mail should not depend on Controllers
+    Given the architecture is loaded
+    Then the Mail layer should not depend on the Api layer
+    Then the Mail layer should not depend on the Status layer
+
+Scenario: Application layer should not depend on Mail
+    Given the architecture is loaded
+    Then the Application layer should not depend on the Mail layer

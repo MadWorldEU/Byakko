@@ -66,6 +66,9 @@
     <data name="Upload Advanced Options" xml:space="preserve">
         <value>Advanced options</value>
     </data>
+    <data name="Upload Expiry Label" xml:space="preserve">
+        <value>Expiry date</value>
+    </data>
     <data name="Upload Password Label" xml:space="preserve">
         <value>Password (optional)</value>
     </data>

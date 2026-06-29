@@ -17,7 +17,8 @@ public sealed class ManualTriggersSteps(ScenarioContext scenarioContext)
         var createResponse = await client.PostAsJsonAsync("/assets", new CreateAssetRequest
         {
             Name = "expired-file.txt",
-            ContentType = "text/plain"
+            ContentType = "text/plain",
+            ExpiresInDays = 30
         });
         createResponse.EnsureSuccessStatusCode();
         var createResult = await createResponse.Content.ReadFromJsonAsync<CreateAssetResponse>();
@@ -49,7 +50,8 @@ public sealed class ManualTriggersSteps(ScenarioContext scenarioContext)
         var createResponse = await client.PostAsJsonAsync("/assets", new CreateAssetRequest
         {
             Name = "deleted-file.txt",
-            ContentType = "text/plain"
+            ContentType = "text/plain",
+            ExpiresInDays = 30
         });
         createResponse.EnsureSuccessStatusCode();
         var createResult = await createResponse.Content.ReadFromJsonAsync<CreateAssetResponse>();

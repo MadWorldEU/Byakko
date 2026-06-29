@@ -24,7 +24,7 @@ The production environment is hosted at [mad-world.eu](https://mad-world.eu). Th
 
 ## Documentation
 
-Full documentation is available at [https://madworldeu.github.io/Byakko/](https://madworldeu.github.io/Byakko/).
+Full documentation is available at [https://MadWorldEU.github.io/Byakko/](https://MadWorldEU.github.io/Byakko/).
 
 ## Getting started
 

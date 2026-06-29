@@ -10,6 +10,16 @@ public sealed class Size : ValueObject
         Value = value;
     }
 
+    public static Result<Size> Create(long sizeInBytes, long maxSizeInBytes)
+    {
+        if (sizeInBytes > maxSizeInBytes)
+        {
+            return AssetErrors.FileTooLarge;
+        }
+        
+        return Create(sizeInBytes);
+    }
+
     public static Result<Size> Create(long sizeInBytes)
     {
         if (sizeInBytes < 0)

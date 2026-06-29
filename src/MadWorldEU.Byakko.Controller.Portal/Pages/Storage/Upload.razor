@@ -57,6 +57,16 @@
                         @if (_showAdvanced)
                         {
                             <div class="mt-2">
+                                <label class="form-label small text-secondary mb-1">@Localizer["Upload Expiry Label"]</label>
+                                <input type="date"
+                                       class="form-control form-control-sm mb-3"
+                                       @bind="_expiryDate"
+                                       @bind:format="yyyy-MM-dd"
+                                       min="@_minExpiryDate"
+                                       max="@_maxExpiryDate"
+                                       disabled="@_isUploading" />
+                            </div>
+                            <div class="mt-2">
                                 <label class="form-label small text-secondary mb-1">@Localizer["Upload Password Label"]</label>
                                 <div class="input-group input-group-sm">
                                     <input type="@(_showPassword ? "text" : "password")"
@@ -85,6 +95,7 @@
                                 </div>
                             </div>
                         }
+
                     </div>
 
                     @if (_isUploading)
@@ -138,6 +149,11 @@
     private bool _showAdvanced;
     private bool _showPassword;
     private string? _password;
+    private DateOnly _expiryDate;
+
+    private string _minExpiryDate => DateOnly.FromDateTime(DateTime.Today.AddDays(1)).ToString("yyyy-MM-dd");
+    private string _maxExpiryDate => DateOnly.FromDateTime(DateTime.Today.AddDays(AssetSettings.Value.MaxValidityPeriodInDays)).ToString("yyyy-MM-dd");
+    private int ExpiresInDays => Math.Max(1, (int)(_expiryDate.ToDateTime(TimeOnly.MinValue) - DateTime.Today).TotalDays);
 
     private long MaxUploadSizeInBytes => _limits?.MaxUploadSizeInBytes ?? AssetSettings.Value.MaxUploadSizeInBytes;
     private bool FileLimitReached => _limits is not null && _limits.ActiveFiles >= _limits.MaxFiles;
@@ -148,6 +164,8 @@
 
     protected override async Task OnInitializedAsync()
     {
+        _expiryDate = DateOnly.FromDateTime(DateTime.Today.AddDays(AssetSettings.Value.MaxValidityPeriodInDays));
+
         var result = await AssetService.GetUserUploadLimitsAsync();
 
         if (result.IsSuccess)
@@ -189,7 +207,8 @@
             {
                 Name = _selectedFile.Name,
                 ContentType = _selectedFile.ContentType,
-                Size = _selectedFile.Size
+                Size = _selectedFile.Size,
+                ExpiresInDays = ExpiresInDays
             });
 
             if (!createResult.IsSuccess)

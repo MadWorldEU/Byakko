@@ -10,7 +10,8 @@ data:
         {
           "ApiBaseUrl": "https://api.{{ .Values.ingress.domain }}",
           "Assets": {
-            "MaxUploadSizeInBytes": {{ .Values.portal.assets.maxUploadSizeInBytes }}
+            "MaxUploadSizeInBytes": {{ .Values.portal.assets.maxUploadSizeInBytes }},
+            "MaxValidityPeriodInDays": {{ .Values.portal.assets.maxValidityPeriodInDays }}
           },
           "Oidc": {
             "Authority": "https://authentication.{{ .Values.ingress.domain }}/realms/{{ .Values.keycloak.realm }}",

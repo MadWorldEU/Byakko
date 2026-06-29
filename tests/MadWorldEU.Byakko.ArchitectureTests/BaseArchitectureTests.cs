@@ -17,6 +17,7 @@ public abstract class BaseArchitectureTests
             .LoadAssembly(typeof(IObjectStorageMarker).Assembly)
             .LoadAssembly(typeof(IPostgresqlMarker).Assembly)
             .LoadAssembly(typeof(ISecurityMarker).Assembly)
+            .LoadAssembly(typeof(IMailMarker).Assembly)
             .LoadAssembly(typeof(IApiMarker).Assembly)
             .LoadAssembly(typeof(IStatusMarker).Assembly)
             .Build();
@@ -50,6 +51,9 @@ public abstract class BaseArchitectureTests
 
     protected readonly IObjectProvider<IType> SecurityLayer =
         Types().That().ResideInAssembly(typeof(ISecurityMarker).Assembly).As("Security Layer");
+
+    protected readonly IObjectProvider<IType> MailLayer =
+        Types().That().ResideInAssembly(typeof(IMailMarker).Assembly).As("Mail Layer");
 
     protected readonly IObjectProvider<IType> ApiLayer =
         Types().That().ResideInAssembly(typeof(IApiMarker).Assembly).As("Api Layer");
