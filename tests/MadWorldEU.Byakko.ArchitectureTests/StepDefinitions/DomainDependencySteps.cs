@@ -21,6 +21,7 @@ public sealed class DomainDependencySteps : BaseArchitectureTests
             ["ObjectStorage"] = ObjectStorageLayer,
             ["Postgresql"] = PostgresqlLayer,
             ["Security"] = SecurityLayer,
+            ["Mail"] = MailLayer,
             ["Api"] = ApiLayer,
             ["Status"] = StatusLayer
         };
