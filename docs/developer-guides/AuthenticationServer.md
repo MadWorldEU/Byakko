@@ -117,6 +117,25 @@ After this, non-Administrator users receive "You don't have access to this appli
 
 > 💡 In the developer environment, **User registration** is enabled automatically via `MadWorld-realm.json`. In production, enable it manually after first deploy.
 
+### Configure Session Timeouts
+
+Byakko uses a 1-day session for normal logins and a 7-day session when users tick **Remember me**.
+
+1. Go to **Realm settings** in the Keycloak Admin UI.
+2. Open the **Sessions** tab.
+3. Set the following values:
+
+| Setting | Value |
+|---|---|
+| SSO Session Idle | 1 day |
+| SSO Session Max | 1 day |
+| SSO Session Idle Remember Me | 7 days |
+| SSO Session Max Remember Me | 7 days |
+
+4. Click **Save**.
+
+> 💡 In the developer environment these values are set automatically via `MadWorld-realm.json`. In production, apply them manually after the first deploy.
+
 ### Terms and Conditions
 
 Byakko shows a Terms and Conditions acceptance screen (linking to `/user-agreement`) before users can complete their first login. This is implemented via a Keycloak Required Action and a custom `byakko` login theme.
