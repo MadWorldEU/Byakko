@@ -10,6 +10,8 @@ public sealed class StatusHooks(ScenarioContext scenarioContext)
 {
     private static PostgreSqlContainer _postgres = null!;
     private static LocalStackContainer _localstack = null!;
+    private static IContainer _mailpit = null!;
+    private static string _mailpitApiUrl = null!;
     private static WireMockServer _healthMockServer = null!;
     private static WebApplicationFactory<Program>? _factory;
     private static HttpClient? _client;
@@ -24,6 +26,17 @@ public sealed class StatusHooks(ScenarioContext scenarioContext)
             .WithEnvironment("SERVICES", "s3")
             .Build();
         await _localstack.StartAsync();
+
+        _mailpit = new ContainerBuilder(DockerImages.Mailpit)
+            .WithPortBinding(1025, true)
+            .WithPortBinding(8025, true)
+            .WithWaitStrategy(Wait.ForUnixContainer()
+                .UntilHttpRequestIsSucceeded(r => r.ForPort(8025).ForPath("/api/v1/messages")))
+            .Build();
+        await _mailpit.StartAsync();
+
+        var mailpitSmtpPort = _mailpit.GetMappedPublicPort(1025);
+        _mailpitApiUrl = $"http://{_mailpit.Hostname}:{_mailpit.GetMappedPublicPort(8025)}";
 
         _healthMockServer = WireMockServer.Start();
         _healthMockServer
@@ -47,7 +60,9 @@ public sealed class StatusHooks(ScenarioContext scenarioContext)
                         ["HealthChecks:Portal"] = mockHealthUrl,
                         ["HealthChecks:Authentication"] = mockHealthUrl,
                         ["Storage:Mode"] = "LocalStack",
-                        ["Storage:AutoCreateBucket"] = "true"
+                        ["Storage:AutoCreateBucket"] = "true",
+                        ["MAILPIT_HOST"] = _mailpit.Hostname,
+                        ["MAILPIT_PORT"] = mailpitSmtpPort.ToString()
                     });
                 });
             });
@@ -70,12 +85,14 @@ public sealed class StatusHooks(ScenarioContext scenarioContext)
         _healthMockServer.Stop();
         await _postgres.DisposeAsync();
         await _localstack.DisposeAsync();
+        await _mailpit.DisposeAsync();
     }
 
     [BeforeScenario]
-    public void BeforeScenario()
+    public async Task BeforeScenario()
     {
         scenarioContext.Set(_client!);
         scenarioContext.Set(_factory!.Services, ScenarioContextKeys.ServiceProvider);
+        scenarioContext.Set(_mailpitApiUrl, ScenarioContextKeys.MailpitApiUrl);
     }
 }

@@ -1,3 +1,5 @@
+global using DotNet.Testcontainers.Builders;
+global using DotNet.Testcontainers.Containers;
 global using Microsoft.AspNetCore.Mvc.Testing;
 global using Microsoft.Extensions.Configuration;
 global using Reqnroll;
