@@ -60,7 +60,7 @@
         <value>Geavanceerde opties</value>
     </data>
     <data name="Upload Expiry Label" xml:space="preserve">
-        <value>Vervaldatum (optioneel)</value>
+        <value>Vervaldatum</value>
     </data>
     <data name="Upload Password Label" xml:space="preserve">
         <value>Wachtwoord (optioneel)</value>

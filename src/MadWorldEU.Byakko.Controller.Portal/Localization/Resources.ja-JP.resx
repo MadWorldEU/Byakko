@@ -60,7 +60,7 @@
         <value>詳細オプション</value>
     </data>
     <data name="Upload Expiry Label" xml:space="preserve">
-        <value>有効期限（任意）</value>
+        <value>有効期限</value>
     </data>
     <data name="Upload Password Label" xml:space="preserve">
         <value>パスワード（任意）</value>
