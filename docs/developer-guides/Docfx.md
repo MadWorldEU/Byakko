@@ -20,4 +20,4 @@ This builds the documentation site and serves it at `http://localhost:8080`.
 
 ## Live documentation
 
-The published documentation is available at [https://madworldeu.github.io/byakko](https://madworldeu.github.io/byakko).
+The published documentation is available at [https://MadWorldEU.github.io/Byakko/](https://MadWorldEU.github.io/Byakko/).

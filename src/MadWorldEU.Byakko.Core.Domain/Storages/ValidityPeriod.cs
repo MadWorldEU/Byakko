@@ -12,7 +12,7 @@ public sealed class ValidityPeriod : ValueObject
 
     public static Result<ValidityPeriod> Create(int days, int maxDays)
     {
-        if (days >= maxDays)
+        if (days > maxDays)
         {
             return ValidityPeriodErrors.ExceedsMaximum;
         }

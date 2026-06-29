@@ -17,7 +17,7 @@ public sealed class CreateAssetMetadataUseCaseTests
     public async Task ExecuteAsync_WhenNameIsEmpty_ShouldReturnFailure()
     {
         var useCase = new CreateAssetMetadataUseCase(_clock, _guidGenerator, _repository, _domainEventsDispatcher, _settings);
-        var request = new CreateAssetRequest { Name = "", ContentType = "text/plain" };
+        var request = new CreateAssetRequest { Name = "", ContentType = "text/plain", ExpiresInDays = 30 };
 
         var result = await useCase.ExecuteAsync(request, Guid.NewGuid().ToString(), null);
 
@@ -28,7 +28,7 @@ public sealed class CreateAssetMetadataUseCaseTests
     public async Task ExecuteAsync_WhenContentTypeIsInvalid_ShouldReturnFailure()
     {
         var useCase = new CreateAssetMetadataUseCase(_clock, _guidGenerator, _repository, _domainEventsDispatcher, _settings);
-        var request = new CreateAssetRequest { Name = "test.txt", ContentType = "not-a-valid-mime" };
+        var request = new CreateAssetRequest { Name = "test.txt", ContentType = "not-a-valid-mime", ExpiresInDays = 30 };
 
         var result = await useCase.ExecuteAsync(request, Guid.NewGuid().ToString(), null);
 
@@ -39,7 +39,7 @@ public sealed class CreateAssetMetadataUseCaseTests
     public async Task ExecuteAsync_WhenUserIdIsInvalid_ShouldReturnFailure()
     {
         var useCase = new CreateAssetMetadataUseCase(_clock, _guidGenerator, _repository, _domainEventsDispatcher, _settings);
-        var request = new CreateAssetRequest { Name = "test.txt", ContentType = "text/plain" };
+        var request = new CreateAssetRequest { Name = "test.txt", ContentType = "text/plain", ExpiresInDays = 30 };
         var ipAddress = new IPAddress([127, 0, 0, 1]);
 
         var result = await useCase.ExecuteAsync(request, "not-a-guid", ipAddress);
@@ -56,7 +56,7 @@ public sealed class CreateAssetMetadataUseCaseTests
         _repository.AddAsync(Arg.Any<Asset>()).Returns(Task.FromResult(Result.Failure(AssetErrors.SaveFailed)));
 
         var useCase = new CreateAssetMetadataUseCase(_clock, _guidGenerator, _repository, _domainEventsDispatcher, _settings);
-        var request = new CreateAssetRequest { Name = "test.txt", ContentType = "text/plain" };
+        var request = new CreateAssetRequest { Name = "test.txt", ContentType = "text/plain", ExpiresInDays = 30 };
         var ipAddress = new IPAddress([127, 0, 0, 1]);
 
         var result = await useCase.ExecuteAsync(request, Guid.NewGuid().ToString(), ipAddress);
