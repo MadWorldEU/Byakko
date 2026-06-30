@@ -27,6 +27,11 @@ public sealed class AssetMetrics : IAssetMetrics
         _metadataDeletesTotal = meter.CreateCounter<long>(
             "assets.metadata.deletes.total",
             description: "Total number of successful expired asset metadata cleanup runs.");
+
+        _uploadsTotal.Add(0);
+        _downloadsTotal.Add(0);
+        _deletesTotal.Add(0);
+        _metadataDeletesTotal.Add(0);
     }
 
     public void RecordUpload() => _uploadsTotal.Add(1);

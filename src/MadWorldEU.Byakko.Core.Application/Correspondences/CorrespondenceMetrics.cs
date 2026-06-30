@@ -15,6 +15,8 @@ public sealed class CorrespondenceMetrics : ICorrespondenceMetrics
         _feedbackSentTotal = meter.CreateCounter<long>(
             "correspondences.feedback.sent.total",
             description: "Total number of feedback messages sent.");
+
+        _feedbackSentTotal.Add(0);
     }
 
     public void RecordFeedbackSent() => _feedbackSentTotal.Add(1);
