@@ -1,4 +1,6 @@
 global using Bunit;
+global using NodaTime;
+global using NodaTime.Testing;
 global using Microsoft.AspNetCore.Components.Forms;
 global using Microsoft.Extensions.DependencyInjection;
 global using Shouldly;

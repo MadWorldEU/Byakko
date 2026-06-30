@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Options;
-using NodaTime;
 
 namespace MadWorldEU.Byakko.Pages.Storage;
 
@@ -30,7 +29,7 @@ public sealed class UploadPageTests
 
         using var ctx = new BunitContext();
         ctx.Services.AddLocalization();
-        ctx.Services.AddSingleton<IClock>(SystemClock.Instance);
+        ctx.Services.AddSingleton<IClock>(new FakeClock(Instant.FromUtc(2026, 6, 20, 12, 0, 0)));
         ctx.Services.AddScoped<IErrorTranslator, ErrorTranslator>();
         ctx.Services.AddSingleton(Options.Create(new AssetSettings { MaxUploadSizeInBytes = 1073741824 }));
         ctx.Services.AddHttpClient(HttpClients.ApiAnonymous, client =>
