@@ -1,6 +1,6 @@
 namespace: "byakko-production"
 imagePullPolicy: "IfNotPresent"
-appVersion: "v0.8.1"
+appVersion: "v0.23.0"
     
 ingress:
     domain: "mad-world.eu"
