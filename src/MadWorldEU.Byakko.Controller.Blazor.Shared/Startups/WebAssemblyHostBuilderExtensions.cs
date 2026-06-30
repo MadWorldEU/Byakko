@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NodaTime;
 
 namespace MadWorldEU.Byakko.Startups;
 
@@ -36,6 +37,7 @@ public static class WebAssemblyHostBuilderExtensions
     public static WebAssemblyHostBuilder AddByakkoServices(this WebAssemblyHostBuilder builder)
     {
         builder.Services.AddLocalization();
+        builder.Services.AddSingleton<IClock>(SystemClock.Instance);
         builder.Services.AddScoped<IErrorTranslator, ErrorTranslator>();
         
         builder.Services.Configure<AssetSettings>(builder.Configuration.GetSection(AssetSettings.Key));

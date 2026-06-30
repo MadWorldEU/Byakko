@@ -69,6 +69,9 @@
     <data name="Upload Expiry Label" xml:space="preserve">
         <value>Expiry date</value>
     </data>
+    <data name="Upload Expiry Invalid" xml:space="preserve">
+        <value>Please enter a date between tomorrow and the maximum allowed expiry date.</value>
+    </data>
     <data name="Upload Password Label" xml:space="preserve">
         <value>Password (optional)</value>
     </data>

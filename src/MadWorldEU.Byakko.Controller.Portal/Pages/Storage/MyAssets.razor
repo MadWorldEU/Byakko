@@ -1,6 +1,7 @@
 @page "/storage/my-assets"
 @attribute [Authorize(Policy = AuthorizationPolicies.User)]
 @inject IAssetService AssetService
+@inject IClock Clock
 @inject IJSRuntime JsRuntime
 @inject ILogger<MyAssets> Logger
 @inject IStringLocalizer<Resources> Localizer
@@ -39,7 +40,7 @@
             <div class="list-group">
                 @foreach (var asset in _response.Assets)
                 {
-                    var isActive = !asset.IsDeleted && asset.ExpiresAt >= DateTimeOffset.UtcNow;
+                    var isActive = !asset.IsDeleted && asset.ExpiresAt >= Clock.GetCurrentInstant().ToDateTimeOffset();
                     <div class="list-group-item p-3">
                         <div class="d-flex justify-content-between align-items-start gap-2">
                             <div class="flex-grow-1" style="min-width:0">
@@ -52,7 +53,7 @@
                                     {
                                         <span class="badge text-bg-secondary">@Localizer["MyAssets Badge Deleted"]</span>
                                     }
-                                    else if (asset.ExpiresAt < DateTimeOffset.UtcNow)
+                                    else if (asset.ExpiresAt < Clock.GetCurrentInstant().ToDateTimeOffset())
                                     {
                                         <span class="badge text-bg-warning">@Localizer["MyAssets Badge Expired"]</span>
                                     }

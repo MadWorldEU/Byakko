@@ -1,5 +1,6 @@
 @page "/storage/download/{Id}"
 @inject IAssetService AssetService
+@inject IClock Clock
 @inject IJSRuntime JsRuntime
 @inject ILogger<Download> Logger
 @inject IStringLocalizer<Resources> Localizer
@@ -139,7 +140,7 @@
     private string? _password;
     private bool _isDownloading;
     private int _downloadProgressPercent;
-    private bool IsExpired => _metadata is not null && _metadata.ExpiresAt < DateTimeOffset.UtcNow;
+    private bool IsExpired => _metadata is not null && _metadata.ExpiresAt < Clock.GetCurrentInstant().ToDateTimeOffset();
     private bool IsContentUnavailable => _metadata is not null && _metadata.Size == 0;
 
     protected override async Task OnInitializedAsync()

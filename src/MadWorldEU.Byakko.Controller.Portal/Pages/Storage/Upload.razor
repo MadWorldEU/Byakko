@@ -1,6 +1,7 @@
 @page "/storage/upload"
 @attribute [Authorize(Policy = AuthorizationPolicies.User)]
 @inject IAssetService AssetService
+@inject IClock Clock
 @inject IOptions<AssetSettings> AssetSettings
 @inject IStringLocalizer<Resources> Localizer
 @inject IErrorTranslator ErrorTranslator
@@ -59,12 +60,16 @@
                             <div class="mt-2">
                                 <label class="form-label small text-secondary mb-1">@Localizer["Upload Expiry Label"]</label>
                                 <input type="date"
-                                       class="form-control form-control-sm mb-3"
+                                       class="form-control form-control-sm @(IsExpiryDateInvalid ? "is-invalid" : "")"
                                        @bind="_expiryDate"
                                        @bind:format="yyyy-MM-dd"
-                                       min="@_minExpiryDate"
-                                       max="@_maxExpiryDate"
+                                       min="@MinExpiryDate"
+                                       max="@MaxExpiryDate"
                                        disabled="@_isUploading" />
+                                @if (IsExpiryDateInvalid)
+                                {
+                                    <div class="invalid-feedback">@Localizer["Upload Expiry Invalid"]</div>
+                                }
                             </div>
                             <div class="mt-2">
                                 <label class="form-label small text-secondary mb-1">@Localizer["Upload Password Label"]</label>
@@ -116,7 +121,7 @@
 
                     <button class="btn btn-primary w-100 fw-semibold"
                             @onclick="UploadAsync"
-                            disabled="@(_selectedFile is null || _isUploading || FileLimitReached)">
+                            disabled="@(_selectedFile is null || _isUploading || FileLimitReached || IsExpiryDateInvalid)">
                         @if (_isUploading)
                         {
                             <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
@@ -151,9 +156,13 @@
     private string? _password;
     private DateOnly _expiryDate;
 
-    private string _minExpiryDate => DateOnly.FromDateTime(DateTime.Today.AddDays(1)).ToString("yyyy-MM-dd");
-    private string _maxExpiryDate => DateOnly.FromDateTime(DateTime.Today.AddDays(AssetSettings.Value.MaxValidityPeriodInDays)).ToString("yyyy-MM-dd");
-    private int ExpiresInDays => Math.Max(1, (int)(_expiryDate.ToDateTime(TimeOnly.MinValue) - DateTime.Today).TotalDays);
+    private DateTime Today => Clock.GetCurrentInstant().ToDateTimeUtc().Date;
+    private string MinExpiryDate => DateOnly.FromDateTime(Today.AddDays(1)).ToString("yyyy-MM-dd");
+    private string MaxExpiryDate => DateOnly.FromDateTime(Today.AddDays(AssetSettings.Value.MaxValidityPeriodInDays)).ToString("yyyy-MM-dd");
+    private int ExpiresInDays => Math.Max(1, (int)(_expiryDate.ToDateTime(TimeOnly.MinValue) - Today).TotalDays);
+    private bool IsExpiryDateInvalid => _showAdvanced && (
+        _expiryDate <= DateOnly.FromDateTime(Today) ||
+        _expiryDate > DateOnly.FromDateTime(Today.AddDays(AssetSettings.Value.MaxValidityPeriodInDays)));
 
     private long MaxUploadSizeInBytes => _limits?.MaxUploadSizeInBytes ?? AssetSettings.Value.MaxUploadSizeInBytes;
     private bool FileLimitReached => _limits is not null && _limits.ActiveFiles >= _limits.MaxFiles;
@@ -164,7 +173,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _expiryDate = DateOnly.FromDateTime(DateTime.Today.AddDays(AssetSettings.Value.MaxValidityPeriodInDays));
+        _expiryDate = DateOnly.FromDateTime(Today.AddDays(AssetSettings.Value.MaxValidityPeriodInDays));
 
         var result = await AssetService.GetUserUploadLimitsAsync();
 

@@ -27,6 +27,7 @@ public sealed class DownloadPageTests
         using var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         ctx.Services.AddLocalization();
+        ctx.Services.AddSingleton<IClock>(new FakeClock(Instant.FromUtc(2026, 6, 23, 12, 0, 0)));
         ctx.Services.AddScoped<IErrorTranslator, ErrorTranslator>();
         ctx.Services.AddHttpClient(HttpClients.ApiAnonymous, client =>
             client.BaseAddress = new Uri(server.Url!));

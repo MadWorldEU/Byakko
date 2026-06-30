@@ -3,10 +3,13 @@ namespace MadWorldEU.Byakko.Pages.Storage;
 /// <summary>Component tests for the My Assets page.</summary>
 public sealed class MyAssetsPageTests
 {
+    private static readonly Instant FixedNow = Instant.FromUtc(2026, 6, 23, 12, 0, 0);
+
     private static void RegisterServices(BunitContext ctx, string serverUrl)
     {
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         ctx.Services.AddLocalization();
+        ctx.Services.AddSingleton<IClock>(new FakeClock(FixedNow));
         ctx.Services.AddScoped<IErrorTranslator, ErrorTranslator>();
         ctx.Services.AddHttpClient(HttpClients.ApiAnonymous, client => client.BaseAddress = new Uri(serverUrl));
         ctx.Services.AddHttpClient(HttpClients.ApiAuthorized, client => client.BaseAddress = new Uri(serverUrl));
@@ -40,9 +43,9 @@ public sealed class MyAssetsPageTests
         Name = name,
         ContentType = "text/plain",
         UserId = Guid.NewGuid(),
-        CreatedAt = DateTimeOffset.UtcNow,
-        UpdatedAt = DateTimeOffset.UtcNow,
-        ExpiresAt = DateTimeOffset.UtcNow.AddDays(30),
+        CreatedAt = FixedNow.ToDateTimeOffset(),
+        UpdatedAt = FixedNow.ToDateTimeOffset(),
+        ExpiresAt = FixedNow.Plus(Duration.FromDays(30)).ToDateTimeOffset(),
         IsDeleted = isDeleted,
         Size = 1024
     };

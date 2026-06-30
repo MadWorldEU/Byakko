@@ -2,8 +2,8 @@
   <ItemGroup>
     <PackageVersion Include="Aspire.Hosting.AppHost" Version="13.4.6" />
     <PackageVersion Include="Aspire.Hosting.Keycloak" Version="13.3.1-preview.1.26261.7" />
-    <PackageVersion Include="AWSSDK.Extensions.NETCore.Setup" Version="4.0.4.11" />
-    <PackageVersion Include="AWSSDK.S3" Version="4.0.25.3" />
+    <PackageVersion Include="AWSSDK.Extensions.NETCore.Setup" Version="4.0.100" />
+    <PackageVersion Include="AWSSDK.S3" Version="4.0.100" />
     <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="13.4.6" />
     <PackageVersion Include="CommunityToolkit.Aspire.Hosting.MailPit" Version="13.4.0" />
     <PackageVersion Include="JetBrains.Annotations" Version="2026.2.0" />
@@ -29,6 +29,7 @@
     <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.8.0" />
     <PackageVersion Include="Microsoft.Web.LibraryManager.Build" Version="3.0.114" />
     <PackageVersion Include="NodaTime" Version="3.3.2" />
+    <PackageVersion Include="NodaTime.Testing" Version="3.3.2" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.2" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="10.0.2" />
     <PackageVersion Include="NSubstitute" Version="5.3.0" />
@@ -38,13 +39,13 @@
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.16.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.15.1" />
     <PackageVersion Include="Reqnroll.TUnit" Version="3.3.4" />
-    <PackageVersion Include="Scalar.AspNetCore" Version="2.16.5" />
+    <PackageVersion Include="Scalar.AspNetCore" Version="2.16.6" />
     <PackageVersion Include="bunit" Version="2.7.2" />
     <PackageVersion Include="Shouldly" Version="4.3.0" />
     <PackageVersion Include="WireMock.Net" Version="2.11.0" />
     <PackageVersion Include="Testcontainers.LocalStack" Version="4.12.0" />
     <PackageVersion Include="Testcontainers.PostgreSql" Version="4.12.0" />
     <PackageVersion Include="TngTech.ArchUnitNET" Version="0.13.3" />
-    <PackageVersion Include="TUnit" Version="1.56.35" />
+    <PackageVersion Include="TUnit" Version="1.57.0" />
   </ItemGroup>
 </Project>
