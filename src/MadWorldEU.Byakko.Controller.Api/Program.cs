@@ -48,6 +48,8 @@ builder.Services.AddOpenTelemetry()
         .AddAspNetCoreInstrumentation()
         .AddHttpClientInstrumentation()
         .AddRuntimeInstrumentation()
+        .AddMeter(AssetMetrics.MeterName)
+        .AddMeter(CorrespondenceMetrics.MeterName)
         .AddOtlpExporter())
     .WithLogging(logging => logging
         .AddOtlpExporter(), options =>

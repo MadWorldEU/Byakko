@@ -6,11 +6,12 @@ using Microsoft.Extensions.Options;
 namespace MadWorldEU.Byakko.Storages;
 
 public sealed class UploadAssetContentUseCase(
-    IClock clock, 
-    IEncryptionService encryptionService, 
-    IAssetRepository assetRepository, 
-    IContentStorage contentStorage, 
+    IClock clock,
+    IEncryptionService encryptionService,
+    IAssetRepository assetRepository,
+    IContentStorage contentStorage,
     IDomainEventsDispatcher domainEventsDispatcher,
+    IAssetMetrics metrics,
     IOptions<AssetSettings> settings)
 {
     public async Task<Result<UploadAssetContentResponse>> ExecuteAsync(
@@ -67,6 +68,7 @@ public sealed class UploadAssetContentUseCase(
         var assetMetaDataCreatedEvent = new AssetContentUploadedEvent(asset.Value.Id, ipAddressResult.Value, asset.Value.CreatedBy, asset.Value.CreatedAt);
         await domainEventsDispatcher.DispatchAsync([assetMetaDataCreatedEvent]);
 
+        metrics.RecordUpload();
         return new UploadAssetContentResponse { Id = asset.Value.Id.Value };
     }
 }

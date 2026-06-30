@@ -9,6 +9,7 @@ public sealed class DeleteMyAssetContentUseCase(
     IAssetRepository repository,
     IContentStorage contentStorage,
     IDomainEventsDispatcher domainEventsDispatcher,
+    IAssetMetrics metrics,
     ILogger<DeleteMyAssetContentUseCase> logger)
 {
     /// <summary>Executes the use case. Returns <see cref="AssetErrors.Forbidden"/> when the asset does not belong to the user.</summary>
@@ -56,7 +57,8 @@ public sealed class DeleteMyAssetContentUseCase(
 
         var assetContentDeletedEvent = new AssetContentDeletedEvent(asset.Id, ipAddressResult.Value, asset.CreatedBy, asset.CreatedAt);
         await domainEventsDispatcher.DispatchAsync([assetContentDeletedEvent]);
-
+        
+        metrics.RecordContentDeleted();
         return new DeleteAssetContentResponse
         {
             Id = asset.Id.Value

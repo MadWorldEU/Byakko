@@ -3,7 +3,7 @@ using MadWorldEU.Byakko.Encryptions;
 namespace MadWorldEU.Byakko.Storages;
 
 /// <summary>Downloads the binary content of an asset from object storage.</summary>
-public sealed class DownloadAssetContentUseCase(IClock clock, IEncryptionService encryptionService, IAssetRepository assetRepository, IContentStorage contentStorage)
+public sealed class DownloadAssetContentUseCase(IClock clock, IEncryptionService encryptionService, IAssetRepository assetRepository, IContentStorage contentStorage, IAssetMetrics metrics)
 {
     public async Task<Result<DownloadAssetContentResponse>> QueryAsync(string assetId, string? password)
     {
@@ -26,7 +26,8 @@ public sealed class DownloadAssetContentUseCase(IClock clock, IEncryptionService
 
         var content = encryptionService.Decrypt(encryptedContent.Value, passwordResult.Value);
         if (content.IsFailure) return content.Error;
-        
+
+        metrics.RecordDownload();
         return new DownloadAssetContentResponse
         {
             Content = content.Value,
