@@ -83,6 +83,8 @@ spec:
             app: {{ .Values.observability.grafana.name }}
     template:
         metadata:
+            annotations:
+                rollme: "{{ now | unixEpoch }}"
             labels:
                 app: {{ .Values.observability.grafana.name }}
         spec:
