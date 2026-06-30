@@ -62,6 +62,9 @@
     <data name="Upload Expiry Label" xml:space="preserve">
         <value>Vervaldatum</value>
     </data>
+    <data name="Upload Expiry Invalid" xml:space="preserve">
+        <value>Voer een datum in tussen morgen en de maximaal toegestane vervaldatum.</value>
+    </data>
     <data name="Upload Password Label" xml:space="preserve">
         <value>Wachtwoord (optioneel)</value>
     </data>

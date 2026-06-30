@@ -62,6 +62,9 @@
     <data name="Upload Expiry Label" xml:space="preserve">
         <value>有効期限</value>
     </data>
+    <data name="Upload Expiry Invalid" xml:space="preserve">
+        <value>明日から最大有効期限までの日付を入力してください。</value>
+    </data>
     <data name="Upload Password Label" xml:space="preserve">
         <value>パスワード（任意）</value>
     </data>
