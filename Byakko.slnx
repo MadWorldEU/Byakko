@@ -66,8 +66,13 @@
     <File Path="packages\README.md" />
   </Folder>
   <Folder Name="/claude/rules/">
+    <File Path=".claude\rules\api.md" />
+    <File Path=".claude\rules\architecture.md" />
     <File Path=".claude\rules\code-standard.md" />
+    <File Path=".claude\rules\infrastructure.md" />
+    <File Path=".claude\rules\k8s.md" />
     <File Path=".claude\rules\testing.md" />
+    <File Path=".claude\rules\ui.md" />
   </Folder>
   <Folder Name="/samples/">
     <File Path="samples\README.md" />

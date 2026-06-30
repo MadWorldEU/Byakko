@@ -97,3 +97,26 @@ if (condition)
 - Always use `GetSection(key).Get<T>() ?? throw new InvalidOperationException(...)` for required configuration sections. Never use `GetValue<T>` for complex objects — it only works for scalar values.
 - The property names on the options class must exactly match the keys in `appsettings.json` for binding to work.
 - Required sections that are absent should throw at startup, not silently default.
+- Companion `appsettings-schema.json` must be updated when adding config keys.
+
+## Project Conventions
+
+- **Framework:** .NET 10.0, `TreatWarningsAsErrors = true`
+- **Central Package Management:** versions only in `Directory.Packages.props`
+- **`var`:** preferred everywhere
+- **Endpoint classes:** `internal static` with `internal static` extension on `WebApplication`; under `Endpoints/<Feature>/`
+- **HTTP clients:** `HttpClients.ApiAnonymous` / `HttpClients.ApiAuthorized`. `ApiAuthorized` has `Timeout = Timeout.InfiniteTimeSpan` — upload timeouts governed by Traefik's `responseHeaderTimeout` (1800s).
+- **Shared services:** `IAssetService`, `IStorageService`, `IAuditService`, `ICorrespondenceService` in `Controller.Blazor.Shared/Services/`, registered in `AddByakkoServices()`. All return `ResultResponse<T>`. `SendFeedbackAsync(request, isAuthenticated)` handles `429` → `BlazorErrors.CorrespondenceTooManyRequests`.
+- **Shared formatters:** `ByteFormatter.Format(long?)` — B/KB/MB/GB using `InvariantCulture`.
+
+## Blazor HTTP Response Pattern
+
+All Blazor service methods return `ResultResponse<T>` (`Controller.Blazor.Shared/Responses/`). `IsSuccess` / `Response` / `Failure` (`FailureResponse`: `Code`, `StatusCode`, `Description`). `EmptyResponse` for DELETE endpoints. `HttpClientExtensions`: `GetResultResponseFromJsonAsync`, `PostResultResponseFromJsonAsync`, `PutResultResponseFromJsonAsync` (raw `HttpContent`), `DeleteResultResponseFromJsonAsync`.
+
+## Error Translation
+
+`IErrorTranslator.Translate(FailureResponse)` / `Translate(code, defaultDescription)` — looks up `ErrorResources.resx` (+ `.nl-nl.resx`, `.ja-jp.resx`), falls back to `Description`. Add entries to all three `.resx` files when introducing a new error code.
+
+**BlazorErrors** (`Controller.Blazor.Shared/Configurations/BlazorErrors.cs`): `FileLoadFailed`, `FilesLoadFailed`, `FileDeleteFailed`, `FileUploadFailed`, `FileInvalidId`, `AuditLogsLoadFailed`, `TriggerFailed`, `FeedbackSendFailed`, `CorrespondenceTooManyRequests`.
+
+**Error handling in `catch` blocks:** log exception via `console.error`, show localized message via `ErrorTranslator`, use `_errorMessage` variable name.

@@ -6,6 +6,26 @@ These rules define the testing standards for this project. All test code must fo
 
 All test projects must be placed in the `tests/` folder at the repository root. Never add test projects inside `src/`.
 
+## Test Projects
+
+| Project | Framework | Purpose |
+|---|---|---|
+| `Controller.Api.IntegrationTests` | Reqnroll + TUnit | BDD integration tests for the API |
+| `Controller.Status.IntegrationTests` | Reqnroll + TUnit + WireMock.Net | BDD integration tests for the Status dashboard |
+| `Core.Application.Unittests` | TUnit + NSubstitute + Shouldly | Use case error paths |
+| `Core.Domain.Unittests` | TUnit + NSubstitute + Shouldly | Domain entity error paths |
+| `Controller.Blazor.Shared.Unittests` | TUnit + Shouldly | Shared Blazor use case logic |
+| `Controller.Portal.Componenttests` | bUnit + WireMock.Net + TUnit | Portal Blazor components |
+| `Controller.Admin.Componenttests` | bUnit + WireMock.Net + TUnit | Admin Blazor components |
+| `ArchitectureTests` | ArchUnitNET + Reqnroll + TUnit | Layer dependency rules |
+
+Key notes:
+- API integration tests use real PostgreSQL + LocalStack Testcontainers — no mocks. `Authentication:ValidateUser = false` for self-signed tokens.
+- Status integration tests use real PostgreSQL + LocalStack + Mailpit Testcontainers; WireMock.Net stubs the 4 HTTP health endpoints returning `200 Healthy`. `MAILPIT_HOST`/`MAILPIT_PORT` injected via in-memory config.
+- Application unit tests cover error paths only. Use `Result.Failure<T>(error)` not `Result<T>.Failure(error)`.
+- Domain unit tests use a `BuildAsset()` helper for constructing valid aggregates.
+- Architecture tests: BDD feature files + `BaseArchitectureTests`; every assembly needs a marker interface (e.g. `IPostgresqlMarker`) in its root namespace.
+
 ## Technology
 
 | Library | Used in | Purpose |
