@@ -1,6 +1,11 @@
 namespace MadWorldEU.Byakko.Storages;
 
-public sealed class DeleteAllExpiredContentOfAssetsUseCase(IClock clock, IAssetRepository repository, IContentStorage contentStorage, ILogger<DeleteAllExpiredContentOfAssetsUseCase> logger)
+public sealed class DeleteAllExpiredContentOfAssetsUseCase(
+    IClock clock, 
+    IAssetRepository repository, 
+    IContentStorage contentStorage, 
+    IAssetMetrics metrics,
+    ILogger<DeleteAllExpiredContentOfAssetsUseCase> logger)
 {
     public async Task<Result> ExecuteAsync()
     {
@@ -38,6 +43,7 @@ public sealed class DeleteAllExpiredContentOfAssetsUseCase(IClock clock, IAssetR
                 continue;
             }
 
+            metrics.RecordContentDeleted();
             logger.LogInformation("Asset '{AssetId}' content deleted and marked as deleted.", asset.Id.Value);
         }
 

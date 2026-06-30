@@ -4,10 +4,11 @@ using MadWorldEU.Byakko.DomainDrivenDevelopment;
 namespace MadWorldEU.Byakko.Storages;
 
 public sealed class DeleteContentOfAssetUseCase(
-    IClock clock, 
-    IAssetRepository repository, 
-    IContentStorage contentStorage, 
+    IClock clock,
+    IAssetRepository repository,
+    IContentStorage contentStorage,
     IDomainEventsDispatcher domainEventsDispatcher,
+    IAssetMetrics metrics,
     ILogger<DeleteContentOfAssetUseCase> logger)
 {
     public async Task<Result<DeleteAssetContentResponse>> ExecuteAsync(string assetId, System.Net.IPAddress? ipAddress)
@@ -45,7 +46,8 @@ public sealed class DeleteContentOfAssetUseCase(
         
         var assetMetaDataCreatedEvent = new AssetContentDeletedEvent(assetResult.Value.Id, ipAddressResult.Value, assetResult.Value.CreatedBy, assetResult.Value.CreatedAt);
         await domainEventsDispatcher.DispatchAsync([assetMetaDataCreatedEvent]);
-        
+
+        metrics.RecordContentDeleted();
         return new DeleteAssetContentResponse
         {
             Id = assetResult.Value.Id.Value

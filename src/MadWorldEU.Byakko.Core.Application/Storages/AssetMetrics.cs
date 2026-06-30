@@ -9,6 +9,8 @@ public sealed class AssetMetrics : IAssetMetrics
 
     private readonly Counter<long> _uploadsTotal;
     private readonly Counter<long> _downloadsTotal;
+    private readonly Counter<long> _deletesTotal;
+    private readonly Counter<long> _metadataDeletesTotal;
 
     public AssetMetrics(IMeterFactory meterFactory)
     {
@@ -19,8 +21,16 @@ public sealed class AssetMetrics : IAssetMetrics
         _downloadsTotal = meter.CreateCounter<long>(
             "assets.downloads.total",
             description: "Total number of successful asset downloads.");
+        _deletesTotal = meter.CreateCounter<long>(
+            "assets.content.deletes.total",
+            description: "Total number of successful asset content deletions.");
+        _metadataDeletesTotal = meter.CreateCounter<long>(
+            "assets.metadata.deletes.total",
+            description: "Total number of successful expired asset metadata cleanup runs.");
     }
 
     public void RecordUpload() => _uploadsTotal.Add(1);
     public void RecordDownload() => _downloadsTotal.Add(1);
+    public void RecordContentDeleted() => _deletesTotal.Add(1);
+    public void RecordMetadataDeleted() => _metadataDeletesTotal.Add(1);
 }

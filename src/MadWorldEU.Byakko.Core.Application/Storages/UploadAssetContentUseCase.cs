@@ -11,8 +11,8 @@ public sealed class UploadAssetContentUseCase(
     IAssetRepository assetRepository,
     IContentStorage contentStorage,
     IDomainEventsDispatcher domainEventsDispatcher,
-    IOptions<AssetSettings> settings,
-    IAssetMetrics metrics)
+    IAssetMetrics metrics,
+    IOptions<AssetSettings> settings)
 {
     public async Task<Result<UploadAssetContentResponse>> ExecuteAsync(
         string assetId, 

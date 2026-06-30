@@ -39,7 +39,7 @@ public sealed class UploadAssetContentUseCaseTests
     {
         _assetRepository.FindAsync(Arg.Any<Id>()).Returns(Task.FromResult(Result.Failure<Asset>(AssetErrors.NotFound)));
 
-        var useCase = new UploadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage, _domainEventsDispatcher, _settings, _metrics);
+        var useCase = new UploadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage, _domainEventsDispatcher, _metrics, _settings);
 
         var ipAddress = new IPAddress([127, 0, 0, 1]);
         
@@ -58,7 +58,7 @@ public sealed class UploadAssetContentUseCaseTests
         var asset = BuildAsset();
         _assetRepository.FindAsync(Arg.Any<Id>()).Returns(Task.FromResult(Result.Success(asset)));
 
-        var useCase = new UploadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage, _domainEventsDispatcher, _settings, _metrics);
+        var useCase = new UploadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage, _domainEventsDispatcher, _metrics, _settings);
 
         var ipAddress = new IPAddress([127, 0, 0, 1]);
         
@@ -77,7 +77,7 @@ public sealed class UploadAssetContentUseCaseTests
         var asset = BuildAsset(name: "original.txt");
         _assetRepository.FindAsync(Arg.Any<Id>()).Returns(Task.FromResult(Result.Success(asset)));
 
-        var useCase = new UploadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage, _domainEventsDispatcher, _settings, _metrics);
+        var useCase = new UploadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage, _domainEventsDispatcher, _metrics, _settings);
 
         var ipAddress = new IPAddress([127, 0, 0, 1]);
         
@@ -96,7 +96,7 @@ public sealed class UploadAssetContentUseCaseTests
         var asset = BuildAsset(contentType: "text/plain");
         _assetRepository.FindAsync(Arg.Any<Id>()).Returns(Task.FromResult(Result.Success(asset)));
 
-        var useCase = new UploadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage, _domainEventsDispatcher, _settings, _metrics);
+        var useCase = new UploadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage, _domainEventsDispatcher, _metrics, _settings);
 
         var ipAddress = new IPAddress([127, 0, 0, 1]);
         
@@ -119,7 +119,7 @@ public sealed class UploadAssetContentUseCaseTests
         _contentStorage.UploadAsync(Arg.Any<AssetPath>(), Arg.Any<Stream>())
             .Returns(Task.FromResult(Result.Success()));
 
-        var useCase = new UploadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage, _domainEventsDispatcher, _settings, _metrics);
+        var useCase = new UploadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage, _domainEventsDispatcher, _metrics, _settings);
 
         var ipAddress = new IPAddress([127, 0, 0, 1]);
         
@@ -141,7 +141,7 @@ public sealed class UploadAssetContentUseCaseTests
         _contentStorage.UploadAsync(Arg.Any<AssetPath>(), Arg.Any<Stream>())
             .Returns(Task.FromResult(Result.Failure(storageError)));
 
-        var useCase = new UploadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage, _domainEventsDispatcher, _settings, _metrics);
+        var useCase = new UploadAssetContentUseCase(_clock, _encryptionService, _assetRepository, _contentStorage, _domainEventsDispatcher, _metrics, _settings);
 
         var ipAddress = new IPAddress([127, 0, 0, 1]);
         

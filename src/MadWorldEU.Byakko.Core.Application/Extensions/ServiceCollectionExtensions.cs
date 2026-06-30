@@ -48,6 +48,7 @@ public static class ServiceCollectionExtensions
     
     private static void AddCorrespondences(this IServiceCollection services)
     {
+        services.AddSingleton<ICorrespondenceMetrics, CorrespondenceMetrics>();
         services.AddScoped<SendFeedbackUseCase>();
     }
 }

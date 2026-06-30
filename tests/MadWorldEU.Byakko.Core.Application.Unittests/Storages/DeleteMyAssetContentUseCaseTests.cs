@@ -14,6 +14,7 @@ public sealed class DeleteMyAssetContentUseCaseTests
     private readonly IAssetRepository _assetRepository = Substitute.For<IAssetRepository>();
     private readonly IContentStorage _contentStorage = Substitute.For<IContentStorage>();
     private readonly IDomainEventsDispatcher _domainEventsDispatcher = Substitute.For<IDomainEventsDispatcher>();
+    private readonly IAssetMetrics _metrics = Substitute.For<IAssetMetrics>();
     private readonly ILogger<DeleteMyAssetContentUseCase> _logger = Substitute.For<ILogger<DeleteMyAssetContentUseCase>>();
 
     private static Asset BuildAsset()
@@ -39,7 +40,7 @@ public sealed class DeleteMyAssetContentUseCaseTests
         var asset = BuildAsset();
         _assetRepository.FindAsync(Arg.Any<Id>()).Returns(Task.FromResult(Result.Success(asset)));
 
-        var useCase = new DeleteMyAssetContentUseCase(_clock, _assetRepository, _contentStorage, _domainEventsDispatcher, _logger);
+        var useCase = new DeleteMyAssetContentUseCase(_clock, _assetRepository, _contentStorage, _domainEventsDispatcher, _metrics, _logger);
 
         var ipAddress = new IPAddress([127, 0, 0, 1]);
 
@@ -54,7 +55,7 @@ public sealed class DeleteMyAssetContentUseCaseTests
     {
         _assetRepository.FindAsync(Arg.Any<Id>()).Returns(Task.FromResult(Result.Failure<Asset>(AssetErrors.NotFound)));
 
-        var useCase = new DeleteMyAssetContentUseCase(_clock, _assetRepository, _contentStorage, _domainEventsDispatcher, _logger);
+        var useCase = new DeleteMyAssetContentUseCase(_clock, _assetRepository, _contentStorage, _domainEventsDispatcher, _metrics, _logger);
 
         var ipAddress = new IPAddress([127, 0, 0, 1]);
 
@@ -73,7 +74,7 @@ public sealed class DeleteMyAssetContentUseCaseTests
         _assetRepository.FindAsync(Arg.Any<Id>()).Returns(Task.FromResult(Result.Success(asset)));
         _contentStorage.DeleteAsync(Arg.Any<AssetPath>()).Returns(Task.FromResult(Result.Success()));
 
-        var useCase = new DeleteMyAssetContentUseCase(_clock, _assetRepository, _contentStorage, _domainEventsDispatcher, _logger);
+        var useCase = new DeleteMyAssetContentUseCase(_clock, _assetRepository, _contentStorage, _domainEventsDispatcher, _metrics, _logger);
 
         var ipAddress = new IPAddress([127, 0, 0, 1]);
 

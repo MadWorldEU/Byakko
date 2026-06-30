@@ -1,6 +1,6 @@
 namespace MadWorldEU.Byakko.Storages;
 
-public sealed class DeleteAllExpiredMetaDataAssetsUseCase(IAssetRepository repository, ILogger<DeleteAllExpiredMetaDataAssetsUseCase> logger)
+public sealed class DeleteAllExpiredMetaDataAssetsUseCase(IAssetRepository repository, IAssetMetrics metrics, ILogger<DeleteAllExpiredMetaDataAssetsUseCase> logger)
 {
     public async Task<Result> ExecuteAsync()
     {
@@ -14,6 +14,7 @@ public sealed class DeleteAllExpiredMetaDataAssetsUseCase(IAssetRepository repos
             return result;
         }
 
+        metrics.RecordMetadataDeleted();
         logger.LogInformation("Expired asset metadata cleanup completed.");
         return result;
     }
