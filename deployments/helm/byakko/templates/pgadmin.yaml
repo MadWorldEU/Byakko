@@ -36,7 +36,7 @@ data:
                 'OAUTH2_AUTHORIZATION_URL': 'https://authentication.{{ .Values.ingress.domain }}/realms/MadWorld/protocol/openid-connect/auth',
                 'OAUTH2_USERINFO_ENDPOINT': 'https://authentication.{{ .Values.ingress.domain }}realms/MadWorld/protocol/openid-connect/userinfo',
                 'OAUTH2_API_BASE_URL': 'https://authentication.{{ .Values.ingress.domain }}/realms/MadWorld/protocol/openid-connect/',
-                'OAUTH2_SCOPE': 'openid email profile',
+                'OAUTH2_SCOPE': 'openid email profile offline_access',
                 'OAUTH2_USERNAME_CLAIM': 'email',
                 'OAUTH2_ICON': '',
                 'OAUTH2_BUTTON_COLOR': '#fd9000',
