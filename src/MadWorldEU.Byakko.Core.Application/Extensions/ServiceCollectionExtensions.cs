@@ -22,6 +22,8 @@ public static class ServiceCollectionExtensions
         services.Configure<AssetSettings>(options =>
             configuration.GetSection(AssetSettings.Key).Bind(options));
 
+        services.AddSingleton<IAssetMetrics, AssetMetrics>();
+        
         services.AddScoped<CreateAssetMetadataUseCase>();
         services.AddScoped<DeleteAllExpiredContentOfAssetsUseCase>();
         services.AddScoped<DeleteAllExpiredMetaDataAssetsUseCase>();
