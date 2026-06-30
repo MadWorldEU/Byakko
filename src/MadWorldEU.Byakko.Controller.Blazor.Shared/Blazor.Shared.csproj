@@ -5,6 +5,7 @@
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" />
         <PackageReference Include="Microsoft.Extensions.Http" />
         <PackageReference Include="Microsoft.Extensions.Localization" />
+        <PackageReference Include="NodaTime" />
     </ItemGroup>
 
     <ItemGroup>

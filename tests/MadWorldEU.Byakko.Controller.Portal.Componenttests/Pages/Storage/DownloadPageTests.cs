@@ -1,3 +1,5 @@
+using NodaTime;
+
 namespace MadWorldEU.Byakko.Pages.Storage;
 
 /// <summary>Component tests for the Download page.</summary>
@@ -27,6 +29,7 @@ public sealed class DownloadPageTests
         using var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         ctx.Services.AddLocalization();
+        ctx.Services.AddSingleton<IClock>(SystemClock.Instance);
         ctx.Services.AddScoped<IErrorTranslator, ErrorTranslator>();
         ctx.Services.AddHttpClient(HttpClients.ApiAnonymous, client =>
             client.BaseAddress = new Uri(server.Url!));

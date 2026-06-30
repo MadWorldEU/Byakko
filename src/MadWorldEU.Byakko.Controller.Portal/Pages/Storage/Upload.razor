@@ -1,6 +1,7 @@
 @page "/storage/upload"
 @attribute [Authorize(Policy = AuthorizationPolicies.User)]
 @inject IAssetService AssetService
+@inject IClock Clock
 @inject IOptions<AssetSettings> AssetSettings
 @inject IStringLocalizer<Resources> Localizer
 @inject IErrorTranslator ErrorTranslator
@@ -151,9 +152,10 @@
     private string? _password;
     private DateOnly _expiryDate;
 
-    private string _minExpiryDate => DateOnly.FromDateTime(DateTime.Today.AddDays(1)).ToString("yyyy-MM-dd");
-    private string _maxExpiryDate => DateOnly.FromDateTime(DateTime.Today.AddDays(AssetSettings.Value.MaxValidityPeriodInDays)).ToString("yyyy-MM-dd");
-    private int ExpiresInDays => Math.Max(1, (int)(_expiryDate.ToDateTime(TimeOnly.MinValue) - DateTime.Today).TotalDays);
+    private DateTime Today => Clock.GetCurrentInstant().ToDateTimeUtc().Date;
+    private string _minExpiryDate => DateOnly.FromDateTime(Today.AddDays(1)).ToString("yyyy-MM-dd");
+    private string _maxExpiryDate => DateOnly.FromDateTime(Today.AddDays(AssetSettings.Value.MaxValidityPeriodInDays)).ToString("yyyy-MM-dd");
+    private int ExpiresInDays => Math.Max(1, (int)(_expiryDate.ToDateTime(TimeOnly.MinValue) - Today).TotalDays);
 
     private long MaxUploadSizeInBytes => _limits?.MaxUploadSizeInBytes ?? AssetSettings.Value.MaxUploadSizeInBytes;
     private bool FileLimitReached => _limits is not null && _limits.ActiveFiles >= _limits.MaxFiles;
@@ -164,7 +166,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _expiryDate = DateOnly.FromDateTime(DateTime.Today.AddDays(AssetSettings.Value.MaxValidityPeriodInDays));
+        _expiryDate = DateOnly.FromDateTime(Today.AddDays(AssetSettings.Value.MaxValidityPeriodInDays));
 
         var result = await AssetService.GetUserUploadLimitsAsync();
 
