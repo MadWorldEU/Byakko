@@ -92,6 +92,8 @@ spec:
             app: {{ .Values.pgadmin.name }}
     template:
         metadata:
+            annotations:
+                rollme: "{{ now | unixEpoch }}"
             labels:
                 app: {{ .Values.pgadmin.name }}
         spec:
