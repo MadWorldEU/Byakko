@@ -6,7 +6,9 @@ Subdomains: `byakko.dev`/`www.`/`fileshare.` → Portal; `api.` → API; `admin.
 
 All image tags via top-level `appVersion` in `values.yaml`. Storage config (`Storage:Mode`, `BucketName`, `OvhCloud.*`) shared by `api.yaml` and `status.yaml`.
 
-**Headlamp:** `ExternalName` Service → `my-headlamp.kube-system.svc.cluster.local`. Separate `byakko-ingress-headlamp` (no `security-headers` middleware — COOP/COEP break OIDC redirect). Requires `headlamp-client` in Keycloak + microk8s kube-apiserver OIDC args. See Kubernetes.md Step 6.
+**Auth ingress:** Keycloak runs under `byakko-ingress-auth` (no `security-headers` middleware) — COOP/COEP on Keycloak's own responses break iframe-based OIDC silent auth in Portal and Admin.
+
+**Headlamp:** `ExternalName` Service → `my-headlamp.kube-system.svc.cluster.local`. Separate `byakko-ingress-headlamp` (no `security-headers` middleware — same COOP/COEP reason). Requires `headlamp-client` in Keycloak + microk8s kube-apiserver OIDC args. See Kubernetes.md Step 6.
 
 **Grafana Keycloak auth:** Generic OAuth in `grafana.yaml`. Role mapping: `contains(roles, 'Administrator') && 'Admin' || ''`. **Critical:** realm roles mapper must have **Add to ID token** enabled — Grafana falls back to ID token only. Client secret: `GRAFANA_KEYCLOAK_CLIENT_SECRET`.
 

@@ -50,7 +50,6 @@ spec:
               - admin.{{ .Values.ingress.domain }}
               - status.{{ .Values.ingress.domain }}
               - database.{{ .Values.ingress.domain }}
-              - authentication.{{ .Values.ingress.domain }}
               {{- if .Values.observability.enabled }}
               - grafana.{{ .Values.ingress.domain }}
               {{- end }}
@@ -88,16 +87,6 @@ spec:
                             name: {{ .Values.pgadmin.name }}
                             port:
                                 number: {{ .Values.pgadmin.servicePort }}
-        - host: authentication.{{ .Values.ingress.domain }}
-          http:
-              paths:
-                  - path: /
-                    pathType: Prefix
-                    backend:
-                        service:
-                            name: {{ .Values.keycloak.name }}
-                            port:
-                                number: {{ .Values.keycloak.servicePort }}
         - host: fileshare.{{ .Values.ingress.domain }}
           http:
               paths:
@@ -152,3 +141,31 @@ spec:
                             name: {{ .Values.portal.name }}
                             port:
                                 number: {{ .Values.portal.port }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+    name: byakko-ingress-auth
+    namespace: {{ .Values.namespace }}
+    annotations:
+        kubernetes.io/ingress.class: "traefik"
+        {{- if .Values.clusterIssuer.enabled }}
+        cert-manager.io/cluster-issuer: {{ .Values.clusterIssuer.name | quote }}
+        {{- end }}
+spec:
+    ingressClassName: {{ .Values.ingress.className }}
+    tls:
+        - secretName: {{ .Values.ingress.tlsSecret }}-auth
+          hosts:
+              - authentication.{{ .Values.ingress.domain }}
+    rules:
+        - host: authentication.{{ .Values.ingress.domain }}
+          http:
+              paths:
+                  - path: /
+                    pathType: Prefix
+                    backend:
+                        service:
+                            name: {{ .Values.keycloak.name }}
+                            port:
+                                number: {{ .Values.keycloak.servicePort }}
