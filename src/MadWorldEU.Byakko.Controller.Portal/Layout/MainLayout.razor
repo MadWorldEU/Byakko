@@ -10,7 +10,7 @@
             <img src="/icons/logo.svg" width="28" height="28" alt="@Localizer["Brand Name"] logo" />
             @Localizer["Brand Name"]
         </a>
-        <span class="d-lg-none ms-auto me-2 fs-5">@_currentFlag</span>
+        <img src="@GetFlagPath(_currentCulture)" width="24" height="16" alt="@_currentCulture" class="d-lg-none ms-auto me-2" />
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -28,31 +28,31 @@
                 </AuthorizeView>
                 <li class="nav-item dropdown d-none d-lg-block">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Select language">
-                        @_currentFlag
+                        <img src="@GetFlagPath(_currentCulture)" width="24" height="16" alt="@_currentCulture" />
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li>
                             <button class="dropdown-item @(_currentCulture == "en" ? "active" : "")" @onclick="@(() => SetCultureAsync("en"))">
-                                🇬🇧 English
+                                <img src="/icons/flag-en.svg" width="20" height="14" alt="English" class="me-2" />English
                             </button>
                         </li>
                         <li>
                             <button class="dropdown-item @(_currentCulture == "nl-NL" ? "active" : "")" @onclick="@(() => SetCultureAsync("nl-NL"))">
-                                🇳🇱 Nederlands
+                                <img src="/icons/flag-nl.svg" width="20" height="14" alt="Nederlands" class="me-2" />Nederlands
                             </button>
                         </li>
                         <li>
                             <button class="dropdown-item @(_currentCulture == "ja-JP" ? "active" : "")" @onclick="@(() => SetCultureAsync("ja-JP"))">
-                                🇯🇵 日本語
+                                <img src="/icons/flag-jp.svg" width="20" height="14" alt="日本語" class="me-2" />日本語
                             </button>
                         </li>
                     </ul>
                 </li>
                 <li class="nav-item d-lg-none">
                     <div class="d-flex gap-3 px-1 py-1">
-                        <button class="btn btn-link nav-link p-0 @(_currentCulture == "en" ? "active" : "")" @onclick="@(() => SetCultureAsync("en"))">🇬🇧 English</button>
-                        <button class="btn btn-link nav-link p-0 @(_currentCulture == "nl-NL" ? "active" : "")" @onclick="@(() => SetCultureAsync("nl-NL"))">🇳🇱 Nederlands</button>
-                        <button class="btn btn-link nav-link p-0 @(_currentCulture == "ja-JP" ? "active" : "")" @onclick="@(() => SetCultureAsync("ja-JP"))">🇯🇵 日本語</button>
+                        <button class="btn btn-link nav-link p-0 @(_currentCulture == "en" ? "active" : "")" @onclick="@(() => SetCultureAsync("en"))"><img src="/icons/flag-en.svg" width="20" height="14" alt="English" class="me-1" />English</button>
+                        <button class="btn btn-link nav-link p-0 @(_currentCulture == "nl-NL" ? "active" : "")" @onclick="@(() => SetCultureAsync("nl-NL"))"><img src="/icons/flag-nl.svg" width="20" height="14" alt="Nederlands" class="me-1" />Nederlands</button>
+                        <button class="btn btn-link nav-link p-0 @(_currentCulture == "ja-JP" ? "active" : "")" @onclick="@(() => SetCultureAsync("ja-JP"))"><img src="/icons/flag-jp.svg" width="20" height="14" alt="日本語" class="me-1" />日本語</button>
                     </div>
                 </li>
                 <AuthorizeView>
@@ -121,7 +121,13 @@
 @code {
     private string _profileUrl = string.Empty;
     private string _currentCulture = "en";
-    private string _currentFlag = "🇬🇧";
+
+    private static string GetFlagPath(string culture) => culture switch
+    {
+        "nl-NL" => "/icons/flag-nl.svg",
+        "ja-JP" => "/icons/flag-jp.svg",
+        _ => "/icons/flag-en.svg"
+    };
 
     protected override void OnInitialized()
     {
@@ -129,7 +135,6 @@
 
         var name = System.Globalization.CultureInfo.CurrentUICulture.Name;
         _currentCulture = SupportedLanguages.Labels.ContainsKey(name) ? name : SupportedLanguages.DefaultLanguage;
-        _currentFlag = SupportedLanguages.Flags.GetValueOrDefault(_currentCulture, "🇬🇧");
     }
 
     private async Task SetCultureAsync(string culture)

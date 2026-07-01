@@ -12,10 +12,4 @@ public static class SupportedLanguages
         { "ja-JP", "JA" }
     };
 
-    public static Dictionary<string, string> Flags { get; } = new()
-    {
-        { DefaultLanguage, "🇬🇧" },
-        { "nl-NL", "🇳🇱" },
-        { "ja-JP", "🇯🇵" }
-    };
 }
