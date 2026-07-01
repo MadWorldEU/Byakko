@@ -32,6 +32,8 @@ Blazor WebAssembly, Bootstrap 5 dark theme. Sticky top navbar. Logo: `cloud-down
 
 **Localization:** `BlazorWebAssemblyLoadAllGlobalizationData=true`. `Localization/Resources.resx` + `.nl-NL.resx` + `.ja-JP.resx`. `CultureResolver` reads localStorage, falls back to `navigator.language` (neutral-code matching), then `en`. `setCulture`/`getCulture` in `wwwroot/js/app.js`. Shared pages use `IStringLocalizer<SharedResources>` from `Blazor.Shared`. `AddLocalization()` in `AddByakkoServices()`.
 
+**Language switcher:** Uses SVG flag icons (`/icons/flag-en.svg`, `/icons/flag-nl.svg`, `/icons/flag-jp.svg`) — not emoji. `GetFlagPath(culture)` in `MainLayout.razor` maps culture code to icon path. `SupportedLanguages.Flags` does not exist (removed); use `GetFlagPath` instead.
+
 **Components:** `UploadLimitsAlert.razor` — max file size + files remaining alert; used in `Upload.razor` and `MyAssets.razor`.
 
 ## Status UI

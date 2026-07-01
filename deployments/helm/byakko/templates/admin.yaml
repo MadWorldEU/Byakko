@@ -16,8 +16,7 @@ data:
             "DefaultScopes": [
               "openid",
               "profile",
-              "email",
-              "offline_access"
+              "email"
             ]
           }
         }
