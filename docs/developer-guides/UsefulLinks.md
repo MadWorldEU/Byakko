@@ -54,6 +54,10 @@ A curated list of websites and resources used in or relevant to this project.
 - [SSL Labs](https://www.ssllabs.com/ssltest/) — Deep analysis and grading of a server's SSL/TLS configuration
 - [ZAP](https://www.zaproxy.org/) — Open source web application security scanner for finding vulnerabilities
 
+## Design
+
+- [All SVG Icons](https://allsvgicons.com/) — searchable library of SVG icons
+
 ## Tooling
 
 - [Homebrew](https://brew.sh/) — Package manager for macOS and Linux
