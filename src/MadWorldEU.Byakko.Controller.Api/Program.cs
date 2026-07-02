@@ -1,4 +1,5 @@
 using MadWorldEU.Byakko.Configurations;
+using MadWorldEU.Byakko.Endpoints.Accounts;
 using MadWorldEU.Byakko.Endpoints.Audits;
 using MadWorldEU.Byakko.Endpoints.Correspondences;
 using MadWorldEU.Byakko.Endpoints.Development;
@@ -85,6 +86,7 @@ if (app.Configuration.GetValue("RateLimiting:Enabled", true))
     app.UseRateLimiter();   
 }
 
+app.AddAccountsEndpoints();
 app.AddAuditEndpoints();
 app.AddAssetsEndpoints();
 app.AddCorrespondenceEndpoints();

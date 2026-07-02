@@ -12,12 +12,14 @@ public sealed class AccountEntityTypeConfiguration : IEntityTypeConfiguration<Ac
 
         builder.Property(a => a.Id)
             .HasConversion<Guid>(id => id.Value, id => Id.Create(id).Value);
-        
+
         builder.Property(a => a.UserId)
             .IsRequired()
             .HasConversion<Guid>(id => id.Value, id => UserId.Create(id).Value);
         
         builder.Property(a => a.CreatedAt).IsRequired();
         builder.Property(a => a.UpdatedAt).IsRequired();
+        
+        builder.HasIndex(a => a.UserId).IsUnique();
     }
 }

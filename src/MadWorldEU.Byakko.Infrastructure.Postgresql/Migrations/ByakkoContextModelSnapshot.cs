@@ -42,6 +42,9 @@ namespace MadWorldEU.Byakko.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
                     b.ToTable("Accounts");
                 });
 
