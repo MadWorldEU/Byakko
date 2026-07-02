@@ -88,7 +88,7 @@ keycloak:
     audience: "api-client"
     name: "keycloak"
     image: "quay.io/keycloak/keycloak"
-    tag: "26.2"
+    tag: "26.5"
     servicePort: 80
     adminUsername: "admin"
     adminPassword: "changeme"
