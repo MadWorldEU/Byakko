@@ -1,3 +1,4 @@
+using MadWorldEU.Byakko.Accounts;
 using MadWorldEU.Byakko.Audits;
 using MadWorldEU.Byakko.Correspondences;
 using MadWorldEU.Byakko.DomainDrivenDevelopment;
@@ -11,6 +12,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddAssets(configuration);
+        services.AddAccounts();
         services.AddAudits();
         services.AddCorrespondences();
         
@@ -35,6 +37,13 @@ public static class ServiceCollectionExtensions
         services.AddScoped<GetStorageStatisticsUseCase>();
         services.AddScoped<GetUserUploadLimitsUseCase>();
         services.AddScoped<UploadAssetContentUseCase>();
+    }
+
+    private static void AddAccounts(this IServiceCollection services)
+    {
+        services.AddScoped<CreateMyAccountUseCase>();
+        services.AddScoped<GetMyAccountUseCase>();
+        services.AddScoped<RequestDeletionMyAccountUseCase>();
     }
     
     private static void AddAudits(this IServiceCollection services)
