@@ -438,7 +438,7 @@
         <value>アカウントステータス</value>
     </data>
     <data name="Settings Deletion Status" xml:space="preserve">
-        <value>削除ステータス</value>
+        <value>ステータス</value>
     </data>
     <data name="Settings Deletion Requested" xml:space="preserve">
         <value>削除申請済み</value>

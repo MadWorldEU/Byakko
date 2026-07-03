@@ -20,8 +20,8 @@ public sealed class Account : Entity<Id>
     {
         Id = id;
         UserId = userId;
-        CreatedAt = CreatedAt;
-        UpdatedAt = CreatedAt;
+        CreatedAt = createdAt;
+        UpdatedAt = createdAt;
     }
     
     /// <summary>Creates a new account for the given user, stamped with the current time.</summary>

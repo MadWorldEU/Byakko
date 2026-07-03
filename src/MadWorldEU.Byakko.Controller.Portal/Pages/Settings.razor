@@ -65,16 +65,18 @@
                         }
                         else if (_confirmingDeletion)
                         {
-                            <div class="d-flex align-items-center gap-2 flex-wrap">
-                                <span class="small text-warning">@Localizer["Settings Confirm Text"]</span>
-                                <button class="btn btn-sm btn-danger" @onclick="ConfirmDeletionAsync" disabled="@_isRequesting">
-                                    @if (_isRequesting)
-                                    {
-                                        <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
-                                    }
-                                    @Localizer["Settings Confirm Yes"]
-                                </button>
-                                <button class="btn btn-sm btn-outline-secondary" @onclick="CancelDeletion" disabled="@_isRequesting">@Localizer["Settings Confirm No"]</button>
+                            <div>
+                                <p class="small text-warning mb-2">@Localizer["Settings Confirm Text"]</p>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-sm btn-danger" @onclick="ConfirmDeletionAsync" disabled="@_isRequesting">
+                                        @if (_isRequesting)
+                                        {
+                                            <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                                        }
+                                        @Localizer["Settings Confirm Yes"]
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary" @onclick="CancelDeletion" disabled="@_isRequesting">@Localizer["Settings Confirm No"]</button>
+                                </div>
                             </div>
                         }
                         else

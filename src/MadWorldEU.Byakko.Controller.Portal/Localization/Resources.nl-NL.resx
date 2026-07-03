@@ -438,7 +438,7 @@
         <value>Accountstatus</value>
     </data>
     <data name="Settings Deletion Status" xml:space="preserve">
-        <value>Verwijderingsstatus</value>
+        <value>Status</value>
     </data>
     <data name="Settings Deletion Requested" xml:space="preserve">
         <value>Verwijdering aangevraagd</value>
