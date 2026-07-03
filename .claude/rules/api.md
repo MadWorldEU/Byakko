@@ -31,6 +31,22 @@ Content encrypted AES-256; salt (16 bytes) + IV prepended to ciphertext. Passwor
 
 **AuditAssetsHandler** handles `AssetMetaDataCreatedEvent` and `AssetContentUploadedEvent`; audit creation failure is non-fatal (logs warning, does not throw).
 
+## Accounts
+
+Endpoints in `Controller.Api/Endpoints/Accounts/AccountsEndpoints.cs`. All require `User` policy.
+
+| Method | Route | Use case | Notes |
+|---|---|---|---|
+| `POST` | `/accounts/me` | `CreateMyAccountUseCase` | 201 Created; 400 on failure |
+| `GET` | `/accounts/me` | `GetMyAccountUseCase` | 404 not found; returns `UserId` + `HasDeletionRequested` |
+| `POST` | `/accounts/me/deletion-request` | `RequestDeletionMyAccountUseCase` | 404 not found, 409 already requested |
+
+**Account domain** (`Core.Domain/Accounts/`): `Account` entity with `UserId`, `HasDeletionRequested`, `CreatedAt`, `UpdatedAt`. `Create(clock, guidGenerator, userId)` → stamps both timestamps. `RequestDeletion(clock)` → `AccountErrors.DeletionAlreadyRequested` if already flagged; sets `HasDeletionRequested = true` and updates `UpdatedAt`.
+
+**AccountErrors:** `NotFound`, `QueryFailed`, `SaveFailed`, `UpdateFailed`, `DeletionAlreadyRequested`.
+
+**AccountRepository** (`Infrastructure.Postgresql/Accounts/`): `FindAsync(UserId)`, `AddAsync(Account)`, `UpdateAsync(Account)`. `UserId` has a unique index via `AccountEntityTypeConfiguration`.
+
 ## Correspondences
 
 `POST /correspondences/feedback` → `SendFeedbackUseCase`. Public; rate-limited `PublicPost` (1 req/60s per IP). `SendFeedbackRequest` carries `Email` + `Message`. `Email` value object: empty → `EmailErrors.Empty`; invalid format → `EmailErrors.Invalid`.
