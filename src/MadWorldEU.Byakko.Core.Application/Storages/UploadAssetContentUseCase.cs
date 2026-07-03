@@ -11,6 +11,7 @@ public sealed class UploadAssetContentUseCase(
     IAssetRepository assetRepository,
     IContentStorage contentStorage,
     IDomainEventsDispatcher domainEventsDispatcher,
+    ILogger<UploadAssetContentUseCase> logger,
     IAssetMetrics metrics,
     IOptions<AssetSettings> settings)
 {
@@ -59,11 +60,15 @@ public sealed class UploadAssetContentUseCase(
         var uploadResult = await contentStorage.UploadAsync(asset.Value.GetPath(), encryptedContent);
         if (uploadResult.IsFailure) return uploadResult.Error;
 
+        logger.LogInformation("Asset '{AssetId}' content uploaded.", asset.Value.Id.Value);
+        
         var updateSizeResult = asset.Value.UpdateSize(clock, sizeResult.Value);
         if (updateSizeResult.IsFailure) return updateSizeResult.Error;
 
         var updateResult = await assetRepository.UpdateAsync(asset.Value);
         if (updateResult.IsFailure) return updateResult.Error;
+        
+        logger.LogInformation("Asset '{AssetId}' content size updated.", asset.Value.Id.Value);
         
         var assetMetaDataCreatedEvent = new AssetContentUploadedEvent(asset.Value.Id, ipAddressResult.Value, asset.Value.CreatedBy, asset.Value.CreatedAt);
         await domainEventsDispatcher.DispatchAsync([assetMetaDataCreatedEvent]);

@@ -55,6 +55,8 @@ public sealed class DeleteMyAssetContentUseCase(
             return updateResult.Error;
         }
 
+        logger.LogInformation("Asset '{AssetId}' content deleted and marked as deleted.", asset.Id.Value);
+        
         var assetContentDeletedEvent = new AssetContentDeletedEvent(asset.Id, ipAddressResult.Value, asset.CreatedBy, asset.CreatedAt);
         await domainEventsDispatcher.DispatchAsync([assetContentDeletedEvent]);
         

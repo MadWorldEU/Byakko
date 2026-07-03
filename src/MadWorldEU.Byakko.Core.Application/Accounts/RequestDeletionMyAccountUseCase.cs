@@ -13,7 +13,8 @@ public sealed class RequestDeletionMyAccountUseCase(IClock clock, IAccountReposi
         if (accountResult.IsFailure) return accountResult.Error;
         var account = accountResult.Value;
         
-        account.RequestDeletion(clock);
+        var requestResult = account.RequestDeletion(clock);
+        if (requestResult.IsFailure) return requestResult.Error;
 
         var saveResult = await accountRepository.UpdateAsync(accountResult.Value);
         if (saveResult.IsFailure) return saveResult.Error;
