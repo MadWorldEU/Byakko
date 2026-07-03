@@ -43,6 +43,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<CreateMyAccountUseCase>();
         services.AddScoped<GetMyAccountUseCase>();
+        services.AddScoped<GetDeleteRequestedAccountsUseCase>();
         services.AddScoped<RequestDeletionMyAccountUseCase>();
     }
     

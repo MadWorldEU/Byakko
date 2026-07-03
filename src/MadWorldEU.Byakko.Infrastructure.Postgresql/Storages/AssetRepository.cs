@@ -69,7 +69,7 @@ public sealed class AssetRepository(ByakkoContext context, IClock clock, ILogger
     }
 
     /// <inheritdoc />
-    public async Task<Result<PagedResult<Asset>>> GetAllPagesAsync(Id id, UserId userId, Page page)
+    public async Task<Result<PagedResult<Asset>>> GetAssetsAsync(Id id, UserId userId, Page page)
     {
         var pageSize = PageSize.Create(20).Value;
 
