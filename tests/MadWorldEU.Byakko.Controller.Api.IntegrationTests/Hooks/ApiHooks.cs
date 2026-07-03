@@ -48,7 +48,8 @@ public sealed class ApiHooks(ScenarioContext scenarioContext)
                         ["Authentication:ValidateUser"] = "false",
                         ["Assets:MaxFilesEachUser"] = "1000",
                         ["MAILPIT_HOST"] = _mailpit.Hostname,
-                        ["MAILPIT_PORT"] = mailpitSmtpPort.ToString()
+                        ["MAILPIT_PORT"] = mailpitSmtpPort.ToString(),
+                        ["Logging:LogLevel:Microsoft.EntityFrameworkCore"] = "Warning"
                     });
                 });
             });
