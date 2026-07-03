@@ -11,4 +11,7 @@ public static class BlazorErrors
     public static readonly BlazorError FileInvalidId = BlazorError.Create("Blazor.File.InvalidId", "The file link is not valid. Please check the link and try again.");
     public static readonly BlazorError FeedbackSendFailed = BlazorError.Create("Blazor.Feedback.SendFailed", "Something went wrong while sending your message. Please try again.");
     public static readonly BlazorError CorrespondenceTooManyRequests = BlazorError.Create("Blazor.Correspondence.TooManyRequests", "Too many requests");
+    public static readonly BlazorError AccountLoadFailed = BlazorError.Create("Blazor.Account.LoadFailed", "The account could not be loaded. Please try again.");
+    public static readonly BlazorError AccountCreateFailed = BlazorError.Create("Blazor.Account.CreateFailed", "The account could not be created. Please try again.");
+    public static readonly BlazorError AccountDeletionRequestFailed = BlazorError.Create("Blazor.Account.DeletionRequestFailed", "The deletion request could not be submitted. Please try again.");
 }

@@ -25,6 +25,7 @@ Key notes:
 - Application unit tests cover error paths only. Use `Result.Failure<T>(error)` not `Result<T>.Failure(error)`.
 - Domain unit tests use a `BuildAsset()` helper for constructing valid aggregates.
 - Architecture tests: BDD feature files + `BaseArchitectureTests`; every assembly needs a marker interface (e.g. `IPostgresqlMarker`) in its root namespace.
+- Account integration tests (`Features/Accounts/Accounts.feature`) use a `[BeforeScenario(Order=2)]` in `AccountsSteps` that creates a fresh `HttpClient` with a unique `Guid` user ID per scenario — stored under both the default `HttpClient` key and `ScenarioContextKeys.AuthenticatedClient` so the shared "Given I am authenticated as a user" step still works. `ApiHooks.BeforeScenario` runs at `Order=1` and stores the `WebApplicationFactory<Program>` under `ScenarioContextKeys.Factory` for this purpose.
 
 ## Technology
 

@@ -426,6 +426,57 @@
     <data name="Nav Contact" xml:space="preserve">
         <value>Contact</value>
     </data>
+    <data name="Nav Settings" xml:space="preserve">
+        <value>Settings</value>
+    </data>
+    <data name="Settings Page Title" xml:space="preserve">
+        <value>Settings</value>
+    </data>
+    <data name="Settings Heading" xml:space="preserve">
+        <value>Settings</value>
+    </data>
+    <data name="Settings Subtitle" xml:space="preserve">
+        <value>Manage your account preferences and privacy settings.</value>
+    </data>
+    <data name="Settings Loading" xml:space="preserve">
+        <value>Loading…</value>
+    </data>
+    <data name="Settings Account Status" xml:space="preserve">
+        <value>Account status</value>
+    </data>
+    <data name="Settings Deletion Status" xml:space="preserve">
+        <value>Status</value>
+    </data>
+    <data name="Settings Deletion Requested" xml:space="preserve">
+        <value>Deletion requested</value>
+    </data>
+    <data name="Settings Active" xml:space="preserve">
+        <value>Active</value>
+    </data>
+    <data name="Settings Danger Zone" xml:space="preserve">
+        <value>Danger zone</value>
+    </data>
+    <data name="Settings Danger Zone Text" xml:space="preserve">
+        <value>Requesting deletion will permanently remove your account and all associated data. This action cannot be undone.</value>
+    </data>
+    <data name="Settings Request Deletion" xml:space="preserve">
+        <value>Request account deletion</value>
+    </data>
+    <data name="Settings Confirm Text" xml:space="preserve">
+        <value>Are you sure? This cannot be undone.</value>
+    </data>
+    <data name="Settings Confirm Yes" xml:space="preserve">
+        <value>Yes, delete my account</value>
+    </data>
+    <data name="Settings Confirm No" xml:space="preserve">
+        <value>Cancel</value>
+    </data>
+    <data name="Settings Deletion Success" xml:space="preserve">
+        <value>Your deletion request has been submitted. Your account and data will be removed shortly.</value>
+    </data>
+    <data name="Settings Already Requested" xml:space="preserve">
+        <value>A deletion request has already been submitted for this account.</value>
+    </data>
     <data name="Contact Email Required" xml:space="preserve">
         <value>Email address is required.</value>
     </data>

@@ -1,6 +1,7 @@
 using MadWorldEU.Byakko.Application.Healths;
 using MadWorldEU.Byakko.Configurations;
 using MadWorldEU.Byakko.Extensions;
+using Microsoft.AspNetCore.HttpOverrides;
 using OpenTelemetry.Resources;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,6 +44,11 @@ builder.Services.AddRazorComponents()
 builder.Services.AddPostgresql(builder.Configuration);
 
 var app = builder.Build();
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

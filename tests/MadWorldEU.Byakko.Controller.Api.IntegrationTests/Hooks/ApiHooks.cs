@@ -48,7 +48,8 @@ public sealed class ApiHooks(ScenarioContext scenarioContext)
                         ["Authentication:ValidateUser"] = "false",
                         ["Assets:MaxFilesEachUser"] = "1000",
                         ["MAILPIT_HOST"] = _mailpit.Hostname,
-                        ["MAILPIT_PORT"] = mailpitSmtpPort.ToString()
+                        ["MAILPIT_PORT"] = mailpitSmtpPort.ToString(),
+                        ["Logging:LogLevel:Microsoft.EntityFrameworkCore"] = "Warning"
                     });
                 });
             });
@@ -77,7 +78,7 @@ public sealed class ApiHooks(ScenarioContext scenarioContext)
         await _mailpit.DisposeAsync();
     }
 
-    [BeforeScenario]
+    [BeforeScenario(Order = 1)]
     public async Task BeforeScenario()
     {
         using var httpClient = new HttpClient();
@@ -85,6 +86,7 @@ public sealed class ApiHooks(ScenarioContext scenarioContext)
 
         scenarioContext.Set(_client!);
         scenarioContext.Set(_authenticatedClient!, ScenarioContextKeys.AuthenticatedClient);
+        scenarioContext.Set(_factory!, ScenarioContextKeys.Factory);
         scenarioContext.Set(_factory!.Services, ScenarioContextKeys.ServiceProvider);
         scenarioContext.Set(_mailpitApiUrl, ScenarioContextKeys.MailpitApiUrl);
     }

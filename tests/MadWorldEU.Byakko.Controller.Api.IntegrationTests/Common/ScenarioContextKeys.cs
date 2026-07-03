@@ -4,6 +4,7 @@ namespace MadWorldEU.Byakko.Common;
 internal static class ScenarioContextKeys
 {
     internal const string AuthenticatedClient = "AuthenticatedClient";
+    internal const string Factory = "Factory";
     internal const string LastResponse = "LastResponse";
     internal const string MailpitApiUrl = "MailpitApiUrl";
     internal const string ServiceProvider = "ServiceProvider";

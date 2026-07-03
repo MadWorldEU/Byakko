@@ -1,3 +1,4 @@
+using MadWorldEU.Byakko.Accounts;
 using MadWorldEU.Byakko.Audits;
 
 namespace MadWorldEU.Byakko.Extensions;
@@ -12,6 +13,7 @@ public static class ServiceCollectionExtensions
                 builder => builder.UseNodaTime()));
 
         services.AddScoped<IAssetRepository, AssetRepository>();
+        services.AddScoped<IAccountRepository, AccountRepository>();
         services.AddScoped<IAuditRepository, AuditRepository>();
 
         var migrationOptions = configuration.GetSection(MigrationOptions.SectionName).Get<MigrationOptions>()
