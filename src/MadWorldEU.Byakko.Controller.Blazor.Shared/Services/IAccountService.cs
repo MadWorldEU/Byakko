@@ -5,6 +5,9 @@ namespace MadWorldEU.Byakko.Services;
 /// <summary>Wraps the Accounts API endpoints for use in Blazor WebAssembly applications.</summary>
 public interface IAccountService
 {
+    /// <summary>Returns a paged list of accounts with a pending deletion request.</summary>
+    Task<ResultResponse<GetDeleteRequestedAccountsResponse>> GetDeleteRequestedAccountsAsync(int page);
+
     /// <summary>Creates an account for the currently authenticated user.</summary>
     Task<ResultResponse<CreateMyAccountResponse>> CreateMyAccountAsync();
 

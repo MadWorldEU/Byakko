@@ -1,5 +1,4 @@
 using MadWorldEU.Byakko.Accounts;
-using MadWorldEU.Byakko.Common;
 
 namespace MadWorldEU.Byakko.Services;
 
@@ -9,9 +8,15 @@ public sealed class AccountService(IHttpClientFactory httpClientFactory) : IAcco
     private readonly HttpClient _httpClient = httpClientFactory.CreateClient(HttpClients.ApiAuthorized);
 
     /// <inheritdoc />
+    public async Task<ResultResponse<GetDeleteRequestedAccountsResponse>> GetDeleteRequestedAccountsAsync(int page)
+    {
+        return await _httpClient.GetResultResponseFromJsonAsync<GetDeleteRequestedAccountsResponse>($"/accounts?page={page}");
+    }
+
+    /// <inheritdoc />
     public async Task<ResultResponse<CreateMyAccountResponse>> CreateMyAccountAsync()
     {
-        return await _httpClient.PostResultResponseFromJsonAsync<object, CreateMyAccountResponse>("/accounts/me", new { });
+        return await _httpClient.PostResultResponseFromJsonAsync<EmptyRequest, CreateMyAccountResponse>("/accounts/me", EmptyRequest.Create());
     }
 
     /// <inheritdoc />
@@ -23,6 +28,6 @@ public sealed class AccountService(IHttpClientFactory httpClientFactory) : IAcco
     /// <inheritdoc />
     public async Task<ResultResponse<RequestDeletionMyAccountResponse>> RequestDeletionMyAccountAsync()
     {
-        return await _httpClient.PostResultResponseFromJsonAsync<object, RequestDeletionMyAccountResponse>("/accounts/me/deletion-request", new { });
+        return await _httpClient.PostResultResponseFromJsonAsync<EmptyRequest, RequestDeletionMyAccountResponse>("/accounts/me/deletion-request", EmptyRequest.Create());
     }
 }
