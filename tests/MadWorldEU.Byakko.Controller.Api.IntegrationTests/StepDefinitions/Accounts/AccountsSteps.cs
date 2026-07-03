@@ -26,6 +26,32 @@ public sealed class AccountsSteps(ScenarioContext scenarioContext)
         response.EnsureSuccessStatusCode();
     }
 
+    [Given("I have requested deletion of my account")]
+    public async Task GivenIHaveRequestedDeletionOfMyAccount()
+    {
+        var client = scenarioContext.Get<HttpClient>();
+        var response = await client.PostAsJsonAsync("/accounts/me/deletion-request", new { });
+        response.EnsureSuccessStatusCode();
+    }
+
+    [When("I request the accounts with deletion requested for page {int}")]
+    public async Task WhenIRequestTheAccountsWithDeletionRequestedForPage(int page)
+    {
+        var client = scenarioContext.Get<HttpClient>();
+        var response = await client.GetAsync($"/accounts?page={page}");
+        scenarioContext.Set(response, ScenarioContextKeys.LastResponse);
+    }
+
+    [Then("the response should contain at least one account with deletion requested")]
+    public async Task ThenTheResponseShouldContainAtLeastOneAccountWithDeletionRequested()
+    {
+        var response = scenarioContext.Get<HttpResponseMessage>(ScenarioContextKeys.LastResponse);
+        var body = await response.Content.ReadFromJsonAsync<GetDeleteRequestedAccountsResponse>();
+        body.ShouldNotBeNull();
+        body.TotalCount.ShouldBeGreaterThan(0);
+        body.Accounts.ShouldContain(a => a.HasDeletionRequested);
+    }
+
     [When("I create my account")]
     public async Task WhenICreateMyAccount()
     {
