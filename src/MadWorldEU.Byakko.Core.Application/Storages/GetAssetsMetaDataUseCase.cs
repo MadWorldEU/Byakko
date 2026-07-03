@@ -14,7 +14,7 @@ public sealed class GetAssetsMetaDataUseCase(IAssetRepository assetRepository)
         var userIdResult = userId == null ? UserId.Empty : UserId.Create(userId.Value);
         if (userIdResult.IsFailure) return userIdResult.Error;
         
-        var assetsResult = await assetRepository.GetAllPagesAsync(idResult.Value, userIdResult.Value, pageResult.Value);
+        var assetsResult = await assetRepository.GetAssetsAsync(idResult.Value, userIdResult.Value, pageResult.Value);
         if (assetsResult.IsFailure) return assetsResult.Error;
 
         return new GetAssetsMetadataResponse
@@ -25,7 +25,7 @@ public sealed class GetAssetsMetaDataUseCase(IAssetRepository assetRepository)
             Page = assetsResult.Value.Page,
             PageSize = assetsResult.Value.PageSize,
             TotalCount = assetsResult.Value.TotalCount,
-            HasNextPage = assetsResult.Value.HasNextPage,
+            HasNextPage = assetsResult.Value.HasNextPage
         };
     }
 }

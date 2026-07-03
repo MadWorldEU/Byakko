@@ -37,6 +37,15 @@ public sealed class AuditAssetsHandler(
             return;
         }
 
-        await auditRepository.AddAsync(auditResult.Value);
+        var result = await auditRepository.AddAsync(auditResult.Value);
+        
+        if (result.IsFailure)
+        {
+            logger.LogWarning("Failed to save audit log for asset '{AssetId}': {Error}", assetId, result.Error.Description);
+        }
+        else
+        {
+            logger.LogInformation("Audit log for asset '{AssetId}' created.", assetId);
+        }
     }
 }

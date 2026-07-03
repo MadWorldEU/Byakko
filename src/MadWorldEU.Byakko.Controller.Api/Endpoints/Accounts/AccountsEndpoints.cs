@@ -10,6 +10,17 @@ internal static class AccountsEndpoints
         var accountEndpoints = app.MapGroup("/accounts")
             .WithTags("Accounts");
 
+        accountEndpoints.MapGet("/", async (int page, GetDeleteRequestedAccountsUseCase useCase) =>
+            {
+                var result = await useCase.QueryAsync(page);
+                return result.Match(
+                    onSuccess: Results.Ok,
+                    onFailure: error => error.ToBadRequest()
+                );
+            })
+            .RequireAuthorization(AuthorizationPolicies.Administrator)
+            .WithName("GetDeleteRequestedAccounts");
+
         accountEndpoints.MapPost("/me", async (ClaimsPrincipal user, CreateMyAccountUseCase useCase) =>
             {
                 var userId = user.GetUserId();

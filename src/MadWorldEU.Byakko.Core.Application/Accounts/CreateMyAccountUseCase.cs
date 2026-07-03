@@ -3,7 +3,11 @@ using MadWorldEU.Byakko.Systems;
 namespace MadWorldEU.Byakko.Accounts;
 
 /// <summary>Creates a new account for the authenticated user.</summary>
-public sealed class CreateMyAccountUseCase(IClock clock, IGuidGenerator guidGenerator, IAccountRepository accountRepository)
+public sealed class CreateMyAccountUseCase(
+    IClock clock, 
+    IGuidGenerator guidGenerator, 
+    IAccountRepository accountRepository,
+    ILogger<CreateMyAccountUseCase> logger)
 {
     /// <summary>Executes the use case for the given Keycloak user ID.</summary>
     public async Task<Result<CreateMyAccountResponse>> ExecuteAsync(string userId)
@@ -16,6 +20,8 @@ public sealed class CreateMyAccountUseCase(IClock clock, IGuidGenerator guidGene
         
         var saveResult = await accountRepository.AddAsync(accountResult.Value);
         if (saveResult.IsFailure) return saveResult.Error;
+        
+        logger.LogInformation("Account '{UserId}' created.", accountResult.Value.UserId.Value);
         
         return new CreateMyAccountResponse()
         {

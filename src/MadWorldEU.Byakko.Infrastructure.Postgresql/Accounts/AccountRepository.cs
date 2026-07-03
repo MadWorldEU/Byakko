@@ -1,3 +1,4 @@
+using MadWorldEU.Byakko.Common.Pages;
 using MadWorldEU.Byakko.Functional;
 using Microsoft.Extensions.Logging;
 
@@ -63,6 +64,38 @@ public sealed class AccountRepository(ByakkoContext context, ILogger<AccountRepo
         {
             logger.LogError(exception, "Failed to update account '{AccountId}'.", account.Id.Value);
             return Result.Failure(AccountErrors.UpdateFailed);
+        }
+    }
+
+    public async Task<Result<PagedResult<Account>>> GetDeleteRequestedAccounts(Page page)
+    {
+        var pageSize = PageSize.Create(20).Value;
+        
+        try
+        {
+            var query = context.Accounts
+                .AsQueryable()
+                .Where(a => a.HasDeletionRequested);
+
+            var totalCount = await query.CountAsync();
+            var items = await query
+                .OrderByDescending(a => a.UpdatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return new PagedResult<Account>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize
+            };
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Failed to query paged accounts.");
+            return AccountErrors.QueryFailed;
         }
     }
 }

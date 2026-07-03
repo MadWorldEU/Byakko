@@ -10,7 +10,8 @@ public sealed class CreateAssetMetadataUseCase(
     IClock clock, 
     IGuidGenerator guidGenerator, 
     IAssetRepository repository, 
-    IDomainEventsDispatcher domainEventsDispatcher, 
+    IDomainEventsDispatcher domainEventsDispatcher,
+    ILogger<CreateAssetMetadataUseCase> logger,
     IOptions<AssetSettings> settings)
 {
     public async Task<Result<CreateAssetResponse>> ExecuteAsync(CreateAssetRequest request, string userId, System.Net.IPAddress? ipAddress)
@@ -43,6 +44,8 @@ public sealed class CreateAssetMetadataUseCase(
         var saveResult = await repository.AddAsync(assetResult.Value);
         if (saveResult.IsFailure) return saveResult.Error;
 
+        logger.LogInformation("Asset '{AssetId}' created.", assetResult.Value.Id.Value);
+        
         var assetMetaDataCreatedEvent = new AssetMetaDataCreatedEvent(assetResult.Value.Id, ipAddressResult.Value, assetResult.Value.CreatedBy, assetResult.Value.CreatedAt);
         await domainEventsDispatcher.DispatchAsync([assetMetaDataCreatedEvent]);
 

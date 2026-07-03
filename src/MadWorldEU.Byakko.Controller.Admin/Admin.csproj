@@ -17,4 +17,8 @@
       <ProjectReference Include="..\MadWorldEU.Byakko.Core.Contracts\Contracts.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Pages\Accounts\" />
+    </ItemGroup>
+
 </Project>

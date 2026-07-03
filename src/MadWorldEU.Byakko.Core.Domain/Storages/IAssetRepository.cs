@@ -15,7 +15,7 @@ public interface IAssetRepository
     Task<Result<Asset>> FindAsync(Id id);
 
     /// <summary>Returns a paged list of assets, optionally filtered by asset id or owner.</summary>
-    Task<Result<PagedResult<Asset>>> GetAllPagesAsync(Id id, UserId userId, Page page);
+    Task<Result<PagedResult<Asset>>> GetAssetsAsync(Id id, UserId userId, Page page);
 
     /// <summary>Returns the total number of non-deleted assets across all users.</summary>
     Task<Result<int>> GetCountOfActiveAssetsAsync();

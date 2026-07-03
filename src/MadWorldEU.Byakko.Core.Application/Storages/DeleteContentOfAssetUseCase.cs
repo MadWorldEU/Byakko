@@ -44,6 +44,8 @@ public sealed class DeleteContentOfAssetUseCase(
             return updateResult.Error;
         }
         
+        logger.LogInformation("Asset '{AssetId}' content deleted and marked as deleted.", asset.Id.Value);
+        
         var assetMetaDataCreatedEvent = new AssetContentDeletedEvent(assetResult.Value.Id, ipAddressResult.Value, assetResult.Value.CreatedBy, assetResult.Value.CreatedAt);
         await domainEventsDispatcher.DispatchAsync([assetMetaDataCreatedEvent]);
 
