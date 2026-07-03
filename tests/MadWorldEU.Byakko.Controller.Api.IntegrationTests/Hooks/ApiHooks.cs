@@ -77,7 +77,7 @@ public sealed class ApiHooks(ScenarioContext scenarioContext)
         await _mailpit.DisposeAsync();
     }
 
-    [BeforeScenario]
+    [BeforeScenario(Order = 1)]
     public async Task BeforeScenario()
     {
         using var httpClient = new HttpClient();
@@ -85,6 +85,7 @@ public sealed class ApiHooks(ScenarioContext scenarioContext)
 
         scenarioContext.Set(_client!);
         scenarioContext.Set(_authenticatedClient!, ScenarioContextKeys.AuthenticatedClient);
+        scenarioContext.Set(_factory!, ScenarioContextKeys.Factory);
         scenarioContext.Set(_factory!.Services, ScenarioContextKeys.ServiceProvider);
         scenarioContext.Set(_mailpitApiUrl, ScenarioContextKeys.MailpitApiUrl);
     }
