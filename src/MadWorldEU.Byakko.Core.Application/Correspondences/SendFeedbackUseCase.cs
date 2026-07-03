@@ -21,7 +21,7 @@ public sealed class SendFeedbackUseCase(
         if (result.IsSuccess)
         {
             metrics.RecordFeedbackSent();
-            logger.LogInformation("User {Id} sent feedback to administrator.", userId);
+            logger.LogInformation("User {Id} sent feedback to administrator.", userIdResult.Value);
         }
         
         return result;

@@ -33,19 +33,20 @@ Content encrypted AES-256; salt (16 bytes) + IV prepended to ciphertext. Passwor
 
 ## Accounts
 
-Endpoints in `Controller.Api/Endpoints/Accounts/AccountsEndpoints.cs`. All require `User` policy.
+Endpoints in `Controller.Api/Endpoints/Accounts/AccountsEndpoints.cs`.
 
-| Method | Route | Use case | Notes |
-|---|---|---|---|
-| `POST` | `/accounts/me` | `CreateMyAccountUseCase` | 201 Created; 400 on failure |
-| `GET` | `/accounts/me` | `GetMyAccountUseCase` | 404 not found; returns `UserId` + `HasDeletionRequested` |
-| `POST` | `/accounts/me/deletion-request` | `RequestDeletionMyAccountUseCase` | 404 not found, 409 already requested |
+| Method | Route | Use case | Policy | Notes |
+|---|---|---|---|---|
+| `GET` | `/accounts/` | `GetDeleteRequestedAccountsUseCase` | `Administrator` | Paged (20/page); query param `page` |
+| `POST` | `/accounts/me` | `CreateMyAccountUseCase` | `User` | 201 Created; 400 on failure |
+| `GET` | `/accounts/me` | `GetMyAccountUseCase` | `User` | 404 not found; returns `UserId` + `HasDeletionRequested` |
+| `POST` | `/accounts/me/deletion-request` | `RequestDeletionMyAccountUseCase` | `User` | 404 not found, 409 already requested |
 
 **Account domain** (`Core.Domain/Accounts/`): `Account` entity with `UserId`, `HasDeletionRequested`, `CreatedAt`, `UpdatedAt`. `Create(clock, guidGenerator, userId)` → stamps both timestamps. `RequestDeletion(clock)` → `AccountErrors.DeletionAlreadyRequested` if already flagged; sets `HasDeletionRequested = true` and updates `UpdatedAt`.
 
 **AccountErrors:** `NotFound`, `QueryFailed`, `SaveFailed`, `UpdateFailed`, `DeletionAlreadyRequested`.
 
-**AccountRepository** (`Infrastructure.Postgresql/Accounts/`): `FindAsync(UserId)`, `AddAsync(Account)`, `UpdateAsync(Account)`. `UserId` has a unique index via `AccountEntityTypeConfiguration`.
+**AccountRepository** (`Infrastructure.Postgresql/Accounts/`): `FindAsync(UserId)`, `AddAsync(Account)`, `UpdateAsync(Account)`, `GetDeleteRequestedAccounts(Page)`. `UserId` has a unique index via `AccountEntityTypeConfiguration`.
 
 ## Correspondences
 
