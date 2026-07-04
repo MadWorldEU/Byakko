@@ -13,6 +13,7 @@ A curated list of websites and resources used in or relevant to this project.
 - [Npgsql](https://www.npgsql.org/) — .NET data provider for PostgreSQL
 - [bUnit](https://bunit.dev/) — Testing library for Blazor components
 - [Reqnroll](https://reqnroll.net/) — BDD test automation framework for .NET (SpecFlow successor)
+- [Respawn](https://github.com/jbogard/Respawn) — Intelligent database cleanup tool for resetting test databases to a known state between tests
 - [Scalar](https://scalar.com/) — OpenAPI documentation and API client
 - [Testcontainers](https://dotnet.testcontainers.org/) — Library for spinning up real Docker containers in tests (used for PostgreSQL integration tests)
 - [TUnit](https://tunit.dev/) — Modern, async-first test framework for .NET
