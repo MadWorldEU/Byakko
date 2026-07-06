@@ -36,6 +36,7 @@ else if (_response is not null)
                     <tr>
                         <th>User ID</th>
                         <th>Status</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -61,12 +62,35 @@ else if (_response is not null)
                                     <span class="badge text-bg-success">Active</span>
                                 }
                             </td>
+                            <td class="text-end">
+                                @if (_confirmingUserId == account.UserId && account.Status == "DeletionRequested")
+                                {
+                                    <span class="small text-warning me-2">Confirm deletion?</span>
+                                    <button class="btn btn-sm btn-danger me-1"
+                                            @onclick="() => ConfirmDeletionAsync(account.UserId)"
+                                            disabled="@_confirming">
+                                        Yes
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary"
+                                            @onclick="CancelConfirm"
+                                            disabled="@_confirming">
+                                        No
+                                    </button>
+                                }
+                                else if (account.Status == "DeletionRequested")
+                                {
+                                    <button class="btn btn-sm btn-outline-danger"
+                                            @onclick="() => RequestConfirm(account.UserId)">
+                                        Confirm deletion
+                                    </button>
+                                }
+                            </td>
                         </tr>
                     }
                     @if (_response.Accounts.Count == 0)
                     {
                         <tr>
-                            <td colspan="2" class="text-center text-secondary py-4">No deletion requests found.</td>
+                            <td colspan="3" class="text-center text-secondary py-4">No deletion requests found.</td>
                         </tr>
                     }
                 </tbody>
@@ -88,8 +112,10 @@ else if (_response is not null)
 @code {
     private bool _loading = true;
     private string? _errorMessage;
-    private GetDeleteRequestedAccountsResponse? _response;
+    private GetAccountsPendingDeletionResponse? _response;
     private int _currentPage = 1;
+    private Guid? _confirmingUserId;
+    private bool _confirming;
 
     protected override async Task OnInitializedAsync()
     {
@@ -103,7 +129,7 @@ else if (_response is not null)
 
         try
         {
-            var result = await AccountService.GetDeleteRequestedAccountsAsync(_currentPage);
+            var result = await AccountService.GetAccountsPendingDeletionAsync(_currentPage);
 
             if (result.IsSuccess)
             {
@@ -122,6 +148,47 @@ else if (_response is not null)
         finally
         {
             _loading = false;
+        }
+    }
+
+    private void RequestConfirm(Guid userId)
+    {
+        _confirmingUserId = userId;
+    }
+
+    private void CancelConfirm()
+    {
+        _confirmingUserId = null;
+    }
+
+    private async Task ConfirmDeletionAsync(Guid userId)
+    {
+        _confirming = true;
+        _errorMessage = null;
+
+        try
+        {
+            var result = await AccountService.ConfirmDeletionAsync(userId);
+            _confirmingUserId = null;
+
+            if (result.IsSuccess)
+            {
+                await LoadPageAsync();
+            }
+            else
+            {
+                _errorMessage = ErrorTranslator.Translate(result.Failure!);
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, ex.Message);
+            _errorMessage = ErrorTranslator.Translate(BlazorErrors.AccountConfirmDeletionFailed.Code, BlazorErrors.AccountConfirmDeletionFailed.Description);
+            _confirmingUserId = null;
+        }
+        finally
+        {
+            _confirming = false;
         }
     }
 

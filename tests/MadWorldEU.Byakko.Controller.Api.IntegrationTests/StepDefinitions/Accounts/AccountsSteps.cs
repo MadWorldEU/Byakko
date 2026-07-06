@@ -49,7 +49,7 @@ public sealed class AccountsSteps(ScenarioContext scenarioContext)
     public async Task ThenTheResponseShouldContainAtLeastOneAccountWithDeletionRequested()
     {
         var response = scenarioContext.Get<HttpResponseMessage>(ScenarioContextKeys.LastResponse);
-        var body = await response.Content.ReadFromJsonAsync<GetDeleteRequestedAccountsResponse>();
+        var body = await response.Content.ReadFromJsonAsync<GetAccountsPendingDeletionResponse>();
         body.ShouldNotBeNull();
         body.TotalCount.ShouldBeGreaterThan(0);
         body.Accounts.ShouldContain(a => a.Status == "DeletionRequested");

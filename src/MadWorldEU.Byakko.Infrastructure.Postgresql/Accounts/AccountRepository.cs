@@ -67,7 +67,7 @@ public sealed class AccountRepository(ByakkoContext context, ILogger<AccountRepo
         }
     }
 
-    public async Task<Result<PagedResult<Account>>> GetDeleteRequestedAccounts(Page page)
+    public async Task<Result<PagedResult<Account>>> GetAccountsPendingDeletion(Page page)
     {
         var pageSize = PageSize.Create(20).Value;
         
@@ -75,7 +75,7 @@ public sealed class AccountRepository(ByakkoContext context, ILogger<AccountRepo
         {
             var query = context.Accounts
                 .AsQueryable()
-                .Where(a => a.Status == AccountStatus.DeletionRequested);
+                .Where(a => a.Status == AccountStatus.DeletionRequested || a.Status == AccountStatus.DeletionConfirmed);
 
             var totalCount = await query.CountAsync();
             var items = await query

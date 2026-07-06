@@ -15,7 +15,7 @@ public sealed class AccountDeletionRequestsTests
         ctx.Services.AddScoped<IAccountService, AccountService>();
     }
 
-    private static GetDeleteRequestedAccountsResponse MakeResponse(
+    private static GetAccountsPendingDeletionResponse MakeResponse(
         IReadOnlyList<AccountResponse> accounts,
         int page = 1,
         bool hasNextPage = false) => new()
@@ -33,7 +33,7 @@ public sealed class AccountDeletionRequestsTests
         Status = "DeletionRequested"
     };
 
-    private static void StubAccounts(WireMockServer server, GetDeleteRequestedAccountsResponse response, int page = 1) =>
+    private static void StubAccounts(WireMockServer server, GetAccountsPendingDeletionResponse response, int page = 1) =>
         server
             .Given(Request.Create().WithPath("/accounts").WithParam("page", page.ToString()).UsingGet())
             .RespondWith(Response.Create().WithStatusCode(200).WithBodyAsJson(response));

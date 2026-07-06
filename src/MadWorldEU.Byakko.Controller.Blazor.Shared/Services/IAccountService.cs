@@ -6,7 +6,10 @@ namespace MadWorldEU.Byakko.Services;
 public interface IAccountService
 {
     /// <summary>Returns a paged list of accounts with a pending deletion request.</summary>
-    Task<ResultResponse<GetDeleteRequestedAccountsResponse>> GetDeleteRequestedAccountsAsync(int page);
+    Task<ResultResponse<GetAccountsPendingDeletionResponse>> GetAccountsPendingDeletionAsync(int page);
+
+    /// <summary>Confirms the deletion request for the given user as an administrator.</summary>
+    Task<ResultResponse<ConfirmDeletionAccountResponse>> ConfirmDeletionAsync(Guid userId);
 
     /// <summary>Creates an account for the currently authenticated user.</summary>
     Task<ResultResponse<CreateMyAccountResponse>> CreateMyAccountAsync();
