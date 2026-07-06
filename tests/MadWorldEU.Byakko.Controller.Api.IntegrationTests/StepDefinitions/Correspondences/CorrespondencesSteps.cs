@@ -32,8 +32,8 @@ public sealed class CorrespondencesSteps(ScenarioContext scenarioContext)
         var pipeline = new ResiliencePipelineBuilder<MailpitMessagesResponse?>()
             .AddRetry(new RetryStrategyOptions<MailpitMessagesResponse?>
             {
-                MaxRetryAttempts = 10,
-                Delay = TimeSpan.FromMilliseconds(1000),
+                MaxRetryAttempts = 20,
+                Delay = TimeSpan.FromMilliseconds(200),
                 ShouldHandle = new PredicateBuilder<MailpitMessagesResponse?>()
                     .HandleResult(r => r?.Messages.All(m => m.Subject != subject) ?? true)
             })
