@@ -15,7 +15,7 @@ public sealed class AccountDeletionRequestsTests
         ctx.Services.AddScoped<IAccountService, AccountService>();
     }
 
-    private static GetDeleteRequestedAccountsResponse MakeResponse(
+    private static GetAccountsPendingDeletionResponse MakeResponse(
         IReadOnlyList<AccountResponse> accounts,
         int page = 1,
         bool hasNextPage = false) => new()
@@ -30,13 +30,26 @@ public sealed class AccountDeletionRequestsTests
     private static AccountResponse MakeAccount(Guid? userId = null) => new()
     {
         UserId = userId ?? Guid.NewGuid(),
-        HasDeletionRequested = true
+        Status = "DeletionRequested",
+        UpdatedAt = DateTimeOffset.Parse("2026-07-06T10:00:00Z")
     };
 
-    private static void StubAccounts(WireMockServer server, GetDeleteRequestedAccountsResponse response, int page = 1) =>
+    private static void StubAccounts(WireMockServer server, GetAccountsPendingDeletionResponse response, int page = 1) =>
         server
             .Given(Request.Create().WithPath("/accounts").WithParam("page", page.ToString()).UsingGet())
             .RespondWith(Response.Create().WithStatusCode(200).WithBodyAsJson(response));
+
+    private static void StubConfirmDeletion(WireMockServer server, Guid userId) =>
+        server
+            .Given(Request.Create().WithPath($"/accounts/{userId}/confirm-deletion").UsingPost())
+            .RespondWith(Response.Create().WithStatusCode(200).WithBodyAsJson(new { UserId = userId }));
+
+    private static void StubConfirmDeletionFailed(WireMockServer server, Guid userId, int statusCode, string code) =>
+        server
+            .Given(Request.Create().WithPath($"/accounts/{userId}/confirm-deletion").UsingPost())
+            .RespondWith(Response.Create()
+                .WithStatusCode(statusCode)
+                .WithBodyAsJson(new { Code = code, StatusCode = statusCode, Description = "Failed." }));
 
     [Test]
     public void OnInitializedAsync_WhenAccountsExist_ShouldShowAccountRows()
@@ -114,6 +127,96 @@ public sealed class AccountDeletionRequestsTests
         cut.WaitForState(() => !cut.FindAll(".spinner-border").Any(), TimeSpan.FromSeconds(5));
 
         cut.FindAll("button.btn-outline-secondary")[1].HasAttribute("disabled").ShouldBeTrue();
+    }
+
+    [Test]
+    public void RequestConfirm_WhenConfirmButtonClicked_ShouldShowConfirmPrompt()
+    {
+        using var server = WireMockServer.Start();
+        StubAccounts(server, MakeResponse([MakeAccount()]));
+
+        using var ctx = new BunitContext();
+        RegisterServices(ctx, server.Url!);
+
+        var cut = ctx.Render<AccountDeletionRequests>();
+        cut.WaitForState(() => cut.FindAll(".btn-outline-danger").Any(), TimeSpan.FromSeconds(5));
+
+        cut.Find(".btn-outline-danger").Click();
+
+        cut.FindAll(".text-warning").ShouldNotBeEmpty();
+        cut.FindAll(".btn-danger").ShouldNotBeEmpty();
+        cut.FindAll("button.btn-outline-secondary").ShouldNotBeEmpty();
+    }
+
+    [Test]
+    public void CancelConfirm_WhenCancelClicked_ShouldRestoreConfirmButton()
+    {
+        using var server = WireMockServer.Start();
+        StubAccounts(server, MakeResponse([MakeAccount()]));
+
+        using var ctx = new BunitContext();
+        RegisterServices(ctx, server.Url!);
+
+        var cut = ctx.Render<AccountDeletionRequests>();
+        cut.WaitForState(() => cut.FindAll(".btn-outline-danger").Any(), TimeSpan.FromSeconds(5));
+
+        cut.Find(".btn-outline-danger").Click();
+        cut.WaitForState(() => cut.FindAll(".btn-danger").Any(), TimeSpan.FromSeconds(5));
+
+        cut.Find("button.btn-outline-secondary").Click();
+
+        cut.FindAll(".btn-danger").ShouldBeEmpty();
+        cut.FindAll(".btn-outline-danger").ShouldNotBeEmpty();
+    }
+
+    [Test]
+    public async Task ConfirmDeletionAsync_WhenConfirmed_ShouldCallApiAndReload()
+    {
+        var account = MakeAccount();
+        using var server = WireMockServer.Start();
+        StubAccounts(server, MakeResponse([account]));
+        StubConfirmDeletion(server, account.UserId);
+
+        using var ctx = new BunitContext();
+        RegisterServices(ctx, server.Url!);
+
+        var cut = ctx.Render<AccountDeletionRequests>();
+        cut.WaitForState(() => cut.FindAll(".btn-outline-danger").Any(), TimeSpan.FromSeconds(5));
+
+        cut.Find(".btn-outline-danger").Click();
+        cut.WaitForState(() => cut.FindAll(".btn-danger").Any(), TimeSpan.FromSeconds(5));
+
+        cut.Find(".btn-danger").Click();
+        await cut.WaitForStateAsync(() => !cut.FindAll(".btn-danger").Any(), TimeSpan.FromSeconds(5));
+
+        var confirmRequests = server.LogEntries
+            .Count(e => e.RequestMessage?.Path == $"/accounts/{account.UserId}/confirm-deletion"
+                        && e.RequestMessage?.Method == "POST");
+        confirmRequests.ShouldBe(1);
+    }
+
+    [Test]
+    public async Task ConfirmDeletionAsync_WhenApiFails_ShouldShowErrorAlert()
+    {
+        var account = MakeAccount();
+        using var server = WireMockServer.Start();
+        StubAccounts(server, MakeResponse([account]));
+        StubConfirmDeletionFailed(server, account.UserId, 400, "Account.UpdateFailed");
+
+        using var ctx = new BunitContext();
+        RegisterServices(ctx, server.Url!);
+
+        var cut = ctx.Render<AccountDeletionRequests>();
+        cut.WaitForState(() => cut.FindAll(".btn-outline-danger").Any(), TimeSpan.FromSeconds(5));
+
+        cut.Find(".btn-outline-danger").Click();
+        cut.WaitForState(() => cut.FindAll(".btn-danger").Any(), TimeSpan.FromSeconds(5));
+
+        cut.Find(".btn-danger").Click();
+        await cut.WaitForStateAsync(() => cut.FindAll(".alert-danger").Any(), TimeSpan.FromSeconds(5));
+
+        cut.FindAll(".alert-danger").ShouldNotBeEmpty();
+        cut.FindAll(".btn-outline-danger").ShouldNotBeEmpty();
     }
 
     [Test]

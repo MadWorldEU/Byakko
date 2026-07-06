@@ -4,5 +4,5 @@ namespace MadWorldEU.Byakko.Accounts;
 public sealed class GetMyAccountResponse
 {
     public required Guid UserId { get; init; }
-    public required bool HasDeletionRequested { get; init; }
+    public required string Status { get; init; }
 }

@@ -17,6 +17,10 @@ public sealed class AccountEntityTypeConfiguration : IEntityTypeConfiguration<Ac
             .IsRequired()
             .HasConversion<Guid>(id => id.Value, id => UserId.Create(id).Value);
         
+        builder.Property(a => a.Status)
+            .IsRequired()
+            .HasConversion<string>();
+
         builder.Property(a => a.CreatedAt).IsRequired();
         builder.Property(a => a.UpdatedAt).IsRequired();
         

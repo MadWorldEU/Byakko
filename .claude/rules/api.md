@@ -37,16 +37,19 @@ Endpoints in `Controller.Api/Endpoints/Accounts/AccountsEndpoints.cs`.
 
 | Method | Route | Use case | Policy | Notes |
 |---|---|---|---|---|
-| `GET` | `/accounts/` | `GetDeleteRequestedAccountsUseCase` | `Administrator` | Paged (20/page); query param `page` |
+| `GET` | `/accounts/` | `GetAccountsPendingDeletionUseCase` | `Administrator` | Paged (20/page); query param `page`; returns `DeletionRequested` + `DeletionConfirmed` accounts |
+| `POST` | `/accounts/{userId}/confirm-deletion` | `ConfirmDeletionAccountUseCase` | `Administrator` | 404 not found, 409 `DeletionNotRequested` |
 | `POST` | `/accounts/me` | `CreateMyAccountUseCase` | `User` | 201 Created; 400 on failure |
-| `GET` | `/accounts/me` | `GetMyAccountUseCase` | `User` | 404 not found; returns `UserId` + `HasDeletionRequested` |
-| `POST` | `/accounts/me/deletion-request` | `RequestDeletionMyAccountUseCase` | `User` | 404 not found, 409 already requested |
+| `GET` | `/accounts/me` | `GetMyAccountUseCase` | `User` | 404 not found; returns `UserId` + `Status` (string) |
+| `POST` | `/accounts/me/deletion-request` | `RequestDeletionMyAccountUseCase` | `User` | 404 not found, 409 `NotActive` |
 
-**Account domain** (`Core.Domain/Accounts/`): `Account` entity with `UserId`, `HasDeletionRequested`, `CreatedAt`, `UpdatedAt`. `Create(clock, guidGenerator, userId)` → stamps both timestamps. `RequestDeletion(clock)` → `AccountErrors.DeletionAlreadyRequested` if already flagged; sets `HasDeletionRequested = true` and updates `UpdatedAt`.
+**Account domain** (`Core.Domain/Accounts/`): `Account` entity with `UserId`, `Status` (`AccountStatus`), `CreatedAt`, `UpdatedAt`. `Create(clock, guidGenerator, userId)` → stamps both timestamps. `RequestDeletion(clock)` → `AccountErrors.NotActive` if `Status != Active`; sets `Status = DeletionRequested`. `ConfirmDeletion(clock)` → `AccountErrors.DeletionNotRequested` if `Status != DeletionRequested`; sets `Status = DeletionConfirmed`.
 
-**AccountErrors:** `NotFound`, `QueryFailed`, `SaveFailed`, `UpdateFailed`, `DeletionAlreadyRequested`.
+**AccountStatus** enum (`Core.Domain/Accounts/AccountStatus.cs`): `Active` → `DeletionRequested` → `DeletionConfirmed` → `Deleted`. `Deleted` is terminal. Stored as `string` via EF Core `HasConversion<string>()`. Exposed as `string Status` in response DTOs.
 
-**AccountRepository** (`Infrastructure.Postgresql/Accounts/`): `FindAsync(UserId)`, `AddAsync(Account)`, `UpdateAsync(Account)`, `GetDeleteRequestedAccounts(Page)`. `UserId` has a unique index via `AccountEntityTypeConfiguration`.
+**AccountErrors:** `NotFound`, `QueryFailed`, `SaveFailed`, `UpdateFailed`, `NotActive`, `DeletionAlreadyRequested`, `DeletionNotRequested`.
+
+**AccountRepository** (`Infrastructure.Postgresql/Accounts/`): `FindAsync(UserId)`, `AddAsync(Account)`, `UpdateAsync(Account)`, `GetAccountsPendingDeletion(Page)`. `UserId` has a unique index via `AccountEntityTypeConfiguration`.
 
 ## Correspondences
 

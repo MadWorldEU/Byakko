@@ -443,6 +443,12 @@
     <data name="Settings Deletion Requested" xml:space="preserve">
         <value>削除申請済み</value>
     </data>
+    <data name="Settings Deletion Confirmed" xml:space="preserve">
+        <value>削除確認済み</value>
+    </data>
+    <data name="Settings Deleted" xml:space="preserve">
+        <value>削除済み</value>
+    </data>
     <data name="Settings Active" xml:space="preserve">
         <value>有効</value>
     </data>

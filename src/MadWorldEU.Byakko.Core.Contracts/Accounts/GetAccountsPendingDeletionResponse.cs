@@ -3,7 +3,7 @@ using MadWorldEU.Byakko.Accounts.Summaries;
 namespace MadWorldEU.Byakko.Accounts;
 
 /// <summary>Paged response containing accounts that have submitted a deletion request.</summary>
-public sealed class GetDeleteRequestedAccountsResponse
+public sealed class GetAccountsPendingDeletionResponse
 {
     public required List<AccountResponse> Accounts { get; init; } = [];
     public required int Page { get; init; }

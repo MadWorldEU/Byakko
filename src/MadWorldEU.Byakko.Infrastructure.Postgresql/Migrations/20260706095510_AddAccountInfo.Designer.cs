@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MadWorldEU.Byakko.Migrations
 {
     [DbContext(typeof(ByakkoContext))]
-    [Migration("20260702210632_AddAccountInfo")]
+    [Migration("20260706095510_AddAccountInfo")]
     partial class AddAccountInfo
     {
         /// <inheritdoc />
@@ -34,8 +34,9 @@ namespace MadWorldEU.Byakko.Migrations
                     b.Property<Instant>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<bool>("HasDeletionRequested")
-                        .HasColumnType("boolean");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<Instant>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");

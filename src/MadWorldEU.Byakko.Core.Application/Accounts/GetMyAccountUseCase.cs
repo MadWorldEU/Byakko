@@ -15,7 +15,7 @@ public sealed class GetMyAccountUseCase(IAccountRepository accountRepository)
         return new GetMyAccountResponse()
         {
             UserId = accountResult.Value.UserId.Value,
-            HasDeletionRequested = accountResult.Value.HasDeletionRequested
+            Status = accountResult.Value.Status.ToString()
         };
     }
 }

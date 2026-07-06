@@ -29,6 +29,11 @@ else if (_errorMessage is not null)
 }
 else if (_response is not null)
 {
+    @if (_confirmErrorMessage is not null)
+    {
+        <div class="alert alert-danger mb-3" role="alert">@_confirmErrorMessage</div>
+    }
+
     <div class="card border-0 bg-body-tertiary">
         <div class="table-responsive">
             <table class="table table-hover mb-0">
@@ -36,6 +41,8 @@ else if (_response is not null)
                     <tr>
                         <th>User ID</th>
                         <th>Status</th>
+                        <th>Updated</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -43,14 +50,46 @@ else if (_response is not null)
                     {
                         <tr>
                             <td class="font-monospace small text-secondary">@account.UserId</td>
+                            <td class="small">@account.UpdatedAt.ToString("yyyy-MM-dd HH:mm")</td>
                             <td>
-                                @if (account.HasDeletionRequested)
+                                @if (account.Status == "DeletionRequested")
                                 {
                                     <span class="badge text-bg-warning">Deletion requested</span>
+                                }
+                                else if (account.Status == "DeletionConfirmed")
+                                {
+                                    <span class="badge text-bg-secondary">Deletion confirmed</span>
+                                }
+                                else if (account.Status == "Deleted")
+                                {
+                                    <span class="badge text-bg-danger">Deleted</span>
                                 }
                                 else
                                 {
                                     <span class="badge text-bg-success">Active</span>
+                                }
+                            </td>
+                            <td class="text-end">
+                                @if (_confirmingUserId == account.UserId && account.Status == "DeletionRequested")
+                                {
+                                    <span class="small text-warning me-2">Confirm deletion?</span>
+                                    <button class="btn btn-sm btn-danger me-1"
+                                            @onclick="() => ConfirmDeletionAsync(account.UserId)"
+                                            disabled="@_confirming">
+                                        Yes
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary"
+                                            @onclick="CancelConfirm"
+                                            disabled="@_confirming">
+                                        No
+                                    </button>
+                                }
+                                else if (account.Status == "DeletionRequested")
+                                {
+                                    <button class="btn btn-sm btn-outline-danger"
+                                            @onclick="() => RequestConfirm(account.UserId)">
+                                        Confirm deletion
+                                    </button>
                                 }
                             </td>
                         </tr>
@@ -58,7 +97,7 @@ else if (_response is not null)
                     @if (_response.Accounts.Count == 0)
                     {
                         <tr>
-                            <td colspan="2" class="text-center text-secondary py-4">No deletion requests found.</td>
+                            <td colspan="4" class="text-center text-secondary py-4">No deletion requests found.</td>
                         </tr>
                     }
                 </tbody>
@@ -80,8 +119,11 @@ else if (_response is not null)
 @code {
     private bool _loading = true;
     private string? _errorMessage;
-    private GetDeleteRequestedAccountsResponse? _response;
+    private string? _confirmErrorMessage;
+    private GetAccountsPendingDeletionResponse? _response;
     private int _currentPage = 1;
+    private Guid? _confirmingUserId;
+    private bool _confirming;
 
     protected override async Task OnInitializedAsync()
     {
@@ -95,7 +137,7 @@ else if (_response is not null)
 
         try
         {
-            var result = await AccountService.GetDeleteRequestedAccountsAsync(_currentPage);
+            var result = await AccountService.GetAccountsPendingDeletionAsync(_currentPage);
 
             if (result.IsSuccess)
             {
@@ -114,6 +156,47 @@ else if (_response is not null)
         finally
         {
             _loading = false;
+        }
+    }
+
+    private void RequestConfirm(Guid userId)
+    {
+        _confirmingUserId = userId;
+    }
+
+    private void CancelConfirm()
+    {
+        _confirmingUserId = null;
+    }
+
+    private async Task ConfirmDeletionAsync(Guid userId)
+    {
+        _confirming = true;
+        _confirmErrorMessage = null;
+
+        try
+        {
+            var result = await AccountService.ConfirmDeletionAsync(userId);
+            _confirmingUserId = null;
+
+            if (result.IsSuccess)
+            {
+                await LoadPageAsync();
+            }
+            else
+            {
+                _confirmErrorMessage = ErrorTranslator.Translate(result.Failure!);
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, ex.Message);
+            _confirmErrorMessage = ErrorTranslator.Translate(BlazorErrors.AccountConfirmDeletionFailed.Code, BlazorErrors.AccountConfirmDeletionFailed.Description);
+            _confirmingUserId = null;
+        }
+        finally
+        {
+            _confirming = false;
         }
     }
 

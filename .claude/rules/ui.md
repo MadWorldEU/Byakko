@@ -9,10 +9,10 @@ Blazor WebAssembly, Bootstrap 5 dark theme. 240px sticky sidebar. Auth via `<Aut
 | `Pages/Home.razor` | `/dashboard` | Stat cards (Total Files, Storage Used) via `IStorageService` |
 | `Pages/Storages/AssetsOverview.razor` | `/storages/assets` | Paged (20/page); info tooltip (size + last updated); Logs button; Delete with inline confirm |
 | `Pages/Audits/AuditLogs.razor` | `/audits/{EntityId:guid}` | All audit entries for one entity; back link to `/storages/assets` |
-| `Pages/Accounts/AccountDeletionRequests.razor` | `/accounts/deletion-requests` | Paged list of accounts with a pending GDPR deletion request; `Administrator` policy |
+| `Pages/Accounts/AccountDeletionRequests.razor` | `/accounts/deletion-requests` | Paged list of `DeletionRequested`/`DeletionConfirmed` accounts with User ID, status badge, updated timestamp, and inline "Confirm deletion" action with Yes/No prompt; `Administrator` policy |
 | `Pages/HostServices/ManualTriggers.razor` | — | Manual cleanup triggers |
 
-Shared services: `IAccountService` (`GetDeleteRequestedAccountsAsync`, `CreateMyAccountAsync`, `GetMyAccountAsync`, `RequestDeletionMyAccountAsync`), `IAssetService` (`GetAssetsMetadataAsync`, `DeleteAssetContentAsync`), `IStorageService` (`GetStorageStatisticsAsync`), `IAuditService` (`GetAuditLogsAsync`). Global usings in `_Imports.razor`: `MadWorldEU.Byakko.Services`, `.Storages`, `.Audits`, `.Audits.Summaries`, `.Formatters`. Admin `_Imports.razor` also adds `MadWorldEU.Byakko.Accounts`.
+Shared services: `IAccountService` (`GetAccountsPendingDeletionAsync`, `ConfirmDeletionAsync`, `CreateMyAccountAsync`, `GetMyAccountAsync`, `RequestDeletionMyAccountAsync`), `IAssetService` (`GetAssetsMetadataAsync`, `DeleteAssetContentAsync`), `IStorageService` (`GetStorageStatisticsAsync`), `IAuditService` (`GetAuditLogsAsync`). Global usings in `_Imports.razor`: `MadWorldEU.Byakko.Services`, `.Storages`, `.Audits`, `.Audits.Summaries`, `.Formatters`. Admin `_Imports.razor` also adds `MadWorldEU.Byakko.Accounts`.
 
 ## Portal UI
 

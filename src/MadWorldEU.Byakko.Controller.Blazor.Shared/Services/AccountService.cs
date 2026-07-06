@@ -8,9 +8,15 @@ public sealed class AccountService(IHttpClientFactory httpClientFactory) : IAcco
     private readonly HttpClient _httpClient = httpClientFactory.CreateClient(HttpClients.ApiAuthorized);
 
     /// <inheritdoc />
-    public async Task<ResultResponse<GetDeleteRequestedAccountsResponse>> GetDeleteRequestedAccountsAsync(int page)
+    public async Task<ResultResponse<GetAccountsPendingDeletionResponse>> GetAccountsPendingDeletionAsync(int page)
     {
-        return await _httpClient.GetResultResponseFromJsonAsync<GetDeleteRequestedAccountsResponse>($"/accounts?page={page}");
+        return await _httpClient.GetResultResponseFromJsonAsync<GetAccountsPendingDeletionResponse>($"/accounts?page={page}");
+    }
+
+    /// <inheritdoc />
+    public async Task<ResultResponse<ConfirmDeletionAccountResponse>> ConfirmDeletionAsync(Guid userId)
+    {
+        return await _httpClient.PostResultResponseFromJsonAsync<EmptyRequest, ConfirmDeletionAccountResponse>($"/accounts/{userId}/confirm-deletion", EmptyRequest.Create());
     }
 
     /// <inheritdoc />

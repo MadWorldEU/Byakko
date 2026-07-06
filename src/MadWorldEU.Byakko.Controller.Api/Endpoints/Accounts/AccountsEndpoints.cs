@@ -10,7 +10,7 @@ internal static class AccountsEndpoints
         var accountEndpoints = app.MapGroup("/accounts")
             .WithTags("Accounts");
 
-        accountEndpoints.MapGet("/", async (int page, GetDeleteRequestedAccountsUseCase useCase) =>
+        accountEndpoints.MapGet("/", async (int page, GetAccountsPendingDeletionUseCase useCase) =>
             {
                 var result = await useCase.QueryAsync(page);
                 return result.Match(
@@ -19,7 +19,22 @@ internal static class AccountsEndpoints
                 );
             })
             .RequireAuthorization(AuthorizationPolicies.Administrator)
-            .WithName("GetDeleteRequestedAccounts");
+            .WithName("GetAccountsPendingDeletion");
+
+        accountEndpoints.MapPost("/{userId}/confirm-deletion", async (string userId, ConfirmDeletionAccountUseCase useCase) =>
+            {
+                var result = await useCase.ExecuteAsync(userId);
+                return result.Match(
+                    onSuccess: Results.Ok,
+                    onFailure: error => error.Code == AccountErrors.NotFound.Code
+                        ? error.ToNotFound()
+                        : error.Code == AccountErrors.DeletionNotRequested.Code
+                            ? error.ToConflict()
+                            : error.ToBadRequest()
+                );
+            })
+            .RequireAuthorization(AuthorizationPolicies.Administrator)
+            .WithName("ConfirmDeletionAccount");
 
         accountEndpoints.MapPost("/me", async (ClaimsPrincipal user, CreateMyAccountUseCase useCase) =>
             {
@@ -58,7 +73,7 @@ internal static class AccountsEndpoints
                     onSuccess: Results.Ok,
                     onFailure: error => error.Code == AccountErrors.NotFound.Code
                         ? error.ToNotFound()
-                        : error.Code == AccountErrors.DeletionAlreadyRequested.Code
+                        : error.Code == AccountErrors.NotActive.Code
                             ? error.ToConflict()
                             : error.ToBadRequest()
                 );

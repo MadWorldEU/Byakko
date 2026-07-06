@@ -12,7 +12,7 @@ public interface IAccountRepository
     Task<Result> AddAsync(Account account);
 
     /// <summary>Returns a paged list of accounts that have a pending deletion request.</summary>
-    Task<Result<PagedResult<Account>>> GetDeleteRequestedAccounts(Page page);
+    Task<Result<PagedResult<Account>>> GetAccountsPendingDeletion(Page page);
     
     /// <summary>Persists changes to an existing account.</summary>
     Task<Result> UpdateAsync(Account account);

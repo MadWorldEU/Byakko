@@ -14,10 +14,10 @@ public sealed class SettingsPageTests
         ctx.Services.AddScoped<IAccountService, AccountService>();
     }
 
-    private static GetMyAccountResponse MakeAccount(bool hasDeletionRequested = false) => new()
+    private static GetMyAccountResponse MakeAccount(string status = "Active") => new()
     {
         UserId = Guid.NewGuid(),
-        HasDeletionRequested = hasDeletionRequested
+        Status = status
     };
 
     private static void StubGetAccount(WireMockServer server, GetMyAccountResponse account) =>
@@ -109,7 +109,7 @@ public sealed class SettingsPageTests
     public void OnInitializedAsync_WhenAccountHasDeletionRequested_ShouldShowDeletionRequestedBadge()
     {
         using var server = WireMockServer.Start();
-        StubGetAccount(server, MakeAccount(hasDeletionRequested: true));
+        StubGetAccount(server, MakeAccount(status: "DeletionRequested"));
 
         using var ctx = new BunitContext();
         RegisterServices(ctx, server.Url!);
