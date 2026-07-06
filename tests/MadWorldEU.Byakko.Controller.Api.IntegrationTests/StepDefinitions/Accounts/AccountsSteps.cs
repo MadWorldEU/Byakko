@@ -3,6 +3,8 @@ namespace MadWorldEU.Byakko.StepDefinitions.Accounts;
 [Binding]
 public sealed class AccountsSteps(ScenarioContext scenarioContext)
 {
+    private const string AccountUserIdKey = "AccountUserId";
+
     [BeforeScenario(Order = 2)]
     public void BeforeScenario()
     {
@@ -16,6 +18,7 @@ public sealed class AccountsSteps(ScenarioContext scenarioContext)
 
         scenarioContext.Set(client);
         scenarioContext.Set(client, ScenarioContextKeys.AuthenticatedClient);
+        scenarioContext.Set(uniqueUserId, AccountUserIdKey);
     }
 
     [Given("I have created my account")]
@@ -50,6 +53,35 @@ public sealed class AccountsSteps(ScenarioContext scenarioContext)
         body.ShouldNotBeNull();
         body.TotalCount.ShouldBeGreaterThan(0);
         body.Accounts.ShouldContain(a => a.Status == "DeletionRequested");
+    }
+
+    [When("I confirm the deletion of the account")]
+    public async Task WhenIConfirmTheDeletionOfTheAccount()
+    {
+        var client = scenarioContext.Get<HttpClient>();
+        var userId = scenarioContext.Get<string>(AccountUserIdKey);
+        var response = await client.PostAsJsonAsync($"/accounts/{userId}/confirm-deletion", new { });
+        scenarioContext.Set(response, ScenarioContextKeys.LastResponse);
+    }
+
+    [Then("the account should have status DeletionConfirmed")]
+    public async Task ThenTheAccountShouldHaveStatusDeletionConfirmed()
+    {
+        var client = scenarioContext.Get<HttpClient>();
+        var userId = scenarioContext.Get<string>(AccountUserIdKey);
+        var response = await client.GetAsync("/accounts/me");
+        var body = await response.Content.ReadFromJsonAsync<GetMyAccountResponse>();
+        body.ShouldNotBeNull();
+        body.Status.ShouldBe("DeletionConfirmed");
+    }
+
+    [Then("the confirm deletion response should be returned")]
+    public async Task ThenTheConfirmDeletionResponseShouldBeReturned()
+    {
+        var response = scenarioContext.Get<HttpResponseMessage>(ScenarioContextKeys.LastResponse);
+        var body = await response.Content.ReadFromJsonAsync<ConfirmDeletionAccountResponse>();
+        body.ShouldNotBeNull();
+        body.UserId.ShouldNotBe(Guid.Empty);
     }
 
     [When("I create my account")]
