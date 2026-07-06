@@ -31,7 +31,8 @@ public sealed class IpAddress : ValueObject
             return AuditErrors.InvalidIpAddress;
         }
         
-        return new IpAddress(ipAddress.ToString());
+        var normalized = ipAddress.IsIPv4MappedToIPv6 ? ipAddress.MapToIPv4() : ipAddress;
+        return new IpAddress(normalized.ToString());
     }
     
     protected override IEnumerable<object?> GetEqualityComponents()

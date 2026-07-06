@@ -79,15 +79,14 @@ public sealed class ApiHooks(ScenarioContext scenarioContext)
     }
 
     [BeforeScenario(Order = 1)]
-    public async Task BeforeScenario()
+    public Task BeforeScenario()
     {
-        using var httpClient = new HttpClient();
-        await httpClient.DeleteAsync($"{_mailpitApiUrl}/api/v1/messages");
-
         scenarioContext.Set(_client!);
         scenarioContext.Set(_authenticatedClient!, ScenarioContextKeys.AuthenticatedClient);
         scenarioContext.Set(_factory!, ScenarioContextKeys.Factory);
         scenarioContext.Set(_factory!.Services, ScenarioContextKeys.ServiceProvider);
         scenarioContext.Set(_mailpitApiUrl, ScenarioContextKeys.MailpitApiUrl);
+        
+        return Task.CompletedTask;
     }
 }
