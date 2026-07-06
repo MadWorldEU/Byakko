@@ -1,7 +1,7 @@
 namespace MadWorldEU.Byakko.Accounts;
 
 /// <summary>Submits a GDPR deletion request for the authenticated user's account.</summary>
-public sealed class RequestDeletionMyAccountUseCase(IClock clock, IAccountRepository accountRepository)
+public sealed class RequestDeletionMyAccountUseCase(IClock clock, IAccountRepository accountRepository, ILogger<RequestDeletionMyAccountUseCase> logger)
 {
     /// <summary>Executes the deletion request for the given Keycloak user ID.</summary>
     public async Task<Result<RequestDeletionMyAccountResponse>> ExecuteAsync(string userId)
@@ -18,6 +18,8 @@ public sealed class RequestDeletionMyAccountUseCase(IClock clock, IAccountReposi
 
         var saveResult = await accountRepository.UpdateAsync(account);
         if (saveResult.IsFailure) return saveResult.Error;
+        
+        logger.LogInformation("Account '{UserId}' deletion request submitted.", account.UserId.Value);
         
         return new RequestDeletionMyAccountResponse()
         {
