@@ -11,6 +11,7 @@ A curated list of websites and resources used in or relevant to this project.
 - [MailKit](https://github.com/jstedfast/MailKit) — Cross-platform .NET SMTP/IMAP/POP3 client library used for sending mail
 - [NodaTime](https://nodatime.org/) — Date and time library for .NET with explicit timezone handling
 - [Npgsql](https://www.npgsql.org/) — .NET data provider for PostgreSQL
+- [Polly](https://www.thepollyproject.org/) — Resilience and transient fault-handling library for .NET (retries, circuit breakers, timeouts)
 - [bUnit](https://bunit.dev/) — Testing library for Blazor components
 - [Reqnroll](https://reqnroll.net/) — BDD test automation framework for .NET (SpecFlow successor)
 - [Respawn](https://github.com/jbogard/Respawn) — Intelligent database cleanup tool for resetting test databases to a known state between tests
