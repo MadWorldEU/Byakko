@@ -32,12 +32,12 @@ public sealed class Account : Entity<Id>
         return new Account(id, userId, now);
     }
 
-    /// <summary>Flags the account for deletion. Returns a failure if a request was already made.</summary>
+    /// <summary>Flags an account for deletion. Returns a failure if a request was already made.</summary>
     public Result RequestDeletion(IClock clock)
     {
         if (Status != AccountStatus.Active)
         {
-            return Result.Failure(AccountErrors.DeletionAlreadyRequested);
+            return Result.Failure(AccountErrors.NotActive);
         }
 
         UpdatedAt = clock.GetCurrentInstant();

@@ -73,7 +73,7 @@ internal static class AccountsEndpoints
                     onSuccess: Results.Ok,
                     onFailure: error => error.Code == AccountErrors.NotFound.Code
                         ? error.ToNotFound()
-                        : error.Code == AccountErrors.DeletionAlreadyRequested.Code
+                        : error.Code == AccountErrors.NotActive.Code
                             ? error.ToConflict()
                             : error.ToBadRequest()
                 );
