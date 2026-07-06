@@ -1,3 +1,6 @@
+using Polly;
+using Polly.Retry;
+
 namespace MadWorldEU.Byakko.StepDefinitions.Correspondences;
 
 [Binding]
@@ -23,10 +26,26 @@ public sealed class CorrespondencesSteps(ScenarioContext scenarioContext)
     [Then("the administrator should have received an email with subject {string}")]
     public async Task ThenTheAdministratorShouldHaveReceivedAnEmailWithSubject(string subject)
     {
-        var mailpitUrl = scenarioContext.Get<string>(ScenarioContextKeys.MailpitApiUrl);
+        var mailPitUrl = scenarioContext.Get<string>(ScenarioContextKeys.MailpitApiUrl);
         using var httpClient = new HttpClient();
-        var messages = await httpClient.GetFromJsonAsync<MailpitMessagesResponse>($"{mailpitUrl}/api/v1/messages");
-        messages.ShouldNotBeNull();
-        messages.Messages.ShouldContain(m => m.Subject == subject);
+        
+        var pipeline = new ResiliencePipelineBuilder<MailpitMessagesResponse?>()
+            .AddRetry(new RetryStrategyOptions<MailpitMessagesResponse?>
+            {
+                MaxRetryAttempts = 10,
+                Delay = TimeSpan.FromMilliseconds(200),
+                ShouldHandle = new PredicateBuilder<MailpitMessagesResponse?>()
+                    .HandleResult(r => r?.Messages.All(m => m.Subject != subject) ?? true)
+            })
+            .Build();
+
+        var response = await pipeline.ExecuteAsync(
+            static async (state, ct) => await state.Client.GetFromJsonAsync<MailpitMessagesResponse>(
+                $"{state.Url}/api/v1/messages", cancellationToken: ct),
+            (Client: httpClient, Url: mailPitUrl));
+
+
+        response.ShouldNotBeNull();
+        response.Messages.ShouldContain(m => m.Subject == subject);
     }
 }
