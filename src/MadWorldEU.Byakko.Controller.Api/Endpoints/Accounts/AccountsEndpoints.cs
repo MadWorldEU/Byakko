@@ -46,7 +46,7 @@ internal static class AccountsEndpoints
                     onFailure: error => error.ToBadRequest()
                 );
             })
-            .RequireAuthorization(AuthorizationPolicies.User)
+            .RequireAuthorization()
             .WithName("CreateMyAccount");
 
         accountEndpoints.MapGet("/me", async (ClaimsPrincipal user, GetMyAccountUseCase useCase) =>
@@ -61,7 +61,7 @@ internal static class AccountsEndpoints
                         : error.ToBadRequest()
                 );
             })
-            .RequireAuthorization(AuthorizationPolicies.User)
+            .RequireAuthorization()
             .WithName("GetMyAccount");
 
         accountEndpoints.MapPost("/me/deletion-request", async (ClaimsPrincipal user, RequestDeletionMyAccountUseCase useCase) =>
@@ -78,7 +78,7 @@ internal static class AccountsEndpoints
                             : error.ToBadRequest()
                 );
             })
-            .RequireAuthorization(AuthorizationPolicies.User)
+            .RequireAuthorization()
             .WithName("RequestDeletionMyAccount");
     }
 }
