@@ -29,6 +29,11 @@ else if (_errorMessage is not null)
 }
 else if (_response is not null)
 {
+    @if (_confirmErrorMessage is not null)
+    {
+        <div class="alert alert-danger mb-3" role="alert">@_confirmErrorMessage</div>
+    }
+
     <div class="card border-0 bg-body-tertiary">
         <div class="table-responsive">
             <table class="table table-hover mb-0">
@@ -114,6 +119,7 @@ else if (_response is not null)
 @code {
     private bool _loading = true;
     private string? _errorMessage;
+    private string? _confirmErrorMessage;
     private GetAccountsPendingDeletionResponse? _response;
     private int _currentPage = 1;
     private Guid? _confirmingUserId;
@@ -166,7 +172,7 @@ else if (_response is not null)
     private async Task ConfirmDeletionAsync(Guid userId)
     {
         _confirming = true;
-        _errorMessage = null;
+        _confirmErrorMessage = null;
 
         try
         {
@@ -179,13 +185,13 @@ else if (_response is not null)
             }
             else
             {
-                _errorMessage = ErrorTranslator.Translate(result.Failure!);
+                _confirmErrorMessage = ErrorTranslator.Translate(result.Failure!);
             }
         }
         catch (Exception ex)
         {
             Logger.LogError(ex, ex.Message);
-            _errorMessage = ErrorTranslator.Translate(BlazorErrors.AccountConfirmDeletionFailed.Code, BlazorErrors.AccountConfirmDeletionFailed.Description);
+            _confirmErrorMessage = ErrorTranslator.Translate(BlazorErrors.AccountConfirmDeletionFailed.Code, BlazorErrors.AccountConfirmDeletionFailed.Description);
             _confirmingUserId = null;
         }
         finally
