@@ -20,7 +20,8 @@ public sealed class GetAccountsPendingDeletionUseCase(IAccountRepository account
                 .Select(i => new AccountResponse()
                 {
                     UserId = i.UserId.Value,
-                    Status = i.Status.ToString()
+                    Status = i.Status.ToString(),
+                    UpdatedAt = i.UpdatedAt.ToDateTimeOffset()
                 }).ToList(),
             Page = accountsResult.Value.Page,
             PageSize = accountsResult.Value.PageSize,
