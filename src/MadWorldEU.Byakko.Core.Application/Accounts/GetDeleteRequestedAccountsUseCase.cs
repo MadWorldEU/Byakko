@@ -20,7 +20,7 @@ public sealed class GetDeleteRequestedAccountsUseCase(IAccountRepository account
                 .Select(i => new AccountResponse()
                 {
                     UserId = i.UserId.Value,
-                    HasDeletionRequested = i.HasDeletionRequested
+                    Status = i.Status.ToString()
                 }).ToList(),
             Page = accountsResult.Value.Page,
             PageSize = accountsResult.Value.PageSize,

@@ -450,6 +450,12 @@
     <data name="Settings Deletion Requested" xml:space="preserve">
         <value>Deletion requested</value>
     </data>
+    <data name="Settings Deletion Confirmed" xml:space="preserve">
+        <value>Deletion confirmed</value>
+    </data>
+    <data name="Settings Deleted" xml:space="preserve">
+        <value>Deleted</value>
+    </data>
     <data name="Settings Active" xml:space="preserve">
         <value>Active</value>
     </data>

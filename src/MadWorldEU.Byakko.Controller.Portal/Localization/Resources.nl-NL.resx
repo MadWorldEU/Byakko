@@ -443,6 +443,12 @@
     <data name="Settings Deletion Requested" xml:space="preserve">
         <value>Verwijdering aangevraagd</value>
     </data>
+    <data name="Settings Deletion Confirmed" xml:space="preserve">
+        <value>Verwijdering bevestigd</value>
+    </data>
+    <data name="Settings Deleted" xml:space="preserve">
+        <value>Verwijderd</value>
+    </data>
     <data name="Settings Active" xml:space="preserve">
         <value>Actief</value>
     </data>

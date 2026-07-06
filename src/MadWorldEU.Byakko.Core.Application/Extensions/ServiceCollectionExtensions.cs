@@ -41,6 +41,7 @@ public static class ServiceCollectionExtensions
 
     private static void AddAccounts(this IServiceCollection services)
     {
+        services.AddScoped<ConfirmDeletionAccountUseCase>();
         services.AddScoped<CreateMyAccountUseCase>();
         services.AddScoped<GetMyAccountUseCase>();
         services.AddScoped<GetDeleteRequestedAccountsUseCase>();

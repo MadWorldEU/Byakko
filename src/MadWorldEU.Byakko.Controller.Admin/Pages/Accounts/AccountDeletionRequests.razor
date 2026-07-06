@@ -44,9 +44,17 @@ else if (_response is not null)
                         <tr>
                             <td class="font-monospace small text-secondary">@account.UserId</td>
                             <td>
-                                @if (account.HasDeletionRequested)
+                                @if (account.Status == "DeletionRequested")
                                 {
                                     <span class="badge text-bg-warning">Deletion requested</span>
+                                }
+                                else if (account.Status == "DeletionConfirmed")
+                                {
+                                    <span class="badge text-bg-secondary">Deletion confirmed</span>
+                                }
+                                else if (account.Status == "Deleted")
+                                {
+                                    <span class="badge text-bg-danger">Deleted</span>
                                 }
                                 else
                                 {

@@ -30,7 +30,7 @@ public sealed class AccountDeletionRequestsTests
     private static AccountResponse MakeAccount(Guid? userId = null) => new()
     {
         UserId = userId ?? Guid.NewGuid(),
-        HasDeletionRequested = true
+        Status = "DeletionRequested"
     };
 
     private static void StubAccounts(WireMockServer server, GetDeleteRequestedAccountsResponse response, int page = 1) =>

@@ -49,7 +49,7 @@ public sealed class AccountsSteps(ScenarioContext scenarioContext)
         var body = await response.Content.ReadFromJsonAsync<GetDeleteRequestedAccountsResponse>();
         body.ShouldNotBeNull();
         body.TotalCount.ShouldBeGreaterThan(0);
-        body.Accounts.ShouldContain(a => a.HasDeletionRequested);
+        body.Accounts.ShouldContain(a => a.Status == "DeletionRequested");
     }
 
     [When("I create my account")]
@@ -100,7 +100,7 @@ public sealed class AccountsSteps(ScenarioContext scenarioContext)
         var response = scenarioContext.Get<HttpResponseMessage>(ScenarioContextKeys.LastResponse);
         var body = await response.Content.ReadFromJsonAsync<GetMyAccountResponse>();
         body.ShouldNotBeNull();
-        body.HasDeletionRequested.ShouldBeTrue();
+        body.Status.ShouldBe("DeletionRequested");
     }
 
     [Then("the account should be returned with no deletion requested")]
@@ -110,6 +110,6 @@ public sealed class AccountsSteps(ScenarioContext scenarioContext)
         var body = await response.Content.ReadFromJsonAsync<GetMyAccountResponse>();
         body.ShouldNotBeNull();
         body.UserId.ShouldNotBe(Guid.Empty);
-        body.HasDeletionRequested.ShouldBeFalse();
+        body.Status.ShouldBe("Active");
     }
 }

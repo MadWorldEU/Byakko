@@ -6,16 +6,16 @@ namespace MadWorldEU.Byakko.Accounts;
 public sealed class Account : Entity<Id>
 {
     public UserId UserId { get; private set; } = null!;
-    public bool HasDeletionRequested { get; private set; }
+    public AccountStatus Status { get; private set; }
     public Instant CreatedAt { get; private init; }
     public Instant UpdatedAt { get; private set; }
-    
+
     /// <summary>
     /// Required for EF Core
     /// </summary>
     [UsedImplicitly]
     private Account() {}
-    
+
     private Account(Id id, UserId userId, Instant createdAt)
     {
         Id = id;
@@ -23,7 +23,7 @@ public sealed class Account : Entity<Id>
         CreatedAt = createdAt;
         UpdatedAt = createdAt;
     }
-    
+
     /// <summary>Creates a new account for the given user, stamped with the current time.</summary>
     public static Result<Account> Create(IClock clock, IGuidGenerator guidGenerator, UserId userId)
     {
@@ -31,18 +31,32 @@ public sealed class Account : Entity<Id>
         var id = Id.Create(guidGenerator.New()).Value;
         return new Account(id, userId, now);
     }
-    
+
     /// <summary>Flags the account for deletion. Returns a failure if a request was already made.</summary>
     public Result RequestDeletion(IClock clock)
     {
-        if (HasDeletionRequested)
+        if (Status != AccountStatus.Active)
         {
             return Result.Failure(AccountErrors.DeletionAlreadyRequested);
         }
-        
+
         UpdatedAt = clock.GetCurrentInstant();
-        HasDeletionRequested = true;
-        
+        Status = AccountStatus.DeletionRequested;
+
+        return Result.Success();
+    }
+
+    /// <summary>Marks the deletion as confirmed by an administrator. Returns a failure if no deletion request is pending.</summary>
+    public Result ConfirmDeletion(IClock clock)
+    {
+        if (Status != AccountStatus.DeletionRequested)
+        {
+            return Result.Failure(AccountErrors.DeletionNotRequested);
+        }
+
+        UpdatedAt = clock.GetCurrentInstant();
+        Status = AccountStatus.DeletionConfirmed;
+
         return Result.Success();
     }
 }

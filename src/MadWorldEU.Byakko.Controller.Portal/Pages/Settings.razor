@@ -33,9 +33,17 @@
                         <h6 class="fw-semibold mb-3">@Localizer["Settings Account Status"]</h6>
                         <div class="d-flex align-items-center justify-content-between">
                             <span class="text-secondary small">@Localizer["Settings Deletion Status"]</span>
-                            @if (_account.HasDeletionRequested)
+                            @if (_account.Status == "DeletionRequested")
                             {
                                 <span class="badge text-bg-warning">@Localizer["Settings Deletion Requested"]</span>
+                            }
+                            else if (_account.Status == "DeletionConfirmed")
+                            {
+                                <span class="badge text-bg-warning">@Localizer["Settings Deletion Confirmed"]</span>
+                            }
+                            else if (_account.Status == "Deleted")
+                            {
+                                <span class="badge text-bg-danger">@Localizer["Settings Deleted"]</span>
                             }
                             else
                             {
@@ -54,7 +62,7 @@
                         {
                             <div class="alert alert-success mb-0" role="alert">@Localizer["Settings Deletion Success"]</div>
                         }
-                        else if (_account.HasDeletionRequested)
+                        else if (_account.Status != "Active")
                         {
                             <div class="alert alert-warning mb-0" role="alert">@Localizer["Settings Already Requested"]</div>
                         }
@@ -190,7 +198,7 @@
             if (result.IsSuccess)
             {
                 _deletionSuccess = true;
-                _account = new GetMyAccountResponse { UserId = _account!.UserId, HasDeletionRequested = true };
+                _account = new GetMyAccountResponse { UserId = _account!.UserId, Status = "DeletionRequested" };
             }
             else
             {

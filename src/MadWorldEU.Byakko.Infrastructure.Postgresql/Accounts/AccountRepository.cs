@@ -75,7 +75,7 @@ public sealed class AccountRepository(ByakkoContext context, ILogger<AccountRepo
         {
             var query = context.Accounts
                 .AsQueryable()
-                .Where(a => a.HasDeletionRequested);
+                .Where(a => a.Status == AccountStatus.DeletionRequested);
 
             var totalCount = await query.CountAsync();
             var items = await query
