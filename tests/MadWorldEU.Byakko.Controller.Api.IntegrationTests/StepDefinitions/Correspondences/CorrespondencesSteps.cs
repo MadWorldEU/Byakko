@@ -33,7 +33,7 @@ public sealed class CorrespondencesSteps(ScenarioContext scenarioContext)
             .AddRetry(new RetryStrategyOptions<MailpitMessagesResponse?>
             {
                 MaxRetryAttempts = 10,
-                Delay = TimeSpan.FromMilliseconds(200),
+                Delay = TimeSpan.FromMilliseconds(1000),
                 ShouldHandle = new PredicateBuilder<MailpitMessagesResponse?>()
                     .HandleResult(r => r?.Messages.All(m => m.Subject != subject) ?? true)
             })
