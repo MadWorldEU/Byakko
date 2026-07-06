@@ -44,7 +44,6 @@ public sealed class CorrespondencesSteps(ScenarioContext scenarioContext)
                 $"{state.Url}/api/v1/messages", cancellationToken: ct),
             (Client: httpClient, Url: mailPitUrl));
 
-
         response.ShouldNotBeNull();
         response.Messages.ShouldContain(m => m.Subject == subject);
     }
