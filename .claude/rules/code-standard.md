@@ -117,6 +117,6 @@ All Blazor service methods return `ResultResponse<T>` (`Controller.Blazor.Shared
 
 `IErrorTranslator.Translate(FailureResponse)` / `Translate(code, defaultDescription)` — looks up `ErrorResources.resx` (+ `.nl-nl.resx`, `.ja-jp.resx`), falls back to `Description`. Add entries to all three `.resx` files when introducing a new error code.
 
-**BlazorErrors** (`Controller.Blazor.Shared/Configurations/BlazorErrors.cs`): `FileLoadFailed`, `FilesLoadFailed`, `FileDeleteFailed`, `FileUploadFailed`, `FileInvalidId`, `AuditLogsLoadFailed`, `TriggerFailed`, `FeedbackSendFailed`, `CorrespondenceTooManyRequests`.
+**BlazorErrors** (`Controller.Blazor.Shared/Configurations/BlazorErrors.cs`): `FileLoadFailed`, `FilesLoadFailed`, `FileDeleteFailed`, `FileUploadFailed`, `FileInvalidId`, `AuditLogsLoadFailed`, `TriggerFailed`, `FeedbackSendFailed`, `CorrespondenceTooManyRequests`, `AccountLoadFailed`, `AccountCreateFailed`, `AccountDeletionRequestFailed`, `AccountConfirmDeletionFailed`, `AccountCancelDeletionFailed`.
 
 **Error handling in `catch` blocks:** log exception via `console.error`, show localized message via `ErrorTranslator`, use `_errorMessage` variable name.
