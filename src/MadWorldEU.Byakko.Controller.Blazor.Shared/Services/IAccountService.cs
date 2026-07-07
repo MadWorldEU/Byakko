@@ -19,4 +19,7 @@ public interface IAccountService
 
     /// <summary>Submits a GDPR deletion request for the currently authenticated user's account.</summary>
     Task<ResultResponse<RequestDeletionMyAccountResponse>> RequestDeletionMyAccountAsync();
+
+    /// <summary>Cancels a pending deletion request for the given user as an administrator.</summary>
+    Task<ResultResponse<CancelDeletionRequestAccountResponse>> CancelDeletionRequestAsync(Guid userId);
 }

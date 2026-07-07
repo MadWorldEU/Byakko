@@ -15,4 +15,5 @@ public static class BlazorErrors
     public static readonly BlazorError AccountCreateFailed = BlazorError.Create("Blazor.Account.CreateFailed", "The account could not be created. Please try again.");
     public static readonly BlazorError AccountDeletionRequestFailed = BlazorError.Create("Blazor.Account.DeletionRequestFailed", "The deletion request could not be submitted. Please try again.");
     public static readonly BlazorError AccountConfirmDeletionFailed = BlazorError.Create("Blazor.Account.ConfirmDeletionFailed", "The deletion could not be confirmed. Please try again.");
+    public static readonly BlazorError AccountCancelDeletionFailed = BlazorError.Create("Blazor.Account.CancelDeletionFailed", "The deletion request could not be cancelled. Please try again.");
 }
