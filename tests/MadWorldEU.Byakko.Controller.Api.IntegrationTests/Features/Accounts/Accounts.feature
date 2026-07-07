@@ -9,6 +9,18 @@ Scenario: Retrieve accounts with deletion requested as an administrator
     Then the response status code should be 200
     And the response should contain at least one account with deletion requested
 
+Scenario: Cancel deletion request of an account as an administrator
+    Given I am authenticated as a user
+    And I have created my account
+    And I have requested deletion of my account
+    Given I am authenticated as an administrator
+    When I cancel the deletion request of the account
+    Then the response status code should be 200
+    And the cancel deletion request response should be returned
+    When I request my account
+    Then the response status code should be 200
+    And the account should be returned with no deletion requested
+
 Scenario: Confirm deletion of an account as an administrator
     Given I am authenticated as a user
     And I have created my account

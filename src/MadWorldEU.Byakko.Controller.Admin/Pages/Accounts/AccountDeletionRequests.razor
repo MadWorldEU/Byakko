@@ -50,7 +50,6 @@ else if (_response is not null)
                     {
                         <tr>
                             <td class="font-monospace small text-secondary">@account.UserId</td>
-                            <td class="small">@account.UpdatedAt.ToString("yyyy-MM-dd HH:mm")</td>
                             <td>
                                 @if (account.Status == "DeletionRequested")
                                 {
@@ -69,6 +68,7 @@ else if (_response is not null)
                                     <span class="badge text-bg-success">Active</span>
                                 }
                             </td>
+                            <td class="small">@account.UpdatedAt.ToString("yyyy-MM-dd HH:mm")</td>
                             <td class="text-end">
                                 @if (_confirmingUserId == account.UserId && account.Status == "DeletionRequested")
                                 {
@@ -84,8 +84,26 @@ else if (_response is not null)
                                         No
                                     </button>
                                 }
+                                else if (_cancelingUserId == account.UserId && account.Status == "DeletionRequested")
+                                {
+                                    <span class="small text-info me-2">Cancel deletion request?</span>
+                                    <button class="btn btn-sm btn-info me-1"
+                                            @onclick="() => CancelDeletionRequestAsync(account.UserId)"
+                                            disabled="@_canceling">
+                                        Yes
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary"
+                                            @onclick="CancelCancel"
+                                            disabled="@_canceling">
+                                        No
+                                    </button>
+                                }
                                 else if (account.Status == "DeletionRequested")
                                 {
+                                    <button class="btn btn-sm btn-outline-info me-1"
+                                            @onclick="() => RequestCancel(account.UserId)">
+                                        Cancel request
+                                    </button>
                                     <button class="btn btn-sm btn-outline-danger"
                                             @onclick="() => RequestConfirm(account.UserId)">
                                         Confirm deletion
@@ -124,6 +142,8 @@ else if (_response is not null)
     private int _currentPage = 1;
     private Guid? _confirmingUserId;
     private bool _confirming;
+    private Guid? _cancelingUserId;
+    private bool _canceling;
 
     protected override async Task OnInitializedAsync()
     {
@@ -162,11 +182,23 @@ else if (_response is not null)
     private void RequestConfirm(Guid userId)
     {
         _confirmingUserId = userId;
+        _cancelingUserId = null;
     }
 
     private void CancelConfirm()
     {
         _confirmingUserId = null;
+    }
+
+    private void RequestCancel(Guid userId)
+    {
+        _cancelingUserId = userId;
+        _confirmingUserId = null;
+    }
+
+    private void CancelCancel()
+    {
+        _cancelingUserId = null;
     }
 
     private async Task ConfirmDeletionAsync(Guid userId)
@@ -197,6 +229,37 @@ else if (_response is not null)
         finally
         {
             _confirming = false;
+        }
+    }
+
+    private async Task CancelDeletionRequestAsync(Guid userId)
+    {
+        _canceling = true;
+        _confirmErrorMessage = null;
+
+        try
+        {
+            var result = await AccountService.CancelDeletionRequestAsync(userId);
+            _cancelingUserId = null;
+
+            if (result.IsSuccess)
+            {
+                await LoadPageAsync();
+            }
+            else
+            {
+                _confirmErrorMessage = ErrorTranslator.Translate(result.Failure!);
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, ex.Message);
+            _confirmErrorMessage = ErrorTranslator.Translate(BlazorErrors.AccountCancelDeletionFailed.Code, BlazorErrors.AccountCancelDeletionFailed.Description);
+            _cancelingUserId = null;
+        }
+        finally
+        {
+            _canceling = false;
         }
     }
 

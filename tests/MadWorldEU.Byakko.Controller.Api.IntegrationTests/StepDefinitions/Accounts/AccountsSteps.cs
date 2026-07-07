@@ -55,6 +55,24 @@ public sealed class AccountsSteps(ScenarioContext scenarioContext)
         body.Accounts.ShouldContain(a => a.Status == "DeletionRequested");
     }
 
+    [When("I cancel the deletion request of the account")]
+    public async Task WhenICancelTheDeletionRequestOfTheAccount()
+    {
+        var client = scenarioContext.Get<HttpClient>();
+        var userId = scenarioContext.Get<string>(AccountUserIdKey);
+        var response = await client.PostAsJsonAsync($"/accounts/{userId}/cancel-deletion-request", new { });
+        scenarioContext.Set(response, ScenarioContextKeys.LastResponse);
+    }
+
+    [Then("the cancel deletion request response should be returned")]
+    public async Task ThenTheCancelDeletionRequestResponseShouldBeReturned()
+    {
+        var response = scenarioContext.Get<HttpResponseMessage>(ScenarioContextKeys.LastResponse);
+        var body = await response.Content.ReadFromJsonAsync<CancelDeletionRequestAccountResponse>();
+        body.ShouldNotBeNull();
+        body.UserId.ShouldNotBe(Guid.Empty);
+    }
+
     [When("I confirm the deletion of the account")]
     public async Task WhenIConfirmTheDeletionOfTheAccount()
     {

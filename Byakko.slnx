@@ -43,6 +43,7 @@
   </Folder>
   <Folder Name="/docs/user-guides/">
     <File Path="docs\user-guides\FileUpload.md" />
+    <File Path="docs\user-guides\Gpdr.md" />
     <File Path="docs\user-guides\toc.yml" />
   </Folder>
   <Folder Name="/github/">

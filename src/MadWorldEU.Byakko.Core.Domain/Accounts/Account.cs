@@ -46,6 +46,23 @@ public sealed class Account : Entity<Id>
         return Result.Success();
     }
 
+    /// <summary>
+    /// Cancels a pending deletion request, restoring the account to <see cref="AccountStatus.Active"/>.
+    /// Returns <see cref="AccountErrors.DeletionNotRequested"/> if the account is not in <see cref="AccountStatus.DeletionRequested"/> status.
+    /// </summary>
+    public Result CancelDeletionRequest(IClock clock)
+    {
+        if (Status != AccountStatus.DeletionRequested)
+        {
+            return Result.Failure(AccountErrors.DeletionNotRequested);
+        }
+        
+        UpdatedAt = clock.GetCurrentInstant();
+        Status = AccountStatus.Active;
+
+        return Result.Success();
+    }
+
     /// <summary>Marks the deletion as confirmed by an administrator. Returns a failure if no deletion request is pending.</summary>
     public Result ConfirmDeletion(IClock clock)
     {

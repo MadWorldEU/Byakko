@@ -10,8 +10,9 @@
         <TargetFramework>net10.0</TargetFramework>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <!-- CA1873: LoggerMessage delegates are not required for this project. Use standard ILogger extension methods instead. -->
+        <!-- NU1902: Package with known moderate-severity vulnerability. -->
         <!-- NU1903: Package with known high-severity vulnerability. -->
-        <NoWarn>$(NoWarn);CA1873;NU1903</NoWarn>
+        <NoWarn>$(NoWarn);CA1873;NU1902;NU1903</NoWarn>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>MadWorldEU.Byakko</RootNamespace>

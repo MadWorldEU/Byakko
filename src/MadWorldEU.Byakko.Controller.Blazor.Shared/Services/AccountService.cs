@@ -36,4 +36,10 @@ public sealed class AccountService(IHttpClientFactory httpClientFactory) : IAcco
     {
         return await _httpClient.PostResultResponseFromJsonAsync<EmptyRequest, RequestDeletionMyAccountResponse>("/accounts/me/deletion-request", EmptyRequest.Create());
     }
+
+    /// <inheritdoc />
+    public async Task<ResultResponse<CancelDeletionRequestAccountResponse>> CancelDeletionRequestAsync(Guid userId)
+    {
+        return await _httpClient.PostResultResponseFromJsonAsync<EmptyRequest, CancelDeletionRequestAccountResponse>($"/accounts/{userId}/cancel-deletion-request", EmptyRequest.Create());
+    }
 }
