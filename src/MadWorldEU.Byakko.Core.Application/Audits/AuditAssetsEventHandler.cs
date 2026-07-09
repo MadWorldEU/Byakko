@@ -4,11 +4,11 @@ using MadWorldEU.Byakko.Systems;
 namespace MadWorldEU.Byakko.Audits;
 
 /// <summary>Handles asset domain events by writing an audit log entry for each action.</summary>
-public sealed class AuditAssetsHandler(
+public sealed class AuditAssetsEventHandler(
     IClock clock,
     IGuidGenerator guidGenerator,
     IAuditRepository auditRepository,
-    ILogger<AuditAssetsHandler> logger)
+    ILogger<AuditAssetsEventHandler> logger)
     : IDomainEventHandler<AssetMetaDataCreatedEvent>,
         IDomainEventHandler<AssetContentDeletedEvent>,
         IDomainEventHandler<AssetContentUploadedEvent>
