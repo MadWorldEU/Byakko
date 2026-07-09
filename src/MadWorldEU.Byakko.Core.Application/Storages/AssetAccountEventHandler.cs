@@ -3,8 +3,10 @@ using MadWorldEU.Byakko.DomainDrivenDevelopment;
 
 namespace MadWorldEU.Byakko.Storages;
 
+/// <summary>Deletes all stored content and asset records for a user when their account has been permanently deleted.</summary>
 public sealed class AssetAccountEventHandler(IAssetRepository assetRepository, IContentStorage contentStorage, ILogger<AssetAccountEventHandler> logger) : IDomainEventHandler<AccountDeletedEvent>
 {
+    /// <summary>Handles the <see cref="AccountDeletedEvent"/> by removing the user's asset content from storage and their asset records from the database.</summary>
     public async Task Handle(AccountDeletedEvent domainEvent, CancellationToken cancellationToken = default)
     {
         var assetsResult = await assetRepository.GetAssetsAsync(domainEvent.UserId);

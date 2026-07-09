@@ -25,6 +25,8 @@ public static class ServiceCollectionExtensions
             configuration.GetSection(AssetSettings.Key).Bind(options));
 
         services.AddSingleton<IAssetMetrics, AssetMetrics>();
+
+        services.AddScoped<IDomainEventHandler<AccountDeletedEvent>, AssetAccountEventHandler>();
         
         services.AddScoped<CreateAssetMetadataUseCase>();
         services.AddScoped<DeleteAllExpiredContentOfAssetsUseCase>();
