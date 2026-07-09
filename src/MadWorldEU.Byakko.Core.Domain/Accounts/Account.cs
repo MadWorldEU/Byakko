@@ -76,4 +76,18 @@ public sealed class Account : Entity<Id>
 
         return Result.Success();
     }
+
+    /// <summary>Permanently deletes the account. Returns a failure if the deletion has not been confirmed by an administrator.</summary>
+    public Result Delete(IClock clock)
+    {
+        if (Status != AccountStatus.DeletionConfirmed)
+        {
+            return Result.Failure(AccountErrors.DeletionNotConfirmed);
+        }
+
+        UpdatedAt = clock.GetCurrentInstant();
+        Status = AccountStatus.Deleted;
+
+        return Result.Success();
+    }
 }

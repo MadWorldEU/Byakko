@@ -14,6 +14,9 @@ public interface IAccountRepository
     /// <summary>Returns a paged list of accounts that have a pending deletion request.</summary>
     Task<Result<PagedResult<Account>>> GetAccountsPendingDeletion(Page page);
     
+    /// <summary>Returns all accounts whose deletion has been confirmed and are ready to be permanently deleted.</summary>
+    Task<Result<List<Account>>> GetConfirmedDeletionAccounts();
+    
     /// <summary>Persists changes to an existing account.</summary>
     Task<Result> UpdateAsync(Account account);
 }
