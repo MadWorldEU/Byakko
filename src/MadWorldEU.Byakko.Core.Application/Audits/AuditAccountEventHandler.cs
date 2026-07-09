@@ -3,10 +3,12 @@ using MadWorldEU.Byakko.DomainDrivenDevelopment;
 
 namespace MadWorldEU.Byakko.Audits;
 
+/// <summary>Deletes all audit log entries for a user when their account has been permanently deleted.</summary>
 public sealed class AuditAccountEventHandler(IAuditRepository auditRepository) : IDomainEventHandler<AccountDeletedEvent>
 {
-    public async Task Handle(AccountDeletedEvent domainEvent, CancellationToken cancellationToken = default)
+    /// <summary>Handles the <see cref="AccountDeletedEvent"/> by removing the user's audit log entries.</summary>
+    public Task Handle(AccountDeletedEvent domainEvent, CancellationToken cancellationToken = default)
     {
-        await auditRepository.DeleteAsync(domainEvent.UserId);
+        return auditRepository.DeleteAsync(domainEvent.UserId);
     }
 }

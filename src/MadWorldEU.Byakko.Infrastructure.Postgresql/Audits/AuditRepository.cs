@@ -28,11 +28,11 @@ public sealed class AuditRepository(ByakkoContext context, ILogger<AuditReposito
     {
         try
         {
-            await context.AuditLogs
+            var auditLogsDeleted = await context.AuditLogs
                 .Where(al => al.OccurredBy == userId)
                 .ExecuteDeleteAsync();
             
-            logger.LogInformation("Audit logs for user '{UserId}' deleted successfully.", userId.Value);
+            logger.LogInformation("{Count} audit logs for user '{UserId}' deleted successfully.", auditLogsDeleted, userId.Value);
             
             return Result.Success();
         }

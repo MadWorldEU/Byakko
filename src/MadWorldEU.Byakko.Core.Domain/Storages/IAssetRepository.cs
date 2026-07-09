@@ -10,10 +10,16 @@ public interface IAssetRepository
 
     /// <summary>Saves changes to an existing asset.</summary>
     Task<Result> UpdateAsync(Asset asset);
+    
+    /// <summary>Permanently deletes all assets owned by the given user.</summary>
+    Task<Result> DeleteAsync(UserId id);
 
     /// <summary>Returns the asset with the given <paramref name="id"/>, or <c>Asset.NotFound</c> if absent.</summary>
     Task<Result<Asset>> FindAsync(Id id);
-
+    
+    /// <summary>Returns all assets owned by the given user.</summary>
+    Task<Result<List<Asset>>> GetAssetsAsync(UserId userId);
+    
     /// <summary>Returns a paged list of assets, optionally filtered by asset id or owner.</summary>
     Task<Result<PagedResult<Asset>>> GetAssetsAsync(Id id, UserId userId, Page page);
 
