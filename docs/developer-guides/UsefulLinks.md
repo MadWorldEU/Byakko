@@ -30,6 +30,7 @@ A curated list of websites and resources used in or relevant to this project.
 - [Keycloak](https://www.keycloak.org/) — Open source identity and access management (authentication, SSO, OAuth2/OIDC)
 - [Let's Encrypt](https://letsencrypt.org/) — Free, automated TLS certificate authority used for HTTPS in production
 - [k3s](https://k3s.io/) — Lightweight Kubernetes distribution designed for production on resource-constrained nodes
+- [k9s](https://k9scli.io/) — Terminal-based UI for interacting with and managing Kubernetes clusters
 - [Kubernetes](https://kubernetes.io/) — Container orchestration platform
 - [LocalStack](https://localstack.cloud/) — Local AWS cloud service emulator (S3, SQS, and more)
 - [LocalStack Explorer](https://github.com/fgiova/localstack-explorer) — Web UI for browsing LocalStack resources

@@ -50,6 +50,22 @@ public sealed class AccountRepository(ByakkoContext context, ILogger<AccountRepo
     }
 
     /// <inheritdoc />
+    public async Task<Result<List<Account>>> GetConfirmedDeletionAccounts()
+    {
+        try
+        {
+            return await context.Accounts
+                .Where(a => a.Status == AccountStatus.DeletionConfirmed)
+                .ToListAsync();
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Failed to query paged accounts.");
+            return AccountErrors.QueryFailed;
+        }
+    }
+
+    /// <inheritdoc />
     public async Task<Result> UpdateAsync(Account account)
     {
         try

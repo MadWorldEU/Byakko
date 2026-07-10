@@ -23,7 +23,26 @@ public sealed class AuditRepository(ByakkoContext context, ILogger<AuditReposito
             return Result.Failure(AuditErrors.SaveFailed);
         }
     }
-    
+
+    public async Task<Result> DeleteAsync(UserId userId)
+    {
+        try
+        {
+            var auditLogsDeleted = await context.AuditLogs
+                .Where(al => al.OccurredBy == userId)
+                .ExecuteDeleteAsync();
+            
+            logger.LogInformation("{Count} audit logs for user '{UserId}' deleted successfully.", auditLogsDeleted, userId.Value);
+            
+            return Result.Success();
+        }
+        catch (DbUpdateException exception)
+        {
+            logger.LogError(exception, "Failed to delete audit logs for user '{UserId}'.", userId.Value);
+            return Result.Failure(AuditErrors.DeleteFailed);
+        }
+    }
+
     /// <inheritdoc />
     public async Task<Result<IReadOnlyList<AuditLog>>> GetAsync(Id entityId)
     {

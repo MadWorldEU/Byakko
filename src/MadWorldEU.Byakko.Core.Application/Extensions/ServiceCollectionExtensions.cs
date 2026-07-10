@@ -25,6 +25,8 @@ public static class ServiceCollectionExtensions
             configuration.GetSection(AssetSettings.Key).Bind(options));
 
         services.AddSingleton<IAssetMetrics, AssetMetrics>();
+
+        services.AddScoped<IDomainEventHandler<AccountDeletedEvent>, AssetAccountEventHandler>();
         
         services.AddScoped<CreateAssetMetadataUseCase>();
         services.AddScoped<DeleteAllExpiredContentOfAssetsUseCase>();
@@ -44,6 +46,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<CancelDeletionRequestAccountUseCase>();
         services.AddScoped<ConfirmDeletionAccountUseCase>();
         services.AddScoped<CreateMyAccountUseCase>();
+        services.AddScoped<DeleteRequestedAccountsUseCase>();
         services.AddScoped<GetMyAccountUseCase>();
         services.AddScoped<GetAccountsPendingDeletionUseCase>();
         services.AddScoped<RequestDeletionMyAccountUseCase>();
@@ -51,9 +54,10 @@ public static class ServiceCollectionExtensions
     
     private static void AddAudits(this IServiceCollection services)
     {
-        services.AddScoped<IDomainEventHandler<AssetMetaDataCreatedEvent>, AuditAssetsHandler>();
-        services.AddScoped<IDomainEventHandler<AssetContentDeletedEvent>, AuditAssetsHandler>();
-        services.AddScoped<IDomainEventHandler<AssetContentUploadedEvent>, AuditAssetsHandler>();
+        services.AddScoped<IDomainEventHandler<AccountDeletedEvent>, AuditAccountEventHandler>();
+        services.AddScoped<IDomainEventHandler<AssetMetaDataCreatedEvent>, AuditAssetsEventHandler>();
+        services.AddScoped<IDomainEventHandler<AssetContentDeletedEvent>, AuditAssetsEventHandler>();
+        services.AddScoped<IDomainEventHandler<AssetContentUploadedEvent>, AuditAssetsEventHandler>();
 
         services.AddScoped<GetAuditLogsUseCase>();
     }

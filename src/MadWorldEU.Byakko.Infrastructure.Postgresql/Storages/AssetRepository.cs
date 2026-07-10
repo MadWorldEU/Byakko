@@ -45,6 +45,25 @@ public sealed class AssetRepository(ByakkoContext context, IClock clock, ILogger
     }
 
     /// <inheritdoc />
+    public async Task<Result> DeleteAsync(Asset asset)
+    {
+        try
+        {
+            context.Assets.Remove(asset);
+            await context.SaveChangesAsync();
+            
+            logger.LogInformation("Asset '{AssetId}' deleted successfully.", asset.Id.Value);
+            
+            return Result.Success();
+        }
+        catch (DbUpdateException exception)
+        {
+            logger.LogError(exception, "Failed to delete asset '{AssetId}'.", asset.Id.Value);
+            return Result.Failure(AssetErrors.DeleteFailed);
+        }
+    }
+
+    /// <inheritdoc />
     public async Task<Result<Asset>> FindAsync(Id id)
     {
         Asset? asset;
@@ -66,6 +85,22 @@ public sealed class AssetRepository(ByakkoContext context, IClock clock, ILogger
         }
 
         return asset;
+    }
+
+    /// <inheritdoc />
+    public async Task<Result<List<Asset>>> GetAssetsAsync(UserId userId)
+    {
+        try
+        {
+            return await context.Assets
+                .Where(a => userId.IsEmpty || a.CreatedBy == userId)
+                .ToListAsync();
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Failed to query assets.");
+            return AssetErrors.QueryFailed;
+        }
     }
 
     /// <inheritdoc />

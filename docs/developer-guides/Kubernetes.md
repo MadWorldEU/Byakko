@@ -390,6 +390,22 @@ sudo microk8s kubectl describe pod <pod-name> -n <namespace>
 sudo microk8s kubectl logs <pod-name> -n <namespace>
 ```
 
+### Updating microk8s
+
+Check the available channels before upgrading:
+
+```shell
+sudo snap info microk8s
+```
+
+Upgrade to the desired channel, then restart microk8s to apply the update:
+
+```shell
+sudo microk8s stop
+sudo snap refresh microk8s --classic --channel=1.36/stable
+sudo microk8s start
+```
+
 ### Reference
 
 - [MicroK8s install guide](https://microk8s.io/)

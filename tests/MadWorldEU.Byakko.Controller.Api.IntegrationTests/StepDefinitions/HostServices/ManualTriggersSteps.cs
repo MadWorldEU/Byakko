@@ -8,6 +8,7 @@ public sealed class ManualTriggersSteps(ScenarioContext scenarioContext)
 {
     private const string ContentAssetIdKey = "ContentAssetId";
     private const string MetadataAssetIdKey = "MetadataAssetId";
+    private const string AccountAssetIdKey = "AccountAssetId";
 
     [Given("I have set up an expired asset with uploaded content")]
     public async Task GivenIHaveSetUpAnExpiredAssetWithUploadedContent()
@@ -82,6 +83,38 @@ public sealed class ManualTriggersSteps(ScenarioContext scenarioContext)
         var client = scenarioContext.Get<HttpClient>();
         var response = await client.PostAsync("/host-services/manual-triggers/clean-up/assets-metadata", null);
         scenarioContext.Set(response, ScenarioContextKeys.LastResponse);
+    }
+
+    [Given("I have created an asset for the account")]
+    public async Task GivenIHaveCreatedAnAssetForTheAccount()
+    {
+        var client = scenarioContext.Get<HttpClient>();
+        var response = await client.PostAsJsonAsync("/assets", new CreateAssetRequest
+        {
+            Name = "account-file.txt",
+            ContentType = "text/plain",
+            ExpiresInDays = 30
+        });
+        response.EnsureSuccessStatusCode();
+        var result = await response.Content.ReadFromJsonAsync<CreateAssetResponse>();
+        scenarioContext.Set(result!.Id, AccountAssetIdKey);
+    }
+
+    [When("I trigger the account deletion cleanup")]
+    public async Task WhenITriggerTheAccountDeletionCleanup()
+    {
+        var client = scenarioContext.Get<HttpClient>();
+        var response = await client.PostAsync("/host-services/manual-triggers/clean-up/accounts", null);
+        scenarioContext.Set(response, ScenarioContextKeys.LastResponse);
+    }
+
+    [Then("the asset should be permanently deleted")]
+    public async Task ThenTheAssetShouldBePermanentlyDeleted()
+    {
+        var assetId = scenarioContext.Get<Guid>(AccountAssetIdKey);
+        var client = scenarioContext.Get<HttpClient>();
+        var response = await client.GetAsync($"/assets/{assetId}");
+        response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
 
     [Then("the expired asset content should be marked as deleted")]

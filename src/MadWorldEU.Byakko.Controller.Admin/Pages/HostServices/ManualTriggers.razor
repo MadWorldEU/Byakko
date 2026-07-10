@@ -60,6 +60,29 @@
             </div>
         </div>
     </div>
+    <div class="col-md-6">
+        <div class="card border-0 bg-body-tertiary h-100">
+            <div class="card-body p-4 d-flex flex-column gap-3">
+                <div>
+                    <h5 class="fw-semibold mb-1">Clean Up Deleted Accounts</h5>
+                    <p class="text-secondary small mb-0">Permanently removes assets and account records for all accounts whose deletion has been confirmed.</p>
+                </div>
+                @if (_accountsResult is not null)
+                {
+                    <div class="alert @(_accountsSuccess ? "alert-success" : "alert-danger") mb-0 py-2 small" role="alert">
+                        @_accountsResult
+                    </div>
+                }
+                <button class="btn btn-warning fw-semibold mt-auto" @onclick="TriggerAccountsCleanupAsync" disabled="@_accountsRunning">
+                    @if (_accountsRunning)
+                    {
+                        <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                    }
+                    Run Accounts Cleanup
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 
 @code {
@@ -70,6 +93,10 @@
     private bool _metadataRunning;
     private string? _metadataResult;
     private bool _metadataSuccess;
+
+    private bool _accountsRunning;
+    private string? _accountsResult;
+    private bool _accountsSuccess;
 
     private async Task TriggerContentCleanupAsync()
     {
@@ -120,6 +147,32 @@
         finally
         {
             _metadataRunning = false;
+        }
+    }
+
+    private async Task TriggerAccountsCleanupAsync()
+    {
+        _accountsRunning = true;
+        _accountsResult = null;
+
+        try
+        {
+            var client = HttpClientFactory.CreateClient(HttpClients.ApiAuthorized);
+            var response = await client.PostAsync("/host-services/manual-triggers/clean-up/accounts", null);
+            _accountsSuccess = response.IsSuccessStatusCode;
+            _accountsResult = _accountsSuccess
+                ? "Accounts cleanup completed successfully."
+                : $"Cleanup failed ({(int)response.StatusCode}).";
+        }
+        catch (Exception ex)
+        {
+            _accountsSuccess = false;
+            Logger.LogError(ex, ex.Message);
+            _accountsResult = ErrorTranslator.Translate(BlazorErrors.TriggerFailed.Code, BlazorErrors.TriggerFailed.Description);
+        }
+        finally
+        {
+            _accountsRunning = false;
         }
     }
 }
