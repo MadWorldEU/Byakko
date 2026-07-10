@@ -17,13 +17,18 @@ public sealed class AssetAccountEventHandler(IAssetRepository assetRepository, I
             var contentResult = await contentStorage.DeleteAsync(asset.GetPath());
             if (contentResult.IsFailure)
             {
-                logger.LogWarning("Failed to delete asset {AssetId} for user {UserId}", asset.Id, domainEvent.UserId);
+                logger.LogWarning("Failed to delete content asset {AssetId} for user {UserId}", asset.Id, domainEvent.UserId);
+                continue;
+            }
+            
+            var deleteResult = await assetRepository.DeleteAsync(asset);
+            if (deleteResult.IsFailure)
+            {
+                logger.LogWarning("Failed to delete metadata asset {AssetId} for user {UserId}", asset.Id, domainEvent.UserId);
                 continue;
             }
             
             logger.LogInformation("Deleted asset {AssetId} for user {UserId}", asset.Id, domainEvent.UserId);
         }
-        
-        await assetRepository.DeleteAsync(domainEvent.UserId);
     }
 }

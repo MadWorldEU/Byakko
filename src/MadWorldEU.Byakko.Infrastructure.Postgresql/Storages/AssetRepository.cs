@@ -45,21 +45,20 @@ public sealed class AssetRepository(ByakkoContext context, IClock clock, ILogger
     }
 
     /// <inheritdoc />
-    public async Task<Result> DeleteAsync(UserId userId)
+    public async Task<Result> DeleteAsync(Asset asset)
     {
         try
         {
-            var assetsDeleted = await context.Assets
-                .Where(a => a.CreatedBy == userId)
-                .ExecuteDeleteAsync();
+            context.Assets.Remove(asset);
+            await context.SaveChangesAsync();
             
-            logger.LogInformation("{Count} assets for user '{UserId}' deleted successfully.", assetsDeleted, userId.Value);
+            logger.LogInformation("Asset '{AssetId}' deleted successfully.", asset.Id.Value);
             
             return Result.Success();
         }
         catch (DbUpdateException exception)
         {
-            logger.LogError(exception, "Failed to delete assets for user '{UserId}'.", userId.Value);
+            logger.LogError(exception, "Failed to delete asset '{AssetId}'.", asset.Id.Value);
             return Result.Failure(AssetErrors.DeleteFailed);
         }
     }

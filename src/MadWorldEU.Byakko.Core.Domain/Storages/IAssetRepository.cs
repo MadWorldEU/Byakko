@@ -11,8 +11,8 @@ public interface IAssetRepository
     /// <summary>Saves changes to an existing asset.</summary>
     Task<Result> UpdateAsync(Asset asset);
     
-    /// <summary>Permanently deletes all assets owned by the given user.</summary>
-    Task<Result> DeleteAsync(UserId id);
+    /// <summary>Permanently deletes the given asset record from the store.</summary>
+    Task<Result> DeleteAsync(Asset asset);
 
     /// <summary>Returns the asset with the given <paramref name="id"/>, or <c>Asset.NotFound</c> if absent.</summary>
     Task<Result<Asset>> FindAsync(Id id);
