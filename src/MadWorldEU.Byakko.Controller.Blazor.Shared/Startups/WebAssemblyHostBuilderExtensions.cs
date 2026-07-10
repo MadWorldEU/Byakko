@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using MadWorldEU.Byakko.Configurations;
+using MadWorldEU.Byakko.Handlers;
 using MadWorldEU.Byakko.Localization;
 using MadWorldEU.Byakko.Services;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
@@ -20,16 +21,18 @@ public static class WebAssemblyHostBuilderExtensions
             client.BaseAddress = new Uri(apiBaseUrl);
         });
 
+        builder.Services.AddScoped<UnauthorizedHandler>();
         builder.Services.AddHttpClient(HttpClients.ApiAuthorized, client =>
         {
             client.BaseAddress = new Uri(apiBaseUrl);
             client.Timeout = Timeout.InfiniteTimeSpan;
-        }).AddHttpMessageHandler(sp =>
-        {
-            var handler = sp.GetRequiredService<AuthorizationMessageHandler>()
-                .ConfigureHandler(authorizedUrls: [apiBaseUrl]);
-            return handler;
-        });
+        }).AddHttpMessageHandler<UnauthorizedHandler>()
+          .AddHttpMessageHandler(sp =>
+          {
+              var handler = sp.GetRequiredService<AuthorizationMessageHandler>()
+                  .ConfigureHandler(authorizedUrls: [apiBaseUrl]);
+              return handler;
+          });
 
         return builder;
     }

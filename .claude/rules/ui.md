@@ -40,6 +40,19 @@ Blazor WebAssembly, Bootstrap 5 dark theme. Sticky top navbar. Logo: `cloud-down
 
 **Components:** `UploadLimitsAlert.razor` — max file size + files remaining alert; used in `Upload.razor` and `MyAssets.razor`.
 
+## Shared Pages (Blazor.Shared)
+
+Pages in `Controller.Blazor.Shared/Pages/` are available in both Portal and Admin via the RCL.
+
+| Page | Route | Notes |
+|---|---|---|
+| `Pages/Authentication.razor` | `/authentication/{action}` | OIDC flow handler via `<RemoteAuthenticatorView>` |
+| `Pages/AccessDenied.razor` | `/access-denied` | Shown when user lacks the required role; `[AllowAnonymous]` |
+| `Pages/SessionExpired.razor` | `/session-expired` | Shown by `UnauthorizedHandler` on 401 / `invalid_grant`; two buttons: "Log in again" (`NavigateToLogout` → login → `/`) and "Log out" (`NavigateToLogout` → `/`); `[AllowAnonymous]` |
+| `Pages/NotFound.razor` | — | 404 fallback |
+
+All shared pages use `IStringLocalizer<SharedResources>` with keys in `Localization/SharedResources.resx` (+ `.nl-NL.resx`, `.ja-JP.resx`).
+
 ## Status UI
 
 Blazor Server (static SSR), Bootstrap 5 dark theme. Public, no auth. Logo: `activity` SVG, fill `#0d6efd`. Single page (`/`) — Bootstrap card grid for 6 services via `GetHealthServicesUseCase` (parallel, 2s timeout). API/Portal/Admin/Authentication: HTTP GET (200=Healthy, `"Degraded"`=Degraded). Database: `CanConnectAsync()`. Object Storage: `ListBucketsAsync()`. Probe at `/health`.
