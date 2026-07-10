@@ -10,7 +10,7 @@ Blazor WebAssembly, Bootstrap 5 dark theme. 240px sticky sidebar. Auth via `<Aut
 | `Pages/Storages/AssetsOverview.razor` | `/storages/assets` | Paged (20/page); info tooltip (size + last updated); Logs button; Delete with inline confirm |
 | `Pages/Audits/AuditLogs.razor` | `/audits/{EntityId:guid}` | All audit entries for one entity; back link to `/storages/assets` |
 | `Pages/Accounts/AccountDeletionRequests.razor` | `/accounts/deletion-requests` | Paged list of `DeletionRequested`/`DeletionConfirmed` accounts with User ID, status badge, updated timestamp; inline "Cancel request" and "Confirm deletion" actions each with Yes/No prompt; `Administrator` policy |
-| `Pages/HostServices/ManualTriggers.razor` | — | Manual cleanup triggers |
+| `Pages/HostServices/ManualTriggers.razor` | `/host-services/manual-triggers` | Three cards: expired asset content cleanup, expired asset metadata cleanup, confirmed-deletion account cleanup; each has a spinner button and inline success/error alert |
 
 Shared services: `IAccountService` (`GetAccountsPendingDeletionAsync`, `CancelDeletionRequestAsync`, `ConfirmDeletionAsync`, `CreateMyAccountAsync`, `GetMyAccountAsync`, `RequestDeletionMyAccountAsync`), `IAssetService` (`GetAssetsMetadataAsync`, `DeleteAssetContentAsync`), `IStorageService` (`GetStorageStatisticsAsync`), `IAuditService` (`GetAuditLogsAsync`). Global usings in `_Imports.razor`: `MadWorldEU.Byakko.Services`, `.Storages`, `.Audits`, `.Audits.Summaries`, `.Formatters`. Admin `_Imports.razor` also adds `MadWorldEU.Byakko.Accounts`.
 

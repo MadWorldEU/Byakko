@@ -23,13 +23,16 @@ Content encrypted AES-256; salt (16 bytes) + IV prepended to ciphertext. Passwor
 - `ValidityPeriod.Create(days, maxDays)` → `ValidityPeriodErrors.ExceedsMaximum` if `days >= maxDays`.
 - `Size.Create(sizeInBytes, maxSizeInBytes)` → `AssetErrors.FileTooLarge` if exceeds max.
 
-**Manual cleanup triggers** (`ManualTriggersEndpoints.cs`, requires auth):
+**Manual cleanup triggers** (`ManualTriggersEndpoints.cs`, `Administrator` policy):
 - `POST /host-services/manual-triggers/clean-up/assets-content` → `DeleteAllExpiredContentOfAssetsUseCase`
 - `POST /host-services/manual-triggers/clean-up/assets-metadata` → also bulk-deletes matching audit logs
+- `POST /host-services/manual-triggers/clean-up/accounts` → `DeleteRequestedAccountsUseCase`
 
 **Audit log domain** (`Core.Domain/Audits/`): `AuditLog` entity with `Id`, `EntityId`, `EntityType`, `Action`, `IpAddress`, `OccurredAt` (`Instant`), `OccurredBy`. `IpAddress.Create(null/empty)` → `AuditErrors.InvalidIpAddress`. Audit log deletion for expired assets is handled in `AssetRepository.DeleteExpiredAssets`, not via `IAuditRepository`.
 
 **AuditAssetsHandler** handles `AssetMetaDataCreatedEvent` and `AssetContentUploadedEvent`; audit creation failure is non-fatal (logs warning, does not throw).
+
+**AuditErrors:** `InvalidIpAddress`, `SaveFailed`, `QueryFailed`, `DeleteFailed`. `IAuditRepository.DeleteAsync(UserId)` removes all audit log entries for a user.
 
 ## Accounts
 
@@ -44,13 +47,21 @@ Endpoints in `Controller.Api/Endpoints/Accounts/AccountsEndpoints.cs`.
 | `GET` | `/accounts/me` | `GetMyAccountUseCase` | `User` | 404 not found; returns `UserId` + `Status` (string) |
 | `POST` | `/accounts/me/deletion-request` | `RequestDeletionMyAccountUseCase` | `User` | 404 not found, 409 `NotActive` |
 
-**Account domain** (`Core.Domain/Accounts/`): `Account` entity with `UserId`, `Status` (`AccountStatus`), `CreatedAt`, `UpdatedAt`. `Create(clock, guidGenerator, userId)` → stamps both timestamps. `RequestDeletion(clock)` → `AccountErrors.NotActive` if `Status != Active`; sets `Status = DeletionRequested`. `CancelDeletionRequest(clock)` → `AccountErrors.DeletionNotRequested` if `Status != DeletionRequested`; sets `Status = Active`. `ConfirmDeletion(clock)` → `AccountErrors.DeletionNotRequested` if `Status != DeletionRequested`; sets `Status = DeletionConfirmed`.
+**Account domain** (`Core.Domain/Accounts/`): `Account` entity with `UserId`, `Status` (`AccountStatus`), `CreatedAt`, `UpdatedAt`. `Create(clock, guidGenerator, userId)` → stamps both timestamps. `RequestDeletion(clock)` → `AccountErrors.NotActive` if `Status != Active`; sets `Status = DeletionRequested`. `CancelDeletionRequest(clock)` → `AccountErrors.DeletionNotRequested` if `Status != DeletionRequested`; sets `Status = Active`. `ConfirmDeletion(clock)` → `AccountErrors.DeletionNotRequested` if `Status != DeletionRequested`; sets `Status = DeletionConfirmed`. `Delete(clock)` → `AccountErrors.DeletionNotConfirmed` if `Status != DeletionConfirmed`; sets `Status = Deleted`; dispatches `AccountDeletedEvent`.
 
 **AccountStatus** enum (`Core.Domain/Accounts/AccountStatus.cs`): `Active` → `DeletionRequested` → `DeletionConfirmed` → `Deleted`. `Deleted` is terminal. Stored as `string` via EF Core `HasConversion<string>()`. Exposed as `string Status` in response DTOs.
 
-**AccountErrors:** `NotFound`, `QueryFailed`, `SaveFailed`, `UpdateFailed`, `NotActive`, `DeletionAlreadyRequested`, `DeletionNotRequested`.
+**AccountErrors:** `NotFound`, `QueryFailed`, `SaveFailed`, `UpdateFailed`, `NotActive`, `DeletionAlreadyRequested`, `DeletionNotRequested`, `DeletionNotConfirmed`.
 
-**AccountRepository** (`Infrastructure.Postgresql/Accounts/`): `FindAsync(UserId)`, `AddAsync(Account)`, `UpdateAsync(Account)`, `GetAccountsPendingDeletion(Page)`. `UserId` has a unique index via `AccountEntityTypeConfiguration`.
+**AccountRepository** (`Infrastructure.Postgresql/Accounts/`): `FindAsync(UserId)`, `AddAsync(Account)`, `UpdateAsync(Account)`, `UpdateAsync(Account)`, `DeleteAsync(UserId)` (hard-delete), `GetAccountsPendingDeletion(Page)`, `GetConfirmedDeletionAccounts()`. `UserId` has a unique index via `AccountEntityTypeConfiguration`.
+
+**AccountDeletedEvent** domain event dispatched by `DeleteRequestedAccountsUseCase` after each account is marked `Deleted`. Two handlers:
+- `AuditAccountEventHandler` — calls `IAuditRepository.DeleteAsync(UserId)` to remove all audit log entries for the user.
+- `AssetAccountEventHandler` — fetches all assets via `IAssetRepository.GetAssetsAsync(UserId)`, deletes each file from object storage via `IContentStorage.DeleteAsync`, then hard-deletes all records via `IAssetRepository.DeleteAsync(UserId)`. Content deletion failures are logged as warnings and do not abort the remaining assets.
+
+**DeleteRequestedAccountsUseCase** (`Core.Application/Accounts/`): fetches all `DeletionConfirmed` accounts, calls `Delete(clock)` on each, persists via `UpdateAsync`, and dispatches `AccountDeletedEvent`. Per-account failures are logged as warnings and do not abort remaining accounts.
+
+**IAssetRepository** additions: `GetAssetsAsync(UserId)` returns all assets for a user; `DeleteAsync(UserId)` hard-deletes all asset records for a user; `DeleteAsync(Asset)` hard-deletes a single asset record.
 
 ## Correspondences
 
