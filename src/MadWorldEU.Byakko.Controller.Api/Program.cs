@@ -32,6 +32,7 @@ builder.Services.Configure<CleanupSettings>(options =>
     builder.Configuration.GetSection(CleanupSettings.Key).Bind(options));
 builder.Services.AddHostedService<DeleteExpiredAssetsService>();
 builder.Services.AddHostedService<DeleteExpiredAssetMetaDataService>();
+builder.Services.AddHostedService<DeleteRequestedAccountsService>();
 
 builder.AddDefaultAuthentication();
 builder.Services.AddApiRateLimiter(builder.Configuration);
