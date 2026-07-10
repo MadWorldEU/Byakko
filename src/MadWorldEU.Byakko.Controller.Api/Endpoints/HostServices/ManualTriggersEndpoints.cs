@@ -27,5 +27,14 @@ internal static class ManualTriggersEndpoints
                 onFailure: error => error.ToBadRequest()
             );
         });
+
+        manualTriggersEndpoint.MapPost("/clean-up/accounts", async (DeleteRequestedAccountsUseCase useCase) =>
+        {
+            var result = await useCase.ExecuteAsync();
+            return result.Match(
+                onSuccess: () => Results.Ok(),
+                onFailure: error => error.ToBadRequest()
+            );
+        });
     }
 }
