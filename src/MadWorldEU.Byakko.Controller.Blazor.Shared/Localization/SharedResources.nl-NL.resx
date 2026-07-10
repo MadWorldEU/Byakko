@@ -45,6 +45,21 @@
     <data name="TestPage Login Required" xml:space="preserve">
         <value>Inloggen vereist</value>
     </data>
+    <data name="SessionExpired Page Title" xml:space="preserve">
+        <value>Sessie Verlopen</value>
+    </data>
+    <data name="SessionExpired Heading" xml:space="preserve">
+        <value>Sessie Verlopen</value>
+    </data>
+    <data name="SessionExpired Message" xml:space="preserve">
+        <value>Je sessie is verlopen of niet meer geldig. Log opnieuw in om verder te gaan.</value>
+    </data>
+    <data name="SessionExpired Action" xml:space="preserve">
+        <value>Opnieuw inloggen</value>
+    </data>
+    <data name="SessionExpired Logout" xml:space="preserve">
+        <value>Uitloggen</value>
+    </data>
     <data name="AccessDenied Page Title" xml:space="preserve">
         <value>Toegang Geweigerd</value>
     </data>

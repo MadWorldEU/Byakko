@@ -45,6 +45,21 @@
     <data name="TestPage Login Required" xml:space="preserve">
         <value>ログインが必要です</value>
     </data>
+    <data name="SessionExpired Page Title" xml:space="preserve">
+        <value>セッションの期限切れ</value>
+    </data>
+    <data name="SessionExpired Heading" xml:space="preserve">
+        <value>セッションの期限切れ</value>
+    </data>
+    <data name="SessionExpired Message" xml:space="preserve">
+        <value>セッションが期限切れになったか、無効になりました。続けるには再度ログインしてください。</value>
+    </data>
+    <data name="SessionExpired Action" xml:space="preserve">
+        <value>再度ログイン</value>
+    </data>
+    <data name="SessionExpired Logout" xml:space="preserve">
+        <value>ログアウト</value>
+    </data>
     <data name="AccessDenied Page Title" xml:space="preserve">
         <value>アクセス拒否</value>
     </data>
