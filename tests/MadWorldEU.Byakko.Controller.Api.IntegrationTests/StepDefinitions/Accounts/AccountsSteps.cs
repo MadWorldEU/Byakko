@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace MadWorldEU.Byakko.StepDefinitions.Accounts;
 
 [Binding]
@@ -34,6 +36,15 @@ public sealed class AccountsSteps(ScenarioContext scenarioContext)
     {
         var client = scenarioContext.Get<HttpClient>();
         var response = await client.PostAsJsonAsync("/accounts/me/deletion-request", new { });
+        response.EnsureSuccessStatusCode();
+    }
+
+    [Given("I have confirmed the deletion of the account")]
+    public async Task GivenIHaveConfirmedTheDeletionOfTheAccount()
+    {
+        var client = scenarioContext.Get<HttpClient>();
+        var userId = scenarioContext.Get<string>(AccountUserIdKey);
+        var response = await client.PostAsJsonAsync($"/accounts/{userId}/confirm-deletion", new { });
         response.EnsureSuccessStatusCode();
     }
 
@@ -91,6 +102,19 @@ public sealed class AccountsSteps(ScenarioContext scenarioContext)
         var body = await response.Content.ReadFromJsonAsync<GetMyAccountResponse>();
         body.ShouldNotBeNull();
         body.Status.ShouldBe("DeletionConfirmed");
+    }
+
+    [Then("the account should have status Deleted")]
+    public async Task ThenTheAccountShouldHaveStatusDeleted()
+    {
+        var userId = scenarioContext.Get<string>(AccountUserIdKey);
+        var services = scenarioContext.Get<IServiceProvider>(ScenarioContextKeys.ServiceProvider);
+        using var scope = services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<ByakkoContext>();
+        var userIdValueObject = UserId.Create(userId).Value;
+        var account = await context.Accounts.FirstOrDefaultAsync(a => a.UserId == userIdValueObject);
+        account.ShouldNotBeNull();
+        account.Status.ShouldBe(AccountStatus.Deleted);
     }
 
     [Then("the confirm deletion response should be returned")]
