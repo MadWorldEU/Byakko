@@ -1,3 +1,4 @@
+using Keycloak.AuthServices.Common;
 using Keycloak.AuthServices.Sdk;
 using MadWorldEU.Byakko.AuthenticationServers;
 using Microsoft.Extensions.Configuration;
@@ -13,7 +14,13 @@ public static class ServiceCollectionExtensions
         {
             AuthServerUrl = "http://localhost:8080/",
             Realm = "master",
-            Resource = "admin-api",
+            Resource = "MadWorld-realm",
+            SslRequired = "internal",
+            VerifyTokenAudience = true,
+            Credentials = new KeycloakClientInstallationCredentials()
+            {
+                Secret = ""
+            },
         });
         
         services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
