@@ -8,7 +8,7 @@ namespace MadWorldEU.Byakko.Extensions;
 public static class ServiceCollectionExtensions
 {
     /// <summary>Registers <see cref="ICorrespondenceService"/> with an SMTP-backed <see cref="MailService"/>.</summary>
-    public static IServiceCollection AddMail(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddMail(this IServiceCollection services)
     {
         services.AddSingleton<IOptions<MailOptions>>(sp =>
             Options.Create(MailFactory.Create(sp.GetRequiredService<IConfiguration>())));
