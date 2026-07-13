@@ -42,16 +42,19 @@ internal static class AspireResourceFactory
         return localstack;
     }
 
-    internal static IResourceBuilder<KeycloakResource> BuildKeyCloak(this IDistributedApplicationBuilder builder)
+    internal static (IResourceBuilder<KeycloakResource> Keycloak, IResourceBuilder<ParameterResource> AdminClientSecret) BuildKeyCloak(this IDistributedApplicationBuilder builder)
     {
         var keyCloakUsername = builder.AddParameter("keycloak-username", secret: true);
         var keyCloakPassword = builder.AddParameter("keycloak-password", secret: true);
+        var adminClientSecret = builder.AddParameter("keycloak-admin-client-secret", secret: true);
 
-        return builder.AddKeycloak("keycloak", KeyCloakPort, keyCloakUsername, keyCloakPassword)
+        var keycloak = builder.AddKeycloak("keycloak", KeyCloakPort, keyCloakUsername, keyCloakPassword)
             .WithHttpsEndpoint(KeyCloakSecurePort)
             .WithRealmImport("./Configurations/KeyCloak/MadWorld-realm.json")
             .WithBindMount("./Configurations/KeyCloak/themes", "/opt/keycloak/themes")
             .WithDataVolume();
+
+        return (keycloak, adminClientSecret);
     }
 
     internal static IResourceBuilder<MailPitContainerResource> BuildMailPit(this IDistributedApplicationBuilder builder)
