@@ -1,18 +1,23 @@
 using Keycloak.AuthServices.Sdk.Admin;
+using MadWorldEU.Byakko.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace MadWorldEU.Byakko.AuthenticationServers;
 
 /// <summary>Keycloak implementation of <see cref="IAuthenticationRepository"/>.</summary>
-public sealed class AuthenticationRepository(
-    IKeycloakRealmClient keycloakRealmClient,
+internal sealed class AuthenticationRepository(
+    IKeycloakClient keycloakClient,
+    IOptions<KeyCloakSettings> settings,
     ILogger<AuthenticationRepository> logger) : IAuthenticationRepository
 {
+    private readonly string _managedRealm = settings.Value.ManagedRealm;
+
     /// <summary>Permanently deletes the user from the Keycloak realm.</summary>
     public async Task<Result> DeleteUser(UserId userId)
     {
         try
         {
-            var realm = await keycloakRealmClient.GetRealmAsync("");
+            var realm = await keycloakClient.GetRealmAsync(_managedRealm);
 
             if (realm.Users is null)
             {
@@ -28,7 +33,7 @@ public sealed class AuthenticationRepository(
                 return Result.Failure(AuthenticationErrors.UserNotFound);
             }
 
-            realm.Users.Remove(user);
+            await keycloakClient.DeleteUserAsync(_managedRealm, userId.Value.ToString());
             logger.LogInformation("User '{UserId}' deleted from authentication server.", userId.Value);
 
             return Result.Success();

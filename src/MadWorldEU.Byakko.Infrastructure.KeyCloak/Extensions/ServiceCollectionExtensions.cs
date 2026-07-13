@@ -1,28 +1,36 @@
 using Keycloak.AuthServices.Common;
 using Keycloak.AuthServices.Sdk;
 using MadWorldEU.Byakko.AuthenticationServers;
+using MadWorldEU.Byakko.Configurations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MadWorldEU.Byakko.Extensions;
 
+/// <summary>Registration extensions for the Keycloak infrastructure.</summary>
 public static class ServiceCollectionExtensions
 {
+    /// <summary>Registers the Keycloak admin HTTP client and authentication repository.</summary>
     public static IServiceCollection AddKeyCloak(this IServiceCollection services, IConfiguration configuration)
     {
+        var settings = configuration.GetSection(KeyCloakSettings.Key).Get<KeyCloakSettings>()
+            ?? throw new InvalidOperationException("KeyCloak configuration section is missing.");
+
+        services.Configure<KeyCloakSettings>(configuration.GetSection(KeyCloakSettings.Key));
+
         services.AddKeycloakAdminHttpClient(new KeycloakAdminClientOptions
         {
-            AuthServerUrl = "http://localhost:8080/",
+            AuthServerUrl = settings.AuthServerUrl,
             Realm = "master",
-            Resource = "MadWorld-realm",
+            Resource = settings.Resource,
             SslRequired = "internal",
             VerifyTokenAudience = true,
-            Credentials = new KeycloakClientInstallationCredentials()
+            Credentials = new KeycloakClientInstallationCredentials
             {
-                Secret = ""
+                Secret = settings.AdminClientSecret
             },
         });
-        
+
         services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
 
         return services;
