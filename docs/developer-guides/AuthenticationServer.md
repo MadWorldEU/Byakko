@@ -193,6 +193,44 @@ Keycloak uses an SMTP server to send verification, password reset, and other sys
    - **Password** — The SMTP account password used to authenticate
 4. Click **Save**, then use the **Test connection** button to verify Keycloak can reach the mail server.
 
+### Add Admin API Client (User Management)
+
+The API uses a Keycloak service account to delete users from the `MadWorld` realm when an account is permanently removed. The client lives in the `master` realm so it can be granted cross-realm permissions.
+
+#### Create the client
+
+1. Switch to the **master** realm in the Keycloak Admin UI.
+2. Go to **Clients** and click **Create client**.
+3. Set **Client ID** to `madworld-admin-api` and click **Next**.
+4. Enable **Client authentication** and **Service accounts roles**, then click **Next**.
+5. Leave the redirect URIs empty and click **Save**.
+6. Open the **Credentials** tab and copy the **Client secret**.
+
+#### Grant user management permissions for the MadWorld realm
+
+1. Open the **Service accounts roles** tab of `madworld-admin-api`.
+2. Click **Assign role** and change the filter to **Filter by clients**.
+3. Search for `MadWorld-realm` and assign the **`manage-users`** and **`query-users`** roles.
+4. Click **Assign**.
+
+#### Configure the secret
+
+**Developer environment (Aspire):**
+
+Add the secret to the Aspire user secrets file (`appsettings.json` in the Aspire project, or via the Aspire dashboard parameter prompt):
+
+```json
+{
+  "Parameters:keycloak-admin-client-secret": "<client secret from step 6>"
+}
+```
+
+**Production environment (Helm / Kubernetes):**
+
+Store the secret in the Kubernetes secret and reference it in `values.production.yaml`. Set `KEYCLOAK_ADMIN_CLIENT_SECRET` in the deployment pipeline so it is injected as the `KeyCloak__AdminClientSecret` environment variable on the API pod.
+
+> 💡 The `KeyCloak:AuthServerUrl` is overridden automatically by Aspire at runtime using the Keycloak HTTP endpoint. In production it should point to the internal Keycloak service URL (e.g. `http://keycloak:8080/`).
+
 ### Test Login with Keycloak Using the Official Test App
 You can verify that your Keycloak server is correctly issuing tokens (including the `aud` claim) by using Keycloak's official test app:
 
