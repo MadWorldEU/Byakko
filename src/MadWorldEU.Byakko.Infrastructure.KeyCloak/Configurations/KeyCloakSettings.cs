@@ -16,4 +16,6 @@ internal sealed class KeyCloakSettings
 
     /// <summary>Name of the Keycloak realm whose users are managed (e.g. MadWorld).</summary>
     public string ManagedRealm { get; init; } = string.Empty;
+    
+    public bool SslRequired => AuthServerUrl.StartsWith("https");
 }

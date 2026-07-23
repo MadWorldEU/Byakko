@@ -12,6 +12,7 @@ internal sealed class AuthenticationRepository(
 {
     private readonly string _managedRealm = settings.Value.ManagedRealm;
 
+    /// <summary>Checks whether the user exists in the authentication server.</summary>
     public async Task<Result> FindUser(UserId userId)
     {
         try

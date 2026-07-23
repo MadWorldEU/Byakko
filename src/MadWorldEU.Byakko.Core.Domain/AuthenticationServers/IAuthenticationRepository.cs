@@ -6,5 +6,6 @@ public interface IAuthenticationRepository
     /// <summary>Permanently deletes the user account from the authentication server.</summary>
     Task<Result> DeleteUser(UserId userId);
 
+    /// <summary>Checks whether the user exists in the authentication server.</summary>
     Task<Result> FindUser(UserId userId);
 }
