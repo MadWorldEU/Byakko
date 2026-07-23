@@ -25,7 +25,7 @@ public static class ServiceCollectionExtensions
             AuthServerUrl = settings.AuthServerUrl,
             Realm = "master",
             Resource = settings.Resource,
-            SslRequired = settings.SslRequired ? "Internal" : "none",
+            SslRequired = settings.SslRequired ? "internal" : "none",
             VerifyTokenAudience = true,
             Credentials = new KeycloakClientInstallationCredentials
             {
