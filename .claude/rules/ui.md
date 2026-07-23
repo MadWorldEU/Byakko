@@ -55,4 +55,9 @@ All shared pages use `IStringLocalizer<SharedResources>` with keys in `Localizat
 
 ## Status UI
 
-Blazor Server (static SSR), Bootstrap 5 dark theme. Public, no auth. Logo: `activity` SVG, fill `#0d6efd`. Single page (`/`) — Bootstrap card grid for 6 services via `GetHealthServicesUseCase` (parallel, 2s timeout). API/Portal/Admin/Authentication: HTTP GET (200=Healthy, `"Degraded"`=Degraded). Database: `CanConnectAsync()`. Object Storage: `ListBucketsAsync()`. Probe at `/health`.
+Blazor Server (static SSR), Bootstrap 5 dark theme. Public, no auth. Logo: `activity` SVG, fill `#0d6efd`. Sidebar nav with "Status" and "System" links. Probe at `/health`.
+
+| Page | Route | Notes |
+|---|---|---|
+| `Pages/Home.razor` | `/` | Bootstrap card grid for 6 services via `GetHealthServicesUseCase` (parallel, 2s timeout). API/Portal/Admin/Authentication: HTTP GET (200=Healthy, `"Degraded"`=Degraded). Database: `CanConnectAsync()`. Object Storage: `ListBucketsAsync()`. |
+| `Pages/System.razor` | `/system` | Deployment info: image tag displayed as a link to `{System:Git:Repository}/releases/tag/{System:Tag}`. Reads `IOptions<SystemSettings>`. |

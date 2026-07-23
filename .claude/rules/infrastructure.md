@@ -17,3 +17,4 @@
 - **Observability:** OTLP via `OTEL_EXPORTER_OTLP_ENDPOINT` → Tempo/Prometheus/Loki → Grafana. Two collectors: `otel-collector` Deployment (OTLP from API/Status) + `otel-collector-logs` DaemonSet (pod stdout/stderr scraping).
 - **IP forwarding:** `UseForwardedHeaders`. Integration tests set `X-Forwarded-For: 171.129.229.213` on all clients.
 - **OpenAPI:** `OpenApi:ServerUrl` overridden by `ServerUrlDocumentTransformer`. Debug: `/debug/*` (Development only). Test: `GET /tests/ping`.
+- **System settings** (Status only): `System:Tag` (release tag, e.g. `v1.0.0`) and `System:Git:Repository` (repo URL). Bound via `Configure<SystemSettings>`. In Helm, `System__Tag` is set to `{{ .Values.appVersion }}` so it always matches the deployed image tag.
