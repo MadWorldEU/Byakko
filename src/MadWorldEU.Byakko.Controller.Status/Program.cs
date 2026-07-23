@@ -14,6 +14,7 @@ builder.Services.AddPostgresql(builder.Configuration);
 
 builder.Services.AddHttpClient();
 builder.Services.Configure<HealthCheckSettings>(builder.Configuration.GetSection("HealthChecks"));
+builder.Services.Configure<SystemSettings>(builder.Configuration.GetSection("System"));
 builder.Services.AddScoped<GetHealthServicesUseCase>();
 builder.Services.AddStatusRateLimiter(builder.Configuration);
 

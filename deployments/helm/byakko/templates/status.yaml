@@ -96,6 +96,8 @@ spec:
                         value: {{ .Values.mail.administratorTo.name | quote }}
                       - name: Mail__AdministratorTo__Address
                         value: {{ .Values.mail.administratorTo.address | quote }}
+                      - name: System__Tag
+                        value: {{ .Values.appVersion | quote }}
                   volumeMounts:
                       - name: security-txt
                         mountPath: /app/wwwroot/.well-known/security.txt

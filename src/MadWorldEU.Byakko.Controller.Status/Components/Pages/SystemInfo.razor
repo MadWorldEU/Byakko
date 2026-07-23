@@ -1,0 +1,38 @@
+@page "/system"
+@using MadWorldEU.Byakko.Configurations
+@using Microsoft.Extensions.Options
+@inject IOptions<SystemSettings> SystemOptions
+
+<PageTitle>System Info</PageTitle>
+
+<div class="container py-4">
+    <div class="mb-4">
+        <h1 class="display-5 fw-bold">System Info</h1>
+        <p class="text-muted">Deployment metadata for the running instance.</p>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title mb-3">Image</h5>
+            <dl class="row mb-0">
+                <dt class="col-sm-3">Tag</dt>
+                <dd class="col-sm-9">
+                    <a href="@_releaseUrl" target="_blank" rel="noopener noreferrer">@_settings.Tag</a>
+                </dd>
+            </dl>
+        </div>
+    </div>
+</div>
+
+@code {
+    private SystemSettings _settings = new();
+    private string _releaseUrl = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        _settings = SystemOptions.Value;
+        _releaseUrl = $"{_settings.Git.Repository}/releases/tag/{_settings.Tag}";
+    }
+}
