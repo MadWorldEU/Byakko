@@ -45,6 +45,8 @@ observability:
 api:
     encryption:
         key: "changeme"
+    keycloak:
+        adminClientSecret: "changeme"
 
 mail:
     host: "changeme"

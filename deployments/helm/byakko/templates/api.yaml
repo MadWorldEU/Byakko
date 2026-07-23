@@ -115,6 +115,10 @@ spec:
                         value: {{ .Values.mail.administratorTo.name | quote }}
                       - name: Mail__AdministratorTo__Address
                         value: {{ .Values.mail.administratorTo.address | quote }}
+                      - name: KeyCloak__AuthServerUrl
+                        value: {{ printf "https://authentication.%s" .Values.ingress.domain | quote }}
+                      - name: KeyCloak__AdminClientSecret
+                        value: {{ .Values.api.keycloak.adminClientSecret | quote }}
                   volumeMounts:
                       - name: security-txt
                         mountPath: /app/wwwroot/.well-known/security.txt
