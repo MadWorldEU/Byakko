@@ -61,7 +61,7 @@ jobs:
                     /o:"madworldeu" \
                     /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
                     /d:sonar.cs.vscoveragexml.reportsPaths="coverage.xml" \
-                    /d:sonar.coverage.exclusions="src/MadWorldEU.Byakko.Aspire/**/*"
+                    /d:sonar.coverage.exclusions="src/MadWorldEU.Byakko.Aspire/**/*,**/DebugEndpoints.cs"
                   dotnet restore Byakko.slnx -p:LibraryManagerDisabled=true
                   dotnet build Byakko.slnx --no-restore -p:LibraryManagerDisabled=true
                   dotnet-coverage collect "dotnet test Byakko.slnx --no-build" -f xml -o coverage.xml
