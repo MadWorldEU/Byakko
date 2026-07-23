@@ -20,12 +20,13 @@ All test projects must be placed in the `tests/` folder at the repository root. 
 | `ArchitectureTests` | ArchUnitNET + Reqnroll + TUnit | Layer dependency rules |
 
 Key notes:
-- API integration tests use real PostgreSQL + LocalStack Testcontainers — no mocks. `Authentication:ValidateUser = false` for self-signed tokens.
+- API integration tests use real PostgreSQL + LocalStack + Keycloak Testcontainers — no mocks. `Authentication:ValidateUser = false` for self-signed tokens.
 - Status integration tests use real PostgreSQL + LocalStack + Mailpit Testcontainers; WireMock.Net stubs the 4 HTTP health endpoints returning `200 Healthy`. `MAILPIT_HOST`/`MAILPIT_PORT` injected via in-memory config.
 - Application unit tests cover error paths only. Use `Result.Failure<T>(error)` not `Result<T>.Failure(error)`.
 - Domain unit tests use a `BuildAsset()` helper for constructing valid aggregates.
 - Architecture tests: BDD feature files + `BaseArchitectureTests`; every assembly needs a marker interface (e.g. `IPostgresqlMarker`) in its root namespace.
-- Account integration tests (`Features/Accounts/Accounts.feature`) use a `[BeforeScenario(Order=2)]` in `AccountsSteps` that creates a fresh `HttpClient` with a unique `Guid` user ID per scenario — stored under both the default `HttpClient` key and `ScenarioContextKeys.AuthenticatedClient` so the shared "Given I am authenticated as a user" step still works. `ApiHooks.BeforeScenario` runs at `Order=1` and stores the `WebApplicationFactory<Program>` under `ScenarioContextKeys.Factory` for this purpose.
+- Account integration tests (`Features/Accounts/Accounts.feature`) use a `[BeforeScenario(Order=2)]` in `AccountsSteps` that creates a fresh `HttpClient` with a unique `Guid` user ID per scenario — stored under both the default `HttpClient` key and `ScenarioContextKeys.AuthenticatedClient` so the shared "Given I am authenticated as a user" step still works. `ApiHooks.BeforeScenario` runs at `Order=1` and stores the `WebApplicationFactory<Program>` under `ScenarioContextKeys.Factory` for this purpose. The unique user ID is stored under `ScenarioContextKeys.AccountUserId` so it can be shared across step definition classes.
+- **Keycloak test setup** (`ApiHooks.BeforeTestRun`): starts a `KeycloakContainer` (image `quay.io/keycloak/keycloak:26.0.7`), creates the `MadWorld` realm with a minimal representation, then creates a `madworld-admin-api` confidential client in the master realm with service accounts enabled and `manage-users` granted on the `MadWorld-realm` client. `KeyCloak__*` config is injected into the `WebApplicationFactory` so `IAuthenticationRepository` talks to the real test container. `KeycloakAdminTestClient` (`Common/`) is a helper that uses admin-cli password grant to drive the Keycloak Admin REST API from step definitions; it is stored per-scenario under `ScenarioContextKeys.KeycloakAdmin`. Do **not** POST the full realm export JSON to `/admin/realms` — Keycloak rejects it via REST API due to hashed secrets; create a minimal realm instead.
 
 ## Technology
 
@@ -35,6 +36,7 @@ Key notes:
 | Shouldly | All test projects | Fluent assertion syntax |
 | Reqnroll.TUnit | `Api.IntegrationTests` | BDD (Gherkin) scenario support; `.feature` files + step definitions |
 | Microsoft.AspNetCore.Mvc.Testing | `Api.IntegrationTests` | In-process test server via `WebApplicationFactory<Program>` |
+| Testcontainers.Keycloak | `Api.IntegrationTests` | Real Keycloak instance spun up per test run |
 | Testcontainers.PostgreSql | `Api.IntegrationTests` | Real PostgreSQL instance spun up per test run |
 | Testcontainers.Minio | `Api.IntegrationTests` | Real MinIO (S3-compatible) instance spun up per test run |
 | Microsoft.Testing.Extensions.CodeCoverage | `Api.IntegrationTests` | Code coverage collection |
