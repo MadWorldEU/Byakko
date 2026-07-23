@@ -62,7 +62,9 @@ public sealed class StatusHooks(ScenarioContext scenarioContext)
                         ["Storage:Mode"] = "LocalStack",
                         ["Storage:AutoCreateBucket"] = "true",
                         ["MAILPIT_HOST"] = _mailpit.Hostname,
-                        ["MAILPIT_PORT"] = mailpitSmtpPort.ToString()
+                        ["MAILPIT_PORT"] = mailpitSmtpPort.ToString(),
+                        ["System:Tag"] = "v1.0.0",
+                        ["System:Git:Repository"] = "https://github.com/MadWorldEU/Byakko"
                     });
                 });
             });
