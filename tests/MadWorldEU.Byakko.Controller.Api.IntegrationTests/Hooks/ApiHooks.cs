@@ -25,7 +25,7 @@ public sealed class ApiHooks(ScenarioContext scenarioContext)
         await _keycloak.StartAsync();
 
         var keycloakBaseUrl = $"http://{_keycloak.Hostname}:{_keycloak.GetMappedPublicPort(8080)}";
-        _keycloakAdmin = new KeycloakAdminTestClient(keycloakBaseUrl);
+        _keycloakAdmin = new KeycloakAdminTestClient(keycloakBaseUrl, TestAdminClientSecret);
         await _keycloakAdmin.CreateRealmAsync(ManagedRealm);
         await _keycloakAdmin.CreateAdminServiceAccountAsync(TestAdminClientSecret, ManagedRealm);
 
@@ -63,10 +63,10 @@ public sealed class ApiHooks(ScenarioContext scenarioContext)
                         ["MAILPIT_HOST"] = _mailpit.Hostname,
                         ["MAILPIT_PORT"] = mailpitSmtpPort.ToString(),
                         ["Logging:LogLevel:Microsoft.EntityFrameworkCore"] = "Warning",
-                        ["KeyCloak__AuthServerUrl"] = $"http://{_keycloak.Hostname}:{_keycloak.GetMappedPublicPort(8080)}/",
-                        ["KeyCloak__Resource"] = "madworld-admin-api",
-                        ["KeyCloak__AdminClientSecret"] = TestAdminClientSecret,
-                        ["KeyCloak__ManagedRealm"] = ManagedRealm
+                        ["KeyCloak:AuthServerUrl"] = $"http://{_keycloak.Hostname}:{_keycloak.GetMappedPublicPort(8080)}/",
+                        ["KeyCloak:Resource"] = "madworld-admin-api",
+                        ["KeyCloak:AdminClientSecret"] = TestAdminClientSecret,
+                        ["KeyCloak:ManagedRealm"] = ManagedRealm
                     });
                 });
             });
