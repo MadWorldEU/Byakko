@@ -5,7 +5,6 @@ namespace MadWorldEU.Byakko.StepDefinitions.Accounts;
 [Binding]
 public sealed class AccountsSteps(ScenarioContext scenarioContext)
 {
-    private const string AccountUserIdKey = "AccountUserId";
 
     [BeforeScenario(Order = 2)]
     public void BeforeScenario()
@@ -20,7 +19,7 @@ public sealed class AccountsSteps(ScenarioContext scenarioContext)
 
         scenarioContext.Set(client);
         scenarioContext.Set(client, ScenarioContextKeys.AuthenticatedClient);
-        scenarioContext.Set(uniqueUserId, AccountUserIdKey);
+        scenarioContext.Set(uniqueUserId, ScenarioContextKeys.AccountUserId);
     }
 
     [Given("I have created my account")]
@@ -43,7 +42,7 @@ public sealed class AccountsSteps(ScenarioContext scenarioContext)
     public async Task GivenIHaveConfirmedTheDeletionOfTheAccount()
     {
         var client = scenarioContext.Get<HttpClient>();
-        var userId = scenarioContext.Get<string>(AccountUserIdKey);
+        var userId = scenarioContext.Get<string>(ScenarioContextKeys.AccountUserId);
         var response = await client.PostAsJsonAsync($"/accounts/{userId}/confirm-deletion", new { });
         response.EnsureSuccessStatusCode();
     }
@@ -70,7 +69,7 @@ public sealed class AccountsSteps(ScenarioContext scenarioContext)
     public async Task WhenICancelTheDeletionRequestOfTheAccount()
     {
         var client = scenarioContext.Get<HttpClient>();
-        var userId = scenarioContext.Get<string>(AccountUserIdKey);
+        var userId = scenarioContext.Get<string>(ScenarioContextKeys.AccountUserId);
         var response = await client.PostAsJsonAsync($"/accounts/{userId}/cancel-deletion-request", new { });
         scenarioContext.Set(response, ScenarioContextKeys.LastResponse);
     }
@@ -88,7 +87,7 @@ public sealed class AccountsSteps(ScenarioContext scenarioContext)
     public async Task WhenIConfirmTheDeletionOfTheAccount()
     {
         var client = scenarioContext.Get<HttpClient>();
-        var userId = scenarioContext.Get<string>(AccountUserIdKey);
+        var userId = scenarioContext.Get<string>(ScenarioContextKeys.AccountUserId);
         var response = await client.PostAsJsonAsync($"/accounts/{userId}/confirm-deletion", new { });
         scenarioContext.Set(response, ScenarioContextKeys.LastResponse);
     }
@@ -97,7 +96,7 @@ public sealed class AccountsSteps(ScenarioContext scenarioContext)
     public async Task ThenTheAccountShouldHaveStatusDeletionConfirmed()
     {
         var client = scenarioContext.Get<HttpClient>();
-        var userId = scenarioContext.Get<string>(AccountUserIdKey);
+        var userId = scenarioContext.Get<string>(ScenarioContextKeys.AccountUserId);
         var response = await client.GetAsync("/accounts/me");
         var body = await response.Content.ReadFromJsonAsync<GetMyAccountResponse>();
         body.ShouldNotBeNull();
@@ -107,7 +106,7 @@ public sealed class AccountsSteps(ScenarioContext scenarioContext)
     [Then("the account should have status Deleted")]
     public async Task ThenTheAccountShouldHaveStatusDeleted()
     {
-        var userId = scenarioContext.Get<string>(AccountUserIdKey);
+        var userId = scenarioContext.Get<string>(ScenarioContextKeys.AccountUserId);
         var services = scenarioContext.Get<IServiceProvider>(ScenarioContextKeys.ServiceProvider);
         using var scope = services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<ByakkoContext>();

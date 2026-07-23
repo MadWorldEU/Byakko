@@ -46,6 +46,7 @@
     <PackageVersion Include="bunit" Version="2.7.2" />
     <PackageVersion Include="Shouldly" Version="4.3.0" />
     <PackageVersion Include="WireMock.Net" Version="2.11.0" />
+    <PackageVersion Include="Testcontainers.Keycloak" Version="4.13.0" />
     <PackageVersion Include="Testcontainers.LocalStack" Version="4.13.0" />
     <PackageVersion Include="Testcontainers.PostgreSql" Version="4.13.0" />
     <PackageVersion Include="TngTech.ArchUnitNET" Version="0.13.3" />

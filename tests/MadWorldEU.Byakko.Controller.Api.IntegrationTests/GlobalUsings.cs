@@ -8,6 +8,7 @@ global using Shouldly;
 global using System.Net;
 global using System.Net.Http.Headers;
 global using System.Net.Http.Json;
+global using Testcontainers.Keycloak;
 global using Testcontainers.LocalStack;
 global using Testcontainers.PostgreSql;
 
