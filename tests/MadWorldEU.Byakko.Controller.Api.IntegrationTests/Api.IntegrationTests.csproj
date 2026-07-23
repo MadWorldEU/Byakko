@@ -3,6 +3,7 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
         <PackageReference Include="Polly.Core" />
+        <PackageReference Include="Testcontainers.Keycloak" />
         <PackageReference Include="Testcontainers.LocalStack" />
         <PackageReference Include="Testcontainers.PostgreSql" />
         <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" />

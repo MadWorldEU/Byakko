@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using MadWorldEU.Byakko.AuthenticationServers;
+using MadWorldEU.Byakko.Common;
 using Microsoft.AspNetCore.StaticFiles;
 using MadWorldEU.Byakko.Development;
 
@@ -82,5 +84,20 @@ internal static class DebugEndpoints
             throw new InvalidOperationException("This exception was thrown intentionally for testing.");
         })
         .WithName("ThrowException");
+
+        debugEndpoints.MapGet("keycloak/account/{id}",
+                async (string id, IAuthenticationRepository authenticationRepository) =>
+                {
+                    var userId = UserId.Create(id);
+
+                    if (userId.IsFailure)
+                    {
+                        return Results.BadRequest();
+                    }
+
+                    var result = await authenticationRepository.FindUser(userId.Value);
+                    return result.IsFailure ? Results.NotFound() : Results.Ok();
+                })
+            .WithName("FindKeyCloakAccount");
     }
 }

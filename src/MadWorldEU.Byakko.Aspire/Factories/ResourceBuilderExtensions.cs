@@ -3,10 +3,11 @@ namespace MadWorldEU.Byakko.Factories;
 internal static class ResourceBuilderExtensions
 {
     internal static IResourceBuilder<TResource> BuildApi<TResource>(
-        this IResourceBuilder<TResource> apiBuilder, 
-        IResourceBuilder<PostgresDatabaseResource> byakkoDb, 
-        IResourceBuilder<ILocalStackResource> localstack, 
+        this IResourceBuilder<TResource> apiBuilder,
+        IResourceBuilder<PostgresDatabaseResource> byakkoDb,
+        IResourceBuilder<ILocalStackResource> localstack,
         IResourceBuilder<KeycloakResource> keycloak,
+        IResourceBuilder<ParameterResource> keycloakAdminClientSecret,
         IResourceBuilder<MailPitContainerResource> mailPit)
         where TResource : IResource, IResourceWithWaitSupport, IResourceWithEnvironment, IResourceWithEndpoints
     {
@@ -19,6 +20,8 @@ internal static class ResourceBuilderExtensions
             .WithReference(localstack)
             .WithReference(keycloak)
             .WithReference(mailPit)
+            .WithEnvironment("KeyCloak__AuthServerUrl", keycloak.GetEndpoint("http"))
+            .WithEnvironment("KeyCloak__AdminClientSecret", keycloakAdminClientSecret)
             .WithHttpHealthCheck("/health");
     }
 

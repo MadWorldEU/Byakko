@@ -1,5 +1,6 @@
 using MadWorldEU.Byakko.Accounts;
 using MadWorldEU.Byakko.Audits;
+using MadWorldEU.Byakko.AuthenticationServers;
 using MadWorldEU.Byakko.Correspondences;
 using MadWorldEU.Byakko.DomainDrivenDevelopment;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +15,7 @@ public static class ServiceCollectionExtensions
         services.AddAssets(configuration);
         services.AddAccounts();
         services.AddAudits();
+        services.AddAuthenticationServers();
         services.AddCorrespondences();
         
         return services;
@@ -60,6 +62,11 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IDomainEventHandler<AssetContentUploadedEvent>, AuditAssetsEventHandler>();
 
         services.AddScoped<GetAuditLogsUseCase>();
+    }
+    
+    private static void AddAuthenticationServers(this IServiceCollection services)
+    {
+        services.AddScoped<IDomainEventHandler<AccountDeletedEvent>, AuthenticationServerAccountEventHandler>();
     }
     
     private static void AddCorrespondences(this IServiceCollection services)

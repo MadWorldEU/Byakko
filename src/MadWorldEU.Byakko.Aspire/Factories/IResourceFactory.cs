@@ -2,9 +2,10 @@ namespace MadWorldEU.Byakko.Factories;
 
 internal interface IResourceFactory
 {
-    internal IResourceBuilder<IResource> CreateApiBuilder(IResourceBuilder<PostgresDatabaseResource> byakkoDb, 
-        IResourceBuilder<ILocalStackResource> localstack, 
+    internal IResourceBuilder<IResource> CreateApiBuilder(IResourceBuilder<PostgresDatabaseResource> byakkoDb,
+        IResourceBuilder<ILocalStackResource> localstack,
         IResourceBuilder<KeycloakResource> keycloak,
+        IResourceBuilder<ParameterResource> keycloakAdminClientSecret,
         IResourceBuilder<MailPitContainerResource> mailPit);
     
     internal IResourceBuilder<IResource> CreateAdminBuilder(IResourceBuilder<IResource> api);

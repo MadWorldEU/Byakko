@@ -10,14 +10,15 @@ internal sealed class DockerFileResourceFactory(IDistributedApplicationBuilder b
     private const int StatusPort = 5063;
     
     public IResourceBuilder<IResource> CreateApiBuilder(
-        IResourceBuilder<PostgresDatabaseResource> byakkoDb, 
-        IResourceBuilder<ILocalStackResource> localstack, 
+        IResourceBuilder<PostgresDatabaseResource> byakkoDb,
+        IResourceBuilder<ILocalStackResource> localstack,
         IResourceBuilder<KeycloakResource> keycloak,
+        IResourceBuilder<ParameterResource> keycloakAdminClientSecret,
         IResourceBuilder<MailPitContainerResource> mailPit)
     {
         return builder.AddDockerfile(nameof(Api), RootFolderSourceCode, "src/MadWorldEU.Byakko.Controller.Api/Dockerfile")
             .WithHttpEndpoint(targetPort: 8080, port: ApiPort)
-            .BuildApi(byakkoDb, localstack, keycloak, mailPit);
+            .BuildApi(byakkoDb, localstack, keycloak, keycloakAdminClientSecret, mailPit);
     }
 
     public IResourceBuilder<IResource> CreateAdminBuilder(IResourceBuilder<IResource> api)

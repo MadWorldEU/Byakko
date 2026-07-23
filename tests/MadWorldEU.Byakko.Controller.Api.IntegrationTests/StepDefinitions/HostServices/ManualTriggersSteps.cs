@@ -85,6 +85,14 @@ public sealed class ManualTriggersSteps(ScenarioContext scenarioContext)
         scenarioContext.Set(response, ScenarioContextKeys.LastResponse);
     }
 
+    [Given("I have registered a user in the authentication server")]
+    public async Task GivenIHaveRegisteredAUserInTheAuthenticationServer()
+    {
+        var keycloakAdmin = scenarioContext.Get<KeycloakAdminTestClient>(ScenarioContextKeys.KeycloakAdmin);
+        var userId = scenarioContext.Get<string>(ScenarioContextKeys.AccountUserId);
+        await keycloakAdmin.CreateUserAsync("MadWorld", userId);
+    }
+
     [Given("I have created an asset for the account")]
     public async Task GivenIHaveCreatedAnAssetForTheAccount()
     {
@@ -106,6 +114,15 @@ public sealed class ManualTriggersSteps(ScenarioContext scenarioContext)
         var client = scenarioContext.Get<HttpClient>();
         var response = await client.PostAsync("/host-services/manual-triggers/clean-up/accounts", null);
         scenarioContext.Set(response, ScenarioContextKeys.LastResponse);
+    }
+
+    [Then("the user should be deleted from the authentication server")]
+    public async Task ThenTheUserShouldBeDeletedFromTheAuthenticationServer()
+    {
+        var keycloakAdmin = scenarioContext.Get<KeycloakAdminTestClient>(ScenarioContextKeys.KeycloakAdmin);
+        var userId = scenarioContext.Get<string>(ScenarioContextKeys.AccountUserId);
+        var exists = await keycloakAdmin.UserExistsAsync("MadWorld", userId);
+        exists.ShouldBeFalse();
     }
 
     [Then("the asset should be permanently deleted")]
