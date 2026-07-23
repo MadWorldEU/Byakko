@@ -41,6 +41,7 @@ jobs:
                     --set storage.ovhCloud.secretKey="dry-run" \
                     --set storage.ovhCloud.region="dry-run" \
                     --set api.encryption.key="dry-run" \
+                    --set api.keycloak.adminClientSecret="dry-run" \
                     --set mail.host="dry-run" \
                     --set mail.username="dry-run" \
                     --set mail.token="dry-run" \
@@ -83,6 +84,7 @@ jobs:
                   OVHCLOUD_SECRET_KEY: ${{ secrets.OVHCLOUD_SECRET_KEY }}
                   OVHCLOUD_REGION: ${{ secrets.OVHCLOUD_REGION }}
                   ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY }}
+                  KEYCLOAK_ADMIN_CLIENT_SECRET: ${{ secrets.KEYCLOAK_ADMIN_CLIENT_SECRET }}
                   MAIL_HOST: ${{ secrets.MAIL_HOST }}
                   MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
                   MAIL_TOKEN: ${{ secrets.MAIL_TOKEN }}
@@ -107,6 +109,7 @@ jobs:
                     --set storage.ovhCloud.secretKey="$OVHCLOUD_SECRET_KEY" \
                     --set storage.ovhCloud.region="$OVHCLOUD_REGION" \
                     --set api.encryption.key="$ENCRYPTION_KEY" \
+                    --set api.keycloak.adminClientSecret="$KEYCLOAK_ADMIN_CLIENT_SECRET" \
                     --set mail.host="$MAIL_HOST" \
                     --set mail.username="$MAIL_USERNAME" \
                     --set mail.token="$MAIL_TOKEN" \

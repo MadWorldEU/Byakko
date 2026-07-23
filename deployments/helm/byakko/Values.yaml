@@ -249,6 +249,8 @@ api:
     assets:
         validityPeriodInDays: 30
         maxUploadSizeInBytes: "1073741824"
+    keycloak:
+        adminClientSecret: "changeme"
     observability:
         otlpEndpoint: "http://localhost:4040"
     resources:

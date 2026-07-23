@@ -68,6 +68,7 @@ Go to **Settings → Environments → vps-production → Add secret** and add th
 | `OVHCLOUD_SECRET_KEY`              | OVHCloud S3 secret key                                                                  |
 | `OVHCLOUD_REGION`                  | OVHCloud region (e.g. `de`)                                                             |
 | `ENCRYPTION_KEY`                   | Base64-encoded 32-byte AES-256 encryption key (generate with `openssl rand -base64 32`) |
+| `KEYCLOAK_ADMIN_CLIENT_SECRET`     | Keycloak client secret for the `madworld-admin-api` service account (`KeyCloak:AdminClientSecret`) |
 | `MAIL_HOST`                        | SMTP server hostname (e.g. `smtp.sendgrid.net`)                                         |
 | `MAIL_USERNAME`                    | SMTP authentication username                                                            |
 | `MAIL_TOKEN`                       | SMTP authentication token or password                                                   |
