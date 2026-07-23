@@ -5,4 +5,6 @@ public interface IAuthenticationRepository
 {
     /// <summary>Permanently deletes the user account from the authentication server.</summary>
     Task<Result> DeleteUser(UserId userId);
+
+    Task<Result> FindUser(UserId userId);
 }

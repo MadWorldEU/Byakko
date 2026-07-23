@@ -12,27 +12,27 @@ internal sealed class AuthenticationRepository(
 {
     private readonly string _managedRealm = settings.Value.ManagedRealm;
 
+    public async Task<Result> FindUser(UserId userId)
+    {
+        try
+        {
+            await keycloakClient.GetUserAsync(_managedRealm, userId.Value.ToString());
+            logger.LogInformation("User '{UserId}' found at the authentication server.", userId.Value);
+
+            return Result.Success();
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Failed to find user '{UserId}' at the authentication server.", userId.Value);
+            return Result.Failure(AuthenticationErrors.ServerUnavailable);
+        }
+    }
+    
     /// <summary>Permanently deletes the user from the Keycloak realm.</summary>
     public async Task<Result> DeleteUser(UserId userId)
     {
         try
         {
-            var realm = await keycloakClient.GetRealmAsync(_managedRealm);
-
-            if (realm.Users is null)
-            {
-                logger.LogError("Realm users not found");
-                return Result.Failure(AuthenticationErrors.RealmUsersNotFound);
-            }
-
-            var user = realm.Users.FirstOrDefault(u => u.Id == userId.Value.ToString());
-
-            if (user is null)
-            {
-                logger.LogWarning("User '{UserId}' not found in authentication server.", userId.Value);
-                return Result.Failure(AuthenticationErrors.UserNotFound);
-            }
-
             await keycloakClient.DeleteUserAsync(_managedRealm, userId.Value.ToString());
             logger.LogInformation("User '{UserId}' deleted from authentication server.", userId.Value);
 

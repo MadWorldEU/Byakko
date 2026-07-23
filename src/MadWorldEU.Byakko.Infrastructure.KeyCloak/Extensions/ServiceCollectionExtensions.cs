@@ -18,18 +18,20 @@ public static class ServiceCollectionExtensions
 
         services.Configure<KeyCloakSettings>(configuration.GetSection(KeyCloakSettings.Key));
 
+        services.AddTransient<KeyCloakTokenHandler>();
+
         services.AddKeycloakAdminHttpClient(new KeycloakAdminClientOptions
         {
             AuthServerUrl = settings.AuthServerUrl,
             Realm = "master",
             Resource = settings.Resource,
-            SslRequired = "internal",
-            VerifyTokenAudience = true,
+            SslRequired = "none",
+            VerifyTokenAudience = false,
             Credentials = new KeycloakClientInstallationCredentials
             {
                 Secret = settings.AdminClientSecret
             },
-        });
+        }).AddHttpMessageHandler<KeyCloakTokenHandler>();
 
         services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
 
