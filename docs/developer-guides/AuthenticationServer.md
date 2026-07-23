@@ -210,7 +210,7 @@ The API uses a Keycloak service account to delete users from the `MadWorld` real
 
 1. Open the **Service accounts roles** tab of `madworld-admin-api`.
 2. Click **Assign role** and change the filter to **Filter by clients**.
-3. Search for `MadWorld-realm` and assign the **`manage-users`** and **`query-users`** roles.
+3. Search for `MadWorld-realm` and assign the **`manage-users`**, **`query-users`** and **`view-users`** roles.
 4. Click **Assign**.
 
 #### Configure the secret
@@ -224,12 +224,6 @@ Add the secret to the Aspire user secrets file (`appsettings.json` in the Aspire
   "Parameters:keycloak-admin-client-secret": "<client secret from step 6>"
 }
 ```
-
-**Production environment (Helm / Kubernetes):**
-
-Store the secret in the Kubernetes secret and reference it in `values.production.yaml`. Set `KEYCLOAK_ADMIN_CLIENT_SECRET` in the deployment pipeline so it is injected as the `KeyCloak__AdminClientSecret` environment variable on the API pod.
-
-> 💡 The `KeyCloak:AuthServerUrl` is overridden automatically by Aspire at runtime using the Keycloak HTTP endpoint. In production it should point to the internal Keycloak service URL (e.g. `http://keycloak:8080/`).
 
 ### Test Login with Keycloak Using the Official Test App
 You can verify that your Keycloak server is correctly issuing tokens (including the `aud` claim) by using Keycloak's official test app:
