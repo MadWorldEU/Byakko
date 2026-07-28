@@ -5,5 +5,7 @@
   <ItemGroup>
     <PackageReference Include="Keycloak.AuthServices.Authentication" />
     <PackageReference Include="Keycloak.AuthServices.Sdk" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
+    <PackageReference Include="Scrutor" />
   </ItemGroup>
 </Project>

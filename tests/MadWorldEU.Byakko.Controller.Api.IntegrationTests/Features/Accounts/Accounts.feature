@@ -2,6 +2,7 @@ Feature: Account Endpoints
 
 Scenario: Retrieve accounts with deletion requested as an administrator
     Given I am authenticated as a user
+    And I have registered a user with username "johnsmith" in the authentication server
     And I have created my account
     And I have requested deletion of my account
     Given I am authenticated as an administrator

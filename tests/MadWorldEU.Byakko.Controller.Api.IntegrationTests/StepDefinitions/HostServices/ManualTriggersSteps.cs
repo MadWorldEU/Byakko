@@ -85,14 +85,6 @@ public sealed class ManualTriggersSteps(ScenarioContext scenarioContext)
         scenarioContext.Set(response, ScenarioContextKeys.LastResponse);
     }
 
-    [Given("I have registered a user in the authentication server")]
-    public async Task GivenIHaveRegisteredAUserInTheAuthenticationServer()
-    {
-        var keycloakAdmin = scenarioContext.Get<KeycloakAdminTestClient>(ScenarioContextKeys.KeycloakAdmin);
-        var userId = scenarioContext.Get<string>(ScenarioContextKeys.AccountUserId);
-        await keycloakAdmin.CreateUserAsync("MadWorld", userId);
-    }
-
     [Given("I have created an asset for the account")]
     public async Task GivenIHaveCreatedAnAssetForTheAccount()
     {

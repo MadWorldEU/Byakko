@@ -39,7 +39,7 @@ Clean Architecture. Dependencies flow inward: Controller → Application → Dom
 | Infrastructure | `Infrastructure.ObjectStorage` | S3-compatible storage |
 | Infrastructure | `Infrastructure.Security` | AES-256 encryption |
 | Infrastructure | `Infrastructure.Mail` | SMTP mail via MailKit |
-| Infrastructure | `Infrastructure.KeyCloak` | Keycloak admin client (user deletion) |
+| Infrastructure | `Infrastructure.KeyCloak` | Keycloak admin client (user lookup and deletion, with in-memory caching via Scrutor decorator) |
 | Host | `Aspire` | .NET Aspire AppHost |
 
 Dependency rules: BuildingBlocks has none. Domain must not depend on Application/Contracts/Infrastructure/Controllers. Application must not depend on Infrastructure/Controllers. Infrastructure must not depend on Controllers. Blazor projects may only depend on Contracts and Blazor.Shared.

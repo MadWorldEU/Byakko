@@ -36,6 +36,7 @@ builder.Services.AddHostedService<DeleteExpiredAssetMetaDataService>();
 builder.Services.AddHostedService<DeleteRequestedAccountsService>();
 
 builder.AddDefaultAuthentication();
+builder.Services.AddMemoryCache();
 builder.Services.AddApiRateLimiter(builder.Configuration);
 
 builder.Services.AddOpenTelemetry()

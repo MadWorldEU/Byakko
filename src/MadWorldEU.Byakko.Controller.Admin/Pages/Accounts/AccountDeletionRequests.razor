@@ -1,7 +1,5 @@
 @page "/accounts/deletion-requests"
 @attribute [Authorize(Policy = AuthorizationPolicies.Administrator)]
-@using MadWorldEU.Byakko.Accounts
-@using MadWorldEU.Byakko.Accounts.Summaries
 @inject IAccountService AccountService
 @inject IErrorTranslator ErrorTranslator
 @inject ILogger<AccountDeletionRequests> Logger
@@ -40,6 +38,7 @@ else if (_response is not null)
                 <thead>
                     <tr>
                         <th>User ID</th>
+                        <th>Username</th>
                         <th>Status</th>
                         <th>Updated</th>
                         <th></th>
@@ -50,6 +49,7 @@ else if (_response is not null)
                     {
                         <tr>
                             <td class="font-monospace small text-secondary">@account.UserId</td>
+                            <td>@account.Username</td>
                             <td>
                                 @if (account.Status == "DeletionRequested")
                                 {
@@ -115,7 +115,7 @@ else if (_response is not null)
                     @if (_response.Accounts.Count == 0)
                     {
                         <tr>
-                            <td colspan="4" class="text-center text-secondary py-4">No deletion requests found.</td>
+                            <td colspan="5" class="text-center text-secondary py-4">No deletion requests found.</td>
                         </tr>
                     }
                 </tbody>

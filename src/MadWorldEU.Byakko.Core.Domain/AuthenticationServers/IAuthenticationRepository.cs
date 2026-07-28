@@ -7,5 +7,5 @@ public interface IAuthenticationRepository
     Task<Result> DeleteUser(UserId userId);
 
     /// <summary>Checks whether the user exists in the authentication server.</summary>
-    Task<Result> FindUser(UserId userId);
+    Task<Result<AuthenticationUser>> FindUser(UserId userId);
 }
