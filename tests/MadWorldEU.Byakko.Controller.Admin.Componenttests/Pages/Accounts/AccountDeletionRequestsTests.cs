@@ -30,6 +30,7 @@ public sealed class AccountDeletionRequestsTests
     private static AccountResponse MakeAccount(Guid? userId = null) => new()
     {
         UserId = userId ?? Guid.NewGuid(),
+        Username = "JohnSmith13",
         Status = "DeletionRequested",
         UpdatedAt = DateTimeOffset.Parse("2026-07-06T10:00:00Z")
     };

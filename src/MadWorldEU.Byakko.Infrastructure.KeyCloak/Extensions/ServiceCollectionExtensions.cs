@@ -1,9 +1,8 @@
 using Keycloak.AuthServices.Common;
 using Keycloak.AuthServices.Sdk;
-using MadWorldEU.Byakko.AuthenticationServers;
 using MadWorldEU.Byakko.Configurations;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace MadWorldEU.Byakko.Extensions;
@@ -29,8 +28,9 @@ public static class ServiceCollectionExtensions
             client.BaseAddress = new Uri(settings.AuthServerUrl.TrimEnd('/') + "/");
         })
         .AddHttpMessageHandler<KeyCloakTokenHandler>();
-
+        
         services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
+        services.Decorate<IAuthenticationRepository, CachedAuthenticationRepository>();
 
         return services;
     }

@@ -22,6 +22,23 @@ public sealed class AccountsSteps(ScenarioContext scenarioContext)
         scenarioContext.Set(uniqueUserId, ScenarioContextKeys.AccountUserId);
     }
 
+    [Given("I have registered a user with username {string} in the authentication server")]
+    public async Task GivenIHaveRegisteredAUserWithUsernameInTheAuthenticationServer(string username)
+    {
+        var keycloakAdmin = scenarioContext.Get<KeycloakAdminTestClient>(ScenarioContextKeys.KeycloakAdmin);
+        var keycloakUserId = await keycloakAdmin.CreateUserAsync("MadWorld", username);
+
+        var factory = scenarioContext.Get<WebApplicationFactory<Program>>(ScenarioContextKeys.Factory);
+        var client = factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", TestJwtToken.Create(keycloakUserId));
+        client.DefaultRequestHeaders.Add("X-Forwarded-For", "171.129.229.213");
+
+        scenarioContext.Set(client);
+        scenarioContext.Set(client, ScenarioContextKeys.AuthenticatedClient);
+        scenarioContext.Set(keycloakUserId, ScenarioContextKeys.AccountUserId);
+    }
+
     [Given("I have created my account")]
     public async Task GivenIHaveCreatedMyAccount()
     {
@@ -62,7 +79,11 @@ public sealed class AccountsSteps(ScenarioContext scenarioContext)
         var body = await response.Content.ReadFromJsonAsync<GetAccountsPendingDeletionResponse>();
         body.ShouldNotBeNull();
         body.TotalCount.ShouldBeGreaterThan(0);
-        body.Accounts.ShouldContain(a => a.Status == "DeletionRequested");
+
+        var userId = scenarioContext.Get<string>(ScenarioContextKeys.AccountUserId);
+        var account = body.Accounts.First(a => a.UserId.ToString() == userId);
+        account.Status.ShouldBe("DeletionRequested");
+        account.Username.ShouldBe("johnsmith");
     }
 
     [When("I cancel the deletion request of the account")]
@@ -96,7 +117,6 @@ public sealed class AccountsSteps(ScenarioContext scenarioContext)
     public async Task ThenTheAccountShouldHaveStatusDeletionConfirmed()
     {
         var client = scenarioContext.Get<HttpClient>();
-        var userId = scenarioContext.Get<string>(ScenarioContextKeys.AccountUserId);
         var response = await client.GetAsync("/accounts/me");
         var body = await response.Content.ReadFromJsonAsync<GetMyAccountResponse>();
         body.ShouldNotBeNull();

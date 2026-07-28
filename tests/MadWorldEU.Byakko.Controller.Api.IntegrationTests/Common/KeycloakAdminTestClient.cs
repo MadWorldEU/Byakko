@@ -102,25 +102,30 @@ internal sealed class KeycloakAdminTestClient(string baseUrl, string adminClient
         var rolesJson = await (await client.GetAsync($"/admin/realms/master/clients/{realmClientId}/roles"))
             .Content.ReadAsStringAsync();
         var roles = JsonSerializer.Deserialize<JsonElement[]>(rolesJson)!;
-        var manageUsersRole = roles.First(r => r.GetProperty("name").GetString() == "manage-users");
 
-        var roleBody = JsonSerializer.Serialize(new[]
-        {
-            new { id = manageUsersRole.GetProperty("id").GetString(), name = "manage-users" }
-        });
+        var requiredRoles = new[] { "manage-users", "query-users", "view-users" };
+        var roleBody = JsonSerializer.Serialize(
+            roles
+                .Where(r => requiredRoles.Contains(r.GetProperty("name").GetString()))
+                .Select(r => new { id = r.GetProperty("id").GetString(), name = r.GetProperty("name").GetString() })
+                .ToArray());
         (await client.PostAsync(
             $"/admin/realms/master/users/{serviceAccountUserId}/role-mappings/clients/{realmClientId}",
             new StringContent(roleBody, Encoding.UTF8, "application/json"))).EnsureSuccessStatusCode();
     }
 
-    /// <summary>Creates a user in <paramref name="realm"/> with the given <paramref name="userId"/> as both the Keycloak ID and username.</summary>
-    public async Task CreateUserAsync(string realm, string userId)
+    /// <summary>Creates a user in <paramref name="realm"/> with the given <paramref name="username"/> and returns the Keycloak-assigned user ID.</summary>
+    public async Task<string> CreateUserAsync(string realm, string username)
     {
         using var client = await CreateServiceAccountClientAsync();
-        var body = JsonSerializer.Serialize(new { id = userId, username = userId, enabled = true });
-        (await client.PostAsync(
+        var body = JsonSerializer.Serialize(new { username, enabled = true });
+        var response = await client.PostAsync(
             $"/admin/realms/{realm}/users",
-            new StringContent(body, Encoding.UTF8, "application/json"))).EnsureSuccessStatusCode();
+            new StringContent(body, Encoding.UTF8, "application/json"));
+        response.EnsureSuccessStatusCode();
+
+        var location = response.Headers.Location!.ToString();
+        return location.Split('/').Last();
     }
 
     /// <summary>Returns true if a user with the given <paramref name="userId"/> exists in <paramref name="realm"/>.</summary>

@@ -1,3 +1,4 @@
+using Keycloak.AuthServices.Sdk;
 using Keycloak.AuthServices.Sdk.Admin;
 using MadWorldEU.Byakko.Configurations;
 using Microsoft.Extensions.Options;
@@ -13,19 +14,24 @@ internal sealed class AuthenticationRepository(
     private readonly string _managedRealm = settings.Value.ManagedRealm;
 
     /// <summary>Checks whether the user exists in the authentication server.</summary>
-    public async Task<Result> FindUser(UserId userId)
+    public async Task<Result<AuthenticationUser>> FindUser(UserId userId)
     {
         try
         {
-            await keycloakClient.GetUserAsync(_managedRealm, userId.Value.ToString());
+            var user = await keycloakClient.GetUserAsync(_managedRealm, userId.Value.ToString());
             logger.LogInformation("User '{UserId}' found at the authentication server.", userId.Value);
 
-            return Result.Success();
+            return AuthenticationUser.Create(userId, user.Username);
+        }
+        catch (KeycloakHttpClientException exception) when (exception.StatusCode == (int)HttpStatusCode.NotFound)
+        {
+            logger.LogWarning("User '{UserId}' was not found at the authentication server.", userId.Value);
+            return Result.Failure<AuthenticationUser>(AuthenticationErrors.NotFound);
         }
         catch (Exception exception)
         {
             logger.LogError(exception, "Failed to find user '{UserId}' at the authentication server.", userId.Value);
-            return Result.Failure(AuthenticationErrors.ServerUnavailable);
+            return Result.Failure<AuthenticationUser>(AuthenticationErrors.ServerUnavailable);
         }
     }
     
